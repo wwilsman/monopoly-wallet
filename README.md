@@ -11,9 +11,12 @@ Todo:
 
   Required before anything
 
-  - [ ] Create Property Class
-  - [ ] Create Player Class
-  - [ ] Create Bank Class
+  - [X] Create Property Class
+  - [X] Create Player Class
+
+- [ ] Tests:
+
+  Let's try to do some TDD
 
 - [ ] Game:
 
@@ -30,4 +33,3 @@ Todo:
   - [ ] Assets
   - [ ] Bank
   - [ ] Overview
-  
