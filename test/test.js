@@ -15,7 +15,7 @@ describe('Player', function() {
       group: 'group name',
       rent: [0, 1, 2, 3, 4, 5],
       costs: {
-        property: 60,
+        price: 60,
         building: 50
       }
     });
@@ -36,6 +36,7 @@ describe('Player', function() {
     assert.ok(p1);
   });
 
+  // TODO: break '#transfer' tests down more
   describe('#transfer', function() {
     it('should transfer currency', function() {
       var amount = 25;
@@ -76,6 +77,93 @@ describe('Player', function() {
 
       assert.equal(p1.assets.jailcard, 1);
       assert.notEqual(p2.assets.jailcard, 1);
+    });
+  });
+
+  describe('#mortgage', function() {
+    it('should mortgage property', function() {
+      assert.ok(!prop.isMortgaged);
+
+      p1.mortgage(prop);
+
+      assert.ok(prop.isMortgaged);
+    });
+
+    it('should add to balance', function() {
+      var balance = p1.balance;
+
+      p1.mortgage(prop);
+
+      assert.equal(balance + prop.values.mortgage, p1.balance);
+    });
+  });
+
+  describe('#unmortgage', function() {
+    it('should unmortgage property', function() {
+      assert.ok(!prop.isMortgaged);
+
+      p1.mortgage(prop);
+
+      assert.ok(prop.isMortgaged);
+    });
+
+    it('should subtract from balance', function() {
+      var balance;
+
+      p1.mortgage(prop);
+      balance = p1.balance;
+      p1.unmortgage(prop);
+
+      assert.equal(balance - prop.costs.mortgage, p1.balance);
+    });
+  });
+
+  describe('#improve', function() {
+    it('should improve property', function() {
+      assert.ok(!prop.isImproved);
+
+      p1.improve(prop);
+
+      assert.ok(prop.isImproved);
+    });
+
+    it('should subtract from balance', function() {
+      var balance = p1.balance;
+
+      p1.improve(prop);
+
+      assert.equal(balance - prop.costs.building, p1.balance);
+    });
+  });
+
+  describe('#unimprove', function() {
+    it('should unimprove property', function() {
+      assert.ok(!prop.isImproved);
+
+      p1.improve(prop);
+
+      assert.ok(prop.isImproved);
+    });
+
+    it('should add to balance', function() {
+      var balance;
+
+      p1.improve(prop);
+      balance = p1.balance;
+      p1.unimprove(prop);
+
+      assert.equal(balance + prop.values.building, p1.balance);
+    });
+  });
+
+  // TODO: write test for beneficiary
+  describe('#bankrupt', function() {
+    it('should bankrupt player', function() {
+      assert.ok(!p1.isBankrupt);
+
+      p1.bankrupt(p2);
+
+      assert.ok(p1.isBankrupt);
     });
   });
 });

@@ -7,16 +7,20 @@ Easily manage you assets during a game of Monopoly
 Todo:
 -----
 
-- [ ] Basics:
+- [X] Basics:
 
   Required before anything
 
   - [X] Create Property Class
   - [X] Create Player Class
 
-- [X] Tests:
+- [ ] Tests:
 
   Let's try to do some TDD
+
+  - [X] Player tests
+  - [ ] Property tests
+  - [ ] Config tests
 
 - [ ] Game:
 
