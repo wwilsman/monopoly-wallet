@@ -10,9 +10,14 @@ describe('Player', function() {
 
   beforeEach(function () {
     prop = new Property({
-      name: 'test',
-      group: 'test',
       token: '1',
+      name: 'property name',
+      group: 'group name',
+      rent: [0, 1, 2, 3, 4, 5],
+      costs: {
+        property: 60,
+        building: 50
+      }
     });
 
     p1 = new Player({
