@@ -14,7 +14,7 @@ Todo:
   - [X] Create Property Class
   - [X] Create Player Class
 
-- [ ] Tests:
+- [X] Tests:
 
   Let's try to do some TDD
 

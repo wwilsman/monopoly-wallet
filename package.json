@@ -1,0 +1,14 @@
+{
+  "name": "Monopoly",
+  "version": "1.0.0",
+  "description": "Monopoly Asset Manager",
+  "main": "index.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Wil Wilsman <hello@wilwilsman.com>",
+  "license": "MIT",
+  "devDependencies": {
+    "mocha": "^2.1.0"
+  }
+}
