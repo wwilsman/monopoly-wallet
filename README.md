@@ -18,7 +18,8 @@ Todo:
 
   Development todos
 
-  - [ ] Property (un)improve to use building caps
+  - [ ] Fix *Property#unimprove()*  "build evenly" logic
+  - [ ] Add teardowns to tests to stop polluting other tests
 
 - [ ] Tests:
 

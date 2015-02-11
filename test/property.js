@@ -49,6 +49,24 @@ describe('Property', function() {
       assert.equal(1, prop1.buildings);
     });
 
+    it('should subtract from house building cap', function() {
+      var houses = Property.availableHouses;
+
+      prop1.improve();
+
+      assert.equal(houses - 1, Property.availableHouses);
+    });
+
+    it('should subtract from hotel building cap', function() {
+      var hotels = Property.availableHotels;
+
+      prop1.buildings = 4;
+      prop2.buildings = 4;
+      prop2.improve();
+
+      assert.equal(hotels - 1, Property.availableHotels);
+    });
+
     it('should not improve if not monopoly', function() {
       var bank = new Player({ token: 'bank' });
       prop2.transfer(bank);
@@ -87,6 +105,26 @@ describe('Property', function() {
       prop1.unimprove();
 
       assert.equal(0, prop1.buildings);
+    });
+
+    it('should add to house building cap', function() {
+      var houses;
+
+      prop1.improve();
+      houses = Property.availableHouses;
+      prop1.unimprove();
+
+      assert.equal(houses + 1, Property.availableHouses);
+    });
+
+    it('should add to hotel building cap', function() {
+      var hotels = Property.availableHotels;
+
+      prop1.buildings = 5;
+      prop2.buildings = 5;
+      prop2.unimprove();
+
+      assert.equal(hotels - 1, Property.availableHotels);
     });
 
     it('should not unimprove if already unimproved', function() {
