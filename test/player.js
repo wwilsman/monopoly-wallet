@@ -10,7 +10,7 @@ describe('Player', function() {
 
   beforeEach(function () {
     prop = new Property({
-      token: '1',
+      owner: '1',
       name: 'property name',
       group: 'group name',
       costs: {
@@ -21,31 +21,24 @@ describe('Player', function() {
     });
 
     p1 = new Player({
-      token: '1',
+      name: '1',
       assets: {
         jailcard: 1
       }
     });
 
     p2 = new Player({
-      token: '2',
+      name: '2',
     });
   });
 
   afterEach(function() {
-    delete Property.collection[prop.name];
-    delete Player.collection[p1.token];
-    delete Player.collection[p2.token];
+    Property.collection = {};
+    Player.collection = {};
   });
 
   it('should be created', function() {
     assert.ok(p1);
-  });
-
-  it('should not be created without token', function() {
-    assert.throws(function() {
-      new Player;
-    }, Error);
   });
 
   describe('#transfer()', function() {

@@ -10,7 +10,7 @@ describe('Property', function() {
 
   beforeEach(function () {
     prop1 = new Property({
-      token: '1',
+      owner: '1',
       name: 'property 1',
       group: 'group name',
       costs: {
@@ -21,7 +21,7 @@ describe('Property', function() {
     });
 
     prop2 = new Property({
-      token: '1',
+      owner: '1',
       name: 'property 2',
       group: 'group name',
       costs: {
@@ -32,14 +32,13 @@ describe('Property', function() {
     });
 
     player = new Player({
-      token: '1'
+      name: '1'
     });
   });
 
   afterEach(function() {
-    delete Property.collection[prop1.name];
-    delete Property.collection[prop2.name];
-    delete Player.collection[player.token];
+    Property.collection = {};
+    Player.collection = {};
   });
 
   it('should be created', function() {
@@ -207,9 +206,9 @@ describe('Property', function() {
     });
   });
 
-  describe('#all', function() {
+  describe('#group', function() {
     it('should list all properties in group', function() {
-      assert.ok(prop1.all.indexOf(prop2));
+      assert.ok(prop1.group.indexOf(prop2));
     });
   });
 
