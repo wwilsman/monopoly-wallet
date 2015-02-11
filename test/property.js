@@ -2,6 +2,7 @@ var assert = require('assert');
 var fs = require('fs');
 
 eval(fs.readFileSync('./lib/utilities.js').toString());
+eval(fs.readFileSync('./lib/Config.js').toString());
 eval(fs.readFileSync('./lib/Property.js').toString());
 eval(fs.readFileSync('./lib/Player.js').toString());
 
@@ -37,8 +38,8 @@ describe('Property', function() {
   });
 
   afterEach(function() {
-    Property.collection = {};
-    Player.collection = {};
+    _.emptyObj(Property.collection);
+    _.emptyObj(Player.collection);
   });
 
   it('should be created', function() {
@@ -55,21 +56,21 @@ describe('Property', function() {
     });
 
     it('should subtract from house building cap', function() {
-      var houses = Property.availableHouses;
+      var houses = Config.availableHouses;
 
       prop1.improve();
 
-      assert.equal(houses - 1, Property.availableHouses);
+      assert.equal(houses - 1, Config.availableHouses);
     });
 
     it('should subtract from hotel building cap', function() {
-      var hotels = Property.availableHotels;
+      var hotels = Config.availableHotels;
 
       prop1.buildings = 4;
       prop2.buildings = 4;
       prop2.improve();
 
-      assert.equal(hotels - 1, Property.availableHotels);
+      assert.equal(hotels - 1, Config.availableHotels);
     });
 
     it('should not improve if not monopoly', function() {
@@ -116,20 +117,20 @@ describe('Property', function() {
       var houses;
 
       prop1.improve();
-      houses = Property.availableHouses;
+      houses = Config.availableHouses;
       prop1.unimprove();
 
-      assert.equal(houses + 1, Property.availableHouses);
+      assert.equal(houses + 1, Config.availableHouses);
     });
 
     it('should add to hotel building cap', function() {
-      var hotels = Property.availableHotels;
+      var hotels = Config.availableHotels;
 
       prop1.buildings = 5;
       prop2.buildings = 5;
       prop2.unimprove();
 
-      assert.equal(hotels + 1, Property.availableHotels);
+      assert.equal(hotels + 1, Config.availableHotels);
     });
 
     it('should not unimprove if already unimproved', function() {

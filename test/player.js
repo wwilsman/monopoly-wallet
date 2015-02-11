@@ -2,6 +2,7 @@ var assert = require('assert');
 var fs = require('fs');
 
 eval(fs.readFileSync('./lib/utilities.js').toString());
+eval(fs.readFileSync('./lib/Config.js').toString());
 eval(fs.readFileSync('./lib/Property.js').toString());
 eval(fs.readFileSync('./lib/Player.js').toString());
 
@@ -33,8 +34,8 @@ describe('Player', function() {
   });
 
   afterEach(function() {
-    Property.collection = {};
-    Player.collection = {};
+    _.emptyObj(Property.collection);
+    _.emptyObj(Player.collection);
   });
 
   it('should be created', function() {
