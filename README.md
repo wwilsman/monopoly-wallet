@@ -1,7 +1,7 @@
 Monopoly Manger
 ===============
 
-Easily manage you assets during a game of Monopoly
+Easily manage your assets during a game of Monopoly
 
 
 Todo:
@@ -16,10 +16,7 @@ Todo:
 
 - [ ] Todo:
 
-  Development todos
-
-  - [ ] Fix *Property#unimprove()*  "build evenly" logic
-  - [ ] Add teardowns to tests to stop polluting other tests
+  Development (removed as they're completed)
 
 - [ ] Tests:
 

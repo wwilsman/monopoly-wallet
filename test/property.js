@@ -36,6 +36,12 @@ describe('Property', function() {
     });
   });
 
+  afterEach(function() {
+    delete Property.collection[prop1.name];
+    delete Property.collection[prop2.name];
+    delete Player.collection[player.token];
+  });
+
   it('should be created', function() {
     assert.ok(prop1);
   });
@@ -124,7 +130,7 @@ describe('Property', function() {
       prop2.buildings = 5;
       prop2.unimprove();
 
-      assert.equal(hotels - 1, Property.availableHotels);
+      assert.equal(hotels + 1, Property.availableHotels);
     });
 
     it('should not unimprove if already unimproved', function() {

@@ -32,6 +32,12 @@ describe('Player', function() {
     });
   });
 
+  afterEach(function() {
+    delete Property.collection[prop.name];
+    delete Player.collection[p1.token];
+    delete Player.collection[p2.token];
+  });
+
   it('should be created', function() {
     assert.ok(p1);
   });
