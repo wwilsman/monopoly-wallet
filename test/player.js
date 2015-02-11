@@ -36,6 +36,12 @@ describe('Player', function() {
     assert.ok(p1);
   });
 
+  it('should not be created without token', function() {
+    assert.throws(function() {
+      new Player;
+    }, Error);
+  });
+
   describe('#transfer()', function() {
     it('should transfer currency', function() {
       var amount = 25;
@@ -87,6 +93,25 @@ describe('Player', function() {
       assert.notEqual(p1.assets.jailcard, 1);
       assert.equal(p2.assets.jailcard, 1);
     });
+
+    it('should not transfer currency if low balance', function() {
+      assert.throws(function() {
+        p1.transfer(p2, p1.balance + 1);
+      }, Error);
+    });
+
+    it('should not transfer property if improved', function() {
+      assert.throws(function() {
+        p1.improve(prop);
+        p1.transfer(p1, prop);
+      }, Error);
+    });
+
+    it('should not transfer an asset if there is none', function() {
+      assert.throws(function() {
+        p2.transfer(p1, 'jailcard');
+      }, Error);
+    });
   });
 
   describe('#improve()', function() {
@@ -104,6 +129,19 @@ describe('Player', function() {
       p1.improve(prop);
 
       assert.equal(balance - prop.costs.building, p1.balance);
+    });
+
+    it('should not improve if not player\'s property', function() {
+      assert.throws(function() {
+        p2.improve(prop);
+      }, Error);
+    });
+
+    it('should not improve if low balance', function() {
+      assert.throws(function() {
+        p1.balance = 1;
+        p1.improve(prop);
+      }, Error);
     });
   });
 
@@ -125,6 +163,13 @@ describe('Player', function() {
 
       assert.equal(balance + prop.values.building, p1.balance);
     });
+
+    it('should not unimprove if not player\'s property', function() {
+      assert.throws(function() {
+        p1.improve(prop);
+        p2.unimprove(prop);
+      }, Error);
+    });
   });
 
   describe('#mortgage()', function() {
@@ -142,6 +187,12 @@ describe('Player', function() {
       p1.mortgage(prop);
 
       assert.equal(balance + prop.values.mortgage, p1.balance);
+    });
+
+    it('should not mortgage if not player\'s property', function() {
+      assert.throws(function() {
+        p2.mortgage(prop);
+      }, Error);
     });
   });
 
@@ -166,6 +217,23 @@ describe('Player', function() {
       p1.unmortgage(prop);
 
       assert.equal(balance - prop.costs.mortgage, p1.balance);
+    });
+
+    it('should not unmortgage if not player\'s property', function() {
+      p1.mortgage(prop);
+
+      assert.throws(function() {
+        p2.unmortgage(prop);
+      }, Error);
+    });
+
+    it('should not unmortgage if low balance', function() {
+      p1.mortgage(prop);
+      p1.balance = 1;
+
+      assert.throws(function() {
+        p1.unmortgage(prop);
+      }, Error);
     });
   });
 

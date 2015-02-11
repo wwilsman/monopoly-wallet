@@ -48,6 +48,32 @@ describe('Property', function() {
 
       assert.equal(1, prop1.buildings);
     });
+
+    it('should not improve if not monopoly', function() {
+      var bank = new Player({ token: 'bank' });
+      prop2.transfer(bank);
+
+      assert.throws(function() {
+        prop1.improve();
+      }, Error);
+    });
+
+    it('should not improve if fully improved', function() {
+      prop1.buildings = 5;
+      prop2.buildings = 5;
+
+      assert.throws(function() {
+        prop1.improve();
+      }, Error);
+    });
+
+    it('should not improve unevenly', function() {
+      prop1.buildings = 1;
+
+      assert.throws(function() {
+        prop1.improve();
+      }, Error);
+    });
   });
 
   describe('#unimprove()', function() {
@@ -62,6 +88,21 @@ describe('Property', function() {
 
       assert.equal(0, prop1.buildings);
     });
+
+    it('should not unimprove if already unimproved', function() {
+      assert.throws(function() {
+        prop1.unimprove();
+      }, Error);
+    });
+
+    it('should not unimprove unevenly', function() {
+      prop1.buildings = 1;
+      prop2.buildings = 2;
+
+      assert.throws(function() {
+        prop1.unimprove();
+      }, Error);
+    });
   });
 
   describe('#mortgage()', function() {
@@ -71,6 +112,22 @@ describe('Property', function() {
       prop1.mortgage();
 
       assert.ok(prop1.isMortgaged);
+    });
+
+    it('should not mortgage if already mortgaged', function() {
+      prop1.mortgage();
+
+      assert.throws(function() {
+        prop1.mortgage();
+      }, Error);
+    });
+
+    it('should not mortgage if property is improved', function() {
+      prop1.improve();
+
+      assert.throws(function() {
+        prop1.mortgage();
+      }, Error);
     });
   });
 
@@ -85,6 +142,24 @@ describe('Property', function() {
       prop1.unmortgage();
 
       assert.ok(!prop1.isMortgaged);
+    });
+
+    it('should not unmortgage if not mortgaged', function() {
+      assert.throws(function() {
+        prop1.unmortgage();
+      }, Error);
+    });
+  });
+
+  describe('#isMonopoly', function() {
+    it('should be monopoly', function() {
+      assert.ok(prop1.isMonopoly);
+    });
+
+    it('should not be monopoly', function() {
+      var bank = new Player({ token: 'bank' });
+      prop2.transfer(bank);
+      assert.ok(!prop1.isMonopoly);
     });
   });
 
@@ -113,37 +188,27 @@ describe('Property', function() {
     });
     
     it('should return rent with one house', function() {
-      prop1.improve();
+      prop1.buildings = 1;
       assert.equal(prop1.costs.rent[1], prop1.rent);
     });
     
     it('should return rent with two houses', function() {
-      prop1.improve();
-      prop1.improve();
+      prop1.buildings = 2;
       assert.equal(prop1.costs.rent[2], prop1.rent);
     });
     
     it('should return rent with three houses', function() {
-      prop1.improve();
-      prop1.improve();
-      prop1.improve();
+      prop1.buildings = 3;
       assert.equal(prop1.costs.rent[3], prop1.rent);
     });
     
     it('should return rent with four houses', function() {
-      prop1.improve();
-      prop1.improve();
-      prop1.improve();
-      prop1.improve();
+      prop1.buildings = 4;
       assert.equal(prop1.costs.rent[4], prop1.rent);
     });
     
     it('should return rent with one hotel', function() {
-      prop1.improve();
-      prop1.improve();
-      prop1.improve();
-      prop1.improve();
-      prop1.improve();
+      prop1.buildings = 5;
       assert.equal(prop1.costs.rent[5], prop1.rent);
     });
   });

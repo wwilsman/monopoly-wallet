@@ -14,12 +14,18 @@ Todo:
   - [X] Create Property Class
   - [X] Create Player Class
 
+- [ ] Todo:
+
+  Development todos
+
+  - [ ] Property (un)improve to use building caps
+
 - [ ] Tests:
 
   Let's try to do some TDD
 
   - [X] Player tests
-  - [ ] Property tests
+  - [X] Property tests
   - [ ] Config tests
 
 - [ ] Game:
