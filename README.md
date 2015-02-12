@@ -36,7 +36,6 @@ Todo:
 
   - [ ] Write tests for **Monopoly#configure()** and **Monopoly#Error** 
         because I do TDD backwards
-  - [ ] Create "bank" player by default and prevent players from being named "bank"
 
 - [ ] Display:
 

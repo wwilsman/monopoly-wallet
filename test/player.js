@@ -31,10 +31,21 @@ describe('Player', function() {
   afterEach(function() {
     _.emptyObj(Monopoly.properties);
     _.emptyObj(Monopoly.players);
+    Monopoly.players.bank = Monopoly.Bank;
   });
 
-  it('should be created', function() {
+  it('should create new player', function() {
     assert.ok(p1);
+  });
+
+  it('should define "bank" player automatically', function() {
+    assert.ok(Monopoly.Bank);
+  });
+
+  it('should not allow players to be named "bank"', function() {
+    assert.throws(function() {
+      new Monopoly.Player({ name: 'bank' });
+    }, Monopoly.Error);
   });
 
   describe('#buy()', function() {

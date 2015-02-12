@@ -35,6 +35,7 @@ describe('Property', function() {
   afterEach(function() {
     _.emptyObj(Monopoly.players);
     _.emptyObj(Monopoly.properties);
+    Monopoly.players.bank = Monopoly.Bank;
   });
 
   it('should be created', function() {
@@ -69,8 +70,7 @@ describe('Property', function() {
     });
 
     it('should not improve if not monopoly', function() {
-      var bank = new Monopoly.Player({ token: 'bank' });
-      prop2.transfer(bank);
+      prop2.transfer(Monopoly.Bank);
 
       assert.throws(function() {
         prop1.improve();
@@ -196,8 +196,7 @@ describe('Property', function() {
     });
 
     it('should not be monopoly', function() {
-      var bank = new Monopoly.Player({ token: 'bank' });
-      prop2.transfer(bank);
+      prop2.transfer(Monopoly.Bank);
       assert.ok(!prop1.isMonopoly);
     });
   });
@@ -217,8 +216,7 @@ describe('Property', function() {
 
   describe('#rent', function() {
     it('should return unimproved', function() {
-      var bank = new Monopoly.Player({ token: 'bank' });
-      prop2.transfer(bank);
+      prop2.transfer(Monopoly.Bank);
       assert.equal(prop1.costs.rent[0], prop1.rent);
     });
 

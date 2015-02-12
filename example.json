@@ -1,9 +1,5 @@
 {
   "players": [{
-    "name": "bank",
-    "token": "bank",
-    "balance": 9140
-  }, {
     "name": "player 1",
     "token": "dog"
   }, {
@@ -19,7 +15,6 @@
 
   "properties": [{
     "name": "Mediterranean Avenue",
-    "owner": "bank",
     "group": "brown",
     "costs": {
       "price": 60,
@@ -28,7 +23,6 @@
     }
   }, {
     "name": "Baltice Avenue",
-    "owner": "bank",
     "group": "brown",
     "costs": {
       "price": 60,
@@ -37,7 +31,6 @@
     }
   }, {
     "name": "Oriental Avenue",
-    "owner": "bank",
     "group": "light blue",
     "costs": {
       "price": 100,
@@ -46,7 +39,6 @@
     }
   }, {
     "name": "Vermont Avenue",
-    "owner": "bank",
     "group": "light blue",
     "costs": {
       "price": 100,
@@ -55,7 +47,6 @@
     }
   }, {
     "name": "Connecticut Avenue",
-    "owner": "bank",
     "group": "light blue",
     "costs": {
       "price": 120,
@@ -64,7 +55,6 @@
     }
   }, {
     "name": "St. Charles Place",
-    "owner": "bank",
     "group": "megenta",
     "costs": {
       "price": 140,
@@ -73,7 +63,6 @@
     }
   }, {
     "name": "States Avenue",
-    "owner": "bank",
     "group": "megenta",
     "costs": {
       "price": 140,
@@ -82,7 +71,6 @@
     }
   }, {
     "name": "Virginia Avenue",
-    "owner": "bank",
     "group": "megenta",
     "costs": {
       "price": 160,
@@ -91,7 +79,6 @@
     }
   }, {
     "name": "St. James Place",
-    "owner": "bank",
     "group": "orange",
     "costs": {
       "price": 180,
@@ -100,7 +87,6 @@
     }
   }, {
     "name": "Tennessee Avenue",
-    "owner": "bank",
     "group": "orange",
     "costs": {
       "price": 180,
@@ -109,7 +95,6 @@
     }
   }, {
     "name": "New York Avenue",
-    "owner": "bank",
     "group": "orange",
     "costs": {
       "price": 200,
@@ -118,7 +103,6 @@
     }
   }, {
     "name": "Kentucky Avenue",
-    "owner": "bank",
     "group": "red",
     "costs": {
       "price": 220,
@@ -127,7 +111,6 @@
     }
   }, {
     "name": "Indiana Avenue",
-    "owner": "bank",
     "group": "red",
     "costs": {
       "price": 220,
@@ -136,7 +119,6 @@
     }
   }, {
     "name": "Illinois",
-    "owner": "bank",
     "group": "red",
     "costs": {
       "price": 240,
@@ -145,7 +127,6 @@
     }
   }, {
     "name": "Atlantic Avenue",
-    "owner": "bank",
     "group": "yellow",
     "costs": {
       "price": 260,
@@ -154,7 +135,6 @@
     }
   }, {
     "name": "Ventnor Avenue",
-    "owner": "bank",
     "group": "yellow",
     "costs": {
       "price": 260,
@@ -163,7 +143,6 @@
     }
   }, {
     "name": "Marvin Gardens",
-    "owner": "bank",
     "group": "yellow",
     "costs": {
       "price": 280,
@@ -172,7 +151,6 @@
     }
   }, {
     "name": "Pacific Avenue",
-    "owner": "bank",
     "group": "green",
     "costs": {
       "price": 300,
@@ -181,7 +159,6 @@
     }
   }, {
     "name": "North Carolina Avenue",
-    "owner": "bank",
     "group": "green",
     "costs": {
       "price": 300,
@@ -190,7 +167,6 @@
     }
   }, {
     "name": "Pennsylvania Avenue",
-    "owner": "bank",
     "group": "green",
     "costs": {
       "price": 320,
@@ -199,7 +175,6 @@
     }
   }, {
     "name": "Park Place",
-    "owner": "bank",
     "group": "blue",
     "costs": {
       "price": 350,
@@ -208,7 +183,6 @@
     }
   }, {
     "name": "Boardwalk",
-    "owner": "bank",
     "group": "blue",
     "costs": {
       "price": 400,
