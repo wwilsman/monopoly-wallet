@@ -13,10 +13,11 @@ It's operational via the Node CLI!
 user:Monopoly$ node
 > 
 > // require the monopoly test file
-> var M = require('./test/monopoly');
+> var Monopoly = require('./test/monopoly');
 > 
-> // load the example.json config
-> M.configure(JSON.parse(require('fs').readFileSync('example.json')));
+> // create a new game using the example.json config
+> var config = JSON.parse(require('fs').readFileSync('example.json'));
+> var M = new Monopoly.Game(config);
 > 
 > // play a game
 > var p1 = M.Player.get('player 1');
@@ -33,7 +34,7 @@ Todo:
 
   - [ ] Write tests for **Monopoly#configure()** and **Monopoly#Error** 
         because I do TDD backwards
-  - [ ] Create Monopoly Class instead of one Monopoly object.
+  - [ ] Make some things more DRY
 
 - [ ] Server:
 
