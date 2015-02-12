@@ -33,6 +33,7 @@ Todo:
 
   - [ ] Write tests for **Monopoly#configure()** and **Monopoly#Error** 
         because I do TDD backwards
+  - [ ] Create Monopoly Class instead of one Monopoly object.
 
 - [ ] Server:
 

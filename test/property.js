@@ -2,10 +2,11 @@ var assert = require('assert');
 var Monopoly = require('./monopoly');
 
 describe('Property', function() {
-  var prop1, prop2, player;
+  var prop1, prop2, player,
+    M = new Monopoly.Game;
 
   beforeEach(function () {
-    prop1 = new Monopoly.Property({
+    prop1 = new M.Property({
       owner: '1',
       name: 'property 1',
       group: 'group name',
@@ -16,7 +17,7 @@ describe('Property', function() {
       }
     });
 
-    prop2 = new Monopoly.Property({
+    prop2 = new M.Property({
       owner: '1',
       name: 'property 2',
       group: 'group name',
@@ -27,15 +28,15 @@ describe('Property', function() {
       }
     });
 
-    player = new Monopoly.Player({
+    player = new M.Player({
       name: '1'
     });
   });
 
   afterEach(function() {
-    _.emptyObj(Monopoly.players);
-    _.emptyObj(Monopoly.properties);
-    Monopoly.players.bank = Monopoly.Bank;
+    _.emptyObj(M.players);
+    _.emptyObj(M.properties);
+    M.players.bank = M.Bank;
   });
 
   it('should be created', function() {
@@ -52,25 +53,25 @@ describe('Property', function() {
     });
 
     it('should subtract from house building cap', function() {
-      var houses = Monopoly.config.availableHouses;
+      var houses = M.availableHouses;
 
       prop1.improve();
 
-      assert.equal(houses - 1, Monopoly.config.availableHouses);
+      assert.equal(houses - 1, M.availableHouses);
     });
 
     it('should subtract from hotel building cap', function() {
-      var hotels = Monopoly.config.availableHotels;
+      var hotels = M.availableHotels;
 
       prop1.buildings = 4;
       prop2.buildings = 4;
       prop2.improve();
 
-      assert.equal(hotels - 1, Monopoly.config.availableHotels);
+      assert.equal(hotels - 1, M.availableHotels);
     });
 
     it('should not improve if not monopoly', function() {
-      prop2.transfer(Monopoly.Bank);
+      prop2.transfer(M.Bank);
 
       assert.throws(function() {
         prop1.improve();
@@ -112,20 +113,20 @@ describe('Property', function() {
       var houses;
 
       prop1.improve();
-      houses = Monopoly.config.availableHouses;
+      houses = M.availableHouses;
       prop1.unimprove();
 
-      assert.equal(houses + 1, Monopoly.config.availableHouses);
+      assert.equal(houses + 1, M.availableHouses);
     });
 
     it('should add to hotel building cap', function() {
-      var hotels = Monopoly.config.availableHotels;
+      var hotels = M.availableHotels;
 
       prop1.buildings = 5;
       prop2.buildings = 5;
       prop2.unimprove();
 
-      assert.equal(hotels + 1, Monopoly.config.availableHotels);
+      assert.equal(hotels + 1, M.availableHotels);
     });
 
     it('should not unimprove if already unimproved', function() {
@@ -196,7 +197,7 @@ describe('Property', function() {
     });
 
     it('should not be monopoly', function() {
-      prop2.transfer(Monopoly.Bank);
+      prop2.transfer(M.Bank);
       assert.ok(!prop1.isMonopoly);
     });
   });
@@ -216,7 +217,7 @@ describe('Property', function() {
 
   describe('#rent', function() {
     it('should return unimproved', function() {
-      prop2.transfer(Monopoly.Bank);
+      prop2.transfer(M.Bank);
       assert.equal(prop1.costs.rent[0], prop1.rent);
     });
 

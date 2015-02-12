@@ -2,10 +2,11 @@ var assert = require('assert');
 var Monopoly = require('./monopoly');
 
 describe('Player', function() {
-  var p1, p2, prop;
+  var p1, p2, prop,
+    M = new Monopoly.Game;
 
   beforeEach(function () {
-    prop = new Monopoly.Property({
+    prop = new M.Property({
       owner: '1',
       name: 'property name',
       group: 'group name',
@@ -16,22 +17,22 @@ describe('Player', function() {
       }
     });
 
-    p1 = new Monopoly.Player({
+    p1 = new M.Player({
       name: '1',
       assets: {
         jailcard: 1
       }
     });
 
-    p2 = new Monopoly.Player({
+    p2 = new M.Player({
       name: '2',
     });
   });
 
   afterEach(function() {
-    _.emptyObj(Monopoly.properties);
-    _.emptyObj(Monopoly.players);
-    Monopoly.players.bank = Monopoly.Bank;
+    _.emptyObj(M.properties);
+    _.emptyObj(M.players);
+    M.players.bank = M.Bank;
   });
 
   it('should create new player', function() {
@@ -39,12 +40,12 @@ describe('Player', function() {
   });
 
   it('should define "bank" player automatically', function() {
-    assert.ok(Monopoly.Bank);
+    assert.ok(M.Bank);
   });
 
   it('should not allow players to be named "bank"', function() {
     assert.throws(function() {
-      new Monopoly.Player({ name: 'bank' });
+      new M.Player({ name: 'bank' });
     }, Monopoly.Error);
   });
 
