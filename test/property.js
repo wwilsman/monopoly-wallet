@@ -74,7 +74,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.improve();
-      }, Error);
+      }, Monopoly.Error.MonopolyError);
     });
 
     it('should not improve if fully improved', function() {
@@ -83,7 +83,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.improve();
-      }, Error);
+      }, Monopoly.Error.FullImprovementError);
     });
 
     it('should not improve unevenly', function() {
@@ -91,7 +91,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.improve();
-      }, Error);
+      }, Monopoly.Error.BuildEvenlyError);
     });
   });
 
@@ -131,7 +131,7 @@ describe('Property', function() {
     it('should not unimprove if already unimproved', function() {
       assert.throws(function() {
         prop1.unimprove();
-      }, Error);
+      }, Monopoly.Error.UnimprovementError);
     });
 
     it('should not unimprove unevenly', function() {
@@ -140,7 +140,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.unimprove();
-      }, Error);
+      }, Monopoly.Error.BuildEvenlyError);
     });
   });
 
@@ -158,7 +158,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.mortgage();
-      }, Error);
+      }, Monopoly.Error.MortgageError);
     });
 
     it('should not mortgage if property is improved', function() {
@@ -166,7 +166,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.mortgage();
-      }, Error);
+      }, Monopoly.Error.ImprovementError);
     });
   });
 
@@ -186,7 +186,7 @@ describe('Property', function() {
     it('should not unmortgage if not mortgaged', function() {
       assert.throws(function() {
         prop1.unmortgage();
-      }, Error);
+      }, Monopoly.Error.UnmortgageError);
     });
   });
 

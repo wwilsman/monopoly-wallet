@@ -92,20 +92,20 @@ describe('Player', function() {
     it('should not transfer currency if low balance', function() {
       assert.throws(function() {
         p1.transfer(p2, p1.balance + 1);
-      }, Error);
+      }, Monopoly.Error.LowBalanceError);
     });
 
     it('should not transfer property if improved', function() {
       assert.throws(function() {
         p1.improve(prop);
         p1.transfer(p1, prop);
-      }, Error);
+      }, Monopoly.Error.ImprovedError);
     });
 
     it('should not transfer an asset if there is none', function() {
       assert.throws(function() {
         p2.transfer(p1, 'jailcard');
-      }, Error);
+      }, Monopoly.Error.OwnerError);
     });
   });
 
@@ -129,14 +129,14 @@ describe('Player', function() {
     it('should not improve if not player\'s property', function() {
       assert.throws(function() {
         p2.improve(prop);
-      }, Error);
+      }, Monopoly.Error.OwnerError);
     });
 
     it('should not improve if low balance', function() {
       assert.throws(function() {
         p1.balance = 1;
         p1.improve(prop);
-      }, Error);
+      }, Monopoly.Error.LowBalanceError);
     });
   });
 
@@ -163,7 +163,7 @@ describe('Player', function() {
       assert.throws(function() {
         p1.improve(prop);
         p2.unimprove(prop);
-      }, Error);
+      }, Monopoly.Error.OwnerError);
     });
   });
 
@@ -187,7 +187,7 @@ describe('Player', function() {
     it('should not mortgage if not player\'s property', function() {
       assert.throws(function() {
         p2.mortgage(prop);
-      }, Error);
+      }, Monopoly.Error.OwnerError);
     });
   });
 
@@ -219,7 +219,7 @@ describe('Player', function() {
 
       assert.throws(function() {
         p2.unmortgage(prop);
-      }, Error);
+      }, Monopoly.Error.OwnerError);
     });
 
     it('should not unmortgage if low balance', function() {
@@ -228,7 +228,7 @@ describe('Player', function() {
 
       assert.throws(function() {
         p1.unmortgage(prop);
-      }, Error);
+      }, Monopoly.Error.LowBalanceError);
     });
   });
 

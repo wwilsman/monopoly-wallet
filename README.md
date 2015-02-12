@@ -34,9 +34,11 @@ Todo:
 
 - [ ] Development (removed as they're completed)
 
-  - [ ] Write tests for *Config* because I do TDD backwards
+  - [ ] Write tests for **Monopoly#configure()** and **Monopoly#Error** 
+        because I do TDD backwards
   - [ ] Create "bank" player by default and prevent players from being named "bank"
-  - [ ] *Player#buy(**propName**[, **amount**])*
+  - [ ] Bankrupting a player should never error
+  - [ ] **Player#buy(*propName*[, *amount*])**
 
 - [ ] Display:
 
