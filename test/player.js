@@ -1,16 +1,11 @@
 var assert = require('assert');
-var fs = require('fs');
-
-eval(fs.readFileSync('./lib/utilities.js').toString());
-eval(fs.readFileSync('./lib/Config.js').toString());
-eval(fs.readFileSync('./lib/Property.js').toString());
-eval(fs.readFileSync('./lib/Player.js').toString());
+var Monopoly = require('./monopoly');
 
 describe('Player', function() {
   var p1, p2, prop;
 
   beforeEach(function () {
-    prop = new Property({
+    prop = new Monopoly.Property({
       owner: '1',
       name: 'property name',
       group: 'group name',
@@ -21,21 +16,21 @@ describe('Player', function() {
       }
     });
 
-    p1 = new Player({
+    p1 = new Monopoly.Player({
       name: '1',
       assets: {
         jailcard: 1
       }
     });
 
-    p2 = new Player({
+    p2 = new Monopoly.Player({
       name: '2',
     });
   });
 
   afterEach(function() {
-    _.emptyObj(Property.collection);
-    _.emptyObj(Player.collection);
+    _.emptyObj(Monopoly.properties);
+    _.emptyObj(Monopoly.players);
   });
 
   it('should be created', function() {
