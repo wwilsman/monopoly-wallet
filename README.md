@@ -18,13 +18,10 @@ user:Monopoly$ node
 > // load the example.json config
 > M.configure(JSON.parse(require('fs').readFileSync('example.json')));
 > 
-> // play a game (the bank owns all of the properties to start)
-> var bank = M.Player.get('bank');
+> // play a game
 > var p1 = M.Player.get('player 1');
-> var oriental = M.Property.get('Oriental Avenue');
 >
-> p1.transfer(bank, oriental.costs.price);
-> bank.transfer(p1, oriental);
+> p1.buy('Oriental Avenue');
 > 
 ```
 
@@ -36,6 +33,15 @@ Todo:
 
   - [ ] Write tests for **Monopoly#configure()** and **Monopoly#Error** 
         because I do TDD backwards
+
+- [ ] Server:
+
+  - [ ] Different games are hosted under short codes
+  - [ ] Each player has a unique url and password
+  - [ ] Websockets send live updates to other players
+  - [ ] Ask players for confirmation on some actions
+  - [ ] Accepts a configuration object to start a game
+  - [ ] Themes
 
 - [ ] Display:
 
