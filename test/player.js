@@ -260,7 +260,7 @@ describe('Player', function() {
     it('should bankrupt player', function() {
       assert.ok(!p1.isBankrupt);
 
-      p1.bankrupt(p2);
+      p2.bankrupt(p1);
 
       assert.ok(p1.isBankrupt);
     });
@@ -268,9 +268,24 @@ describe('Player', function() {
     it('should mortgage properties', function() {
       assert.ok(!prop.isMortgaged);
 
-      p1.bankrupt(p2);
+      p1.improve(prop);
+      p2.bankrupt(p1);
 
       assert.ok(prop.isMortgaged);
+    });
+
+    it('should tranfer everything to beneficiary', function() {
+      var b1 = p1.balance;
+      var b2 = p2.balance;
+
+      assert.equal(prop.owner, p1);
+      assert.ok(p1.assets.jailcard);
+
+      p2.bankrupt(p1);
+
+      assert.equal(prop.owner, p2);
+      assert.ok(p2.assets.jailcard);
+      assert.equal(b1 + b2 + prop.values.mortgage, p2.balance);
     });
   });
 
