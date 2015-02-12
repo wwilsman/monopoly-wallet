@@ -11,7 +11,7 @@ describe('Player', function() {
       group: 'group name',
       costs: {
         price: 60,
-        building: 50,
+        build: 50,
         rent: [0, 1, 2, 3, 4, 5]
       }
     });
@@ -123,7 +123,7 @@ describe('Player', function() {
 
       p1.improve(prop);
 
-      assert.equal(balance - prop.costs.building, p1.balance);
+      assert.equal(balance - prop.costs.build, p1.balance);
     });
 
     it('should not improve if not player\'s property', function() {

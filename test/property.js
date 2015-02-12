@@ -11,7 +11,7 @@ describe('Property', function() {
       group: 'group name',
       costs: {
         price: 60,
-        building: 50,
+        build: 50,
         rent: [0, 1, 2, 3, 4, 5]
       }
     });
@@ -22,7 +22,7 @@ describe('Property', function() {
       group: 'group name',
       costs: {
         price: 60,
-        building: 50,
+        build: 50,
         rent: [0, 1, 2, 3, 4, 5]
       }
     });
