@@ -38,7 +38,6 @@ Todo:
         because I do TDD backwards
   - [ ] Create "bank" player by default and prevent players from being named "bank"
   - [ ] Bankrupting a player should never error
-  - [ ] **Player#buy(*propName*[, *amount*])**
 
 - [ ] Display:
 

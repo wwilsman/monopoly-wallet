@@ -37,6 +37,30 @@ describe('Player', function() {
     assert.ok(p1);
   });
 
+  describe('#buy()', function() {
+    it('should buy named property from another player', function() {
+      assert.equal(prop.owner, p1);
+
+      p2.buy(prop.name);
+
+      assert.equal(prop.owner, p2);
+    });
+
+    it('should not buy if player balance is low', function() {
+      assert.throws(function() {
+        p2.buy(prop.name, p2.balance + 1);
+      }, Monopoly.Error.LowBalanceError)
+    });
+
+    it('should not buy property if improved', function() {
+      p1.improve(prop);
+
+      assert.throws(function() {
+        p2.buy(prop.name);
+      }, Monopoly.Error.ImprovementError)
+    });
+  });
+
   describe('#transfer()', function() {
     it('should transfer currency', function() {
       var amount = 25;
@@ -99,7 +123,7 @@ describe('Player', function() {
       assert.throws(function() {
         p1.improve(prop);
         p1.transfer(p1, prop);
-      }, Monopoly.Error.ImprovedError);
+      }, Monopoly.Error.ImprovementError);
     });
 
     it('should not transfer an asset if there is none', function() {
