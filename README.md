@@ -32,9 +32,7 @@ Todo:
 
 - [ ] Development (removed as they're completed)
 
-  - [ ] Write tests for **Monopoly#configure()** and **Monopoly#Error** 
-        because I do TDD backwards
-  - [ ] Make some things more DRY
+  - [ ] Write tests for **Monopoly#Error** because I do TDD backwards
 
 - [ ] Server:
 
