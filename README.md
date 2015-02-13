@@ -32,11 +32,9 @@ Todo:
 
 - [ ] Development (removed as they're completed)
 
-  - [ ] Write tests for **Monopoly#Error** because I do TDD backwards
-
 - [ ] Server:
 
-  - [ ] Different games are hosted under short codes
+  - [X] Different games are hosted under short codes
   - [ ] Each player has a unique url and password
   - [ ] Websockets send live updates to other players
   - [ ] Ask players for confirmation on some actions

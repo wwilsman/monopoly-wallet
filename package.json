@@ -2,7 +2,7 @@
   "name": "Monopoly",
   "version": "1.0.0",
   "description": "Monopoly Asset Manager",
-  "main": "lib/main.js",
+  "main": "app.js",
   "scripts": {
     "test": "mocha"
   },
@@ -10,5 +10,10 @@
   "license": "MIT",
   "devDependencies": {
     "mocha": "^2.1.0"
+  },
+  "dependencies": {
+    "express": "^4.11.2",
+    "hbs": "^2.8.0",
+    "socket.io": "^1.3.3"
   }
 }
