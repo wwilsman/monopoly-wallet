@@ -30,22 +30,14 @@ user:Monopoly$ node
 Todo:
 -----
 
-- [ ] Development (removed as they're completed)
-
-- [ ] Server:
-
-  - [X] Different games are hosted under short codes
-  - [ ] Each player has a unique url and password
-  - [ ] Websockets send live updates to other players
-  - [ ] Ask players for confirmation on some actions
-  - [ ] Accepts a configuration object to start a game
-  - [ ] Themes
-
-- [ ] Display:
-
-  How the final app will look
-
-  - [ ] Properties
-  - [ ] Assets
-  - [ ] Bank
-  - [ ] Overview
+- [ ] Remove Game caching and use a database instead
+- [ ] Retrieve games at specific URLs
+- [ ] Creating a new game
+- [ ] Themes
+- [ ] Adding players to a game
+- [ ] Players are associated with their URL
+- [ ] When not logged in, can only view player overview
+- [ ] When logged in, can alter own assets
+- [ ] Recieving and Sending actions
+- [ ] Confirming actions
+- [ ] Front-End
