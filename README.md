@@ -30,9 +30,10 @@ user:Monopoly$ node
 Todo:
 -----
 
-- [ ] Remove Game caching and use a database instead
-- [ ] Retrieve games at specific URLs
+- [X] Remove Game caching
+- [X] Retrieve games at specific URLs
 - [ ] Creating a new game
+- [ ] Set up database
 - [ ] Themes
 - [ ] Adding players to a game
 - [ ] Players are associated with their URL
