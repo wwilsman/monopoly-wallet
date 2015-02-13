@@ -20,7 +20,7 @@ user:Monopoly$ node
 > var M = new Game(config);
 > 
 > // play a game
-> var p1 = M.Player.get('player 1');
+> var p1 = M.Player.get('Player 1');
 >
 > p1.buy('Oriental Avenue');
 > 
@@ -32,13 +32,22 @@ Todo:
 
 - [X] Remove Game caching
 - [X] Retrieve games at specific URLs
-- [ ] Creating a new game
-- [ ] Set up database
-- [ ] Themes
+- [X] Creating a new game
+- [X] Set up database
 - [ ] Adding players to a game
 - [ ] Players are associated with their URL
-- [ ] When not logged in, can only view player overview
-- [ ] When logged in, can alter own assets
+- [ ] Authenticating players
 - [ ] Recieving and Sending actions
 - [ ] Confirming actions
 - [ ] Front-End
+
+
+Setting up the Database
+-----------------------
+
+- Install MongoDB
+- `mkdir data`
+- `mongod --dbpath data`
+- `mongo`
+  - `use monopoly`
+  - `db.games.insert({ /* ... example.json */ })`

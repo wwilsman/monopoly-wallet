@@ -4,7 +4,8 @@
   "description": "Monopoly Asset Manager",
   "main": "app.js",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha",
+    "start": "node app.js"
   },
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
@@ -14,6 +15,7 @@
   "dependencies": {
     "express": "^4.11.2",
     "hbs": "^2.8.0",
+    "mongodb": "^1.4.30",
     "socket.io": "^1.3.3"
   }
 }

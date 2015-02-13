@@ -1,5 +1,8 @@
 var MonopolyGame = require('./lib/main');
-var Provider = require('./provider.js');
+
+var Mongo = require('mongodb');
+var dbserver = new Mongo.Server('localhost', 27017, { auto_reconnect: true }, {});
+var db = new Mongo.Db('monopoly', dbserver);
 
 module.exports = function(app, io) {
 
@@ -7,11 +10,19 @@ module.exports = function(app, io) {
     res.render('index', { title: 'Monopoly' });
   });
 
-  var provider = new Provider;
+  db.open(function(){});
+  var games = db.collection('games');
 
-  app.get('/:id', function(req, res) {
-    provider.findById(req.params.id, function(error, config) {
-      res.send(config);
+  app.post('/new', function(req, res) {
+    var game = new MonopolyGame(req.params.config)
+    games.insert(game, function(error, doc) {
+      res.redirect('/' + game._id);
+    });
+  });
+
+  app.get('/:_id', function(req, res) {
+    games.findOne(req.params, function(error, doc) {
+      res.send(doc);
     });
   });
 
