@@ -34,6 +34,8 @@ Todo:
 - [X] Retrieve games at specific URLs
 - [X] Creating a new game
 - [X] Set up database
+- [ ] Create game id during database insert 
+- [ ] More advanced database operations such as `#find()` + `#limit()`
 - [ ] Adding players to a game
 - [ ] Players are associated with their URL
 - [ ] Authenticating players
