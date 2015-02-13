@@ -1,5 +1,6 @@
 var assert = require('assert');
-var Monopoly = require('./monopoly');
+var _ = require('../lib/helpers');
+var MonopolyGame = require('../lib/main');
 
 var exconfig = JSON.parse(require('fs').readFileSync('./example.json'));
 
@@ -11,14 +12,14 @@ describe('Game', function() {
   });
 
   it('should create a new game and cache it', function() {
-    var M = new Monopoly.Game;
+    var M = new MonopolyGame;
 
     assert.ok(M);
-    assert.equal(M, Monopoly.games[M.id]);
+    assert.equal(M, MonopolyGame.get(M.id));
   });
 
   it('should create player and property instances', function() {
-    var M = new Monopoly.Game(config);
+    var M = new MonopolyGame(config);
 
     assert.ok(M.Player.get('player 1') instanceof M.Player);
     assert.ok(M.Property.get('Oriental Avenue') instanceof M.Property);
@@ -27,7 +28,7 @@ describe('Game', function() {
   it('should start players with custom balance', function() {
     config.startBalance = 1;
 
-    var M = new Monopoly.Game(config);
+    var M = new MonopolyGame(config);
 
     assert.equal(1, M.Player.get('player 1').balance);
   });
@@ -35,7 +36,7 @@ describe('Game', function() {
   it('should start bank with custom balance', function() {
     config.bankBalance = 1;
 
-    var M = new Monopoly.Game(config);
+    var M = new MonopolyGame(config);
 
     assert.equal(1, M.Bank.balance);
   });
@@ -44,7 +45,7 @@ describe('Game', function() {
     config.availableHouses = 1;
     config.availableHotels = 1;
 
-    var M = new Monopoly.Game(config);
+    var M = new MonopolyGame(config);
 
     assert.equal(1, M.availableHouses);
     assert.equal(1, M.availableHotels);
@@ -54,7 +55,7 @@ describe('Game', function() {
     config.rates = { mortgage: 0, unmortgage: 1, building: 0 };
     config.properties[0].costs.price = 100;
 
-    var M = new Monopoly.Game(config);
+    var M = new MonopolyGame(config);
     var prop = M.Property.get(config.properties[0].name);
 
     assert.equal(0, prop.values.mortgage);

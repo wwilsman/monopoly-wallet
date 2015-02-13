@@ -12,12 +12,12 @@ It's operational via the Node CLI!
 ```bash
 user:Monopoly$ node
 > 
-> // require the monopoly test file
-> var Monopoly = require('./test/monopoly');
+> // require monopoly
+> var Game = require('./lib/main');
 > 
 > // create a new game using the example.json config
 > var config = JSON.parse(require('fs').readFileSync('example.json'));
-> var M = new Monopoly.Game(config);
+> var M = new Game(config);
 > 
 > // play a game
 > var p1 = M.Player.get('player 1');

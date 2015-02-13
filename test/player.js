@@ -1,9 +1,11 @@
 var assert = require('assert');
-var Monopoly = require('./monopoly');
+var _ = require('../lib/helpers');
+var MonopolyGame = require('../lib/main');
+var MonopolyError = require('../lib/error');
 
 describe('Player', function() {
   var p1, p2, prop,
-    M = new Monopoly.Game;
+    M = new MonopolyGame;
 
   beforeEach(function () {
     prop = new M.Property({
@@ -46,7 +48,7 @@ describe('Player', function() {
   it('should not allow players to be named "bank"', function() {
     assert.throws(function() {
       new M.Player({ name: 'bank' });
-    }, Monopoly.Error);
+    }, MonopolyError);
   });
 
   describe('#buy()', function() {
@@ -61,7 +63,7 @@ describe('Player', function() {
     it('should not buy if player balance is low', function() {
       assert.throws(function() {
         p2.buy(prop.name, p2.balance + 1);
-      }, Monopoly.Error.LowBalanceError)
+      }, MonopolyError.LowBalanceError)
     });
 
     it('should not buy property if improved', function() {
@@ -69,7 +71,7 @@ describe('Player', function() {
 
       assert.throws(function() {
         p2.buy(prop.name);
-      }, Monopoly.Error.ImprovementError)
+      }, MonopolyError.ImprovementError)
     });
   });
 
@@ -128,20 +130,20 @@ describe('Player', function() {
     it('should not transfer currency if low balance', function() {
       assert.throws(function() {
         p1.transfer(p2, p1.balance + 1);
-      }, Monopoly.Error.LowBalanceError);
+      }, MonopolyError.LowBalanceError);
     });
 
     it('should not transfer property if improved', function() {
       assert.throws(function() {
         p1.improve(prop);
         p1.transfer(p1, prop);
-      }, Monopoly.Error.ImprovementError);
+      }, MonopolyError.ImprovementError);
     });
 
     it('should not transfer an asset if there is none', function() {
       assert.throws(function() {
         p2.transfer(p1, 'jailcard');
-      }, Monopoly.Error.OwnerError);
+      }, MonopolyError.OwnerError);
     });
   });
 
@@ -165,14 +167,14 @@ describe('Player', function() {
     it('should not improve if not player\'s property', function() {
       assert.throws(function() {
         p2.improve(prop);
-      }, Monopoly.Error.OwnerError);
+      }, MonopolyError.OwnerError);
     });
 
     it('should not improve if low balance', function() {
       assert.throws(function() {
         p1.balance = 1;
         p1.improve(prop);
-      }, Monopoly.Error.LowBalanceError);
+      }, MonopolyError.LowBalanceError);
     });
   });
 
@@ -199,7 +201,7 @@ describe('Player', function() {
       assert.throws(function() {
         p1.improve(prop);
         p2.unimprove(prop);
-      }, Monopoly.Error.OwnerError);
+      }, MonopolyError.OwnerError);
     });
   });
 
@@ -223,7 +225,7 @@ describe('Player', function() {
     it('should not mortgage if not player\'s property', function() {
       assert.throws(function() {
         p2.mortgage(prop);
-      }, Monopoly.Error.OwnerError);
+      }, MonopolyError.OwnerError);
     });
   });
 
@@ -255,7 +257,7 @@ describe('Player', function() {
 
       assert.throws(function() {
         p2.unmortgage(prop);
-      }, Monopoly.Error.OwnerError);
+      }, MonopolyError.OwnerError);
     });
 
     it('should not unmortgage if low balance', function() {
@@ -264,7 +266,7 @@ describe('Player', function() {
 
       assert.throws(function() {
         p1.unmortgage(prop);
-      }, Monopoly.Error.LowBalanceError);
+      }, MonopolyError.LowBalanceError);
     });
   });
 

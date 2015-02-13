@@ -2,7 +2,7 @@
   "name": "Monopoly",
   "version": "1.0.0",
   "description": "Monopoly Asset Manager",
-  "main": "index.js",
+  "main": "lib/main.js",
   "scripts": {
     "test": "mocha"
   },

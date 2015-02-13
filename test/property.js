@@ -1,9 +1,11 @@
 var assert = require('assert');
-var Monopoly = require('./monopoly');
+var _ = require('../lib/helpers');
+var MonopolyGame = require('../lib/main');
+var MonopolyError = require('../lib/error');
 
 describe('Property', function() {
   var prop1, prop2, player,
-    M = new Monopoly.Game;
+    M = new MonopolyGame;
 
   beforeEach(function () {
     prop1 = new M.Property({
@@ -75,7 +77,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.improve();
-      }, Monopoly.Error.MonopolyError);
+      }, MonopolyError.MonopolyError);
     });
 
     it('should not improve if fully improved', function() {
@@ -84,7 +86,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.improve();
-      }, Monopoly.Error.FullImprovementError);
+      }, MonopolyError.FullImprovementError);
     });
 
     it('should not improve unevenly', function() {
@@ -92,7 +94,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.improve();
-      }, Monopoly.Error.BuildEvenlyError);
+      }, MonopolyError.BuildEvenlyError);
     });
   });
 
@@ -132,7 +134,7 @@ describe('Property', function() {
     it('should not unimprove if already unimproved', function() {
       assert.throws(function() {
         prop1.unimprove();
-      }, Monopoly.Error.UnimprovementError);
+      }, MonopolyError.UnimprovementError);
     });
 
     it('should not unimprove unevenly', function() {
@@ -141,7 +143,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.unimprove();
-      }, Monopoly.Error.BuildEvenlyError);
+      }, MonopolyError.BuildEvenlyError);
     });
   });
 
@@ -159,7 +161,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.mortgage();
-      }, Monopoly.Error.MortgageError);
+      }, MonopolyError.MortgageError);
     });
 
     it('should not mortgage if property is improved', function() {
@@ -167,7 +169,7 @@ describe('Property', function() {
 
       assert.throws(function() {
         prop1.mortgage();
-      }, Monopoly.Error.ImprovementError);
+      }, MonopolyError.ImprovementError);
     });
   });
 
@@ -187,7 +189,7 @@ describe('Property', function() {
     it('should not unmortgage if not mortgaged', function() {
       assert.throws(function() {
         prop1.unmortgage();
-      }, Monopoly.Error.UnmortgageError);
+      }, MonopolyError.UnmortgageError);
     });
   });
 
