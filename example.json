@@ -1,5 +1,4 @@
 {
-  "_id": "test",
   "players": [{
     "name": "Player 1",
     "token": "dog"
