@@ -1,11 +1,11 @@
 {
   "name": "Monopoly",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Monopoly Asset Manager",
-  "main": "app.js",
+  "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "start": "node app.js"
+    "start": "node index.js"
   },
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
@@ -14,8 +14,6 @@
   },
   "dependencies": {
     "express": "^4.11.2",
-    "hbs": "^2.8.0",
-    "mongodb": "^1.4.30",
     "socket.io": "^1.3.3"
   }
 }
