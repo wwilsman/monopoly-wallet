@@ -1,16 +1,16 @@
 {
   "_id": "test",
   "players": [{
-    "name": "player 1",
+    "name": "Player 1",
     "token": "dog"
   }, {
-    "name": "player 2",
+    "name": "Player 2",
     "token": "cat"
   }, {
-    "name": "player 3",
+    "name": "Player 3",
     "token": "car"
   }, {
-    "name": "player 4",
+    "name": "Player 4",
     "token": "top hat"
   }],
 

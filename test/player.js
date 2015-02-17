@@ -34,7 +34,7 @@ describe('Player', function() {
   afterEach(function() {
     _.emptyObj(M.properties);
     _.emptyObj(M.players);
-    M.players.bank = M.Bank;
+    M.players[0] = M.Bank;
   });
 
   it('should create new player', function() {
@@ -49,30 +49,6 @@ describe('Player', function() {
     assert.throws(function() {
       new M.Player({ name: 'bank' });
     }, MonopolyError);
-  });
-
-  describe('#buy()', function() {
-    it('should buy named property from another player', function() {
-      assert.equal(prop.owner, p1);
-
-      p2.buy(prop.name);
-
-      assert.equal(prop.owner, p2);
-    });
-
-    it('should not buy if player balance is low', function() {
-      assert.throws(function() {
-        p2.buy(prop.name, p2.balance + 1);
-      }, MonopolyError.LowBalanceError)
-    });
-
-    it('should not buy property if improved', function() {
-      p1.improve(prop);
-
-      assert.throws(function() {
-        p2.buy(prop.name);
-      }, MonopolyError.ImprovementError)
-    });
   });
 
   describe('#transfer()', function() {
@@ -311,7 +287,7 @@ describe('Player', function() {
 
   describe('#properties', function() {
     it('should contain properties owned by player', function() {
-      assert.ok(p1.properties[prop.name]);
+      assert.notEqual(-1, p1.properties.indexOf(prop));
     });
   });
 });

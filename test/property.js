@@ -38,7 +38,7 @@ describe('Property', function() {
   afterEach(function() {
     _.emptyObj(M.players);
     _.emptyObj(M.properties);
-    M.players.bank = M.Bank;
+    M.players[0] = M.Bank;
   });
 
   it('should be created', function() {

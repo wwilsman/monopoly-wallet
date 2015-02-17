@@ -21,8 +21,9 @@ user:Monopoly$ node
 > 
 > // play a game
 > var p1 = M.Player.get('Player 1');
+> var p2 = M.Player.get('Player 2');
 >
-> p1.buy('Oriental Avenue');
+> p1.transfer(p2, M.Property.get('Oriental Avenue'));
 > 
 ```
 
@@ -30,26 +31,10 @@ user:Monopoly$ node
 Todo:
 -----
 
-- [X] Remove Game caching
-- [X] Retrieve games at specific URLs
-- [X] Creating a new game
-- [X] Set up database
-- [ ] Create game id during database insert 
-- [ ] More advanced database operations such as `#find()` + `#limit()`
-- [ ] Adding players to a game
-- [ ] Players are associated with their URL
-- [ ] Authenticating players
-- [ ] Recieving and Sending actions
-- [ ] Confirming actions
+- [ ] Create a game
+- [ ] Retrieve a game
+- [ ] Set up database
+- [ ] Add player to a game
+- [ ] Authenticate player
+- [ ] Events
 - [ ] Front-End
-
-
-Setting up the Database
------------------------
-
-- Install MongoDB
-- `mkdir data`
-- `mongod --dbpath data`
-- `mongo`
-  - `use monopoly`
-  - `db.games.insert({ /* ... example.json */ })`
