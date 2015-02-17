@@ -32,9 +32,8 @@ describe('Player', function() {
   });
 
   afterEach(function() {
-    _.emptyObj(M.properties);
-    _.emptyObj(M.players);
-    M.players[0] = M.Bank;
+    M.properties.length = 0;
+    M.players.length = 1;
   });
 
   it('should create new player', function() {

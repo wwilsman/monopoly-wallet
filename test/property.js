@@ -36,9 +36,8 @@ describe('Property', function() {
   });
 
   afterEach(function() {
-    _.emptyObj(M.players);
-    _.emptyObj(M.properties);
-    M.players[0] = M.Bank;
+    M.properties.length = 0;
+    M.players.length = 1;
   });
 
   it('should be created', function() {
