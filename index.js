@@ -17,9 +17,13 @@ var mio     = require('./lib/monopoly-io')(io.of('/game'));
 
 // Routes
 
-app.get('/', function(req, res) {
-  res.send('monopoly server');
-});
+var routes  = require('./routes');
+
+for (var route in routes) {
+  for (var method in routes[route]) {
+    app[method](route, routes[route][method]);
+  }
+}
 
 // Events
 
