@@ -5,7 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "start": "node index.js"
+    "start": "node --harmony index.js"
+  },
+  "engines": {
+    "iojs": "1.2.x"
   },
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
