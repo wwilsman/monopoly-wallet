@@ -1,5 +1,5 @@
-var assert = require('assert');
-var MonopolyGame = require('../lib/main');
+var MonopolyGame = require('../lib/monopoly-game');
+var assert       = require('assert');
 
 describe('Game', function() {
   it('should create a new game', function() {

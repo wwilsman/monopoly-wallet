@@ -1,7 +1,6 @@
-var assert = require('assert');
-var _ = require('../lib/helpers');
-var MonopolyGame = require('../lib/main');
-var MonopolyError = require('../lib/error');
+var MonopolyGame  = require('../lib/monopoly-game');
+var MonopolyError = require('../lib/monopoly-error');
+var assert        = require('assert');
 
 describe('Property', function() {
   var prop1, prop2, player,

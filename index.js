@@ -4,7 +4,7 @@ var app     = express();
 
 var server  = app.listen(process.env.PORT || 8080);
 var io      = require('socket.io').listen(server);
-var mio     = require('./monopoly-io')(io);
+var mio     = require('./lib/monopoly-io')(io.of('/game'));
 
 
 // Configuration
@@ -25,8 +25,8 @@ app.get('/', function(req, res) {
 
 io.of('/game').on('connection', function(socket) {
 
-  socket.on('join', function(game_id) {
-    mio.init(game_id, socket);
+  socket.on('join', function(gameId) {
+    mio.init(gameId, socket);
   });
 
 });

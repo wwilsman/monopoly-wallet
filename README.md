@@ -37,4 +37,4 @@ Todo:
 - [ ] Add player to a game
 - [ ] Authenticate player
 - [ ] Events
-- [ ] Front-End
+- [ ] Design
