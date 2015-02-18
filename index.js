@@ -3,8 +3,8 @@ var express = require('express');
 var app     = express();
 
 var server  = app.listen(process.env.PORT || 8080);
-var io      = require('socket.io').listen(server);
-var mio     = require('./lib/monopoly-io')(io.of('/game'));
+var io      = require('socket.io').listen(server).of('/game');
+var mio     = require('./lib/monopoly-io')(io);
 
 
 // Configuration
@@ -17,17 +17,12 @@ var mio     = require('./lib/monopoly-io')(io.of('/game'));
 
 // Routes
 
-var routes  = require('./routes');
+app.use('/', require('./routes'));
 
-for (var route in routes) {
-  for (var method in routes[route]) {
-    app[method](route, routes[route][method]);
-  }
-}
 
 // Events
 
-io.of('/game').on('connection', function(socket) {
+io.on('connection', function(socket) {
 
   socket.on('join', function(gameId) {
     mio.init(gameId, socket);
