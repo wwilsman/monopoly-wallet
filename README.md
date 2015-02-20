@@ -33,8 +33,15 @@ Todo:
 
 - [ ] Create a game
 - [ ] Retrieve a game
-- [ ] Set up database
 - [ ] Add player to a game
 - [ ] Authenticate player
 - [ ] Events
 - [ ] Design
+
+
+Database Setup
+--------------
+
+- Install Mongodb
+- `mkdir data`
+- `mongod --dbpath=data --port 27017`

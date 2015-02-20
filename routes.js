@@ -1,4 +1,5 @@
 var router = require('express').Router();
+var db;
 
 // Static Routes
 // -------------
@@ -177,4 +178,8 @@ router.use(function(err, req, res, next) {
 });
 
 
-module.exports = router;
+// export a function to access the database
+module.exports = function(database) {
+  db = database;
+  return router;
+};
