@@ -31,10 +31,11 @@ user:Monopoly$ node
 Todo:
 -----
 
-- [ ] Create a game
-- [ ] Retrieve a game
-- [ ] Add player to a game
+- [X] Create a game
+- [X] Retrieve a game
 - [ ] Authenticate player
+- [ ] Invite player
+- [ ] Create player
 - [ ] Events
 - [ ] Design
 

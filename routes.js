@@ -1,5 +1,7 @@
 var router = require('express').Router();
-var db;
+var games;
+
+var urlencodedParser = require('body-parser').urlencoded({ extended: true });
 
 // Static Routes
 // -------------
@@ -21,8 +23,18 @@ router.route('/new')
   })
 
   // Create a new game
-  .post(function(req, res) {
-    res.redirect('/game');
+  .post(urlencodedParser, function(req, res) {
+    var config = req.body || {};
+
+    // Fetch properties.json based on theme
+
+    // Unique ID
+    config._id = uid();
+
+    // Insert the game and redirect
+    games.insert(config, function(err, result) {
+      res.redirect(201, '/' + config._id);
+    });
   });
 
 
@@ -33,22 +45,22 @@ router.route('/new')
 router.param('gid', function(req, res, next, gid) {  
 
   // Look up the game by id
-  //db.findById(req.params.gid, function(err, doc) {
-  //
-  //  // No error but no game found
-  //  if (!err && !doc) {
-  //    err = new Error('unknown game "' + gid + '"');
-  //  }
-  //  
-  //  // 404
-  //  if (err) {
-  //    return next(err);
-  //  }
-  //  
-  //  // Make the game available
-  //  req.game = doc;
+  games.findOne({ _id: req.params.gid }, function(err, doc) {
+
+    // No error but no game found
+    if (!err && !doc) {
+      err = new Error('unknown game "' + gid + '"');
+    }
+
+    // 404
+    if (err) {
+      return next(err);
+    }
+
+    // Make the game available
+    req.game = doc;
     next();
-  //});
+  });
 });
 
 // **Game Overview**
@@ -56,8 +68,7 @@ router.route('/:gid')
 
   // Show the game overview
   .get(function(req, res) {
-    res.send('/game<br><br>' + 
-      'gid: ' + req.params.gid);
+    res.send(req.game);
   });
 
 // **Invite Player**
@@ -178,8 +189,29 @@ router.use(function(err, req, res, next) {
 });
 
 
+// Create a Unique ID not already in the database
+function uid(length) {
+  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  var id = '';
+
+  length = length || 5;
+
+  for (var i = 0; i < length; i++) {
+    id += possible.charAt(Math.floor(Math.random() * possible.length));
+  }
+
+  if (games.find({ _id: id }).count()) {
+    id = uid(length);
+  }
+
+  return id;
+}
+
 // export a function to access the database
-module.exports = function(database) {
-  db = database;
+module.exports = function(db) {
+  db.open(function(err, d) {
+    games = d.collection('games');
+  });
+
   return router;
 };
