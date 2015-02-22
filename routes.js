@@ -1,4 +1,5 @@
 var router = require('express').Router();
+var pass   = require('pwd');
 var games;
 
 var urlencodedParser = require('body-parser').urlencoded({ extended: true });
@@ -85,7 +86,7 @@ router.route('/:gid/invite')
 
   // Show invitee options
   .get(function(req, res) {
-    res.send('/game/invite<br><br>' + 
+    res.send('/game/invite\n' + 
       'gid: ' + req.params.gid);
   })
 
@@ -97,46 +98,91 @@ router.route('/:gid/invite')
 // **Join Game**
 router.route('/:gid/join')
 
-  // Redirect uninvited player
+  // Player is invited
   .all(function(req, res, next) {
-
-    // Player is not invited
     //if (/* check query for token */) {
-      res.redirect('/' + req.params.gid);
+      //req.invited = true;
     //}
+
+    next();
   })
 
   // Show player options
   .get(function(req, res) {
-    res.send('/game/join<br><br>' + 
+    res.send('/game/join\n' + 
       'gid: ' + req.params.gid);
   })
 
-  // Create new player
+  // Create player
+  .post(urlencodedParser, function(req, res, next) {
+    var info = req.body;
+
+    // Log in if not invited
+    if (!req.invited) {
+      return next();
+    }
+
+    // Generate a hash from the password
+    pass.hash(info.password, function(err, salt, hash) {
+      if (err) {
+        throw err;
+      }
+
+      // Delete the original password
+      delete info.password;
+
+      // Additional data for the player
+      info._id = playerId(info.name);
+      info.salt = salt;
+      info.hash = hash;
+
+      // Add player to the game
+      req.game.players.push(info);
+
+      // Save the game
+      games.save(req.game, function(err, result) {
+        res.send('success');
+      });
+    });
+  })
+
+  // Log player in
   .post(function(req, res) {
-    res.send('success');
+    var info = req.body;
+    var player = getPlayer(req.game, playerId(info.name));
+
+    // Hash the password with the player's salt
+    pass.hash(info.password, player.salt, function(err, hash) {
+
+      // No errors, but hash doesn't match
+      if (!err && player.hash !== hash) {
+        err = new Error('invalid password');
+      }
+
+      // Error
+      if (err) {
+        throw err;
+      }
+
+      // Authenticate session and redirect
+      req.session.auth = true;
+      res.redirect('/' + req.game._id + '/' + player._id);
+    });
   });
 
 // **Find Player**
 router.param('pid', function(req, res, next, pid) {  
 
   // Assume there is an associated game
-  // var player = req.game.players.filter(function(p) {
-  //   return p.id === pid;
-  // })[0];
+  var player = getPlayer(req.game, pid);
 
   // 404
-  //if (!player) {
-  //  return next(new Error('unknown player "' + pid + '"'));
-  //}
+  if (!player) {
+   return next(new Error('unknown player "' + pid + '"'));
+  }
 
   // Make the player available
-  //req.player = player
-
-  // Authentication
-  //if (/* authentication check */) {
-    //req.authenticated = true;
-  //}
+  req.player = player;
 
   next();
 });
@@ -147,30 +193,17 @@ router.route('/:gid/:pid')
   // Show player overview/dashboard
   .get(function(req, res) {
 
-    // Player is not authenticated
-    if (!req.authenticated) {
+    // Player is authenticated
+    if (req.session.auth) {
 
-      // Render overview
+      // Render dashboard
+      res.send(req.game);
     }
 
-    // Render dashboard
-    res.send('/game/player<br><br>' +
-      'gid: ' + req.params.gid + '<br>' +
+    // Render overview
+    res.send('/game/player\n' +
+      'gid: ' + req.params.gid + '\n' +
       'pid: ' + req.params.pid);
-  });
-
-// **Player's Account**
-router.route('/:gid/:pid/account')
-
-  // Show player's account
-  .get(function(req, res) {
-
-    // Player is not authenticated
-    if (!req.authenticated) {
-      res.redirect('/' + req.params.gid + '/' + req.params.pid);
-    }
-
-    // Render account
   });
 
 
@@ -179,7 +212,7 @@ router.route('/:gid/:pid/account')
 
 // **Unhandled**
 router.get('*', function(req, res, next) {
-  next(new Error('nothing here'));
+  next(new Error(404));
 });
 
 // **Error**
@@ -206,6 +239,19 @@ function uid(length) {
 
   return id;
 }
+
+// Get player from game by id
+function getPlayer(game, id) {
+  return game.players.filter(function(p) {
+    return p._id === pid;
+  })[0];
+}
+
+// Generate a player id from their name
+function playerId(pName) {
+  return pName.toLowerCase().replace(' ', '-');
+}
+
 
 // export a function to access the database
 module.exports = function(db) {

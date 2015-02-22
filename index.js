@@ -16,6 +16,12 @@ var db      = new mongo.Db('monopoly', mserver);
 //app.set('view engine', 'hbs');
 
 //app.use(express.static(__dirname + '/public'));
+app.use(require('cookie-parser')());
+app.use(require('express-session')({
+  secret: 'keyboard cat',
+  resave: false,
+  saveUninitialized: true
+}));
 
 
 // Routes
