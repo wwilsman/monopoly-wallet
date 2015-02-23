@@ -53,7 +53,7 @@ router.param('gid', function(req, res, next, gid) {
       err = new Error('unknown game "' + gid + '"');
     }
 
-    // 404
+    // Error
     if (err) {
       return next(err);
     }
@@ -79,14 +79,16 @@ router.route('/:gid/invite')
   .all(function(req, res, next) {
 
     // Player is not authenticated
-    //if (/* authentication check */) {
-      res.redirect('/' + req.params.gid);
-    //}
+    if (!req.session.auth) {
+      res.redirect(401, '/' + req.params.gid);
+    }
+
+    next();
   })
 
   // Show invitee options
   .get(function(req, res) {
-    res.send('/game/invite\n' + 
+    res.send('/game/invite\n' +
       'gid: ' + req.params.gid);
   })
 
@@ -109,47 +111,32 @@ router.route('/:gid/join')
 
   // Show player options
   .get(function(req, res) {
-    res.send('/game/join\n' + 
+    res.send('/game/join\n' +
       'gid: ' + req.params.gid);
   })
 
-  // Create player
+  // Log player in
   .post(urlencodedParser, function(req, res, next) {
-    var info = req.body;
 
-    // Log in if not invited
-    if (!req.invited) {
+    // Create player if invited
+    if (req.invited) {
       return next();
     }
 
-    // Generate a hash from the password
-    pass.hash(info.password, function(err, salt, hash) {
-      if (err) {
-        throw err;
-      }
+    // Get valid & required fields
+    var body = validate(req.body, ['name', 'password']);
 
-      // Delete the original password
-      delete info.password;
+    // Validation error
+    if (body instanceof Error) {
+      return next(body);
+    }
 
-      // Additional data for the player
-      info._id = playerId(info.name);
-      info.salt = salt;
-      info.hash = hash;
+    // Get player
+    var player = getPlayer(req.game, playerId(body.name));
 
-      // Add player to the game
-      req.game.players.push(info);
-
-      // Save the game
-      games.save(req.game, function(err, result) {
-        res.send('success');
-      });
-    });
-  })
-
-  // Log player in
-  .post(function(req, res) {
-    var info = req.body;
-    var player = getPlayer(req.game, playerId(info.name));
+    if (!player) {
+      return next(new Error('unknown player: "' + body.name + '"'))
+    }
 
     // Hash the password with the player's salt
     pass.hash(info.password, player.salt, function(err, hash) {
@@ -168,15 +155,58 @@ router.route('/:gid/join')
       req.session.auth = true;
       res.redirect('/' + req.game._id + '/' + player._id);
     });
+    
+  // Create player
+  }, function(req, res, next) {
+    
+    // Get valid & required fields
+    var body = validate(req.body,
+      ['name', 'token', 'password'],
+      {
+        'token': function(value) {
+          return !req.game.players.filter(function(p) {
+            return p.token === value;
+          }).length;
+        }
+      });
+
+    // Validation error
+    if (body instanceof Error) {
+      return next(body);
+    }
+
+    // Generate a hash from the password
+    pass.hash(body.password, function(err, salt, hash) {
+
+      // Delete the original password
+      delete body.password;
+
+      if (err) {
+        return next(err);
+      }
+
+      // Additional data for the player
+      body._id = playerId(body.name);
+      body.salt = salt;
+      body.hash = hash;
+
+      // Add player to the game
+      req.game.players.push(body);
+
+      // Save the game
+      games.save(req.game, function(err, result) {
+        res.send('success');
+      });
+    });
   });
 
 // **Find Player**
-router.param('pid', function(req, res, next, pid) {  
+router.param('pid', function(req, res, next, pid) {
 
   // Assume there is an associated game
   var player = getPlayer(req.game, pid);
 
-  // 404
+  // Error
   if (!player) {
    return next(new Error('unknown player "' + pid + '"'));
   }
@@ -208,7 +238,7 @@ router.route('/:gid/:pid')
 
 
 // Error Handling
-// ---
+// --------------
 
 // **Unhandled**
 router.get('*', function(req, res, next) {
@@ -217,10 +247,12 @@ router.get('*', function(req, res, next) {
 
 // **Error**
 router.use(function(err, req, res, next) {
-  res.status(404);
   res.send(err.message);
 });
 
+
+// Helper functions
+// ----------------
 
 // Create a Unique ID not already in the database
 function uid(length) {
@@ -243,13 +275,55 @@ function uid(length) {
 // Get player from game by id
 function getPlayer(game, id) {
   return game.players.filter(function(p) {
-    return p._id === pid;
+    return p._id === id;
   })[0];
 }
 
 // Generate a player id from their name
 function playerId(pName) {
   return pName.toLowerCase().replace(' ', '-');
+}
+
+// Check the **body** object for required and validated fields
+function validate(body, required, validations) {
+
+  // Assume required is an object if not an array
+  if (!(required instanceof Array)) {
+    validations = required;
+    required = [];
+  }
+
+  // Default params
+  body = body || {};
+  validations = validations || {};
+
+  // Check for required fields
+  for (var i = 0, l = required.length; i < l; i++) {
+    if (!body.hasOwnProperty(reqiured[i])) {
+      return new Error(`"${required[i]}" is a required field`);
+    }
+  }
+
+  // Check against **validations**
+  for (var param in body) {
+    var value = body[param];
+
+    if (validations.hasOwnProperty(param)) {
+      var valid = validations[param];
+
+      if (valid instanceof RegExp) {
+        if (!value.test(valid)) {
+          return new Error('"' + param + '" doesn\'t match expected');
+        }
+      } else if (typeof valid === "function") {
+        if (!valid(value, param)) {
+          return new Error('"' + param + '" doesn\'t match expected');
+        }
+      }
+    }
+  }
+
+  return body;
 }
 
 
