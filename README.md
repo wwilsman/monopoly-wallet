@@ -39,9 +39,21 @@ Todo:
 - [ ] Design
 
 
-Database Setup
---------------
+App Setup
+---------
 
-- Install Mongodb
-- `mkdir data`
-- `mongod --dbpath=data --port 27017`
+- `npm install`
+
+- Setup database
+
+  - Install Mongodb
+  - `mkdir data`
+  - `mongod --dbpath=data --port 27017`
+
+- Set environment variables (make it easy by defining exports in an `.env` file 
+  and sourcing it before you run the app)
+
+  - `SENDGRID_USERNAME`
+  - `SENDGRID_PASSWORD`
+
+- `npm start`
