@@ -33,9 +33,9 @@ Todo:
 
 - [X] Create a game
 - [X] Retrieve a game
-- [ ] Authenticate player
+- [X] Authenticate player
+- [X] Create player
 - [ ] Invite player
-- [ ] Create player
 - [ ] Events
 - [ ] Design
 
