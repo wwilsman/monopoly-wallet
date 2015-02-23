@@ -1,5 +1,8 @@
+var config = require('./config');
 var router = require('express').Router();
 var pass   = require('pwd');
+var jwt    = require('jsonwebtoken');
+var mailer = require('sendgrid')(config.sendgrid.user, config.sendgrid.key);
 var games;
 
 var urlencodedParser = require('body-parser').urlencoded({ extended: true });
@@ -93,25 +96,82 @@ router.route('/:gid/invite')
   })
 
   // Send email to invitee
-  .post(function(req, res) {
-    res.send('success');
+  .post(urlencodedParser, function(req, res, next) {
+
+    // Get valid & required fields
+    var body = validate(req.body, ['email']);
+
+    // Validation error
+    if (body instanceof Error) {
+      return next(body);
+    }
+    
+    // Generate token
+    var token = jwt.sign(body, config.secret, {
+      issuer: req.game._id,
+      expiresInMinutes: 60
+    });
+
+    // Store the token
+    req.game.invites.push(token);
+    games.save(req.game, function(err, result) {
+      
+      // Error
+      if (err) {
+        return next(err);
+      }
+
+      // Send invite
+      mailer.send({
+        to: body.email,
+        from: 'test@example.com',
+        subject: 'You were invited to a game of Monopoly',
+        text: config.uri + '/' + req.game._id + '/join/?invite=' + token
+      }, function(err, message) {
+        
+        // Error
+        if (err) {
+          return next(err);
+        }
+
+        res.send('success');
+      });
+    });
   });
 
 // **Join Game**
 router.route('/:gid/join')
 
-  // Player is invited
+  // Check if player is invited
   .all(function(req, res, next) {
-    //if (/* check query for token */) {
-      //req.invited = true;
-    //}
+    var invite = req.query.invite;
 
-    next();
+    // Token present
+    if (invite && req.game.invites.indexOf(invite) > -1) {
+
+      // Verify token
+      jwt.verify(invite, config.secret, {
+        issuer: req.game._id
+      }, function(err, decoded) {
+
+        // Success
+        if (!err) {
+          req.invited = true;
+        }
+
+        next(err);
+      });
+
+    // Token not present
+    } else {
+      next();
+    }
   })
 
   // Show player options
   .get(function(req, res) {
     res.send('/game/join\n' +
+      (req.invited ? 'invited: true' : '') +
       'gid: ' + req.params.gid);
   })
 
@@ -192,6 +252,10 @@ router.route('/:gid/join')
 
       // Add player to the game
       req.game.players.push(body);
+
+      // Destroy invite
+      var inviteIndex = req.game.invites.indexOf(req.query.invite);
+      req.game.invites.splice(inviteIndex, 1);
 
       // Save the game
       games.save(req.game, function(err, result) {
@@ -299,8 +363,8 @@ function validate(body, required, validations) {
 
   // Check for required fields
   for (var i = 0, l = required.length; i < l; i++) {
-    if (!body.hasOwnProperty(reqiured[i])) {
-      return new Error(`"${required[i]}" is a required field`);
+    if (!body.hasOwnProperty(required[i])) {
+      return new Error('"' + required[i] + '" is a required field');
     }
   }
 

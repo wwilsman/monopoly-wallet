@@ -16,8 +16,7 @@ user:Monopoly$ node
 > var Game = require('./lib/main');
 > 
 > // create a new game using the example.json config
-> var config = JSON.parse(require('fs').readFileSync('example.json'));
-> var M = new Game(config);
+> var M = new Game(require('./example.json'));
 > 
 > // play a game
 > var p1 = M.Player.get('Player 1');
@@ -35,7 +34,7 @@ Todo:
 - [X] Retrieve a game
 - [X] Authenticate player
 - [X] Create player
-- [ ] Invite player
+- [X] Invite player
 - [ ] Events
 - [ ] Design
 

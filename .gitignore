@@ -87,3 +87,6 @@ $RECYCLE.BIN/
 ### Custom ###
 # MongoDB
 data
+
+# Environment variable
+.env
