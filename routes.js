@@ -27,17 +27,41 @@ router.route('/new')
   })
 
   // Create a new game
-  .post(urlencodedParser, function(req, res) {
-    var config = req.body || {};
+  .post(urlencodedParser, function(req, res, next) {
+    var body = req.body || {};
 
-    // Fetch properties.json based on theme
+    // Convert all-number strings to floats
+    body = fixNumberStrings(body);
 
-    // Unique ID
-    config._id = uid();
+    // Game properties
+    body.invites = [];
+    body.theme = body.theme || 'classic';
 
-    // Insert the game and redirect
-    games.insert(config, function(err, result) {
-      res.redirect(201, '/' + config._id);
+    // Load properties based on theme
+    //body.properties = loadJSONFile('./public/themes/' +
+    //  body.theme + '/properties.json');
+
+    // Create first player's ID
+    body.players[0]._id = playerId(body.players[0].name);
+
+    // Generate a unique ID
+    generateUID(function(uid) {
+      body._id = uid;
+
+      // Insert the game and redirect
+      games.insert(body, function(err, result) {
+
+        // Error
+        if (err) {
+          return next(err);
+        }
+
+        // Log player in and redirect to '/:gid/invite'
+        var base = '/' + body._id;
+        sendPostData(base + '/join', body.players[0], function() {
+          res.redirect(201, base + '/invite');
+        });
+      });
     });
   });
 
@@ -319,21 +343,36 @@ router.use(function(err, req, res, next) {
 // ----------------
 
 // Create a Unique ID not already in the database
-function uid(length) {
+function generateUID(length, callback) {
   var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var id = '';
+  var uid = '';
+
+  if (typeof length === 'function') {
+    callback = length;
+    length = null;
+  }
 
   length = length || 5;
 
   for (var i = 0; i < length; i++) {
-    id += possible.charAt(Math.floor(Math.random() * possible.length));
+    uid += possible.charAt(Math.floor(Math.random() * possible.length));
   }
 
-  if (games.find({ _id: id }).count()) {
-    id = uid(length);
-  }
+  games.findOne({ _id: uid }, function(err, doc) {
 
-  return id;
+    // Error
+    if (err) {
+      throw err;
+    }
+
+    // ID not in use
+    if (!doc) {
+      return callback(uid);
+    }
+
+    // Try again
+    generateUID(length, callback);
+  });
 }
 
 // Get player from game by id
@@ -390,12 +429,63 @@ function validate(body, required, validations) {
   return body;
 }
 
+// Convert all-number strings within an object to floats
+function fixNumberStrings(obj) {
+
+  // Loop through the object
+  for (var key in obj) {
+
+    // Found a string
+    if (typeof obj[key] === 'string') {
+
+      // String only contains numbers
+      if (obj[key].test(/-?\d+/)) {
+        obj[key] = parseFloat(obj[key], 10);
+      }
+
+    // Not a string or array, assume it's an object
+    } else if (!(obj[key] instanceof Array)) {
+      obj[key] = fixNumberStrings(obj[key]);
+    }
+  }
+
+  return obj;
+}
+
+// Return data from a JSON file (not requiring directly to avoid caching)
+function loadJSONFile(filename) {
+  return JSON.parse(require('fs').readFileSync(filename).toString());
+}
+
+// Post **data** to **path**
+function sendPostData(path, data, callback) {
+  var formdata = [];
+
+  for (var key in data) {
+    formdata.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
+  }
+
+  formdata = formdata.join('&');
+
+  var req = require('http').request({
+    host: config.host,
+    port: config.port,
+    path: path,
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+      'Content-Length': formdata.length
+    }
+  }, callback);
+
+  req.write(formdata);
+  req.end();
+}
+
 
 // export a function to access the database
 module.exports = function(db) {
-  db.open(function(err, d) {
-    games = d.collection('games');
-  });
+  games = db.collection('games');
 
   return router;
 };
