@@ -73,7 +73,7 @@ router.route('/new')
 router.param('gid', function(req, res, next, gid) {  
 
   // Look up the game by id
-  games.findOne({ _id: req.params.gid }, function(err, doc) {
+  games.findOne({ _id: gid }, function(err, doc) {
 
     // No error but no game found
     if (!err && !doc) {
@@ -87,6 +87,11 @@ router.param('gid', function(req, res, next, gid) {
 
     // Make the game available
     req.game = doc;
+
+    // Determine if player is authorized
+    req.authenticated = req.session.gid === gid;
+
+    // continue
     next();
   });
 });
@@ -106,7 +111,7 @@ router.route('/:gid/invite')
   .all(function(req, res, next) {
 
     // Player is not authenticated
-    if (!req.session.auth) {
+    if (!req.authenticated) {
       res.redirect(401, '/' + req.params.gid);
     }
 
@@ -232,11 +237,12 @@ router.route('/:gid/join')
 
       // Error
       if (err) {
-        throw err;
+        return next(err);
       }
 
-      // Authenticate session and redirect
-      req.session.auth = true;
+      // Set session variables and redirect
+      req.session.gid = req.game._id;
+      req.session.pid = player._id;
       res.redirect('/' + req.game._id + '/' + player._id);
     });
     
@@ -302,6 +308,10 @@ router.param('pid', function(req, res, next, pid) {
   // Make the player available
   req.player = player;
 
+  // Determine if player is authorized
+  req.authenticated = req.authenticated && req.session.pid === pid;
+
+  // continue
   next();
 });
 
@@ -312,7 +322,7 @@ router.route('/:gid/:pid')
   .get(function(req, res) {
 
     // Player is authenticated
-    if (req.session.auth) {
+    if (req.authenticated) {
 
       // Render dashboard
       res.send(req.game);
