@@ -89,7 +89,10 @@ router.param('gid', function(req, res, next, gid) {
     req.game = doc;
 
     // Determine if player is authorized
-    req.authenticated = req.session.gid === gid;
+    res.locals.authenticated = req.session.gid === gid;
+
+    // Define helpful local
+    res.locals.gid = gid;
 
     // continue
     next();
@@ -111,7 +114,7 @@ router.route('/:gid/invite')
   .all(function(req, res, next) {
 
     // Player is not authenticated
-    if (!req.authenticated) {
+    if (!res.locals.authenticated) {
       res.redirect(401, '/' + req.params.gid);
     }
 
@@ -185,7 +188,7 @@ router.route('/:gid/join')
 
         // Success
         if (!err) {
-          req.invited = true;
+          res.locals.invited = true;
         }
 
         next(err);
@@ -200,7 +203,7 @@ router.route('/:gid/join')
   // Show player options
   .get(function(req, res) {
     res.send('/game/join\n' +
-      (req.invited ? 'invited: true' : '') +
+      (res.locals.invited ? 'invited: true' : '') +
       'gid: ' + req.params.gid);
   })
 
@@ -208,7 +211,7 @@ router.route('/:gid/join')
   .post(urlencodedParser, function(req, res, next) {
 
     // Create player if invited
-    if (req.invited) {
+    if (res.locals.invited) {
       return next();
     }
 
@@ -309,7 +312,12 @@ router.param('pid', function(req, res, next, pid) {
   req.player = player;
 
   // Determine if player is authorized
-  req.authenticated = req.authenticated && req.session.pid === pid;
+  if (res.locals.authenticated) {
+    res.locals.authenticated = req.session.pid === pid;
+  }
+
+  // Define helpful local
+  res.locals.pid = pid;
 
   // continue
   next();
@@ -322,7 +330,7 @@ router.route('/:gid/:pid')
   .get(function(req, res) {
 
     // Player is authenticated
-    if (req.authenticated) {
+    if (res.locals.authenticated) {
 
       // Render dashboard
       res.send(req.game);

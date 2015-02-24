@@ -19,14 +19,28 @@ var db    = mongo.db(config.mongo.uri, {
   server: { auto_reconnect: true }
 });
 
+// Misc
+var hbs  = require('hbs');
+var sass = require('node-sass-middleware');
+
 
 // Configuration
 // -------------
 
-//app.set('views', path.join(__dirname, 'views'));
-//app.set('view engine', 'hbs');
+// HBS
+app.set('views', __dirname + '/app/views');
+app.set('view engine', 'hbs');
 
-//app.use(express.static(__dirname + '/public'));
+hbs.localsAsTemplateData(app);
+
+// Sass
+app.use(sass({
+  src: __dirname + '/app',
+  dest: __dirname + '/app/public'
+}));
+
+// Static folders
+app.use(express.static(__dirname + '/public'));
 
 // Sessions
 app.use(require('cookie-parser')());
@@ -47,9 +61,7 @@ app.use('/', require('./routes')(db));
 // ------
 
 io.on('connection', function(socket) {
-
   socket.on('join', function(gameId) {
     mio.init(gameId, socket);
   });
-
 });
