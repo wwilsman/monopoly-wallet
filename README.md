@@ -1,4 +1,4 @@
-Monopoly Manger
+Monopoly Wallet
 ===============
 
 Easily manage your assets during a game of Monopoly

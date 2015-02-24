@@ -7,7 +7,7 @@ config.uri    = 'http://' + config.host + ':' + config.port;
 config.secret = process.env.SESSION_SECRET || 'monopoly';
 
 config.mongo = {
-  uri: process.env.MONGOLAB_URI || 'mongodb://localhost:27017/mnplymngr',
+  uri: process.env.MONGOLAB_URI || 'mongodb://localhost:27017/monopoly-wallet',
 };
 
 config.sendgrid = {

@@ -1,11 +1,11 @@
 {
-  "name": "mnplymngr",
+  "name": "monopoly-wallet",
   "version": "0.0.1",
   "description": "Monopoly Asset Manager",
   "main": "index.js",
   "repository": {
     "type": "git",
-    "url": "git://github.com/wwilsman/mnplymngr.git"
+    "url": "git://github.com/wwilsman/monopoly-wallet.git"
   },
   "scripts": {
     "test": "mocha",
