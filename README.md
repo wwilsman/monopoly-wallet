@@ -92,7 +92,7 @@ Todo:
 
 ### Developement:
 
-- [ ] Theme specific CSS
+- [ ] `loadJSONFile` return false if there's an error
 
 
 App Setup

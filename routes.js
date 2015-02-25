@@ -113,6 +113,16 @@ router.route('/:gid')
     res.send(req.game);
   });
 
+// **Theme CSS**
+router.route('/:gid/property.css')
+
+  // Fetch CSS file from theme directory
+  .get(function(req, res) {
+    res.sendFile('property.css', {
+      root: __dirname + '/app/themes/' + req.game.theme + '/'
+    });
+  });
+
 // **Invite Player**
 router.route('/:gid/invite')
 
