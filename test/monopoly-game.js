@@ -33,14 +33,6 @@ describe('Game', function() {
     assert.equal(1, M.Player.get('1').balance);
   });
 
-  it('should start bank with custom balance', function() {
-    var M = new MonopolyGame({
-      bankBalance: 1
-    });
-
-    assert.equal(1, M.Bank.balance);
-  });
-
   it('should have custom building limits', function() {
     var M = new MonopolyGame({
       availableHouses: 1,
@@ -58,14 +50,13 @@ describe('Game', function() {
         group: '1', 
         costs: {
           price: 1,
-          build: 1,
-          price: 100
+          build: 1
         }
       }],
 
       rates: {
         mortgage: 0,
-        unmortgage: 1,
+        interest: 1,
         building: 0
       }
     });
@@ -73,7 +64,7 @@ describe('Game', function() {
     var prop = M.Property.get('1');
 
     assert.equal(0, prop.values.mortgage);
-    assert.equal(prop.costs.price, prop.costs.mortgage);
+    assert.equal(prop.values.mortgage, prop.costs.interest);
     assert.equal(0, prop.values.building);
   });
 });

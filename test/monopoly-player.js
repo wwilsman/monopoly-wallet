@@ -217,13 +217,14 @@ describe('Player', function() {
     });
 
     it('should subtract from balance', function() {
+      var cost = prop.values.mortgage + prop.costs.interest;
       var balance;
 
       p1.mortgage(prop);
       balance = p1.balance;
       p1.unmortgage(prop);
 
-      assert.equal(balance - prop.costs.mortgage, p1.balance);
+      assert.equal(balance - cost, p1.balance);
     });
 
     it('should not unmortgage if not player\'s property', function() {
