@@ -70,6 +70,14 @@ describe('Property', function() {
       assert.equal(hotels - 1, M.availableHotels);
     });
 
+    it('should not improve if railroad/utility', function() {
+      prop1.groupName = 'railroad';
+
+      assert.throws(function() {
+        prop1.improve();
+      }, MonopolyError);
+    });
+
     it('should not improve if not monopoly', function() {
       prop2.transfer(M.Bank);
 
@@ -127,6 +135,14 @@ describe('Property', function() {
       prop2.unimprove();
 
       assert.equal(hotels + 1, M.availableHotels);
+    });
+
+    it('should not unimprove if railroad/utility', function() {
+      prop1.groupName = 'railroad';
+
+      assert.throws(function() {
+        prop1.unimprove();
+      }, MonopolyError);
     });
 
     it('should not unimprove if already unimproved', function() {
@@ -248,6 +264,19 @@ describe('Property', function() {
     it('should return rent with one hotel', function() {
       prop1.buildings = 5;
       assert.equal(prop1.costs.rent[5], prop1.rent);
+    });
+
+    it('should return proper rent values for railroads/utilities', function() {
+      prop1.groupName = 'railroad';
+      prop1.costs.rent = [1, 2];
+
+      assert.equal(1, prop1.rent);
+
+      prop2.groupName = 'railroad';
+      prop2.costs.rent = [1, 2];
+
+      assert.equal(2, prop1.rent);
+      assert.equal(2, prop2.rent);
     });
   });
 

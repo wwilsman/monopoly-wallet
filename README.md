@@ -53,6 +53,14 @@ Theme directories should consist of the following:
       house, rent with two houses, rent with three houses, rent with four houses, 
       rent with hotel
 
+  With the exception of railroads and utilities. In these cases, `costs.build` 
+  should be `0` and `costs.rent` should be as follows:
+
+  - Railroads: rent when one is owned, rent when two are owned, rent when three 
+    are owned, rent when four are owned
+  - Utilities: rent multiplier when one is owned, rent multiplier when two 
+    are owned
+
 - `property.css` **required** CSS for the property cards.
 
 - `config.json` Game configuration file. Can include any of the options below:
@@ -84,7 +92,7 @@ Todo:
 
 ### Developement:
 
-- [ ] Railroad and Utility edge cases
+- [ ] Theme specific CSS
 
 
 App Setup

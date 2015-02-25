@@ -254,13 +254,16 @@ describe('Player', function() {
       assert.ok(p1.isBankrupt);
     });
 
-    it('should mortgage properties', function() {
-      assert.ok(!prop.isMortgaged);
+    it('should sell property improvements', function() {
+      assert.equal(0, prop.buildings);
 
       p1.improve(prop);
+
+      assert.equal(1, prop.buildings);
+
       p2.bankrupt(p1);
 
-      assert.ok(prop.isMortgaged);
+      assert.equal(0, prop.buildings);
     });
 
     it('should tranfer everything to beneficiary', function() {
@@ -274,7 +277,7 @@ describe('Player', function() {
 
       assert.equal(prop.owner, p2);
       assert.ok(p2.assets.jailcard);
-      assert.equal(b1 + b2 + prop.values.mortgage, p2.balance);
+      assert.equal(b1 + b2, p2.balance);
     });
   });
 
