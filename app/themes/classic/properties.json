@@ -174,4 +174,52 @@
     "build": 200,
     "rent": [50, 200, 600, 1400, 1700, 2000]
   }
+}, {
+  "name": "Reading Railroad",
+  "group": "railroad",
+  "costs": {
+    "price": 200,
+    "build": 0,
+    "rent": [25, 50, 100, 200]  
+  }
+}, {
+  "name": "Pennsylvania Railroad",
+  "group": "railroad",
+  "costs": {
+    "price": 200,
+    "build": 0,
+    "rent": [25, 50, 100, 200]  
+  }
+}, {
+  "name": "B. & O. Railroad",
+  "group": "railroad",
+  "costs": {
+    "price": 200,
+    "build": 0,
+    "rent": [25, 50, 100, 200]  
+  }
+}, {
+  "name": "Short Line",
+  "group": "railroad",
+  "costs": {
+    "price": 200,
+    "build": 0,
+    "rent": [25, 50, 100, 200]  
+  }
+}, {
+  "name": "Water Works",
+  "group": "utility",
+  "costs": {
+    "price": 150,
+    "build": 0,
+    "rent": [4, 10]  
+  }
+}, {
+  "name": "Electric Company",
+  "group": "utility",
+  "costs": {
+    "price": 150,
+    "build": 0,
+    "rent": [4, 10]  
+  }
 }]

@@ -15,7 +15,7 @@ $ node
 
 ```javascript
 // require monopoly
-var Game = require('./lib/main');
+var Game = require('./lib/monopoly-game');
 
 // gather game data
 var data = require('./app/themes/classic/config.json');
@@ -80,6 +80,11 @@ Todo:
 - [X] Themes
 - [ ] Events
 - [ ] Design
+
+
+### Developement:
+
+- [ ] Railroad and Utility edge cases
 
 
 App Setup
