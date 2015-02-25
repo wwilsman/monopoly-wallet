@@ -36,7 +36,8 @@ hbs.localsAsTemplateData(app);
 // Sass
 app.use(sass({
   src: __dirname + '/app',
-  dest: __dirname + '/app/public'
+  dest: __dirname + '/public',
+  response: config.env === 'development'
 }));
 
 // Static folders

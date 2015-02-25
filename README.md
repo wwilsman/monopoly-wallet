@@ -10,21 +10,63 @@ Play A Game!
 It's operational via the Node CLI!
 
 ```bash
-user:Monopoly$ node
-> 
-> // require monopoly
-> var Game = require('./lib/main');
-> 
-> // create a new game using the example.json config
-> var M = new Game(require('./example.json'));
-> 
-> // play a game
-> var p1 = M.Player.get('Player 1');
-> var p2 = M.Player.get('Player 2');
->
-> p1.transfer(p2, M.Property.get('Oriental Avenue'));
-> 
+$ node
 ```
+
+```javascript
+// require monopoly
+var Game = require('./lib/main');
+
+// gather game data
+var data = require('./app/themes/classic/config.json');
+data.properties = require('./app/themes/classic/properties.json');
+
+// create a new game
+var M = new Game(data);
+
+// play a game
+var player = new M.Player({ name: 'Player 1' });
+var property = M.Property.get('Oriental Avenue');
+
+M.Bank.transfer(player, property);
+player.transfer(M.Bank, property.costs.price);
+
+```
+
+Themes
+------
+
+Themes determine the look and sometimes the rules of a game of Monopoly. They 
+belong in the `app/themes` directory under a folder by the name of the theme.
+
+Theme directories should consist of the following:
+
+- `properties.json` **required** The properties in a game.  
+  Each property must follow the format:
+
+  - `name` *string* The name of the property
+  - `group` *string* The name of the group this property belongs to
+  - `costs` *object* Costs associated with the property
+    - `price` *integer* The amount needed to buy the property
+    - `build` *integer* The amount needed to improve on a property
+    - `rent` *array[integer]* Rent values in order of: lot rent, rent with one 
+      house, rent with two houses, rent with three houses, rent with four houses, 
+      rent with hotel
+
+- `property.css` **required** CSS for the property cards.
+
+- `config.json` Game configuration file. Can include any of the options below:
+  
+  - `startBalance` *integer* The amount each player starts with,
+  - `availableHouses` *integer* Total number of available houses,
+  - `availableHotels` *integer* Total number of available hotels,
+  - `rates` *object* Rates used to calculate some property costs and values
+    - `mortgage` *float* Percentage of the property price
+    - `interest` *float* Percentage of the calculated mortgage value
+    - `building` *float* Percentage of the building costs you recieve from 
+      selling a building back to the bank.
+
+**See `app/themes/classic` for an example.**
 
 
 Todo:
@@ -35,6 +77,7 @@ Todo:
 - [X] Authenticate player
 - [X] Create player
 - [X] Invite player
+- [X] Themes
 - [ ] Events
 - [ ] Design
 

@@ -1,3 +1,4 @@
+var _      = require('.lib/helpers');
 var config = require('./config');
 var router = require('express').Router();
 var pass   = require('pwd');
@@ -37,9 +38,13 @@ router.route('/new')
     body.invites = [];
     body.theme = body.theme || 'classic';
 
+    var themedir = './app/themes/' + body.theme;
+
+    // Game config
+    body = _.extend(loadJSONFile(themedir + '/config.json'), body);
+
     // Load properties based on theme
-    //body.properties = loadJSONFile('./public/themes/' +
-    //  body.theme + '/properties.json');
+    body.properties = loadJSONFile(themedir + '/properties.json');
 
     // Create first player's ID
     body.players[0]._id = playerId(body.players[0].name);
@@ -91,8 +96,9 @@ router.param('gid', function(req, res, next, gid) {
     // Determine if player is authorized
     res.locals.authenticated = req.session.gid === gid;
 
-    // Define helpful local
+    // Define helpful locals
     res.locals.gid = gid;
+    res.locals.theme = doc.theme;
 
     // continue
     next();

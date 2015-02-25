@@ -1,0 +1,10 @@
+{ 
+  "startBalance": 1500,
+  "availableHouses": 32,
+  "availableHotels": 12,
+  "rates": {
+    "mortgage": 0.5,
+    "interest": 0.1,
+    "building": 0.5
+  }
+}
