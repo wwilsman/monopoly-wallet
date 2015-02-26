@@ -1,4 +1,4 @@
-var _      = require('.lib/helpers');
+var _      = require('./lib/helpers');
 var config = require('./config');
 var router = require('express').Router();
 var pass   = require('pwd');
@@ -32,7 +32,7 @@ router.route('/new')
     var body = req.body || {};
 
     // Convert all-number strings to floats
-    body = fixNumberStrings(body);
+    body = _.fixNumberStrings(body);
 
     // Game properties
     body.invites = [];
@@ -41,16 +41,22 @@ router.route('/new')
     var themedir = './app/themes/' + body.theme;
 
     // Game config
-    body = _.extend(loadJSONFile(themedir + '/config.json'), body);
+    body = _.extend(_.loadJSONFile(themedir + '/config.json') || {}, body);
 
     // Load properties based on theme
-    body.properties = loadJSONFile(themedir + '/properties.json');
+    body.properties = _.loadJSONFile(themedir + '/properties.json') || [];
 
     // Create first player's ID
-    body.players[0]._id = playerId(body.players[0].name);
+    body.players[0]._id = _.dasherize(body.players[0].name);
 
     // Generate a unique ID
-    generateUID(function(uid) {
+    _.generateUID(games, function(err, uid) {
+
+      // Error
+      if (err) {
+        return next(err);
+      }
+
       body._id = uid;
 
       // Insert the game and redirect
@@ -62,9 +68,8 @@ router.route('/new')
         }
 
         // Log player in and redirect to '/:gid/invite'
-        var base = '/' + body._id;
-        sendPostData(base + '/join', body.players[0], function() {
-          res.redirect(201, base + '/invite');
+        _.post('/' + body._id + '/join', body.players[0], function() {
+          res.redirect(201, '/' + body._id + '/invite');
         });
       });
     });
@@ -147,7 +152,7 @@ router.route('/:gid/invite')
   .post(urlencodedParser, function(req, res, next) {
 
     // Get valid & required fields
-    var body = validate(req.body, ['email']);
+    var body = _.validate(req.body, ['email']);
 
     // Validation error
     if (body instanceof Error) {
@@ -232,7 +237,7 @@ router.route('/:gid/join')
     }
 
     // Get valid & required fields
-    var body = validate(req.body, ['name', 'password']);
+    var body = _.validate(req.body, ['name', 'password']);
 
     // Validation error
     if (body instanceof Error) {
@@ -240,7 +245,9 @@ router.route('/:gid/join')
     }
 
     // Get player
-    var player = getPlayer(req.game, playerId(body.name));
+    var player = req.game.players.filter(function(p) {
+      return p.name.toLowerCase() === body.name.toLowerCase();
+    })[0];
 
     if (!player) {
       return next(new Error('unknown player: "' + body.name + '"'))
@@ -269,7 +276,7 @@ router.route('/:gid/join')
   }, function(req, res, next) {
     
     // Get valid & required fields
-    var body = validate(req.body,
+    var body = _.validate(req.body,
       ['name', 'token', 'password'],
       {
         'token': function(value) {
@@ -295,7 +302,7 @@ router.route('/:gid/join')
       }
 
       // Additional data for the player
-      body._id = playerId(body.name);
+      body._id = _.dasherize(body.name);
       body.salt = salt;
       body.hash = hash;
 
@@ -317,7 +324,9 @@ router.route('/:gid/join')
 router.param('pid', function(req, res, next, pid) {
 
   // Assume there is an associated game
-  var player = getPlayer(req.game, pid);
+  var player = req.game.players.filter(function(p) {
+    return p._id === pid;
+  })[0];
 
   // Error
   if (!player) {
@@ -371,150 +380,6 @@ router.get('*', function(req, res, next) {
 router.use(function(err, req, res, next) {
   res.send(err.message);
 });
-
-
-// Helper functions
-// ----------------
-
-// Create a Unique ID not already in the database
-function generateUID(length, callback) {
-  var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
-  var uid = '';
-
-  if (typeof length === 'function') {
-    callback = length;
-    length = null;
-  }
-
-  length = length || 5;
-
-  for (var i = 0; i < length; i++) {
-    uid += possible.charAt(Math.floor(Math.random() * possible.length));
-  }
-
-  games.findOne({ _id: uid }, function(err, doc) {
-
-    // Error
-    if (err) {
-      throw err;
-    }
-
-    // ID not in use
-    if (!doc) {
-      return callback(uid);
-    }
-
-    // Try again
-    generateUID(length, callback);
-  });
-}
-
-// Get player from game by id
-function getPlayer(game, id) {
-  return game.players.filter(function(p) {
-    return p._id === id;
-  })[0];
-}
-
-// Generate a player id from their name
-function playerId(pName) {
-  return pName.toLowerCase().replace(' ', '-');
-}
-
-// Check the **body** object for required and validated fields
-function validate(body, required, validations) {
-
-  // Assume required is an object if not an array
-  if (!(required instanceof Array)) {
-    validations = required;
-    required = [];
-  }
-
-  // Default params
-  body = body || {};
-  validations = validations || {};
-
-  // Check for required fields
-  for (var i = 0, l = required.length; i < l; i++) {
-    if (!body.hasOwnProperty(required[i])) {
-      return new Error('"' + required[i] + '" is a required field');
-    }
-  }
-
-  // Check against **validations**
-  for (var param in body) {
-    var value = body[param];
-
-    if (validations.hasOwnProperty(param)) {
-      var valid = validations[param];
-
-      if (valid instanceof RegExp) {
-        if (!value.test(valid)) {
-          return new Error('"' + param + '" doesn\'t match expected');
-        }
-      } else if (typeof valid === "function") {
-        if (!valid(value, param)) {
-          return new Error('"' + param + '" doesn\'t match expected');
-        }
-      }
-    }
-  }
-
-  return body;
-}
-
-// Convert all-number strings within an object to floats
-function fixNumberStrings(obj) {
-
-  // Loop through the object
-  for (var key in obj) {
-
-    // Found a string
-    if (typeof obj[key] === 'string') {
-
-      // String only contains numbers
-      if (obj[key].test(/-?\d+/)) {
-        obj[key] = parseFloat(obj[key], 10);
-      }
-
-    // Not a string or array, assume it's an object
-    } else if (!(obj[key] instanceof Array)) {
-      obj[key] = fixNumberStrings(obj[key]);
-    }
-  }
-
-  return obj;
-}
-
-// Return data from a JSON file (not requiring directly to avoid caching)
-function loadJSONFile(filename) {
-  return JSON.parse(require('fs').readFileSync(filename).toString());
-}
-
-// Post **data** to **path**
-function sendPostData(path, data, callback) {
-  var formdata = [];
-
-  for (var key in data) {
-    formdata.push(encodeURIComponent(key) + '=' + encodeURIComponent(data[key]));
-  }
-
-  formdata = formdata.join('&');
-
-  var req = require('http').request({
-    host: config.host,
-    port: config.port,
-    path: path,
-    method: 'POST',
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-      'Content-Length': formdata.length
-    }
-  }, callback);
-
-  req.write(formdata);
-  req.end();
-}
 
 
 // export a function to access the database
