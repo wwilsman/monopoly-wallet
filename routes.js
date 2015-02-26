@@ -134,12 +134,12 @@ router.route('/:gid')
     res.send(req.game);
   });
 
-// **Theme CSS**
-router.route('/:gid/property.css')
+// **Theme Files**
+router.route('/:gid/theme/:file')
 
-  // Fetch CSS file from theme directory
+  // Direct all requests to proper directory
   .get(function(req, res) {
-    res.sendFile('property.css', {
+    res.sendFile(req.params.file, {
       root: __dirname + '/app/themes/' + req.game.theme + '/'
     });
   });
