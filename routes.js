@@ -46,10 +46,7 @@ router.route('/new')
     // Load properties based on theme
     body.properties = _.loadJSONFile(themedir + '/properties.json') || [];
 
-    // Create first player's ID
-    body.players[0]._id = _.dasherize(body.players[0].name);
-
-    // Generate a unique ID
+    // Generate a unique ID for the game
     _.generateUID(games, function(err, uid) {
 
       // Error
@@ -59,16 +56,35 @@ router.route('/new')
 
       body._id = uid;
 
-      // Insert the game and redirect
-      games.insert(body, function(err, result) {
+      var player = body.players[0];
+
+      // Set up the first player
+      pass.hash(player.password, function(err, salt, hash) {
+
+        // Delete the original password
+        delete player.password;
 
         // Error
         if (err) {
           return next(err);
         }
 
-        // Log player in and redirect to '/:gid/invite'
-        _.post('/' + body._id + '/join', body.players[0], function() {
+        // Additional data for the player
+        player._id = _.dasherize(player.name);
+        player.salt = salt;
+        player.hash = hash;
+
+        // Insert the game and redirect
+        games.insert(body, function(err, result) {
+
+          // Error
+          if (err) {
+            return next(err);
+          }
+
+          // Authenticate and redirect to '/:gid/invite'
+          req.session.gid = body._id;
+          req.session.pid = player._id;
           res.redirect(201, '/' + body._id + '/invite');
         });
       });
