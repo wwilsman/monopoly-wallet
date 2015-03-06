@@ -28,6 +28,7 @@
     "jsonwebtoken": "^3.2.2",
     "mongodb": "^1.4.31",
     "mongoskin": "^1.4.12",
+    "node-bourbon": "^4.2.1-beta1",
     "node-sass-middleware": "^0.5.0",
     "pwd": "0.0.4",
     "sendgrid": "^1.6.0",

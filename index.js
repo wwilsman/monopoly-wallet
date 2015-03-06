@@ -20,8 +20,9 @@ var db    = mongo.db(config.mongo.uri, {
 });
 
 // Misc
-var hbs  = require('hbs');
-var sass = require('node-sass-middleware');
+var hbs     = require('hbs');
+var sass    = require('node-sass-middleware');
+var bourbon = require('node-bourbon');
 
 
 // Configuration
@@ -37,7 +38,8 @@ hbs.localsAsTemplateData(app);
 app.use(sass({
   src: __dirname + '/app',
   dest: __dirname + '/public',
-  response: config.env === 'development'
+  response: config.env === 'development',
+  includePaths: bourbon.includePaths
 }));
 
 // Static folders

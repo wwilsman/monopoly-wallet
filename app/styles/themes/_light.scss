@@ -1,0 +1,9 @@
+body.ui--light {
+  color: black;
+  
+  /* -webkit-overflow-scroll bgc */
+  @include linear-gradient(top,
+    #FEFEFE 0%, #FEFEFE 100%,
+    $fallback: black
+  );
+}

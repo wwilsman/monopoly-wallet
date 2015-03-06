@@ -92,7 +92,11 @@ Todo:
 
 ### Developement:
 
-- [ ] `loadJSONFile` return false if there's an error
+- [ ] Refactor CSS
+- [ ] Document CSS
+- [ ] Tablet & Desktop CSS
+- [ ] HTML
+- [ ] Render templates
 
 
 App Setup

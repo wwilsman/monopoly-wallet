@@ -1,0 +1,36 @@
+.btn {
+  font: inherit;
+  line-height: 2.5;
+  outline: none;
+  padding: 0 1em;
+  height: 2.5em;
+  border-radius: 0.4em;
+  border: 1px solid color-alpha('shadow', 0.05);
+  box-shadow: 0 0.25em 0 color-alpha('shadow', 0.1);
+  min-width: 5em;
+  white-space: nowrap;
+  background-color: color('info');
+  color: white;
+  font-weight: bold;
+  
+  &:active {
+    box-shadow: 
+      inset 0 0 0 1.5em color-alpha('shadow', 0.05), 
+      inset 0 0.25em 0 color-alpha('shadow', 0.1);
+  }
+  
+  &:disabled {
+    box-shadow: none;
+    opacity: 0.4;
+  }
+
+  &--action {
+    background-color: color('success');
+  }
+
+  &--large {
+    width: 100%;
+    line-height: 3;
+    height: 3em;
+  }
+}
