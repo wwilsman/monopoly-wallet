@@ -97,6 +97,7 @@ Todo:
 - [ ] Tablet & Desktop CSS
 - [ ] HTML
 - [ ] Render templates
+- [ ] Better routing errors
 
 
 App Setup
