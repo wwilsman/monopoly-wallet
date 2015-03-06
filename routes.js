@@ -1,4 +1,5 @@
 var _      = require('./lib/helpers');
+var path   = require('path');
 var config = require('./config');
 var router = require('express').Router();
 var pass   = require('pwd');
@@ -38,13 +39,13 @@ router.route('/new')
     body.invites = [];
     body.theme = body.theme || 'classic';
 
-    var themedir = './app/themes/' + body.theme;
+    var themedir = path.join('./app/themes/', body.theme);
 
     // Game config
-    body = _.extend(_.loadJSONFile(themedir + '/config.json') || {}, body);
+    body = _.extend(_.loadJSONFile(path.join(themedir, 'config.json')) || {}, body);
 
     // Load properties based on theme
-    body.properties = _.loadJSONFile(themedir + '/properties.json') || [];
+    body.properties = _.loadJSONFile(path.join(themedir, 'properties.json')) || [];
 
     // Generate a unique ID for the game
     _.generateUID(games, function(err, uid) {
@@ -140,7 +141,7 @@ router.route('/:gid/theme/:file')
   // Direct all requests to proper directory
   .get(function(req, res) {
     res.sendFile(req.params.file, {
-      root: __dirname + '/app/themes/' + req.game.theme + '/'
+      root: path.join(__dirname, '/app/themes/', req.game.theme)
     });
   });
 
