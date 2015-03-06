@@ -20,30 +20,32 @@ var db    = mongo.db(config.mongo.uri, {
 });
 
 // Misc
-var hbs     = require('hbs');
-var sass    = require('node-sass-middleware');
-var bourbon = require('node-bourbon');
+var hbs  = require('hbs');
+var sass = require('node-sass-middleware');
+var path = require('path');
 
 
 // Configuration
 // -------------
 
 // HBS
-app.set('views', __dirname + '/app/views');
+app.set('views', path.join(__dirname, '/app/views'));
 app.set('view engine', 'hbs');
 
 hbs.localsAsTemplateData(app);
 
 // Sass
 app.use(sass({
-  src: __dirname + '/app',
-  dest: __dirname + '/public',
+  src: path.join(__dirname, '/app'),
+  dest: path.join(__dirname, '/public'),
   response: config.env === 'development',
-  includePaths: bourbon.includePaths
+  includePaths: [
+    path.dirname(require.resolve('bourbon'))
+  ]
 }));
 
 // Static folders
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(path.join(__dirname, '/public')));
 
 // Sessions
 app.use(require('cookie-parser')());
