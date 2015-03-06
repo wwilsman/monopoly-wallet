@@ -92,6 +92,41 @@ router.route('/new')
     });
   });
 
+// **List Themes**
+router.route('/themes')
+
+  // Send an array of theme names
+  .get(function(req, res, next) {
+    require('fs').readdir('./app/themes/', function(err, files) {
+
+      // Error
+      if (err) {
+        return next(err);
+      }
+
+      res.send(files);
+    });
+  });
+
+// **List Theme Tokens**
+router.route('/themes/:theme/tokens')
+
+  // Send an array of token filenames
+  .get(function(req, res, next) {
+    require('fs').readdir(
+      path.join('./app/themes/', req.params.theme, '/tokens'),
+      function(err, files) {
+
+        // Error
+        if (err) {
+          return next(err);
+        }
+
+        res.send(files);
+      }
+    );
+  });
+
 
 // Dynamic Routes
 // --------------
