@@ -1,70 +1,82 @@
+var _            = require('../lib/helpers');
 var MonopolyGame = require('../lib/monopoly-game');
 var assert       = require('assert');
 
 describe('Game', function() {
+  let config, game;
+
+  config = _.loadJSONFile('./app/themes/classic/config.json');
+  config.properties = _.loadJSONFile('./app/themes/classic/properties.json');
+  config.assets = _.loadJSONFile('./app/themes/classic/assets.json');
+  config.players = [{ name: 'Player 1' }];
+  config.bank = config.start * 2;
+
+  beforeEach(function() {
+    game = new MonopolyGame(_.randID(), config);
+  });
+
   it('should create a new game', function() {
-    assert.ok(new MonopolyGame);
+    assert.ok(game && game instanceof MonopolyGame);
   });
 
-  it('should create player and property instances', function() {
-    var M = new MonopolyGame({
-      players: [{ name: '1' }],
-      properties: [{
-        name: '1',
-        group: '1', 
-        costs: {
-          price: 1,
-          build: 1,
-          price: 100
-        }
-      }]
-    });
-
-    assert.ok(M.Player.get('1') instanceof M.Player);
-    assert.ok(M.Property.get('1') instanceof M.Property);
+  it('should create player', function() {
+    assert.ok(game.players[0] instanceof MonopolyGame.Player);
   });
 
-  it('should start players with custom balance', function() {
-    var M = new MonopolyGame({
-      players: [{ name: '1' }],
-      startBalance: 1
-    });
-
-    assert.equal(1, M.Player.get('1').balance);
+  it('should create property', function() {
+    assert.ok(game.properties[0] instanceof MonopolyGame.Property);
   });
 
-  it('should have custom building limits', function() {
-    var M = new MonopolyGame({
-      availableHouses: 1,
-      availableHotels: 1
-    });
+  it('should create asset', function() {
+    assert.ok(game.assets[0] instanceof MonopolyGame.Asset);
+  });
 
-    assert.equal(1, M.availableHouses);
-    assert.equal(1, M.availableHotels);
+  it('should start new players with starting balance', function() {
+    assert.equal(game.players[0].balance, game.start);
+  });
+
+  it('should start players with existing balance', function() {
+    game = new MonopolyGame(_.randID(), _.extend({}, config, {
+      players: [{ name: 'Player 1', balance: 1 }]
+    }));
+
+    assert.equal(game.players[0].balance, 1);
+  });
+
+  it('should allow custom building limits', function() {
+    game = new MonopolyGame(_.randID(), _.extend({}, config, {
+      houses: 1,
+      hotels: 1
+    }));
+
+    assert.equal(1, game.houses);
+    assert.equal(1, game.hotels);
   });
 
   it('should have custom rates', function() {
-    var M = new MonopolyGame({
-      properties: [{
-        name: '1',
-        group: '1', 
-        costs: {
-          price: 1,
-          build: 1
-        }
-      }],
+    game = new MonopolyGame(_.randID(), _.extend({}, config, {
+      mortgageRate: 0,
+      interestRate: 0,
+      buildingRate: 0
+    }));
 
-      rates: {
-        mortgage: 0,
-        interest: 1,
-        building: 0
-      }
+    assert.equal(game.properties[0].mortgage, 0);
+    assert.equal(game.properties[0].interest, 0);
+    assert.equal(game.properties[0].improvementValue, 0);
+  });
+
+  describe('#join', function() {
+    it('should create a new player', function() {
+      let player = game.join({ name: 'Player 2' });
+
+      assert.ok(player instanceof MonopolyGame.Player);
     });
 
-    var prop = M.Property.get('1');
+    it('should give new player start balance', function() {
+      let player = game.join({ name: 'Player 2', balance: 1 });
 
-    assert.equal(0, prop.values.mortgage);
-    assert.equal(prop.values.mortgage, prop.costs.interest);
-    assert.equal(0, prop.values.building);
+      assert.notEqual(player.balance, 1);
+      assert.equal(player.balance, game.start);
+    });
   });
 });

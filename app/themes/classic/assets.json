@@ -1,0 +1,11 @@
+[{
+  "name": "Jail Card",
+  "description": "Get out of jail free",
+  "type": "chance",
+  "value": 0
+}, {
+  "name": "Birthday",
+  "description": "Receive $50",
+  "type": "community",
+  "value": 50
+}]

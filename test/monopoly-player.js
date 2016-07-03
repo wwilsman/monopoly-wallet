@@ -1,295 +1,387 @@
+var _             = require('../lib/helpers');
 var MonopolyGame  = require('../lib/monopoly-game');
 var MonopolyError = require('../lib/monopoly-error');
 var assert        = require('assert');
 
 describe('Player', function() {
-  var p1, p2, prop,
-    M = new MonopolyGame;
+  let config, game, player, property, asset, valued;
 
-  beforeEach(function () {
-    prop = new M.Property({
-      owner: '1',
-      name: 'property name',
-      group: 'group name',
-      costs: {
-        price: 60,
-        build: 50,
-        rent: [0, 1, 2, 3, 4, 5]
-      }
-    });
+  config = _.loadJSONFile('./app/themes/classic/config.json');
+  config.properties = _.loadJSONFile('./app/themes/classic/properties.json');
+  config.assets = _.loadJSONFile('./app/themes/classic/assets.json');
+  config.bank = config.start * 2;
 
-    p1 = new M.Player({
-      name: '1',
-      assets: {
-        jailcard: 1
-      }
-    });
-
-    p2 = new M.Player({
-      name: '2',
-    });
-  });
-
-  afterEach(function() {
-    M.properties.length = 0;
-    M.players.length = 1;
+  beforeEach(function() {
+    game = new MonopolyGame(_.randID(), config);
+    player = game.join({ name: 'Player 1' });
+    property = game.properties[0];
+    asset = game.assets.find((a) => !a.value);
+    valued = game.assets.find((a) => a.value);
+    game.bank.transfer(player, [...property.group, asset]);
   });
 
   it('should create new player', function() {
-    assert.ok(p1);
-  });
-
-  it('should define "bank" player automatically', function() {
-    assert.ok(M.Bank);
+    assert.ok(player && player instanceof MonopolyGame.Player);
   });
 
   it('should not allow players to be named "bank"', function() {
-    assert.throws(function() {
-      new M.Player({ name: 'bank' });
+    assert.throws(() => {
+      game.join({ name: 'bank' });
     }, MonopolyError);
   });
 
+  describe('#value', function() {
+    it('should total balance and property values', function() {
+      let groupValue = property.group.reduce((t, p) => t + p.value, 0);
+      assert.equal(player.value, player.balance + groupValue);
+    });
+  });
+
+  describe('#properties', function() {
+    it('should contain properties owned by the player', function() {
+      assert.notEqual(player.properties.indexOf(property), -1);
+    });
+  });
+
+  describe('#assets', function() {
+    it('should contain assets owned by the player', function() {
+      assert.notEqual(player.assets.indexOf(asset), -1);
+    });
+  });
+
   describe('#transfer()', function() {
-    it('should transfer currency', function() {
-      var amount = 25;
-      var b1 = p1.balance;
-      var b2 = p2.balance;
+    it('should transfer money', function() {
+      let b1 = player.balance;
+      let b2 = game.bank.balance;
+      let amount = 25;
 
-      p1.transfer(p2, amount);
+      player.transfer(game.bank, amount);
 
-      assert.equal(b1 - amount, p1.balance);
-      assert.equal(b2 + amount, p2.balance);
+      assert.equal(player.balance, b1 - amount);
+      assert.equal(game.bank.balance, b2 + amount);
     });
 
-    it('should transfer one property', function() {
-      assert.equal(prop.owner, p1);
-      assert.notEqual(prop.owner, p2);
+    it('should transfer a property', function() {
+      assert.equal(property.owner, player);
 
-      p1.transfer(p2, prop);
+      player.transfer(game.bank, property);
 
-      assert.notEqual(prop.owner, p1);
-      assert.equal(prop.owner, p2);
+      assert.equal(property.owner, game.bank);
     });
 
-    it('should transfer all properties', function() {
-      assert.equal(prop.owner, p1);
-      assert.notEqual(prop.owner, p2);
+    it('should transfer an asset', function() {
+      assert.equal(asset.owner, player);
 
-      p1.transfer(p2, 'properties');
+      player.transfer(game.bank, asset);
 
-      assert.notEqual(prop.owner, p1);
-      assert.equal(prop.owner, p2);
+      assert.equal(asset.owner, game.bank);
     });
 
-    it('should transfer one asset', function() {
-      assert.equal(p1.assets.jailcard, 1);
-      assert.notEqual(p2.assets.jailcard, 1);
+    it('should transfer an asset\'s value', function() {
+      let b1 = player.balance;
+      let b2 = game.bank.balance;
+      let amount = valued.value;
 
-      p1.transfer(p2, 'jailcard');
+      assert.equal(valued.owner, game.bank);
 
-      assert.notEqual(p1.assets.jailcard, 1);
-      assert.equal(p2.assets.jailcard, 1);
+      game.bank.transfer(player, valued);
+
+      assert.equal(player.balance, b1 + amount);
+      assert.equal(game.bank.balance, b2 - amount);
+      assert.equal(valued.owner, game.bank);
     });
 
-    it('should transfer all assets', function() {
-      assert.equal(p1.assets.jailcard, 1);
-      assert.notEqual(p2.assets.jailcard, 1);
+    it('should transfer multiple items', function() {
+      let b1 = player.balance;
+      let b2 = game.bank.balance;
+      let amount = 25;
 
-      p1.transfer(p2, 'assets');
+      assert.equal(property.owner, player);
+      assert.equal(asset.owner, player);
 
-      assert.notEqual(p1.assets.jailcard, 1);
-      assert.equal(p2.assets.jailcard, 1);
+      player.transfer(game.bank, [amount, property, asset]);
+
+      assert.equal(player.balance, b1 - amount);
+      assert.equal(game.bank.balance, b2 + amount);
+      assert.equal(property.owner, game.bank);
+      assert.equal(asset.owner, game.bank);
     });
 
-    it('should not transfer currency if low balance', function() {
-      assert.throws(function() {
-        p1.transfer(p2, p1.balance + 1);
-      }, MonopolyError.LowBalanceError);
+    it('should not transfer more money than the player\'s balance', function() {
+      assert.throws(() => {
+        player.transfer(game.bank, player.balance + 1);
+      }, MonopolyError);
     });
 
-    it('should not transfer property if improved', function() {
-      assert.throws(function() {
-        p1.improve(prop);
-        p1.transfer(p1, prop);
-      }, MonopolyError.ImprovementError);
+    it('should not transfer a property if it\'s improved', function() {
+      player.improve(property);
+
+      assert.ok(property.isImproved);
+
+      assert.throws(() => {
+        player.transfer(game.bank, property);
+      }, MonopolyError);
     });
 
-    it('should not transfer an asset if there is none', function() {
-      assert.throws(function() {
-        p2.transfer(p1, 'jailcard');
-      }, MonopolyError.OwnerError);
+    it('should not transfer a property the player doesn\'t own', function() {
+      assert.throws(() => {
+        game.bank.transfer(player, property);
+      }, MonopolyError);
+    });
+
+    it('should not transfer an asset the player doesn\'t own', function() {
+      assert.throws(() => {
+        game.bank.transfer(player, asset);
+      }, MonopolyError);
+
+      assert.throws(() => {
+        player.transfer(game.bank, valued);
+      }, MonopolyError);
+    });
+
+    it('should not transfer multiple items if an error occurs', function() {
+      var b1 = player.balance;
+      var b2 = game.bank.balance;
+
+      assert.equal(property.owner, player);
+      assert.equal(asset.owner, player);
+
+      assert.throws(() => {
+        player.transfer(game.bank, [player.balance + 1, property, asset]);
+      }, MonopolyError);
+
+      assert.equal(player.balance, b1);
+      assert.equal(game.bank.balance, b2);
+      assert.equal(property.owner, player);
+      assert.equal(asset.owner, player);
+    });
+  });
+
+  describe('#bankrupt()', function() {
+    it('should mark the player as bankrupt', function() {
+      assert.ok(!player.isBankrupt);
+
+      game.bank.bankrupt(player);
+
+      assert.ok(player.isBankrupt);
+    });
+
+    it('should sell all property improvements', function() {
+      player.improve(property);
+
+      assert.equal(property.buildings, 1);
+
+      game.bank.bankrupt(player);
+
+      assert.equal(property.buildings, 0);
+    });
+
+    it('should mortgage properties', function() {
+      assert.ok(!property.isMortgaged);
+
+      game.bank.bankrupt(player);
+
+      assert.ok(property.isMortgaged);
     });
   });
 
   describe('#improve()', function() {
-    it('should improve property', function() {
-      assert.ok(!prop.isImproved);
+    it('should add to buildings', function() {
+      assert.equal(property.buildings, 0);
 
-      p1.improve(prop);
+      player.improve(property);
 
-      assert.ok(prop.isImproved);
+      assert.equal(property.buildings, 1);
     });
 
-    it('should subtract from balance', function() {
-      var balance = p1.balance;
+    it('should cost the player money', function() {
+      let bal = player.balance;
 
-      p1.improve(prop);
+      player.improve(property);
 
-      assert.equal(balance - prop.costs.build, p1.balance);
+      assert.equal(player.balance, bal - property.cost);
     });
 
-    it('should not improve if not player\'s property', function() {
-      assert.throws(function() {
-        p2.improve(prop);
-      }, MonopolyError.OwnerError);
+    it('should subtract from available houses', function() {
+      let houses = game.houses;
+
+      player.improve(property);
+
+      assert.equal(game.houses, houses - 1);
     });
 
-    it('should not improve if low balance', function() {
-      assert.throws(function() {
-        p1.balance = 1;
-        p1.improve(prop);
-      }, MonopolyError.LowBalanceError);
+    it('should subtract from available hotels and add back houses', function() {
+      let houses = game.houses;
+      let hotels = game.hotels;
+      let group = property.group;
+
+      for (let i = 1; i <= 4; i++) {
+        group.forEach((p) => player.improve(p));
+
+        assert.equal(game.hotels, hotels);
+        assert.equal(game.houses, houses - i * group.length);
+      }
+
+      group.forEach((p) => player.improve(p));
+
+      assert.equal(game.houses, houses);
+      assert.equal(game.hotels, hotels - group.length);
+    });
+
+    it('should not improve if railroad/utility', function() {
+      let railroad = game.properties.find((p) => p._group === 'railroad');
+      let utility = game.properties.find((p) => p._group === 'utility');
+      game.bank.transfer(player, [railroad, utility]);
+
+      assert.throws(() => {
+        player.improve(railroad);
+      }, MonopolyError);
+
+      assert.equal(railroad.buildings, 0);
+
+      assert.throws(() => {
+        player.improve(utility);
+      }, MonopolyError);
+
+      assert.equal(utility.buildings, 0);
+    });
+
+    it('should not improve if not a monopoly', function() {
+      player.transfer(game.bank, property);
+
+      assert.throws(() => {
+        player.improve(property);
+      }, MonopolyError);
+    });
+
+    it('should not improve if already fully improved', function() {
+      while (property.group.every((p) => !p.isFullyImproved)) {
+        property.group.forEach((p) => player.improve(p));
+      }
+
+      assert.equal(property.buildings, 5);
+
+      assert.throws(() => {
+        player.improve(property);
+      }, MonopolyError);
+
+      assert.equal(property.buildings, 5);
+    });
+
+    it('should not improve unevenly', function() {
+      player.improve(property);
+
+      assert.equal(property.buildings, 1);
+
+      assert.throws(() => {
+        player.improve(property);
+      }, MonopolyError);
+
+      assert.equal(property.buildings, 1);
     });
   });
 
   describe('#unimprove()', function() {
-    it('should unimprove property', function() {
-      assert.ok(!prop.isImproved);
 
-      p1.improve(prop);
-
-      assert.ok(prop.isImproved);
+    beforeEach(function() {
+      property.group.forEach((p) => player.improve(p));
     });
 
-    it('should add to balance', function() {
-      var balance;
+    it('should remove from buildings', function() {
+      assert.equal(property.buildings, 1);
 
-      p1.improve(prop);
-      balance = p1.balance;
-      p1.unimprove(prop);
+      player.unimprove(property);
 
-      assert.equal(balance + prop.values.building, p1.balance);
+      assert.equal(property.buildings, 0);
     });
 
-    it('should not unimprove if not player\'s property', function() {
-      assert.throws(function() {
-        p1.improve(prop);
-        p2.unimprove(prop);
-      }, MonopolyError.OwnerError);
+    it('should add to house building cap', function() {
+      let houses = game.houses;
+
+      player.unimprove(property);
+
+      assert.equal(game.houses, houses + 1);
+    });
+
+    it('should add to hotel building cap', function() {
+      while (property.group.some((p) => !p.isFullyImproved)) {
+        property.group.forEach((p) => player.improve(p));
+      }
+
+      let hotels = game.hotels;
+
+      player.unimprove(property);
+
+      assert.equal(game.hotels, hotels + 1);
+    });
+
+    it('should not unimprove if railroad/utility', function() {
+      let railroad = game.properties.find((p) => p._group === 'railroad');
+
+      assert.throws(() => {
+        player.unimprove(railroad);
+      }, MonopolyError);
+    });
+
+    it('should not unimprove if already unimproved', function() {
+      property.group.forEach((p) => player.unimprove(p));
+
+      assert.throws(() => {
+        player.unimprove(property);
+      }, MonopolyError);
+    });
+
+    it('should not unimprove unevenly', function() {
+      property.group.forEach((p) => player.improve(p));
+      player.unimprove(property);
+
+      assert.throws(() => {
+        player.unimprove(property);
+      }, MonopolyError);
     });
   });
 
   describe('#mortgage()', function() {
     it('should mortgage property', function() {
-      assert.ok(!prop.isMortgaged);
+      assert.ok(!property.isMortgaged);
 
-      p1.mortgage(prop);
+      player.mortgage(property);
 
-      assert.ok(prop.isMortgaged);
+      assert.ok(property.isMortgaged);
     });
 
-    it('should add to balance', function() {
-      var balance = p1.balance;
+    it('should not mortgage if already mortgaged', function() {
+      player.mortgage(property);
 
-      p1.mortgage(prop);
-
-      assert.equal(balance + prop.values.mortgage, p1.balance);
+      assert.throws(() => {
+        player.mortgage(property);
+      }, MonopolyError);
     });
 
-    it('should not mortgage if not player\'s property', function() {
-      assert.throws(function() {
-        p2.mortgage(prop);
-      }, MonopolyError.OwnerError);
+    it('should not mortgage if property is improved', function() {
+      player.improve(property);
+
+      assert.throws(() => {
+        player.mortgage(property);
+      }, MonopolyError);
     });
   });
 
   describe('#unmortgage()', function() {
     it('should unmortgage property', function() {
-      assert.ok(!prop.isMortgaged);
+      player.mortgage(property);
 
-      p1.mortgage(prop);
+      assert.ok(property.isMortgaged);
 
-      assert.ok(prop.isMortgaged);
+      player.unmortgage(property);
 
-      p1.unmortgage(prop);
-
-      assert.ok(!prop.isMortgaged);
+      assert.ok(!property.isMortgaged);
     });
 
-    it('should subtract from balance', function() {
-      var cost = prop.values.mortgage + prop.costs.interest;
-      var balance;
-
-      p1.mortgage(prop);
-      balance = p1.balance;
-      p1.unmortgage(prop);
-
-      assert.equal(balance - cost, p1.balance);
-    });
-
-    it('should not unmortgage if not player\'s property', function() {
-      p1.mortgage(prop);
-
-      assert.throws(function() {
-        p2.unmortgage(prop);
-      }, MonopolyError.OwnerError);
-    });
-
-    it('should not unmortgage if low balance', function() {
-      p1.mortgage(prop);
-      p1.balance = 1;
-
-      assert.throws(function() {
-        p1.unmortgage(prop);
-      }, MonopolyError.LowBalanceError);
-    });
-  });
-
-  describe('#bankrupt()', function() {
-    it('should bankrupt player', function() {
-      assert.ok(!p1.isBankrupt);
-
-      p2.bankrupt(p1);
-
-      assert.ok(p1.isBankrupt);
-    });
-
-    it('should sell property improvements', function() {
-      assert.equal(0, prop.buildings);
-
-      p1.improve(prop);
-
-      assert.equal(1, prop.buildings);
-
-      p2.bankrupt(p1);
-
-      assert.equal(0, prop.buildings);
-    });
-
-    it('should tranfer everything to beneficiary', function() {
-      var b1 = p1.balance;
-      var b2 = p2.balance;
-
-      assert.equal(prop.owner, p1);
-      assert.ok(p1.assets.jailcard);
-
-      p2.bankrupt(p1);
-
-      assert.equal(prop.owner, p2);
-      assert.ok(p2.assets.jailcard);
-      assert.equal(b1 + b2, p2.balance);
-    });
-  });
-
-  describe('#value', function() {
-    it('should total balance and property values', function() {
-      assert.equal(p1.balance + prop.value, p1.value);
-    });
-  });
-
-  describe('#properties', function() {
-    it('should contain properties owned by player', function() {
-      assert.notEqual(-1, p1.properties.indexOf(prop));
+    it('should not unmortgage if not mortgaged', function() {
+      assert.throws(() => {
+        player.unmortgage(property);
+      }, MonopolyError);
     });
   });
 });

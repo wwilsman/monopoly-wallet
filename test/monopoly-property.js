@@ -1,288 +1,103 @@
+var _             = require('../lib/helpers');
 var MonopolyGame  = require('../lib/monopoly-game');
 var MonopolyError = require('../lib/monopoly-error');
 var assert        = require('assert');
 
 describe('Property', function() {
-  var prop1, prop2, player,
-    M = new MonopolyGame;
+  let config, game, player, property;
+
+  config = _.loadJSONFile('./app/themes/classic/config.json');
+  config.properties = _.loadJSONFile('./app/themes/classic/properties.json');
+  config.bank = config.start * 2;
 
   beforeEach(function () {
-    prop1 = new M.Property({
-      owner: '1',
-      name: 'property 1',
-      group: 'group name',
-      costs: {
-        price: 60,
-        build: 50,
-        rent: [0, 1, 2, 3, 4, 5]
-      }
-    });
-
-    prop2 = new M.Property({
-      owner: '1',
-      name: 'property 2',
-      group: 'group name',
-      costs: {
-        price: 60,
-        build: 50,
-        rent: [0, 1, 2, 3, 4, 5]
-      }
-    });
-
-    player = new M.Player({
-      name: '1'
-    });
+    game = new MonopolyGame(_.randID(), config);
+    player = game.join({ name: 'Player 1' });
+    property = game.properties[0];
+    game.bank.transfer(player, property.group);
   });
 
-  afterEach(function() {
-    M.properties.length = 0;
-    M.players.length = 1;
-  });
-
-  it('should be created', function() {
-    assert.ok(prop1);
-  });
-
-  describe('#improve()', function() {
-    it('should add to buildings', function() {
-      assert.equal(0, prop1.buildings);
-
-      prop1.improve();
-
-      assert.equal(1, prop1.buildings);
-    });
-
-    it('should subtract from house building cap', function() {
-      var houses = M.availableHouses;
-
-      prop1.improve();
-
-      assert.equal(houses - 1, M.availableHouses);
-    });
-
-    it('should subtract from hotel building cap', function() {
-      var hotels = M.availableHotels;
-
-      prop1.buildings = 4;
-      prop2.buildings = 4;
-      prop2.improve();
-
-      assert.equal(hotels - 1, M.availableHotels);
-    });
-
-    it('should not improve if railroad/utility', function() {
-      prop1.groupName = 'railroad';
-
-      assert.throws(function() {
-        prop1.improve();
-      }, MonopolyError);
-    });
-
-    it('should not improve if not monopoly', function() {
-      prop2.transfer(M.Bank);
-
-      assert.throws(function() {
-        prop1.improve();
-      }, MonopolyError.MonopolyError);
-    });
-
-    it('should not improve if fully improved', function() {
-      prop1.buildings = 5;
-      prop2.buildings = 5;
-
-      assert.throws(function() {
-        prop1.improve();
-      }, MonopolyError.FullImprovementError);
-    });
-
-    it('should not improve unevenly', function() {
-      prop1.buildings = 1;
-
-      assert.throws(function() {
-        prop1.improve();
-      }, MonopolyError.BuildEvenlyError);
-    });
-  });
-
-  describe('#unimprove()', function() {
-    it('should remove from buildings', function() {
-      assert.equal(0, prop1.buildings);
-
-      prop1.improve();
-
-      assert.equal(1, prop1.buildings);
-
-      prop1.unimprove();
-
-      assert.equal(0, prop1.buildings);
-    });
-
-    it('should add to house building cap', function() {
-      var houses;
-
-      prop1.improve();
-      houses = M.availableHouses;
-      prop1.unimprove();
-
-      assert.equal(houses + 1, M.availableHouses);
-    });
-
-    it('should add to hotel building cap', function() {
-      var hotels = M.availableHotels;
-
-      prop1.buildings = 5;
-      prop2.buildings = 5;
-      prop2.unimprove();
-
-      assert.equal(hotels + 1, M.availableHotels);
-    });
-
-    it('should not unimprove if railroad/utility', function() {
-      prop1.groupName = 'railroad';
-
-      assert.throws(function() {
-        prop1.unimprove();
-      }, MonopolyError);
-    });
-
-    it('should not unimprove if already unimproved', function() {
-      assert.throws(function() {
-        prop1.unimprove();
-      }, MonopolyError.UnimprovementError);
-    });
-
-    it('should not unimprove unevenly', function() {
-      prop1.buildings = 1;
-      prop2.buildings = 2;
-
-      assert.throws(function() {
-        prop1.unimprove();
-      }, MonopolyError.BuildEvenlyError);
-    });
-  });
-
-  describe('#mortgage()', function() {
-    it('should mortgage property', function() {
-      assert.ok(!prop1.isMortgaged);
-
-      prop1.mortgage();
-
-      assert.ok(prop1.isMortgaged);
-    });
-
-    it('should not mortgage if already mortgaged', function() {
-      prop1.mortgage();
-
-      assert.throws(function() {
-        prop1.mortgage();
-      }, MonopolyError.MortgageError);
-    });
-
-    it('should not mortgage if property is improved', function() {
-      prop1.improve();
-
-      assert.throws(function() {
-        prop1.mortgage();
-      }, MonopolyError.ImprovementError);
-    });
-  });
-
-  describe('#unmortgage()', function() {
-    it('should unmortgage property', function() {
-      assert.ok(!prop1.isMortgaged);
-
-      prop1.mortgage();
-
-      assert.ok(prop1.isMortgaged);
-
-      prop1.unmortgage();
-
-      assert.ok(!prop1.isMortgaged);
-    });
-
-    it('should not unmortgage if not mortgaged', function() {
-      assert.throws(function() {
-        prop1.unmortgage();
-      }, MonopolyError.UnmortgageError);
-    });
+  it('should create a new property', function() {
+    assert.ok(property && property instanceof MonopolyGame.Property);
   });
 
   describe('#isMonopoly', function() {
     it('should be monopoly', function() {
-      assert.ok(prop1.isMonopoly);
+      assert.ok(property.isMonopoly);
     });
 
     it('should not be monopoly', function() {
-      prop2.transfer(M.Bank);
-      assert.ok(!prop1.isMonopoly);
+      player.transfer(game.bank, property);
+
+      assert.ok(!property.isMonopoly);
     });
   });
 
   describe('#group', function() {
     it('should list all properties in group', function() {
-      assert.ok(prop1.group.indexOf(prop2));
+      assert.ok(property.group.every((p) => p._group === property._group));
     });
   });
 
   describe('#value', function() {
     it('should total mortgage and building values', function() {
-      prop1.improve();
-      assert.equal(prop1.values.mortgage + prop1.values.building, prop1.value);
+      player.improve(property);
+
+      let value = property.mortgage + property.improvementValue;
+
+      assert.equal(property.value, value);
     });
   });
 
   describe('#rent', function() {
+
     it('should return unimproved', function() {
-      prop2.transfer(M.Bank);
-      assert.equal(prop1.costs.rent[0], prop1.rent);
+      player.transfer(game.bank, property);
+
+      assert.equal(property._rent[0], property.rent);
     });
 
     it('should return doubled due to monopoly', function() {
-      assert.equal(prop1.costs.rent[0] * 2, prop1.rent);
+      assert.equal(property._rent[0] * 2, property.rent);
     });
-    
-    it('should return rent with one house', function() {
-      prop1.buildings = 1;
-      assert.equal(prop1.costs.rent[1], prop1.rent);
-    });
-    
-    it('should return rent with two houses', function() {
-      prop1.buildings = 2;
-      assert.equal(prop1.costs.rent[2], prop1.rent);
-    });
-    
-    it('should return rent with three houses', function() {
-      prop1.buildings = 3;
-      assert.equal(prop1.costs.rent[3], prop1.rent);
-    });
-    
-    it('should return rent with four houses', function() {
-      prop1.buildings = 4;
-      assert.equal(prop1.costs.rent[4], prop1.rent);
-    });
-    
-    it('should return rent with one hotel', function() {
-      prop1.buildings = 5;
-      assert.equal(prop1.costs.rent[5], prop1.rent);
+
+    it('should return rent based on improvements', function() {
+      property.group.forEach((p) => player.improve(p));
+
+      assert.equal(property._rent[1], property.rent);
+
+      property.group.forEach((p) => player.improve(p));
+
+      assert.equal(property._rent[2], property.rent);
+
+      property.group.forEach((p) => player.improve(p));
+
+      assert.equal(property._rent[3], property.rent);
+
+      property.group.forEach((p) => player.improve(p));
+
+      assert.equal(property._rent[4], property.rent);
+
+      property.group.forEach((p) => player.improve(p));
+
+      assert.equal(property._rent[5], property.rent);
     });
 
     it('should return proper rent values for railroads/utilities', function() {
-      prop1.groupName = 'railroad';
-      prop1.costs.rent = [1, 2];
+      let railroad = game.properties.find((p) => p._group === 'railroad');
+      game.bank.transfer(player, railroad);
 
-      assert.equal(1, prop1.rent);
+      assert.equal(railroad._rent[0], railroad.rent);
 
-      prop2.groupName = 'railroad';
-      prop2.costs.rent = [1, 2];
+      game.bank.transfer(player, railroad.group[1]);
 
-      assert.equal(2, prop1.rent);
-      assert.equal(2, prop2.rent);
+      assert.equal(railroad._rent[1], railroad.rent);
     });
   });
 
   describe('#owner', function() {
     it('should return the player who owns this property', function() {
-      assert.equal(prop1.owner, player);
+      assert.equal(property.owner, player);
     });
   });
 });
