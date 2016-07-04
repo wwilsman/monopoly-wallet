@@ -17,10 +17,8 @@ router.route('/new')
   .post(urlencodedParser, function(req, res, next) {
 
     // Fix values & set defaults
-    let body = _.extend({},
-      _.fixNumberStrings(req.body || {}),
-      { theme: 'classic' }
-    );
+    let body = _.extend({ theme: 'classic' },
+      _.fixNumberStrings(req.body || {}));
 
     // Theme directory
     let themeDir = path.join('./app/themes/', body.theme);
@@ -52,7 +50,8 @@ router.route('/new')
         return next(err);
       }
 
-      let game = new MonopolyGame(gameID, gameConfig);
+      let game = new MonopolyGame(gameConfig);
+      game._id = gameID;
 
       // Insert the game and respond
       games.insert(game.toJSON(), function(err, result) {
@@ -62,9 +61,8 @@ router.route('/new')
           return next(err);
         }
 
-        // Authenticate and send room ID
-        req.session.gid = body._id;
-        res.send({ gameID });
+        // Send result
+        res.send(result);
       });
     });
   });

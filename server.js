@@ -13,14 +13,15 @@ var server = app.listen(config.port);
 var webpack           = require('webpack');
 var webpackMiddleware = require('webpack-dev-middleware');
 
-// Sockets
-var io = require('socket.io').listen(server).of('/game');
-
 // Database
 var mongo = require('mongoskin');
 var db    = mongo.db(config.mongo.uri, {
   server: { auto_reconnect: true }
 });
+
+// Sockets
+var io = require('socket.io').listen(server).of('/game');
+var room = require('./app/game/room')(io, db);
 
 // Misc
 var hbs  = require('hbs');
@@ -81,7 +82,7 @@ app.use(function(err, req, res, next) {
 // ------
 
 io.on('connection', function(socket) {
-  socket.on('join', function(gameId) {
-
+  socket.on('join', function(gameID, { name = '', token = '' }) {
+    room.join(socket, gameID, { name, token });
   });
 });

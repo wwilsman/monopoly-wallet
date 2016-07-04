@@ -11,7 +11,7 @@ describe('Property', function() {
   config.bank = config.start * 2;
 
   beforeEach(function () {
-    game = new MonopolyGame(_.randID(), config);
+    game = new MonopolyGame(config);
     player = game.join({ name: 'Player 1' });
     property = game.properties[0];
     game.bank.transfer(player, property.group);

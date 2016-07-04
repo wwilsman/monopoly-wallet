@@ -13,7 +13,7 @@ describe('Game', function() {
   config.bank = config.start * 2;
 
   beforeEach(function() {
-    game = new MonopolyGame(_.randID(), config);
+    game = new MonopolyGame(config);
   });
 
   it('should create a new game', function() {

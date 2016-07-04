@@ -8,7 +8,8 @@ var MonopolyAsset = require('./asset');
 
 class MonopolyGame {
 
-  constructor(gameID, {
+  constructor({
+    _id = '',
     theme = '',
     bank = 0,
     start = 0,
@@ -21,9 +22,6 @@ class MonopolyGame {
     players = [],
     assets = [],
   }) {
-
-    // Set the ID
-    this._id = gameID;
 
     // Create the default "bank" player
     this.bank = new MonopolyPlayer(this, {
@@ -60,7 +58,7 @@ class MonopolyGame {
     });
 
     // Set remaining attributes
-    _.extend(this, { theme, start, houses, hotels, mortgageRate, interestRate, buildingRate });
+    _.extend(this, { _id, theme, start, houses, hotels, mortgageRate, interestRate, buildingRate });
   }
 
   join({ name = '', token = '' }) {
@@ -68,6 +66,44 @@ class MonopolyGame {
     this.bank.balance -= this.start;
     this.players.push(player);
     return player;
+  }
+
+  improveProperty(player, property) {
+    player = this.getPlayer(player);
+    property = this.getProperty(property);
+    player.improve(property);
+  }
+
+  unimproveProperty(player, property) {
+    player = this.getPlayer(player);
+    property = this.getProperty(property);
+    player.unimprove(property);
+  }
+
+  mortgageProperty(player, property) {
+    player = this.getPlayer(player);
+    property = this.getProperty(property);
+    player.mortgage(property);
+  }
+
+  unmortgageProperty(player, property) {
+    player = this.getPlayer(player);
+    property = this.getProperty(property);
+    player.unmortgage(property);
+  }
+
+  makeTransfer(player1, player2, { money = 0, properties = [], assets = [] }) {
+    player1 = game.findPlayer(player1);
+    player2 = game.findPlayer(player2);
+    properties = properties.map(game.findProperty, game);
+    assets = assets.map(game.findAsset, game);
+    player1.transfer(player2, [money, ...properties, ...assets]);
+  }
+
+  claimBankruptcy(player, beneficiary) {
+    player = game.findPlayer(player);
+    beneficiary = game.findPlayer(beneficiary);
+    beneficiary.bankrupt(player);
   }
 
   getPlayer(player) {

@@ -13,10 +13,18 @@ module.exports = {
 
   extend(obj, ...others) {
 
-    others.forEach((source) => {
+    others.filter((o) => !!o).forEach((source) => {
       for (var prop in source) {
         if (source.hasOwnProperty(prop)) {
-          obj[prop] = source[prop];
+          if (obj[prop] !== undefined && typeof source[prop] === 'object' && source[prop] !== null) {
+            if (Array.isArray(source[prop])) {
+              obj[prop] = source[prop].slice(0);
+            } else {
+              obj[prop] = extend({}, obj[prop], source[prop]);
+            }
+          } else {
+            obj[prop] = source[prop];
+          }
         }
       }
     });

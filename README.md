@@ -23,7 +23,7 @@ config.properties = require('./app/themes/classic/properties.json');
 config.assets = require('./app/themes/classic/assets.json');
 
 // create a new game
-let m = new Game('example', config);
+let m = new Game(config);
 
 // play a game
 let player = m.join({ name: 'Player 1' });
@@ -48,8 +48,10 @@ Todo:
 
 - [X] Revisit
 - [X] Setup React
-- [ ] Setup Redux
-- [ ] Websocket events
+- [X] Setup Redux
+- [X] Setup sockets
+- [ ] Use sockets to play a game
+- [ ] Flesh out React app
 - [ ] ...
 
 
