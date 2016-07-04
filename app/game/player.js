@@ -1,6 +1,6 @@
-var _                = require('./helpers');
-var MonopolyProperty = require('./monopoly-property');
-var MonopolyAsset    = require('./monopoly-asset');
+var _ = require('../helpers');
+var MonopolyProperty = require('./property');
+var MonopolyAsset = require('./asset');
 
 // The Player Class
 // ==================

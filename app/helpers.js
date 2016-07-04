@@ -1,4 +1,4 @@
-let MonopolyError = require('./monopoly-error');
+var MonopolyError = require('./game/error');
 
 // Helper functions
 // ----------------

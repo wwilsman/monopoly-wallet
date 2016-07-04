@@ -1,7 +1,7 @@
-var _                 = require('./helpers');
-var MonopolyProperty  = require('./monopoly-property');
-var MonopolyPlayer    = require('./monopoly-player');
-var MonopolyAsset     = require('./monopoly-asset');
+var _ = require('../helpers');
+var MonopolyProperty = require('./property');
+var MonopolyPlayer = require('./player');
+var MonopolyAsset = require('./asset');
 
 // The Game Class
 // ==================
@@ -68,6 +68,30 @@ class MonopolyGame {
     this.bank.balance -= this.start;
     this.players.push(player);
     return player;
+  }
+
+  getPlayer(player) {
+    if (typeof player === 'string') {
+      return this.players.find((p) => p._id === player || p.name === player);
+    } else if (player instanceof MonopolyPlayer) {
+      return player;
+    }
+  }
+
+  getProperty(property) {
+    if (typeof property === 'string') {
+      return this.properties.find((p) => p._id === property || p.name === property);
+    } else if (property instanceof MonopolyProperty) {
+      return property;
+    }
+  }
+
+  getAsset(asset) {
+    if (typeof asset === 'string') {
+      return this.assets.find((p) => p._id === asset || p.name === asset);
+    } else if (asset instanceof MonopolyAsset) {
+      return asset;
+    }
   }
 
   toJSON() {

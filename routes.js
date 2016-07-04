@@ -1,11 +1,11 @@
-var _      = require('./lib/helpers');
+var _      = require('./app/helpers');
 var config = require('./config');
 var router = require('express').Router();
 var path   = require('path');
 var games;
 
 var urlencodedParser = require('body-parser').urlencoded({ extended: true });
-var MonopolyGame     = require('./lib/monopoly-game');
+var MonopolyGame     = require('./app/game');
 
 // Static Routes
 // -------------
@@ -105,20 +105,6 @@ router.route('/:gid/theme/:file')
       root: path.join(__dirname, '/themes/', req.game.theme)
     });
   });
-
-
-// Error Handling
-// --------------
-
-// **Unhandled**
-router.get('*', function(req, res, next) {
-  next(new Error(404));
-});
-
-// **Error**
-router.use(function(err, req, res, next) {
-  res.send(err.message);
-});
 
 
 // Functions

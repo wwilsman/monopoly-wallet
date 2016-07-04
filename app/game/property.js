@@ -1,22 +1,7 @@
-var _ = require('./helpers');
+var _ = require('../helpers');
 
 // The Property Class
 // ==================
-
-// ```
-// props = {
-//   owner: owner.name,
-//   name: 'property name',
-//   group: 'group name',
-//   buildings: 0,
-//   mortgaged: false,
-//   costs: {
-//     price: 60,
-//     build: 50,
-//     rent: [0, 1, 2, 3, 4, 5]
-//   }
-// };
-// ```
 
 class MonopolyProperty {
 

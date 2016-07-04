@@ -1,6 +1,6 @@
-var _             = require('../lib/helpers');
-var MonopolyGame  = require('../lib/monopoly-game');
-var MonopolyError = require('../lib/monopoly-error');
+var _             = require('../app/helpers');
+var MonopolyGame  = require('../app/game');
+var MonopolyError = require('../app/game/error');
 var assert        = require('assert');
 
 describe('Player', function() {

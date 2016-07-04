@@ -1,4 +1,4 @@
-var _ = require('./helpers');
+var _ = require('../helpers');
 
 // The Asset Class
 // ==================

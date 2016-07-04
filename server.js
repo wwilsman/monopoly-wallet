@@ -9,8 +9,12 @@ var app     = express();
 // Server
 var server = app.listen(config.port);
 
+// Webpack
+var webpack           = require('webpack');
+var webpackMiddleware = require('webpack-dev-middleware');
+
 // Sockets
-var io  = require('socket.io').listen(server).of('/game');
+var io = require('socket.io').listen(server).of('/game');
 
 // Database
 var mongo = require('mongoskin');
@@ -27,13 +31,23 @@ var path = require('path');
 // -------------
 
 // HBS
-app.set('views', path.join(__dirname, '/app/views'));
+app.set('views', './app/views');
 app.set('view engine', 'hbs');
 
 hbs.localsAsTemplateData(app);
 
+// Webpack
+if (config.env === 'development') {
+  let compiler = webpack(require('./webpack.config.js'));
+
+  app.use(webpackMiddleware(compiler, {
+    publicPath: '/public',
+    noInfo: true,
+  }));
+}
+
 // Static folders
-app.use(express.static(path.join(__dirname, '/public')));
+app.use(express.static('./public'));
 
 // Sessions
 app.use(require('cookie-parser')());
@@ -48,6 +62,19 @@ app.use(require('express-session')({
 // ------
 
 app.use('/', require('./routes')(db));
+
+// **Unhandled**
+app.get('*', function(req, res) {
+  res.render('index');
+});
+
+
+// Error Handling
+// --------------
+
+app.use(function(err, req, res, next) {
+  res.send(err.message);
+});
 
 
 // Events

@@ -15,12 +15,12 @@ $ node
 
 ```javascript
 // require monopoly
-let Game = require('./lib/monopoly-game');
+let Game = require('./app/game');
 
 // setup config
-let config = require('./themes/classic/config.json');
-config.properties = require('./themes/classic/properties.json');
-config.assets = require('./themes/classic/assets.json');
+let config = require('./app/themes/classic/config.json');
+config.properties = require('./app/themes/classic/properties.json');
+config.assets = require('./app/themes/classic/assets.json');
 
 // create a new game
 let m = new Game('example', config);
@@ -38,16 +38,16 @@ Themes
 ------
 
 Themes determine the look and sometimes the rules of a game of Monopoly. They
-belong in the `themes` directory under a folder by the name of the theme.
+belong in the `app/themes` directory under a folder by the name of the theme.
 
-**See `themes/classic` for an example.**
+**See `app/themes/classic` for an example.**
 
 
 Todo:
 -----
 
 - [X] Revisit
-- [ ] Setup React
+- [X] Setup React
 - [ ] Setup Redux
 - [ ] Websocket events
 - [ ] ...
