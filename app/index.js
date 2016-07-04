@@ -5,6 +5,8 @@ import io from 'socket.io-client';
 window.socket = io('/game');
 
 ReactDOM.render(
-  <h1>Hello World!</h1>,
+  <h1>Hello Monopoly!</h1>,
   document.getElementById('root')
 );
+
+// @TODO: at least be able create/join a game

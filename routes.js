@@ -23,6 +23,8 @@ router.route('/new')
     // Theme directory
     let themeDir = path.join('./app/themes/', body.theme);
 
+    // @TODO: default player & token (just in case)
+
     // Game configuration file
     let config = _.loadJSONFile(path.join(themeDir, 'config.json'));
 

@@ -6,6 +6,8 @@ var monopolyReducer = require('./reducer');
 var monopolyActions = require('./actions');
 var io, games;
 
+// @TODO: Flesh out game room events
+
 function join(socket, gameID, player) {
   games.findOne({ _id: gameID }, function(err, game) {
 
