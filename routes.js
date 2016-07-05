@@ -23,7 +23,11 @@ router.route('/new')
     // Theme directory
     let themeDir = path.join('./app/themes/', body.theme);
 
-    // @TODO: default player & token (just in case)
+    // Default player
+    if (!body.players || !body.players[0]) {
+      let token = getFileNames(path.join(themedir, 'tokens'))[0];
+      body.players = [{ name: 'Player 1', token }];
+    }
 
     // Game configuration file
     let config = _.loadJSONFile(path.join(themeDir, 'config.json'));
@@ -129,6 +133,11 @@ function generateGameID(callback, length) {
     // Try again
     generateGameID(callback, length);
   });
+}
+
+// Get filenames in a directory
+getFileNames(dir) {
+  return fs.readdirSync(dir).map((f) => path.basename(f, path.extname(f)));
 }
 
 // Export a function to access the database
