@@ -136,7 +136,7 @@ function generateGameID(callback, length) {
 }
 
 // Get filenames in a directory
-getFileNames(dir) {
+function getFileNames(dir) {
   return fs.readdirSync(dir).map((f) => path.basename(f, path.extname(f)));
 }
 

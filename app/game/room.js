@@ -4,129 +4,138 @@ var { createStore } = require('redux');
 var undoable = require('redux-undo').default;
 var monopolyReducer = require('./reducer');
 var monopolyActions = require('./actions');
-var io, games;
 
-// @TODO: Flesh out game room events
+class MonopolyRoom {
 
-function join(socket, gameID, player) {
-  games.findOne({ _id: gameID }, function(err, game) {
+  constructor(game, socket) {
 
-    // Error/Not Found
-    if (err || !game) {
-      socket.emit('message', 'error', err ? err.message : 'Game not found');
-      return;
-    }
+    this._id = game._id;
 
-    // Get existing data
-    let { store, polls } = getRoomData(gameID);
+    this.state = game;
 
-    // First player here
-    if (!store) {
+    this.store = createStore(undoable(monopolyReducer),
+      { past: [], present: this.state, future: [] });
 
-      // Setup store
-      store = createStore(undoable(monopolyReducer),
-        { past: [], present: game, future: [] });
+    this.store.subscribe(() => {
+      this.state = this.store.getState();
+    });
 
-      // Track polls
-      polls = {};
+    this.polls = {};
 
-      // Save data
-      setRoomData(gameID, { store, polls });
-
-      // Join room
-      socket.join(gameID);
-      socket.emit('joined', store.getState());
-
-      // Setup socket
-      setup(socket, gameID);
-    } else {
-
-      // Let the player know we're waiting on others
-      socket.emit('message', 'pending', 'Waiting on the concensus');
-
-      // Ask to join
-      createPoll(gameID, {
-        name: 'join request',
-        message: `${player.name} would like to join the game`,
-      }, (result) => {
-        if (result) {
-
-          // Join game
-          store.dispatch(monopolyActions.joinGame(player));
-
-          // Join room
-          socket.join(gameID);
-          socket.emit('joined', store.getState());
-
-          // Setup socket
-          setup(socket, gameID);
-        }
-      }, socket);
-    }
-  });
-}
-
-function setup(socket, gameID) {
-  let { store, polls } = getRoomData(gameID);
-
-  // Setup listeners
-  socket.on('vote', function(pole, vote) {
-    polls[pole][socket.id] = vote;
-
-    if (checkPoll(gameID, pole)) {
-      closePoll(gameID, pole, true);
-    }
-  });
-}
-
-// @TODO: Set a time limit
-function createPoll(gameID, poll, callback, socket) {
-  let { polls } = getRoomData(gameID);
-  let results = socket ? { [socket.id]: true } : {};
-
-  polls[poll.name] = { callback, results };
-
-  setRoomData(gameID, { polls });
-
-  (socket || io).to(gameID).emit('poll', poll, message);
-}
-
-function checkPoll(gameID, poll) {
-  let { polls } = getRoomData(gameID);
-  let n = io.adapter.rooms[data].sockets.length;
-  let r = polls[poll].results;
-  let votes = Object.keys(r);
-
-  return votes.length === n &&
-    Math.floor(n / 2) + 1 <= votes.reduce((t, id) => {
-      return t + r[id] ? 1 : 0;
-    }, 0);
-}
-
-function closePoll(gameID, poll, result) {
-  let { polls } = getRoomData(gameID);
-
-  if (poll.callback) {
-    poll.callback.call(result);
+    this.sockets = [];
+    this.setupSocket(socket);
   }
 
-  delete polls[poll];
+  join(socket, { name = '', token = '' }) {
 
-  io.to(gameID).emit('poll end', poll, result);
+    socket.emit('message', 'pending', 'Waiting on the concensus');
+
+    this.newPoll('join', `${name} would like to join the game`, (result) => {
+      if (result) {
+
+        store.dispatch(monopolyActions.joinGame(player));
+
+        this.setupSocket(socket);
+      }
+    });
+  }
+
+  setupSocket(socket) {
+    this.sockets.push(socket);
+
+    socket.join(this._id);
+    socket.emit('joined', this.state);
+
+    // @TODO: other events
+
+    socket.on('vote', (poll, tally) => {
+      this.polls[poll][socket.id] = tally;
+
+      if (this.checkPoll(poll)) {
+        this.closePoll(poll);
+      }
+    });
+
+    socket.on('disconnect', () => {
+      this.sockets.splice(this.sockets.indexOf(socket), 1);
+
+      if (this.sockets.length === 0 && this.teardown) {
+        this.teardown();
+      }
+    });
+  }
+
+  // @TODO: Timed polls
+  newPoll(name, message, callback) {
+    this.polls[name] = {
+      major: Math.floor(this.sockets.length / 2) + 1,
+      votes: {},
+      callback
+    };
+
+    this.emit('poll', name, message);
+  }
+
+  checkPoll(name) {
+    let poll = this.polls[name];
+
+    poll.result = this.sockets.reduce((t, s) => {
+      return t + (poll.votes[s.id] ? 1 : 0);
+    }, 0);
+
+    return poll.result >= poll.major;
+  }
+
+  closePoll(name) {
+    let poll = this.polls[name];
+
+    if (poll.callback) {
+      poll.callback(poll.result);
+    }
+
+    this.emit('end poll', name, poll.result);
+
+    delete this.polls[name];
+  }
+
+  emit() {
+    this.io.to(this._id).emit(...arguments);
+  }
 }
 
-function getRoomData(room) {
-  return io.adapter.rooms[room].data || {};
-}
+module.exports = function(db) {
+  let games = db.collection('games');
+  let rooms = {};
 
-function setRoomData(room, data) {
-  data = _.extend(getRoomData(io, room), data);
-  return io.adapter.rooms[room].data = data;
-}
+  function create(gameID, socket) {
+    if (!rooms[gameID]) {
+      games.findOne({ _id: gameID }, (err, game) => {
+        if (err || !game) {
+          socket.emit('message', 'error', err ? err.message : 'Game not found');
+          return;
+        }
 
-module.exports = function(socketIO, db) {
-  games = db.collection('games');
-  io = socketIO;
+        let room = new MonopolyRoom(game, socket);
+        room.teardown = () => delete rooms[gameID];
+        rooms[gameID] = room;
+      });
+    }
+  }
 
-  return { join };
+  function join(gameID, socket, data) {
+    games.findOne({ _id: gameID }, (err, game) => {
+      if (err || !game) {
+        socket.emit('message', 'error', err ? err.message : 'Game not found');
+        return;
+      }
+
+      let room = rooms[gameID];
+
+      if (room) {
+        room.join(socket, data);
+      }
+    });
+  }
+
+  return { create, join };
 };

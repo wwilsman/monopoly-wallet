@@ -21,7 +21,7 @@ var db    = mongo.db(config.mongo.uri, {
 
 // Sockets
 var io = require('socket.io').listen(server).of('/game');
-var room = require('./app/game/room')(io, db);
+var room = require('./app/game/room')(db);
 
 // Misc
 var hbs  = require('hbs');
@@ -82,7 +82,12 @@ app.use(function(err, req, res, next) {
 // ------
 
 io.on('connection', function(socket) {
-  socket.on('join', function(gameID, { name = '', token = '' }) {
-    room.join(socket, gameID, { name, token });
+
+  socket.on('create', function(gameID) {
+    room.create(gameID, socket);
+  });
+
+  socket.on('join', function(gameID, data) {
+    room.join(gameID, socket, data);
   });
 });
