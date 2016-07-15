@@ -82,12 +82,7 @@ app.use(function(err, req, res, next) {
 // ------
 
 io.on('connection', function(socket) {
-
-  socket.on('create', function(gameID) {
-    room.create(gameID, socket);
-  });
-
-  socket.on('join', function(gameID, data) {
+  socket.on('join game', function(gameID, data) {
     room.join(gameID, socket, data);
   });
 });
