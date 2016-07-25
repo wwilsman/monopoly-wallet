@@ -21,6 +21,7 @@
     "babel-loader": "^6.2.4",
     "babel-preset-es2015": "^6.9.0",
     "babel-preset-react": "^6.11.1",
+    "babel-preset-stage-0": "^6.5.0",
     "mocha": "^2.5.3",
     "webpack": "^1.13.1",
     "webpack-dev-middleware": "^1.6.1"
@@ -32,6 +33,7 @@
     "express": "^4.14.0",
     "express-session": "^1.14.0",
     "hbs": "^4.0.0",
+    "jquery": "^3.1.0",
     "mongodb": "^2.1.18",
     "mongoskin": "^2.1.0",
     "react": "^15.2.0",
@@ -39,6 +41,7 @@
     "react-redux": "^4.4.5",
     "react-router": "^2.5.2",
     "redux": "^3.5.2",
+    "redux-form": "^6.0.0--alpha",
     "redux-logger": "^2.6.1",
     "redux-thunk": "^2.1.0",
     "redux-undo": "^0.6.1",

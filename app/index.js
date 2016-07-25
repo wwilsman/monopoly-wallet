@@ -1,12 +1,28 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import io from 'socket.io-client';
+import React from 'react'
+import { render } from 'react-dom'
+import { Provider } from 'react-redux'
+import App from './components/App'
+import configureStore from './store'
 
-window.socket = io('/game');
+let store = configureStore({
+  game: {
+    theme: 'classic',
+    tokens: [
+      "automobile",
+      "battleship",
+      "boot",
+      "iron",
+      "scottish-terrier",
+      "thimble",
+      "top-hat",
+      "wheelbarrow"
+    ]
+  }
+})
 
-ReactDOM.render(
-  <h1>Hello Monopoly!</h1>,
+render(
+  <Provider store={store}>
+    <App/>
+  </Provider>,
   document.getElementById('root')
-);
-
-// @TODO: at least be able create/join a game
+)

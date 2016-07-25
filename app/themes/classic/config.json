@@ -5,5 +5,15 @@
   "hotels": 12,
   "mortgageRate": 0.5,
   "interestRate": 0.1,
-  "buildingRate": 0.5
+  "buildingRate": 0.5,
+  "tokens": [
+    "automobile",
+    "battleship",
+    "boot",
+    "iron",
+    "scottish-terrier",
+    "thimble",
+    "top-hat",
+    "wheelbarrow"
+  ]
 }

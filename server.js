@@ -49,6 +49,7 @@ if (config.env === 'development') {
 
 // Static folders
 app.use(express.static('./public'));
+app.use('/themes', express.static('./app/themes'));
 
 // Sessions
 app.use(require('cookie-parser')());

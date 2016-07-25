@@ -27,7 +27,7 @@ let m = new Game(config);
 
 // play a game
 let player = m.join({ name: 'Player 1' });
-let property = m.properties.find((p) => p.name === 'Oriental Avenue');
+let property = m.findProperty('Oriental Avenue');
 
 player.transfer(m.bank, property.price);
 m.bank.transfer(player, property);
@@ -50,9 +50,13 @@ Todo:
 - [X] Setup React
 - [X] Setup Redux
 - [X] Setup sockets
-- [ ] Use sockets to play a game
 - [ ] Flesh out React app
-- [ ] ...
+  - [X] Start
+  - [ ] Create a new game
+  - [ ] Join an existing game
+  - [ ] Perform a transaction
+  - [ ] ...?
+  - [ ] Play a game
 
 
 App Setup
@@ -64,6 +68,6 @@ App Setup
 
   - Install Mongodb
   - `mkdir data`
-  - `mongod --dbpath=data --port 27017`
+  - `mongod --dbpath data`
 
 - `npm start`

@@ -74,13 +74,5 @@ module.exports = {
     }
 
     return obj;
-  },
-
-  // Return data from a JSON file (not requiring directly to avoid caching)
-  loadJSONFile(filename) {
-    try {
-      let read = require('fs').readFileSync;
-      return JSON.parse(read(filename).toString());
-    } catch (e) {}
   }
 };

@@ -20,22 +20,28 @@ router.route('/new')
     let body = _.extend({ theme: 'classic' },
       _.fixNumberStrings(req.body || {}));
 
+    // Missing theme
+    if (!body.theme) {
+      res.status(400).send({ title: 'Bad Request', detail: 'Missing theme' });
+      return;
+    }
+
+    // Missing player details
+    if (!body.players || !body.players[0] || !body.players[0].name || !body.players[0].token) {
+      res.status(400).send({ title: 'Bad Request', detail: 'Missing player details' });
+      return;
+    }
+
     // Theme directory
     let themeDir = path.join('./app/themes/', body.theme);
 
-    // Default player
-    if (!body.players || !body.players[0]) {
-      let token = getFileNames(path.join(themedir, 'tokens'))[0];
-      body.players = [{ name: 'Player 1', token }];
-    }
-
     // Game configuration file
-    let config = _.loadJSONFile(path.join(themeDir, 'config.json'));
+    let config = loadJSONFile(path.join(themeDir, 'config.json'));
 
+    // Invalid theme
     if (!config) {
-      config = _.loadJSONFile('./app/themes/classic/config.json');
-      themeDir = './app/themes/classic/';
-      body.theme = 'classic';
+      res.status(404).send({ title: 'Not Found', detail: 'Theme not found' });
+      return;
     }
 
     // Game setup
@@ -43,10 +49,10 @@ router.route('/new')
 
     // Load properties & assets
     var propsFile = path.join(themeDir, 'properties.json');
-    gameConfig.properties = _.loadJSONFile(propsFile) || [];
+    gameConfig.properties = loadJSONFile(propsFile) || [];
 
     var assetsFile = path.join(themeDir, 'assets.json');
-    gameConfig.assets = _.loadJSONFile(assetsFile) || [];
+    gameConfig.assets = loadJSONFile(assetsFile) || [];
 
     // Generate a unique ID for the game
     generateGameID(function(err, gameID) {
@@ -100,16 +106,6 @@ router.param('gid', function(req, res, next, gid) {
   });
 });
 
-// **Theme Files**
-router.route('/:gid/theme/:file')
-
-  // Direct all requests to proper directory
-  .get(function(req, res) {
-    res.sendFile(req.params.file, {
-      root: path.join(__dirname, '/themes/', req.game.theme)
-    });
-  });
-
 
 // Functions
 // ---------
@@ -135,9 +131,12 @@ function generateGameID(callback, length) {
   });
 }
 
-// Get filenames in a directory
-function getFileNames(dir) {
-  return fs.readdirSync(dir).map((f) => path.basename(f, path.extname(f)));
+// Return data from a JSON file (not requiring directly to avoid caching)
+function loadJSONFile(filename) {
+  try {
+    let read = require('fs').readFileSync;
+    return JSON.parse(read(filename).toString());
+  } catch (e) {}
 }
 
 // Export a function to access the database
