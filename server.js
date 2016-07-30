@@ -1,82 +1,90 @@
+import config from './config'
+import express from 'express'
+
+import webpack from 'webpack'
+import webpackMiddleware from 'webpack-dev-middleware'
+
+import mongo from 'mongoskin'
+
+import socket from 'socket.io'
+import room from './lib/room'
+
+import hbs from 'hbs'
+import path from 'path'
+
+import cookieParse from 'cookie-parser'
+import session from 'express-session'
+
+import routes from './routes'
+
+
 // Set Up
 // ------
 
 // App
-var config  = require('./config');
-var express = require('express');
-var app     = express();
+const app = express()
 
 // Server
-var server = app.listen(config.port);
-
-// Webpack
-var webpack           = require('webpack');
-var webpackMiddleware = require('webpack-dev-middleware');
+const server = app.listen(config.port)
 
 // Database
-var mongo = require('mongoskin');
-var db    = mongo.db(config.mongo.uri, {
+const db = mongo.db(config.mongo.uri, {
   server: { auto_reconnect: true }
-});
+})
 
 // Sockets
-var io = require('socket.io').listen(server).of('/game');
-var room = require('./app/game/room')(db);
-
-// Misc
-var hbs  = require('hbs');
-var path = require('path');
+const io = socket.listen(server).of('/game')
+const gameroom = room(db, io)
 
 
 // Configuration
 // -------------
 
 // HBS
-app.set('views', './app/views');
-app.set('view engine', 'hbs');
+app.set('views', './views')
+app.set('view engine', 'hbs')
 
-hbs.localsAsTemplateData(app);
+hbs.localsAsTemplateData(app)
 
 // Webpack
 if (config.env === 'development') {
-  let compiler = webpack(require('./webpack.config.js'));
+  let compiler = webpack(require('./webpack.config.js'))
 
   app.use(webpackMiddleware(compiler, {
     publicPath: '/public',
     noInfo: true,
-  }));
+  }))
 }
 
 // Static folders
-app.use(express.static('./public'));
-app.use('/themes', express.static('./app/themes'));
+app.use(express.static('./public'))
 
 // Sessions
-app.use(require('cookie-parser')());
-app.use(require('express-session')({
+app.use(cookieParser())
+app.use(session({
   secret: config.secret,
   resave: false,
   saveUninitialized: true
-}));
+}))
 
 
 // Routes
 // ------
 
-app.use('/', require('./routes')(db));
+app.use('/', routes(db))
 
 // **Unhandled**
 app.get('*', function(req, res) {
-  res.render('index');
-});
+  res.render('index')
+})
 
 
 // Error Handling
 // --------------
 
 app.use(function(err, req, res, next) {
-  res.send(err.message);
-});
+  res.send(err.message)
+})
 
 
 // Events
@@ -84,6 +92,6 @@ app.use(function(err, req, res, next) {
 
 io.on('connection', function(socket) {
   socket.on('join game', function(gameID, data) {
-    room.join(gameID, socket, data);
-  });
-});
+    gameroom.join(gameID, socket, data)
+  })
+})

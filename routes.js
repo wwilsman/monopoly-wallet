@@ -1,11 +1,15 @@
-var _      = require('./app/helpers');
-var config = require('./config');
-var router = require('express').Router();
-var path   = require('path');
-var games;
+import { randID, deepExtend, fixNumberStrings } from './lib/helpers'
+import config from './config'
 
-var urlencodedParser = require('body-parser').urlencoded({ extended: true });
-var MonopolyGame     = require('./app/game');
+import { Router } from 'express'
+import bodyParser from 'body-parser'
+import path from 'path'
+import fs from 'fs'
+
+const router = Router()
+const games
+
+const urlencodedParser = bodyParser.urlencoded({ extended: true })
 
 // Static Routes
 // -------------
@@ -17,67 +21,56 @@ router.route('/new')
   .post(urlencodedParser, function(req, res, next) {
 
     // Fix values & set defaults
-    let body = _.extend({ theme: 'classic' },
-      _.fixNumberStrings(req.body || {}));
-
-    // Missing theme
-    if (!body.theme) {
-      res.status(400).send({ title: 'Bad Request', detail: 'Missing theme' });
-      return;
-    }
-
-    // Missing player details
-    if (!body.players || !body.players[0] || !body.players[0].name || !body.players[0].token) {
-      res.status(400).send({ title: 'Bad Request', detail: 'Missing player details' });
-      return;
-    }
+    let body = deepExtend({ theme: 'classic' },
+      fixNumberStrings(req.body || {}))
 
     // Theme directory
-    let themeDir = path.join('./app/themes/', body.theme);
+    let themeDir = path.join('./public/themes/', body.theme)
 
     // Game configuration file
-    let config = loadJSONFile(path.join(themeDir, 'config.json'));
+    let config = loadJSONFile(path.join(themeDir, 'config.json'))
 
     // Invalid theme
     if (!config) {
-      res.status(404).send({ title: 'Not Found', detail: 'Theme not found' });
-      return;
+      return res.status(404).send({
+        title: 'Not Found',
+        detail: 'Theme not found'
+      })
     }
 
     // Game setup
-    let gameConfig = _.extend(config, body);
+    let game = deepExtend(config, body)
 
     // Load properties & assets
-    var propsFile = path.join(themeDir, 'properties.json');
-    gameConfig.properties = loadJSONFile(propsFile) || [];
+    let propsFile = path.join(themeDir, 'properties.json')
+    game.properties = loadJSONFile(propsFile) || []
 
-    var assetsFile = path.join(themeDir, 'assets.json');
-    gameConfig.assets = loadJSONFile(assetsFile) || [];
+    let assetsFile = path.join(themeDir, 'assets.json')
+    game.assets = loadJSONFile(assetsFile) || []
 
     // Generate a unique ID for the game
     generateGameID(function(err, gameID) {
 
       // Error
       if (err) {
-        return next(err);
+        return next(err)
       }
 
-      let game = new MonopolyGame(gameConfig);
-      game._id = gameID;
+      game._id = gameID
 
       // Insert the game and respond
-      games.insert(game.toJSON(), function(err, result) {
+      games.insert(game, function(err, result) {
 
         // Error
         if (err) {
-          return next(err);
+          return next(err)
         }
 
-        // Send result
-        res.send(result);
-      });
-    });
-  });
+        // Return game ID
+        res.json({ gameID: gameID })
+      })
+    })
+  })
 
 // Dynamic Routes
 // --------------
@@ -90,21 +83,21 @@ router.param('gid', function(req, res, next, gid) {
 
     // No error but no game found
     if (!err && !doc) {
-      err = new Error('unknown game "' + gid + '"');
+      err = new Error('unknown game "' + gid + '"')
     }
 
     // Error
     if (err) {
-      return next(err);
+      return next(err)
     }
 
     // Make the game available
-    req.game = doc;
+    req.game = doc
 
     // continue
-    next();
-  });
-});
+    next()
+  })
+})
 
 
 // Functions
@@ -112,36 +105,36 @@ router.param('gid', function(req, res, next, gid) {
 
 // Generates a unique game ID
 function generateGameID(callback, length) {
-  let gameID = _.randID(length);
+  let gameID = _.randID(length)
 
   games.findOne({ _id: gameID }, function(err, doc) {
 
     // Error
     if (err) {
-      return callback(err);
+      return callback(err)
     }
 
     // ID not in use
     if (!doc) {
-      return callback(null, gameID);
+      return callback(null, gameID)
     }
 
     // Try again
-    generateGameID(callback, length);
-  });
+    generateGameID(callback, length)
+  })
 }
 
 // Return data from a JSON file (not requiring directly to avoid caching)
 function loadJSONFile(filename) {
   try {
-    let read = require('fs').readFileSync;
-    return JSON.parse(read(filename).toString());
+    let read = fs.readFileSync
+    return JSON.parse(read(filename).toString())
   } catch (e) {}
 }
 
 // Export a function to access the database
-module.exports = function(db) {
-  games = db.collection('games');
+export default function(db) {
+  games = db.collection('games')
 
-  return router;
-};
+  return router
+}

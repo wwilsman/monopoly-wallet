@@ -1,11 +1,12 @@
 {
-  "bank": 0,
+  "bank": -1,
   "start": 1500,
   "houses": 32,
   "hotels": 12,
   "mortgageRate": 0.5,
   "interestRate": 0.1,
   "buildingRate": 0.5,
+  "passGo": 200,
   "tokens": [
     "automobile",
     "battleship",
