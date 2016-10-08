@@ -9,11 +9,9 @@
   },
   "scripts": {
     "test": "mocha --compilers js:babel-core/register",
-    "setup:db": "test -d data || mkdir data",
-    "start": "npm run setup:db && npm run start:all",
-    "start:all": "parallelshell \"npm run start:db\" \"npm run start:server\"",
+    "start": "babel-node server.js",
     "start:db": "mongod --dbpath data --quiet",
-    "start:server": "babel-node server.js"
+    "setup:db": "[ -d data ] && rm -rf data/* || mkdir data"
   },
   "engines": {
     "node": "6.2.x"

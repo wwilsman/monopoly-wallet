@@ -1,56 +1,35 @@
 import config from './config'
 import express from 'express'
 
-import webpack from 'webpack'
-import webpackMiddleware from 'webpack-dev-middleware'
-
 import mongo from 'mongoskin'
 
-import socket from 'socket.io'
+import socketIO from 'socket.io'
 import room from './lib/room'
 
-import hbs from 'hbs'
-import path from 'path'
-
-import cookieParse from 'cookie-parser'
+import cookieParser from 'cookie-parser'
 import session from 'express-session'
 
 import routes from './routes'
 
-
-// Set Up
-// ------
-
 // App
 const app = express()
-
-// Server
-const server = app.listen(config.port)
 
 // Database
 const db = mongo.db(config.mongo.uri, {
   server: { auto_reconnect: true }
 })
 
-// Sockets
-const io = socket.listen(server).of('/game')
-const gameroom = room(db, io)
-
-
-// Configuration
-// -------------
+app.locals.db = db
 
 // HBS
 app.set('views', './views')
 app.set('view engine', 'hbs')
 
-hbs.localsAsTemplateData(app)
-
 // Webpack
 if (config.env === 'development') {
-  let compiler = webpack(require('./webpack.config.js'))
+  let compiler = require('webpack')(require('./webpack.config'))
 
-  app.use(webpackMiddleware(compiler, {
+  app.use(require('webpack-dev-middleware')(compiler, {
     publicPath: '/public',
     noInfo: true,
   }))
@@ -67,31 +46,41 @@ app.use(session({
   saveUninitialized: true
 }))
 
-
 // Routes
-// ------
-
-app.use('/', routes(db))
+app.use('/', routes)
 
 // **Unhandled**
 app.get('*', function(req, res) {
   res.render('index')
 })
 
-
 // Error Handling
-// --------------
-
 app.use(function(err, req, res, next) {
-  res.send(err.message)
+  res.send({ error: err.name, message: err.message })
+
+  if (config.env === 'development') {
+    console.log(err)
+  }
 })
 
+// Server
+const server = app.listen(config.port)
+console.log('listening on port %s', config.port)
 
-// Events
-// ------
+// Sockets
+const io = socketIO.listen(server).of('/game')
 
 io.on('connection', function(socket) {
   socket.on('join game', function(gameID, data) {
-    gameroom.join(gameID, socket, data)
+    db.collection('games').findOne({ _id: gameID }, (err, game) => {
+      if (err || !game) {
+        return socket.emit('notice', {
+          type: 'error',
+          message: err ? err.message : 'Game not found'
+        })
+      }
+
+      room.joinRoom(game, socket, data)
+    })
   })
 })
