@@ -41,25 +41,23 @@ describe('Game', () => {
       })
     })
 
-    it('should not allow name/token already in use', () => {
+    it('the player cannot use a token already in use', () => {
       let playerCount = game.state.players.length
 
-      p4.token = game.state.tokens[0]
-
       assert.throws(() => {
-        game.join(p4)
+        game.join(p4.name, game.state.tokens[0])
       }, isMonopolyError)
 
       assert.equal(game.state.players.length, playerCount)
     })
 
     it('the bank must have a sufficient balance', () => {
-      game.join(p4)
+      game.join(p4.name, p4.token)
 
       assert.equal(game.state.bank, 0)
 
       assert.throws(() => {
-        game.join({ name: 'Player 5' })
+        game.join('Player 5')
       }, isMonopolyError)
 
       assert.equal(game.state.bank, 0)
@@ -68,7 +66,7 @@ describe('Game', () => {
     it('the player\'s balance should be set to the start amount', () => {
       assert.ok(!p4.balance)
 
-      game.join(p4)
+      game.join(p4.name, p4.token)
 
       assert.equal(p4.balance, game.state.start)
     })
@@ -76,7 +74,7 @@ describe('Game', () => {
     it('the bank\'s balance should be decreased by the start amount', () => {
       assert.equal(game.state.bank, game.state.start)
 
-      game.join(p4)
+      game.join(p4.name, p4.token)
 
       assert.equal(game.state.bank, 0)
     })

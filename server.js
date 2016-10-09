@@ -4,7 +4,7 @@ import express from 'express'
 import mongo from 'mongoskin'
 
 import socketIO from 'socket.io'
-import room from './lib/room'
+import gameRoom from './lib/room'
 
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
@@ -49,7 +49,7 @@ app.use(session({
 // Routes
 app.use('/', routes)
 
-// **Unhandled**
+// Unhandled
 app.get('*', function(req, res) {
   res.render('index')
 })
@@ -71,16 +71,14 @@ console.log('listening on port %s', config.port)
 const io = socketIO.listen(server).of('/game')
 
 io.on('connection', function(socket) {
-  socket.on('join game', function(gameID, data) {
+  socket.on('join game', function(gameID, { name, token }) {
     db.collection('games').findOne({ _id: gameID }, (err, game) => {
       if (err || !game) {
-        return socket.emit('notice', {
-          type: 'error',
-          message: err ? err.message : 'Game not found'
-        })
+        socket.emit('error message', err ? err.message : 'Game not found')
+        return
       }
 
-      room.joinRoom(game, socket, data)
+      gameRoom.joinRoom(name, token, socket, game)
     })
   })
 })
