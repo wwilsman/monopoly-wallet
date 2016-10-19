@@ -926,7 +926,7 @@ describe('Game', () => {
     })
   })
 
-  describe('#claimBankrupty()', () => {
+  describe('#claimBankruptcy()', () => {
     let properties, bal
 
     beforeEach(() => {
@@ -938,7 +938,7 @@ describe('Game', () => {
     })
 
     it('The player\'s properties should be unimproved', () => {
-      game.claimBankrupty(p1._id, p2._id)
+      game.claimBankruptcy(p1._id, p2._id)
 
       properties.forEach((p) => assert.equal(p.buildings, 0))
     })
@@ -951,13 +951,13 @@ describe('Game', () => {
       }, 0)
 
 
-      game.claimBankrupty(p1._id, p2._id)
+      game.claimBankruptcy(p1._id, p2._id)
 
       assert.equal(p2.balance, bal2 + bal1 + value)
     })
 
     it('The beneficiary should become the properties\' owner', () => {
-      game.claimBankrupty(p1._id, p2._id)
+      game.claimBankruptcy(p1._id, p2._id)
 
       properties.forEach((p) => assert.equal(p.owner, p2._id))
     })
@@ -966,14 +966,14 @@ describe('Game', () => {
       let bal = p1.balance
       let bank = game.state.bank
 
-      game.claimBankrupty(p1._id, 'bank')
+      game.claimBankruptcy(p1._id, 'bank')
 
       assert.equal(game.state.bank, bank + bal)
       properties.forEach((p) => assert.equal(p.owner, 'bank'))
     })
 
     it('The player should be bankrupt', () => {
-      game.claimBankrupty(p1._id, p2._id)
+      game.claimBankruptcy(p1._id, p2._id)
 
       assert.ok(p1.isBankrupt)
       assert.equal(p1.balance, 0)
