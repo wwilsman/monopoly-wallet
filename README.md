@@ -27,5 +27,5 @@ App Setup
 ---------
 
 - Install Mongodb
-- `npm install`
-- `npm start`
+- `yarn`
+- `yarn start`

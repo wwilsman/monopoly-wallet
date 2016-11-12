@@ -1,5 +1,4 @@
 import assert from 'assert'
-import sinon from 'sinon'
 
 import MonopolyGame from '../lib/game'
 
