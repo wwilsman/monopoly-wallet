@@ -1,4 +1,4 @@
-import '../server'
+// import '../server'
 import http from 'http'
 import assert from 'assert'
 import querystring from 'querystring'
@@ -14,7 +14,7 @@ const socketOpts = {
 }
 
 const gameOptions = querystring.stringify({
-  pollTimeout: 500
+  pollTimeout: 1000
 })
 
 const requestOpts = {
@@ -213,7 +213,7 @@ describe('Room', () => {
     })
   })
 
-  describe('Voting', () => {
+  describe('Polls', () => {
 
     it('The poll should expire after a timeout', (done) => {
       client1.on('close poll', (pollID, result) => {
@@ -234,9 +234,40 @@ describe('Room', () => {
       client1.emit('join game', gameID, p1)
     })
 
-    it('The poll should close after majority rules')
+    it('The poll should close after majority rules', () => {
+      let p3 = { name: 'Player 3', token: tokens[2] }
+      let client3 = io.connect(socketURL, socketOpts)
+      let poll = null
 
-    it('The poll\'s action should be called when closed')
+      client1.on('close poll', (pollID, result) => {
+        if (poll === pollID) {
+          assert.ok(result)
+          done()
+        }
+      })
+
+      client1.on('new poll', (pollID, message) => {
+        client1.emit('vote', pollID, true)
+
+        if (/Player 3 .* join/.test(message)) {
+          poll = pollID
+        }
+      })
+
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          client3.emit('join game', gameID, p3)
+        }
+      })
+
+      client2.on('new poll', (pollID, message) => {
+        client2.emit('vote', pollID, true)
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
   })
 
   describe('Bidding', () => {
