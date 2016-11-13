@@ -1,5 +1,7 @@
+import '../server'
 import http from 'http'
 import assert from 'assert'
+import querystring from 'querystring'
 import io from 'socket.io-client'
 
 import { tokens } from '../public/themes/classic/config'
@@ -11,17 +13,27 @@ const socketOpts = {
   'force new connection': true
 }
 
+const gameOptions = querystring.stringify({
+  pollTimeout: 500
+})
+
 const requestOpts = {
   hostname: 'localhost',
   port: 3000,
   path: '/new',
   method: 'POST',
+  headers: {
+    'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Length': Buffer.byteLength(gameOptions)
+  }
 }
 
 describe('Room', () => {
-  let gameID, client1, client2, state
+  let gameID, client1, client2, state, p1, p2
 
   beforeEach((done) => {
+    p1 = { name: 'Player 1', token: tokens[0] }
+    p2 = { name: 'Player 2', token: tokens[1] }
     client1 = io.connect(socketURL, socketOpts)
     client2 = io.connect(socketURL, socketOpts)
     client1.on('update game', (s) => state = s)
@@ -36,7 +48,7 @@ describe('Room', () => {
         gameID = d.gameID
         done()
       })
-    }).end()
+    }).write(gameOptions)
   })
 
   afterEach(() => {
@@ -45,12 +57,6 @@ describe('Room', () => {
   })
 
   describe('Join Game', () => {
-    let p1, p2
-
-    beforeEach(() => {
-      p1 = { name: 'Player 1', token: tokens[0] }
-      p2 = { name: 'Player 2', token: tokens[1] }
-    })
 
     it('The first player should join automatically', (done) => {
       client1.on('notice', (message) => {
@@ -149,8 +155,6 @@ describe('Room', () => {
   })
 
   describe('Game Actions', () => {
-    let p1
-
     let testAction = (...args) => {
       let callback = args.pop()
       client1.on('update game', callback)
@@ -159,8 +163,6 @@ describe('Room', () => {
     }
 
     beforeEach((done) => {
-      p1 = { name: 'Player 1', token: tokens[0] }
-
       client1.on('notice', (message) => {
         if (/Player 1 .* joined/.test(message)) {
           done()
@@ -213,9 +215,24 @@ describe('Room', () => {
 
   describe('Voting', () => {
 
-    it('The poll should already exist')
+    it('The poll should expire after a timeout', (done) => {
+      client1.on('close poll', (pollID, result) => {
+        assert.ok(!result)
+        done()
+      })
 
-    it('The poll should expire after a timeout')
+      client1.on('new poll', (pollID, message) => {
+        assert.ok(/Player 2 .* join/.test(message))
+      })
+
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          client2.emit('join game', gameID, p2)
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
 
     it('The poll should close after majority rules')
 

@@ -10,8 +10,7 @@
   "scripts": {
     "test": "mocha --compilers js:babel-core/register",
     "start": "babel-node server.js",
-    "start:db": "mongod --dbpath data --quiet",
-    "setup:db": "[ -d data ] && rm -rf data/* || mkdir data"
+    "db:reset": "mongo monopoly-wallet --eval \"db.getCollectionNames().forEach(n=>db[n].remove({}));\""
   },
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
