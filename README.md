@@ -3,6 +3,7 @@ Monopoly Wallet
 
 Easily manage your assets during a game of Monopoly
 
+
 Themes
 ------
 
@@ -15,8 +16,7 @@ belong in the `app/themes` directory under a folder by the name of the theme.
 Todo:
 -----
 
-- [X] Revisit
-- [ ] Game Room
+- [ ] WebSockets
 - [ ] React app
   - [ ] Create a new game
   - [ ] Join an existing game
