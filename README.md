@@ -17,6 +17,13 @@ Todo:
 -----
 
 - [ ] WebSockets
+  - [X] Join game
+  - [X] Polling
+  - [X] Game actions
+  - [X] Auctioning
+  - [ ] Veto actions
+  - [ ] Messaging
+  - [ ] Trading
 - [ ] React app
   - [ ] Create a new game
   - [ ] Join an existing game

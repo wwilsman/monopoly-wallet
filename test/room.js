@@ -1,7 +1,6 @@
-// import '../server'
+import '../server'
 import http from 'http'
 import assert from 'assert'
-import querystring from 'querystring'
 import io from 'socket.io-client'
 
 import { tokens } from '../public/themes/classic/config'
@@ -13,8 +12,9 @@ const socketOpts = {
   'force new connection': true
 }
 
-const gameOptions = querystring.stringify({
-  pollTimeout: 1000
+const gameOptions = JSON.stringify({
+  pollTimeout: 100,
+  auctionTimeout: 100
 })
 
 const requestOpts = {
@@ -23,7 +23,7 @@ const requestOpts = {
   path: '/new',
   method: 'POST',
   headers: {
-    'Content-Type': 'application/x-www-form-urlencoded',
+    'Content-Type': 'application/json',
     'Content-Length': Buffer.byteLength(gameOptions)
   }
 }
@@ -270,17 +270,220 @@ describe('Room', () => {
     })
   })
 
-  describe('Bidding', () => {
+  describe('Auctions', () => {
 
-    it('There must be an active auction')
+    it('The player should auction a property', (done) => {
+      client1.on('new auction', (propertyID) => {
+        assert.equal(propertyID, 'oriental-avenue')
+        done()
+      })
 
-    it('The player must have enough to bid')
+      client1.on('new poll', (pollID, message) => {
+        client1.emit('vote', pollID, true)
+      })
 
-    it('The bid must be higher than the current highest')
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          client2.emit('new auction', 'oriental-avenue')
+        }
+      })
 
-    it('The auction timer should reset after each bid')
+      client1.emit('join game', gameID, p1)
+    })
 
-    it('The winning bid should buy the property at that price')
+    it('The player must have enough to bid', (done) => {
+      let bal1 = 0
+
+      client1.on('error message', (message) => {
+        assert.ok(/Insufficient funds/.test(message))
+        done()
+      })
+
+      client1.on('new auction', (propertyID) => {
+        client1.emit('place bid', propertyID, bal1 + 100)
+      })
+
+      client1.on('new poll', (pollID, message) => {
+        client1.emit('vote', pollID, true)
+      })
+
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          bal1 = state.players.find((p) => p.token === p1.token).balance
+          assert.notEqual(bal1, 0)
+
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          client2.emit('new auction', 'oriental-avenue')
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
+
+    it('The bid must be higher than the current highest', (done) => {
+      let p3 = { name: 'Player 3', token: tokens[2] }
+      let client3 = io.connect(socketURL, socketOpts)
+      let bal1 = 0
+
+      client1.on('error message', (message) => {
+        assert.ok(/bid higher/.test(message))
+        done()
+      })
+
+      client1.on('update auction', (propertyID, current, winning) => {
+        assert.equal(winning, state.players.find((p) => p.token === p2.token)._id)
+        assert.equal(current, bal1)
+
+        client1.emit('place bid', propertyID, bal1 / 2)
+      })
+
+      client2.on('new auction', (propertyID) => {
+        client2.emit('place bid', propertyID, bal1)
+      })
+
+      client1.on('new poll', (pollID, message) => {
+        client1.emit('vote', pollID, true)
+      })
+
+      client2.on('new poll', (pollID, message) => {
+        client2.emit('vote', pollID, true)
+      })
+
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          bal1 = state.players.find((p) => p.token === p1.token).balance
+          assert.notEqual(bal1, 0)
+
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          client3.emit('join game', gameID, p3)
+        } else if (/Player 3 .* joined/.test(message)) {
+          client3.emit('new auction', 'oriental-avenue')
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
+
+    it('The player should not be able to bid after conceding', (done) => {
+      let p3 = { name: 'Player 3', token: tokens[2] }
+      let client3 = io.connect(socketURL, socketOpts)
+      let player1 = null
+
+      client1.on('error message', (message) => {
+        assert.ok(/conceded/.test(message))
+        done()
+      })
+
+      client1.on('update auction', (propertyID, current, winning, conceded) => {
+        assert.notEqual(conceded.indexOf(player1._id), -1)
+        client1.emit('place bid', propertyID, 100)
+      })
+
+      client1.on('new auction', (propertyID) => {
+        client1.emit('concede auction', propertyID)
+      })
+
+      client1.on('new poll', (pollID, message) => {
+        client1.emit('vote', pollID, true)
+      })
+
+      client2.on('new poll', (pollID, message) => {
+        client2.emit('vote', pollID, true)
+      })
+
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          player1 = state.players.find((p) => p.token === p1.token)
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          client3.emit('join game', gameID, p3)
+        } else if (/Player 3 .* joined/.test(message)) {
+          client3.emit('new auction', 'oriental-avenue')
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
+
+    it('The auction should end once enough players concede', (done) => {
+      let player2 = null
+
+      client2.on('end auction', (propertyID, winner) => {
+        assert.equal(winner, player2._id)
+        done()
+      })
+
+      client1.on('new auction', (propertyID) => {
+        client1.emit('concede auction', propertyID)
+      })
+
+      client1.on('new poll', (pollID, message) => {
+        client1.emit('vote', pollID, true)
+      })
+
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          player2 = state.players.find((p) => p.token === p2.token)
+          client2.emit('new auction', 'oriental-avenue')
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
+
+    it('The auction should end after a timeout', (done) => {
+      client1.on('end auction', (propertyID, winner) => {
+        assert.equal(propertyID, 'oriental-avenue')
+        assert.ok(!winner)
+        done()
+      })
+
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          client1.emit('new auction', 'oriental-avenue')
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
+
+    it('The winning bid should buy the property at that price', (done) => {
+      let player1 = null
+
+      client1.on('end auction', (propertyID, winner) => {
+        let bal1 = player1.balance
+        player1 = state.players.find((p) => p.token === p1.token)
+
+        assert.equal(winner, player1._id)
+        assert.equal(player1.balance, bal1 - 100)
+        done()
+      })
+
+      client1.on('new auction', (propertyID) => {
+        client1.emit('place bid', propertyID, 100)
+      })
+
+      client1.on('new poll', (pollID, message) => {
+        client1.emit('vote', pollID, true)
+      })
+
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          player1 = state.players.find((p) => p.token === p1.token)
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          client2.emit('new auction', 'oriental-avenue')
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
   })
 
   describe('Vetoing', () => {
