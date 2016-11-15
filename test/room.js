@@ -234,7 +234,7 @@ describe('Room', () => {
       client1.emit('join game', gameID, p1)
     })
 
-    it('The poll should close after majority rules', () => {
+    it('The poll should close after majority rules', (done) => {
       let p3 = { name: 'Player 3', token: tokens[2] }
       let client3 = io.connect(socketURL, socketOpts)
       let poll = null
