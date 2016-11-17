@@ -53,7 +53,7 @@ router.post('/new', function(req, res, next) {
 
     // Try again
     if (doc) {
-      gameId = randomString()
+      gameID = randomString()
       return games.findOne({ _id: gameID }, createGame)
     }
 

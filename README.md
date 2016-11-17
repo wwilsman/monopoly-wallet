@@ -8,9 +8,9 @@ Themes
 ------
 
 Themes determine the look and sometimes the rules of a game of Monopoly. They
-belong in the `app/themes` directory under a folder by the name of the theme.
+belong in the `public/themes` directory under a folder by the name of the theme.
 
-**See `app/themes/classic` for an example.**
+**See `public/themes/classic` for an example.**
 
 
 Todo:
