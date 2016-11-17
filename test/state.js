@@ -3,6 +3,8 @@ import properties from '../public/themes/classic/properties.json'
 
 // initial state
 const state = {
+  _id: 'test',
+
   ...config,
   properties,
 

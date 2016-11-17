@@ -988,15 +988,18 @@ describe('Game', () => {
       game.subscribe(() => property = game.getProperty(property._id))
     })
 
-    it('The game should be reset to before the previous action was taken', () => {
-      let bal = p2.balance
+    it('The game should be reset to the specified state', () => {
+      let entryID, bal = p2.balance
+
+      game.payBank(p2._id, 100)
+      entryID = game.state.entry
 
       game.mortgageProperty(p2._id, property._id)
 
       assert.ok(property.isMortgaged)
       assert.notEqual(p2.balance, bal)
 
-      game.undo()
+      game.undo(entryID)
 
       assert.ok(!property.isMortgaged)
       assert.equal(p2.balance, bal)
