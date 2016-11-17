@@ -486,13 +486,76 @@ describe('Room', () => {
     })
   })
 
-  describe('Vetoing', () => {
+  describe('Contesting', () => {
+    let entryID
 
-    it('The room should poll other players to undo a specific action')
+    beforeEach((done) => {
+      client1.on('update game', (state) => {
+        if (/^Player 1 purchased Oriental Avenue/.test(state.note)) {
+          entryID = state.entry
+          done()
+        }
+      })
 
-    it('The initiator should be notified when the vote is "no"')
+      client1.on('new poll', (pollID, message) => {
+        if (/Player 2 .* join/.test(message)) {
+          client1.emit('vote', pollID, true)
+        }
+      })
 
-    it('The game state should be set to before the action was taken')
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          client1.emit('buy property', 'oriental-avenue')
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
+
+    it('The room should poll other players to undo a specific action', (done) => {
+      client2.on('new poll', (pollID, message) => {
+        assert.ok(/Player 1 is contesting/.test(message))
+        done()
+      })
+
+      client1.emit('contest', entryID)
+    })
+
+    it('The initiator should be notified when the vote is "no"', (done) => {
+      let poll
+
+      client1.on('close poll', (pollID, result) => {
+        assert.equal(poll, pollID)
+        assert.ok(!result)
+        done()
+      })
+
+      client2.on('new poll', (pollID, message) => {
+        if (/Player 1 is contesting/.test(message)) {
+          client2.emit('vote', pollID, false)
+          poll = pollID
+        }
+      })
+
+      client1.emit('contest', entryID)
+    })
+
+    it('The game state should be set to before the action was taken', (done) => {
+      client1.on('update game', (state) => {
+        assert.ok(/Game reset/.test(state.note))
+        done()
+      })
+
+      client2.on('new poll', (pollID, message) => {
+        if (/Player 1 is contesting/.test(message)) {
+          client2.emit('vote', pollID, true)
+        }
+      })
+
+      client1.emit('contest', entryID)
+    })
   })
 
   describe('Messaging', () => {

@@ -21,7 +21,7 @@ Todo:
   - [X] Polling
   - [X] Game actions
   - [X] Auctioning
-  - [ ] Veto actions
+  - [X] Contesting
   - [ ] Messaging
   - [ ] Trading
 - [ ] React app
