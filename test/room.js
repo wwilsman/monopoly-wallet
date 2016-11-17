@@ -559,8 +559,37 @@ describe('Room', () => {
   })
 
   describe('Messaging', () => {
+    let player1, player2
 
-    it('The room should curry the message to another player')
+    beforeEach((done) => {
+      client1.on('new poll', (pollID, message) => {
+        if (/Player 2 .* join/.test(message)) {
+          client1.emit('vote', pollID, true)
+        }
+      })
+
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          player1 = state.players.find((p) => p.token === p1.token)
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          player2 = state.players.find((p) => p.token === p2.token)
+          done()
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
+
+    it('The room should curry the message to another player', (done) => {
+      client2.on('new message', (playerID, message) => {
+        assert.equal(player1._id, playerID)
+        assert.ok(/Test Message/.test(message))
+        done()
+      })
+
+      client1.emit('send message', player2._id, 'Test Message')
+    })
   })
 
   describe('Trading', () => {
