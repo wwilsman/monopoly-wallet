@@ -29,11 +29,11 @@ const requestOpts = {
 }
 
 describe('Room', () => {
-  let gameID, client1, client2, state, p1, p2
+  let gameID, client1, client2, state
+  let p1 = { name: 'Player 1', token: tokens[0] }
+  let p2 = { name: 'Player 2', token: tokens[1] }
 
   beforeEach((done) => {
-    p1 = { name: 'Player 1', token: tokens[0] }
-    p2 = { name: 'Player 2', token: tokens[1] }
     client1 = io.connect(socketURL, socketOpts)
     client2 = io.connect(socketURL, socketOpts)
     client1.on('update game', (s) => state = s)
@@ -54,6 +54,8 @@ describe('Room', () => {
   afterEach(() => {
     client1.disconnect()
     client2.disconnect()
+    gameID = null
+    state = null
   })
 
   describe('Join Game', () => {
@@ -310,10 +312,12 @@ describe('Room', () => {
       })
 
       client1.on('notice', (message) => {
-        if (/Player 1 .* joined/.test(message)) {
+        if (state && !bal1) {
           bal1 = state.players.find((p) => p.token === p1.token).balance
-          assert.notEqual(bal1, 0)
+          assert.ok(bal1)
+        }
 
+        if (/Player 1 .* joined/.test(message)) {
           client2.emit('join game', gameID, p2)
         } else if (/Player 2 .* joined/.test(message)) {
           client2.emit('new auction', 'oriental-avenue')
@@ -353,10 +357,12 @@ describe('Room', () => {
       })
 
       client1.on('notice', (message) => {
-        if (/Player 1 .* joined/.test(message)) {
+        if (state && !bal1) {
           bal1 = state.players.find((p) => p.token === p1.token).balance
-          assert.notEqual(bal1, 0)
+          assert.ok(bal1)
+        }
 
+        if (/Player 1 .* joined/.test(message)) {
           client2.emit('join game', gameID, p2)
         } else if (/Player 2 .* joined/.test(message)) {
           client3.emit('join game', gameID, p3)
@@ -396,8 +402,11 @@ describe('Room', () => {
       })
 
       client1.on('notice', (message) => {
-        if (/Player 1 .* joined/.test(message)) {
+        if (state && !player1) {
           player1 = state.players.find((p) => p.token === p1.token)
+        }
+
+        if (/Player 1 .* joined/.test(message)) {
           client2.emit('join game', gameID, p2)
         } else if (/Player 2 .* joined/.test(message)) {
           client3.emit('join game', gameID, p3)
@@ -426,10 +435,14 @@ describe('Room', () => {
       })
 
       client1.on('notice', (message) => {
+        if (state && !player2) {
+          player2 = state.players.find((p) => p.token === p2.token)
+          assert.ok(player2)
+        }
+
         if (/Player 1 .* joined/.test(message)) {
           client2.emit('join game', gameID, p2)
         } else if (/Player 2 .* joined/.test(message)) {
-          player2 = state.players.find((p) => p.token === p2.token)
           client2.emit('new auction', 'oriental-avenue')
         }
       })
@@ -458,6 +471,7 @@ describe('Room', () => {
 
       client1.on('end auction', (propertyID, winner) => {
         let bal1 = player1.balance
+
         player1 = state.players.find((p) => p.token === p1.token)
 
         assert.equal(winner, player1._id)
@@ -474,8 +488,12 @@ describe('Room', () => {
       })
 
       client1.on('notice', (message) => {
-        if (/Player 1 .* joined/.test(message)) {
+        if (state && !player1) {
           player1 = state.players.find((p) => p.token === p1.token)
+          assert.ok(player1)
+        }
+
+        if (/Player 1 .* joined/.test(message)) {
           client2.emit('join game', gameID, p2)
         } else if (/Player 2 .* joined/.test(message)) {
           client2.emit('new auction', 'oriental-avenue')
@@ -569,11 +587,15 @@ describe('Room', () => {
       })
 
       client1.on('notice', (message) => {
-        if (/Player 1 .* joined/.test(message)) {
+        if (state && !player1 && !player2) {
           player1 = state.players.find((p) => p.token === p1.token)
+          player2 = state.players.find((p) => p.token === p2.token)
+          assert.ok(player1 && player2)
+        }
+        
+        if (/Player 1 .* joined/.test(message)) {
           client2.emit('join game', gameID, p2)
         } else if (/Player 2 .* joined/.test(message)) {
-          player2 = state.players.find((p) => p.token === p2.token)
           done()
         }
       })
