@@ -22,8 +22,9 @@ Todo:
   - [X] Game actions
   - [X] Auctioning
   - [X] Contesting
-  - [ ] Messaging
-  - [ ] Trading
+  - [X] Messaging
+  - [X] Trading
+  - [ ] Refactor
 - [ ] React app
   - [ ] Create a new game
   - [ ] Join an existing game

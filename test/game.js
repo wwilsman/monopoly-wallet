@@ -829,7 +829,7 @@ describe('Game', () => {
     })
   })
 
-  describe('#makeTransaction()', () => {
+  describe('#makeTrade()', () => {
     let property1, property2
 
     beforeEach(() => {
@@ -844,7 +844,7 @@ describe('Game', () => {
 
     it('The properties must be owned by the players', () => {
       assert.throws(() => {
-        game.makeTransaction({
+        game.makeTrade({
           player: p1._id,
           properties: [property1._id]
         }, {
@@ -861,7 +861,7 @@ describe('Game', () => {
       let property2 = game.state.properties.find((p) => p.owner === p1._id)
 
       assert.throws(() => {
-        game.makeTransaction({
+        game.makeTrade({
           player: p1._id,
           properties: [property2]
         }, {
@@ -878,7 +878,7 @@ describe('Game', () => {
       game.payBank(p2._id, p2.balance)
 
       assert.throws(() => {
-        game.makeTransaction({
+        game.makeTrade({
           player: p2._id,
           properties: [property1._id]
         }, {
@@ -897,7 +897,7 @@ describe('Game', () => {
       let bal1 = p2.balance
       let bal2 = p3.balance
 
-      game.makeTransaction({
+      game.makeTrade({
         player: p2._id,
         properties: [property1._id],
         money: 100
@@ -912,7 +912,7 @@ describe('Game', () => {
     })
 
     it('The properties\' owners should be switched', () => {
-      game.makeTransaction({
+      game.makeTrade({
         player: p2._id,
         properties: [property1._id]
       }, {

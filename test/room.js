@@ -592,7 +592,7 @@ describe('Room', () => {
           player2 = state.players.find((p) => p.token === p2.token)
           assert.ok(player1 && player2)
         }
-        
+
         if (/Player 1 .* joined/.test(message)) {
           client2.emit('join game', gameID, p2)
         } else if (/Player 2 .* joined/.test(message)) {
@@ -615,13 +615,104 @@ describe('Room', () => {
   })
 
   describe('Trading', () => {
+    let player1, player2
 
-    it('The room should notify the other player of the offer')
+    beforeEach((done) => {
+      client1.on('update game', (state) => {
+        if (/Player 1 purchased Oriental Avenue/.test(state.note)) {
+          client2.emit('buy property', 'st-james-place')
+        } else if (/Player 2 purchased St\. James Place/.test(state.note)) {
+          player1 = state.players.find((p) => p.token === p1.token)
+          player2 = state.players.find((p) => p.token === p2.token)
 
-    it('The transaction should occur when players make the same offer')
+          assert.equal(state.properties.find((p) => p._id === 'oriental-avenue').owner, player1._id)
+          assert.equal(state.properties.find((p) => p._id === 'st-james-place').owner, player2._id)
+          assert.ok(player1 && player2)
+          done()
+        }
+      })
 
-    it('The offer should be updated when the other player counters')
+      client1.on('new poll', (pollID, message) => {
+        if (/Player 2 .* join/.test(message)) {
+          client1.emit('vote', pollID, true)
+        }
+      })
 
-    it('The players should be notified when an offer is updated')
+      client1.on('notice', (message) => {
+        if (/Player 1 .* joined/.test(message)) {
+          client2.emit('join game', gameID, p2)
+        } else if (/Player 2 .* joined/.test(message)) {
+          client1.emit('buy property', 'oriental-avenue')
+        }
+      })
+
+      client1.emit('join game', gameID, p1)
+    })
+
+    it('The trade can only be accepted by the player who was offered', (done) => {
+      client1.on('error message', (message) => {
+        assert.ok(/Player 2 didn't make you an offer/.test(message))
+        done()
+      })
+
+      client2.on('trade offer', (tradeID) => {
+        client1.emit('accept offer', tradeID)
+      })
+
+      client1.emit('make trade', player2._id,
+        { money: 100, properties: ['oriental-avenue'] },
+        { properties: ['st-james-place'] })
+    })
+
+    it('The room should notify the other player of the offer', (done) => {
+      client2.on('trade offer', (tradeID, pid, offer, trade) => {
+        assert.equal(pid, player1._id)
+        assert.equal(offer.money, 100)
+        assert.equal(offer.properties.length, 1)
+        assert.equal(offer.properties[0], 'oriental-avenue')
+        assert.ok(!trade.money)
+        assert.equal(trade.properties.length, 1)
+        assert.equal(trade.properties[0], 'st-james-place')
+        done()
+      })
+
+      client1.emit('make trade', player2._id,
+        { money: 100, properties: ['oriental-avenue'] },
+        { properties: ['st-james-place'] })
+    })
+
+    it('The trade should cancel when the other player declines', (done) => {
+      client1.on('decline trade', (tradeID, message) => {
+        assert.ok(/Player 2 has declined/.test(message))
+        done()
+      })
+
+      client2.on('trade offer', (tradeID) => {
+        client2.emit('decline offer', tradeID)
+      })
+
+      client1.emit('make trade', player2._id,
+        { money: 100, properties: ['oriental-avenue'] },
+        { properties: ['st-james-place'] })
+    })
+
+    it('The trade should occur when a player accepts an offer', (done) => {
+      client1.on('update game', (state) => {
+        assert.ok(/Player 1 traded Player 2/.test(state.note))
+        assert.equal(state.properties.find((p) => p._id === 'st-james-place').owner, player1._id)
+        assert.equal(state.properties.find((p) => p._id === 'oriental-avenue').owner, player2._id)
+        assert.equal(state.players.find((p) => p._id === player1._id).balance, player1.balance - 100)
+        assert.equal(state.players.find((p) => p._id === player2._id).balance, player2.balance + 100)
+        done()
+      })
+
+      client2.on('trade offer', (tradeID) => {
+        client2.emit('accept offer', tradeID)
+      })
+
+      client1.emit('make trade', player2._id,
+        { money: 100, properties: ['oriental-avenue'] },
+        { properties: ['st-james-place'] })
+    })
   })
 })
