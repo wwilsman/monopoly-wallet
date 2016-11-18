@@ -71,10 +71,10 @@ console.log('listening on port %s', config.port)
 const io = socketIO.listen(server).of('/game')
 
 io.on('connection', function(socket) {
-  socket.on('join game', function(gameID, { name, token }) {
+  socket.on('game:join', function(gameID, { name, token }) {
     db.collection('games').findOne({ _id: gameID }, (err, game) => {
       if (err || !game) {
-        socket.emit('error message', err ? err.message : 'Game not found')
+        socket.emit('game:error', err ? err.message : 'Game not found')
         return
       }
 

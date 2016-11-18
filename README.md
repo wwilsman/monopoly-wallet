@@ -13,27 +13,20 @@ belong in the `public/themes` directory under a folder by the name of the theme.
 **See `public/themes/classic` for an example.**
 
 
-Todo:
+React Todo:
 -----
 
-- [ ] WebSockets
-  - [X] Join game
-  - [X] Polling
-  - [X] Game actions
-  - [X] Auctioning
-  - [X] Contesting
-  - [X] Messaging
-  - [X] Trading
-  - [ ] Refactor
-- [ ] React app
-  - [ ] Create a new game
-  - [ ] Join an existing game
-  - [ ] Play a game
+- [ ] Setup
+- [ ] Wireframes
+- [ ] Create a new game
+- [ ] Join an existing game
+- [ ] Play a game
+- [ ] UI
 
 
 App Setup
 ---------
 
-- Install Mongodb
+- Install MongoDB
 - `yarn`
 - `yarn start`
