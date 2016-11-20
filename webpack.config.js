@@ -1,4 +1,5 @@
 var path = require('path');
+var webpack = require('webpack');
 
 module.exports = {
   devtool: 'eval',
@@ -11,9 +12,21 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      loaders: ['babel'],
       exclude: /node_modules/,
-      include: __dirname,
+      loader: 'babel-loader',
+      query: { cacheDirectory: true }
     }],
   },
+  plugins: [
+    new webpack.DefinePlugin({
+      'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
+    }),
+    new webpack.optimize.DedupePlugin(),
+    new webpack.optimize.OccurenceOrderPlugin()
+  ],
+  resolve: {
+    alias: {
+      'react-native': 'react-native-web'
+    }
+  }
 };

@@ -16,7 +16,7 @@ belong in the `public/themes` directory under a folder by the name of the theme.
 React Todo:
 -----
 
-- [ ] Setup
+- [X] Setup
 - [ ] Wireframes
 - [ ] Create a new game
 - [ ] Join an existing game
