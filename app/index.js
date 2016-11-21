@@ -1,7 +1,7 @@
 import React from 'react'
 import { AppRegistry } from 'react-native'
 
-import { App } from './components/App'
+import { App } from './components'
 
 AppRegistry.registerComponent('App', () => App)
 AppRegistry.runApplication('App', {

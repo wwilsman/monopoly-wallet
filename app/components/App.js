@@ -1,28 +1,25 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { Provider } from 'react-redux'
+import { Router, Route, IndexRoute, browserHistory } from 'react-router'
+import { syncHistoryWithStore } from 'react-router-redux'
+import { configureStore } from '../store'
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF'
-  },
-  welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
-  },
-})
+import { Home, NewGame } from './index'
+
+const store = configureStore({})
+const history = syncHistoryWithStore(browserHistory, store)
 
 export class App extends Component {
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Monopoly Wallet
-        </Text>
-      </View>
+      <Provider store={store}>
+        <Router history={history}>
+          <Route path="/">
+            <IndexRoute component={Home}/>
+            <Route path="new" component={NewGame}/>
+          </Route>
+        </Router>
+      </Provider>
     )
   }
 }

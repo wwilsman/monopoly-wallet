@@ -10,6 +10,7 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 
 import routes from './routes'
+import api from './api'
 
 // App
 const app = express()
@@ -48,6 +49,7 @@ app.use(session({
 
 // Routes
 app.use('/', routes)
+app.use('/api/', api)
 
 // Unhandled
 app.get('*', function(req, res) {
