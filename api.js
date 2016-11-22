@@ -8,8 +8,9 @@ const router = Router()
 router.get('/themes', (req, res) => {
   let themeDir = './public/themes'
 
-  let themes = fs.readdirSync(themeDir).filter((file) => {
-    return fs.statSync(path.join(themeDir, file, 'config.json')).isFile()
+  let themes = fs.readdirSync(themeDir).map((file) => {
+    const theme = require('./' + path.join(themeDir, file, 'theme.json'))
+    return { ...theme, _id: file }
   })
 
   return res.json({ themes })

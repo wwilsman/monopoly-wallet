@@ -1,0 +1,14 @@
+{
+  "name": "Classic",
+  "description": "The classic Monopoly board game",
+  "tokens": [
+    "automobile",
+    "battleship",
+    "boot",
+    "iron",
+    "scottish-terrier",
+    "thimble",
+    "top-hat",
+    "wheelbarrow"
+  ]
+}

@@ -1,35 +1,21 @@
 import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import { StyleSheet, Text, View, ListView } from 'react-native'
 import fetch from 'isomorphic-fetch'
-
-import { EditConfig } from './index'
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF'
-  },
-  title: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
-  },
-  heading: {
-    fontSize: 18,
-    textAlign: 'center',
-    marginBottom: 10
-  }
-})
 
 export class NewGame extends Component {
 
   constructor(...args) {
     super(...args)
 
+    this.ds = new ListView.DataSource({
+      rowHasChanged(prev, next) {
+        return prev.name !== next.name ||
+          prev.description !== next.description
+      }
+    })
+
     this.state = {
-      availableThemes: [],
+      themes: this.ds.cloneWithRows([]),
       activeTheme: ''
     }
   }
@@ -38,54 +24,101 @@ export class NewGame extends Component {
     fetch(`/api/themes`)
       .then((response) => response.json())
       .then(({ themes }) => {
-        this.setState({ availableThemes: themes })
-
-        // if (themes.length === 1) {
-        //   this.chooseTheme(themes[0])
-        // }
-      })
-  }
-
-  chooseTheme(theme) {
-    fetch(`/themes/${theme}/config.json`)
-      .then((response) => response.json())
-      .then((config) => {
+        let activeTheme = themes.length === 1 ? themes[0]._id : ''
         this.setState({
-          activeTheme: theme,
-          config
+          themes: this.ds.cloneWithRows(themes),
+          activeTheme
         })
       })
   }
 
+  chooseTheme(themeID) {
+    this.setState({ activeTheme: themeID })
+  }
+
   render() {
-    const { availableThemes, activeTheme, config } = this.state
+    const { themes, activeTheme } = this.state
 
     return (
       <View style={styles.container}>
-        <Text style={styles.title}>
-          New Game
-        </Text>
+        <View style={styles.header}>
+          <Text style={styles.title}>New Game</Text>
+          <Text style={styles.subtitle}>Choose a version:</Text>
+        </View>
 
-        {!activeTheme && <View>
-          <select onChange={(event) => this.chooseTheme(event.target.value)}>
-            <option value="">
-              -- Select Theme --
-            </option>
-            {availableThemes.map((theme) => (
-              <option value={theme} key={theme}>
-                {theme}
-              </option>
-            ))}
-          </select>
-        </View>}
+        <ListView
+          style={styles.body}
+          dataSource={themes}
+          renderRow={(theme) => {
+            let isActive = activeTheme === theme._id
 
-        {config && <View>
-          <Text style={styles.heading}>
-            {activeTheme}
-          </Text>
-          <EditConfig config={config}/>
-        </View>}
+            return (
+              <View style={[styles.card, isActive && styles.activeCard]}
+                  onClick={() => this.chooseTheme(theme._id)}>
+                <Text style={[styles.cardTitle, isActive && styles.activeCardText]}>{theme.name}</Text>
+                <Text style={[styles.cardDesc, isActive && styles.activeCardText]}>{theme.description}</Text>
+              </View>
+            )
+          }}
+        />
+
+        <View style={styles.footer}>
+          <Text style={!activeTheme && styles.disabled}>Create Game</Text>
+        </View>
       </View>
     )
   }
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#F5FCFF'
+  },
+  header: {
+    padding: 30
+  },
+  title: {
+    fontSize: 24,
+    textAlign: 'center',
+    textTransform: 'uppercase',
+    marginBottom: 10
+  },
+  subtitle: {
+    fontSize: 14,
+    textAlign: 'center'
+  },
+  body: {
+    flex: 1,
+    alignSelf: 'stretch',
+    paddingLeft: 20,
+    paddingRight: 20
+  },
+  footer: {
+    padding: 30
+  },
+  disabled: {
+    opacity: 0.5
+  },
+  card: {
+    borderRadius: 3,
+    backgroundColor: 'rgba(0,0,0,0.1)',
+    padding: 20,
+    marginBottom: 20
+  },
+  activeCard: {
+    backgroundColor: 'rgb(100,200,100)'
+  },
+  activeCardText: {
+    color: 'white'
+  },
+  cardTitle: {
+    fontSize: 18,
+    marginBottom: 10
+  },
+  cardDesc: {
+    fontSize: 14
+  }
+})
