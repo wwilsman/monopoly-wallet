@@ -2,14 +2,14 @@
   "name": "monopoly-wallet",
   "version": "0.0.2",
   "description": "Monopoly Wallet",
-  "main": "lib/monopoly-game.js",
+  "main": "lib/server.js",
   "repository": {
     "type": "git",
     "url": "git://github.com/wwilsman/monopoly-wallet.git"
   },
   "scripts": {
     "test": "mocha --compilers js:babel-core/register",
-    "start": "babel-node server.js",
+    "start": "babel-node lib/server.js",
     "db:reset": "mongo monopoly-wallet --eval \"db.getCollectionNames().forEach(n=>db[n].remove({}));\""
   },
   "author": "Wil Wilsman <hello@wilwilsman.com>",
