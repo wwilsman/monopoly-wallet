@@ -17,9 +17,10 @@ React Todo:
 -----
 
 - [X] Setup
-- [ ] Wireframes
-- [ ] Create a new game
+- [X] Wireframes
+- [X] Create a new game
 - [ ] Join an existing game
+- [ ] More wireframes
 - [ ] Play a game
 - [ ] UI
 
