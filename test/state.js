@@ -1,5 +1,6 @@
 import config from '../public/themes/classic/config.json'
 import properties from '../public/themes/classic/properties.json'
+import { tokens } from '../public/themes/classic/theme.json'
 
 // initial state
 const state = {
@@ -19,7 +20,7 @@ const state = {
 state.players.push({
   _id: 'player-1',
   name: 'Player 1',
-  token: config.tokens[0],
+  token: tokens[0],
   balance: config.start
 })
 
@@ -37,7 +38,7 @@ state.properties.forEach((p, i) => {
 state.players.push({
   _id: 'player-2',
   name: 'Player 2',
-  token: config.tokens[1],
+  token: tokens[1],
   balance: config.start
 })
 
@@ -54,7 +55,7 @@ state.properties.forEach((p, i) => {
 state.players.push({
   _id: 'player-3',
   name: 'Player 3',
-  token: config.tokens[2],
+  token: tokens[2],
   balance: config.start
 })
 

@@ -1,9 +1,9 @@
-import '../server'
+import '../lib/server'
 import http from 'http'
 import assert from 'assert'
 import io from 'socket.io-client'
 
-import { tokens } from '../public/themes/classic/config'
+import { tokens } from '../public/themes/classic/theme.json'
 
 const socketURL = 'http://localhost:3000/game'
 
@@ -20,7 +20,7 @@ const gameOptions = JSON.stringify({
 const requestOpts = {
   hostname: 'localhost',
   port: 3000,
-  path: '/new',
+  path: '/api/new',
   method: 'POST',
   headers: {
     'Content-Type': 'application/json',

@@ -3,6 +3,7 @@ import assert from 'assert'
 import MonopolyGame from '../lib/game'
 
 import initialState from './state'
+import { tokens } from '../public/themes/classic/theme.json'
 
 function isMonopolyError(err) {
   return err.name === 'MonopolyError'
@@ -30,7 +31,7 @@ describe('Game', () => {
     beforeEach(() => {
       p4 = {
         name: 'Player 4',
-        token: game.state.tokens[3]
+        token: tokens[3]
       }
 
       game.subscribe(() => {
@@ -44,7 +45,7 @@ describe('Game', () => {
       let playerCount = game.state.players.length
 
       assert.throws(() => {
-        game.join(p4.name, game.state.tokens[0])
+        game.join(p4.name, tokens[0])
       }, isMonopolyError)
 
       assert.equal(game.state.players.length, playerCount)
