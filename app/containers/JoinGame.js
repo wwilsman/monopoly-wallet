@@ -19,7 +19,8 @@ class JoinGame extends Component {
   }
 
   static contextTypes = {
-    socket: PropTypes.object
+    socket: PropTypes.object,
+    currentPlayer: PropTypes.object
   }
 
   constructor(props) {
@@ -32,6 +33,14 @@ class JoinGame extends Component {
     this.state = {
       playerName: '',
       selectedToken: ''
+    }
+  }
+
+  componentWillMount() {
+    let { router, params } = this.props
+
+    if (this.context.currentPlayer) {
+      router.push(`/${params.gameID}/`)
     }
   }
 
@@ -53,9 +62,7 @@ class JoinGame extends Component {
       token: selectedToken
     }
 
-    // TODO: Uncomment after handling the response higher up
-    // socket.emit('game:join', gameID, playerData)
-    console.log(playerData)
+    socket.emit('game:join', gameID, playerData)
   }
 
   render() {

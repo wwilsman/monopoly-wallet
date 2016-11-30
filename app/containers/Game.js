@@ -3,7 +3,7 @@ import { connect } from 'react-redux'
 import { View } from 'react-native'
 import io from 'socket.io-client'
 
-import { fetchGameInfo } from '../actions'
+import { fetchGameInfo, updateGame } from '../actions'
 import { ThemeIcons } from '../containers'
 
 class Game extends Component {
@@ -12,7 +12,8 @@ class Game extends Component {
   }
 
   static childContextTypes = {
-    socket: PropTypes.object
+    socket: PropTypes.object,
+    currentPlayer: PropTypes.object
   }
 
   constructor(props) {
@@ -20,17 +21,18 @@ class Game extends Component {
 
     let socket = io.connect('/game')
 
-    // TODO: Handle a few websocket events
+    socket.on('game:joined', this.joinGame.bind(this))
 
     this.state = {
-      isPlaying: false,
+      currentPlayer: null,
       socket
     }
   }
 
   getChildContext() {
-    let { socket } = this.state
-    return { socket }
+    let { socket, currentPlayer } = this.state
+
+    return { socket, currentPlayer }
   }
 
   componentWillMount() {
@@ -39,9 +41,19 @@ class Game extends Component {
     fetchGameInfo(this.props.params.gameID)
 
     // TODO: Automatically join the game if there's a cookie
-    if (!this.state.isPlaying && route.path != '/:gameID/join') {
+    if (!this.state.currentPlayer && route.path != '/:gameID/join') {
       router.push(`/${params.gameID}/join`)
     }
+  }
+
+  joinGame(pid, gameState) {
+    let { router, params, updateGame } = this.props
+
+    let currentPlayer = gameState.players.find((p) => p._id === pid)
+
+    updateGame(gameState)
+    this.setState({ currentPlayer })
+    router.push(`/${params.gameID}/`)
   }
 
   render() {
@@ -56,6 +68,7 @@ class Game extends Component {
 
 function mapStateToProps(state) {
   let { theme = '' } = state.game
+
   return { theme }
 }
 
@@ -63,6 +76,10 @@ function mapDispatchToProps(dispatch) {
   return {
     fetchGameInfo(gameID) {
       dispatch(fetchGameInfo(gameID))
+    },
+
+    updateGame(state) {
+      dispatch(updateGame(state))
     }
   }
 }

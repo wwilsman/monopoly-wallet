@@ -272,8 +272,8 @@ describe('Room', () => {
         client1.emit('poll:vote', pollID, true)
       })
 
-      client1.on('game:joined', (state) => {
-        bal1 = state.players.find((p) => p.token === p1.token).balance
+      client1.on('game:joined', (pid, state) => {
+        bal1 = state.players.find((p) => p._id === pid).balance
         assert.ok(bal1)
 
         client2.emit('game:join', gameID, p2)
@@ -315,7 +315,7 @@ describe('Room', () => {
         client2.emit('poll:vote', pollID, true)
       })
 
-      client1.on('game:joined', (state) => {
+      client1.on('game:joined', (pid, state) => {
         bal1 = state.players.find((p) => p.token === p1.token).balance
         assert.ok(bal1)
 
@@ -374,10 +374,10 @@ describe('Room', () => {
     })
 
     it('The auction should end once enough players concede', (done) => {
-      let player2 = null
+      let p2id = null
 
       client2.on('auction:end', (propertyID, winner) => {
-        assert.equal(winner, player2._id)
+        assert.equal(winner, p2id)
         done()
       })
 
@@ -393,9 +393,8 @@ describe('Room', () => {
         client2.emit('game:join', gameID, p2)
       })
 
-      client2.on('game:joined', (state) => {
-        player2 = state.players.find((p) => p.token === p2.token)
-        assert.ok(player2)
+      client2.on('game:joined', (pid, state) => {
+        p2id = pid
 
         client2.emit('auction:start', 'oriental-avenue')
       })
@@ -438,8 +437,8 @@ describe('Room', () => {
         client1.emit('poll:vote', pollID, true)
       })
 
-      client1.on('game:joined', (state) => {
-        player1 = state.players.find((p) => p.token === p1.token)
+      client1.on('game:joined', (pid, state) => {
+        player1 = state.players.find((p) => p._id === pid)
         assert.ok(player1)
 
         client2.emit('game:join', gameID, p2)
@@ -535,15 +534,15 @@ describe('Room', () => {
         }
       })
 
-      client1.on('game:joined', (state) => {
-        player1 = state.players.find((p) => p.token === p1.token)
+      client1.on('game:joined', (pid, state) => {
+        player1 = state.players.find((p) => p._id === pid)
         assert.ok(player1)
 
         client2.emit('game:join', gameID, p2)
       })
 
-      client2.on('game:joined', (state) => {
-        player2 = state.players.find((p) => p.token === p2.token)
+      client2.on('game:joined', (pid, state) => {
+        player2 = state.players.find((p) => p._id === pid)
         assert.ok(player2)
 
         done()

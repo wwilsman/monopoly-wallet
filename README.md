@@ -20,6 +20,8 @@ React Todo:
 - [X] Wireframes
 - [X] Create a new game
 - [ ] Join an existing game
+  - [X] First player can join
+  - [ ] Other players can join
 - [ ] More wireframes
 - [ ] Play a game
 - [ ] UI

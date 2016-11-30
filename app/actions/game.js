@@ -1,5 +1,9 @@
 import fetch from 'isomorphic-fetch'
 
+export function updateGame(state) {
+  return { type: 'UPDATE_GAME', state }
+}
+
 export function updateTheme(theme, tokens, icons) {
   return { type: 'UPDATE_THEME', theme, tokens, icons }
 }
