@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import { StyleSheet, Text, View, TouchableHighlight } from 'react-native'
 
-import { Icon } from '../containers'
+import { Icon } from '../../core/components'
 
 export class TokenSelect extends Component {
   static propTypes = {

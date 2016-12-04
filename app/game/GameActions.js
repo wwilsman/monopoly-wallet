@@ -4,12 +4,8 @@ export function updateGame(state) {
   return { type: 'UPDATE_GAME', state }
 }
 
-export function updateTheme(theme, tokens, icons) {
-  return { type: 'UPDATE_THEME', theme, tokens, icons }
-}
-
-export function updatePlayers(players = []) {
-  return { type: 'UPDATE_PLAYERS', players }
+export function updateTheme(theme) {
+  return { type: 'UPDATE_THEME', theme }
 }
 
 export function fetchGameInfo(gameID) {
@@ -21,8 +17,8 @@ export function fetchGameInfo(gameID) {
           console.log(error, info.message) // TODO: handle me!
         } else {
           return Promise.all([
-            dispatch(updateTheme(info.theme, info.tokens, info.icons)),
-            dispatch(updatePlayers(info.players))
+            dispatch(updateGame(info.game)),
+            dispatch(updateTheme(info.theme))
           ])
         }
       })

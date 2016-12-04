@@ -1,12 +1,10 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
 import { View } from 'react-native'
 import io from 'socket.io-client'
 
-import { fetchGameInfo, updateGame } from '../actions'
-import { ThemeIcons } from '../containers'
+import { ThemeIcons } from '../core/components'
 
-class Game extends Component {
+export class Game extends Component {
   static propTypes = {
     theme: PropTypes.string.isRequired
   }
@@ -65,25 +63,3 @@ class Game extends Component {
     )
   }
 }
-
-function mapStateToProps(state) {
-  let { theme = '' } = state.game
-
-  return { theme }
-}
-
-function mapDispatchToProps(dispatch) {
-  return {
-    fetchGameInfo(gameID) {
-      dispatch(fetchGameInfo(gameID))
-    },
-
-    updateGame(state) {
-      dispatch(updateGame(state))
-    }
-  }
-}
-
-Game = connect(mapStateToProps, mapDispatchToProps)(Game)
-
-export { Game }

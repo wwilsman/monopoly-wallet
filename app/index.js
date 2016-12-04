@@ -1,9 +1,9 @@
 import React from 'react'
 import { AppRegistry } from 'react-native'
 
-import { App } from './containers'
+import { Root } from './core'
 
-AppRegistry.registerComponent('App', () => App)
-AppRegistry.runApplication('App', {
+AppRegistry.registerComponent('Root', () => Root)
+AppRegistry.runApplication('Root', {
   rootTag: document.getElementById('react-app')
 })

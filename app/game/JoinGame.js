@@ -1,18 +1,23 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
 
 import {
-  Button,
   Container,
   Header,
   Content,
-  Footer,
-  Label,
-  TextField,
-  TokenSelect,
-} from '../components'
+  Footer
+} from '../layout'
 
-class JoinGame extends Component {
+import {
+  Button,
+  Label,
+  TextField
+} from '../core/components'
+
+import {
+  TokenSelect
+} from './components'
+
+export class JoinGame extends Component {
   static propTypes = {
     tokens: PropTypes.array.isRequired,
     usedTokens: PropTypes.array.isRequired
@@ -102,18 +107,3 @@ class JoinGame extends Component {
     )
   }
 }
-
-function mapStateToProps(state) {
-  let {
-    tokens = [],
-    players = []
-  } = state.game
-
-  let usedTokens = players.map((p) => p.token)
-
-  return { tokens, usedTokens }
-}
-
-JoinGame = connect(mapStateToProps)(JoinGame)
-
-export { JoinGame }

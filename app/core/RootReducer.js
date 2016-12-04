@@ -1,9 +1,10 @@
 import { combineReducers } from 'redux'
 import { routerReducer } from 'react-router-redux'
 
-import { gameReducer } from './game'
+import { gameReducer, themeReducer } from '../game'
 
 export const rootReducer = combineReducers({
   routing: routerReducer,
-  game: gameReducer
+  theme: themeReducer,
+  game: gameReducer,
 })

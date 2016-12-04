@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
 import { Link } from 'react-router'
 
-export class Home extends Component {
+export class Welcome extends Component {
   render() {
     return (
       <View style={styles.container}>

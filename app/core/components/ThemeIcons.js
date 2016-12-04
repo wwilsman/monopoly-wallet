@@ -76,45 +76,35 @@ export class ThemeIcons extends Component {
   }
 }
 
-class Icon extends Component {
-  static propTypes = {
-    name: PropTypes.string.isRequired,
-    glyphs: PropTypes.object.isRequired,
-    theme: PropTypes.string.isRequired,
-    style: Text.propTypes.style
+const IconComponent = ({ name, glyphs, theme, style }) => {
+  let glyph = glyphs[name] || '?'
+
+  if (typeof glyph === 'number') {
+    glyph = String.fromCharCode(glyph)
   }
 
-  render() {
-    let { name, glyphs, theme, style } = this.props
-
-    let glyph = glyphs[name] || '?'
-    if (typeof glyph === 'number') {
-      glyph = String.fromCharCode(glyph)
-    }
-
-    let fontStyle = {
-      fontFamily: `${theme}-icons`,
-      fontWeight: 'normal',
-      fontStyle: 'normal'
-    }
-
-    return (
-      <Text style={[style, fontStyle]}>
-        {glyph}
-      </Text>
-    )
+  let fontStyle = {
+    fontFamily: `${theme}-icons`,
+    fontWeight: 'normal',
+    fontStyle: 'normal'
   }
+
+  return (
+    <Text style={[style, fontStyle]}>
+      {glyph}
+    </Text>
+  )
 }
 
-function mapStateToIconProps(state) {
-  let { icons, theme } = state.game
-
+function mapStateToIconProps({
+  theme: { _id, glyphs }
+}) {
   return {
-    glyphs: icons,
-    theme
+    theme: _id,
+    glyphs
   }
 }
 
-Icon = connect(mapStateToIconProps)(Icon)
-
-export { Icon }
+export const Icon = connect(
+  mapStateToIconProps
+)(IconComponent)

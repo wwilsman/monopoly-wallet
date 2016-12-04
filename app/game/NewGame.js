@@ -2,14 +2,20 @@ import React, { Component, PropTypes } from 'react'
 import fetch from 'isomorphic-fetch'
 
 import {
-  Button,
   Container,
   Header,
   Content,
-  Footer,
-  Label,
+  Footer
+} from '../layout'
+
+import {
+  Button,
+  Label
+} from '../core/components'
+
+import {
   ThemeSelect
-} from '../components'
+} from './components'
 
 export class NewGame extends Component {
   static contextTypes = {
