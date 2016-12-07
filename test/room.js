@@ -9,7 +9,7 @@ const socketURL = 'http://localhost:3000/game'
 
 const socketOpts = {
   transports: ['websocket'],
-  'force new connection': true
+  forceNew: true
 }
 
 const gameOptions = JSON.stringify({
@@ -118,6 +118,15 @@ describe('Room', () => {
 
       client1.on('game:joined', () => {
         client2.emit('game:join', gameID, p2)
+      })
+
+      client1.emit('game:join', gameID, p1)
+    })
+
+    it('The new player should recieve a notice once they join', (done) => {
+      client1.on('game:notice', (message) => {
+        assert.ok(/You joined/.test(message))
+        done()
       })
 
       client1.emit('game:join', gameID, p1)
@@ -480,13 +489,17 @@ describe('Room', () => {
       client1.emit('game:join', gameID, p1)
     })
 
+    afterEach(() => {
+      entryID = null
+    })
+
     it('The room should poll other players to undo a specific action', (done) => {
-      client2.on('poll:new', (pollID, message) => {
-        assert.ok(/Player 1 is contesting/.test(message))
+      client1.on('poll:new', (pollID, message) => {
+        assert.ok(/Player 2 is contesting/.test(message))
         done()
       })
 
-      client1.emit('game:contest', entryID)
+      client2.emit('game:contest', entryID)
     })
 
     it('The initiator should be notified when the vote is "no"', (done) => {
@@ -510,7 +523,11 @@ describe('Room', () => {
 
     it('The game state should be set to before the action was taken', (done) => {
       client1.on('game:update', (state) => {
+        let property = state.properties.find((p) => p._id === 'oriental-avenue')
+
         assert.ok(/Game reset/.test(state.note))
+        assert.equal(property.owner, 'bank')
+
         done()
       })
 
