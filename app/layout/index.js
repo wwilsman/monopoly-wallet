@@ -1,4 +1,6 @@
 export * from './Container'
 export * from './Header'
+export * from './Title'
 export * from './Content'
+export * from './Centered'
 export * from './Footer'

@@ -13,9 +13,9 @@ export const Footer = ({ children }) => (
 
 const styles = StyleSheet.create({
   footer: {
-    paddingTop: 40,
+    paddingTop: 35,
     paddingRight: 20,
-    paddingBottom: 40,
+    paddingBottom: 35,
     paddingLeft: 20,
     flexDirection: 'row',
     justifyContent: 'center',

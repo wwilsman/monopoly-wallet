@@ -41,10 +41,10 @@ export const Button = (props) => {
 
 const styles = StyleSheet.create({
   container: {
-    paddingLeft: 8,
-    paddingRight: 8,
-    paddingTop: 4,
-    paddingBottom: 4
+    paddingLeft: 10,
+    paddingRight: 10,
+    paddingTop: 5,
+    paddingBottom: 5
   },
   disabledContainer: {
     opacity: 0.2
@@ -55,6 +55,6 @@ const styles = StyleSheet.create({
     color: 'white'
   },
   secondaryText: {
-    color: '#AAAAAA'
+    opacity: 0.6
   }
 })

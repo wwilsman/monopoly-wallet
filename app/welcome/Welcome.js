@@ -1,32 +1,47 @@
 import React, { Component } from 'react'
 import { StyleSheet, Text, View } from 'react-native'
-import { Link } from 'react-router'
+
+import {
+  Container,
+  Title,
+  Centered
+} from '../layout'
+
+import {
+  Button
+} from '../core/components'
 
 export class Welcome extends Component {
+  constructor(props) {
+    super(props)
+
+    this.newGame = this.newGame.bind(this)
+  }
+
+  newGame() {
+    this.props.router.push('/new')
+  }
+
   render() {
     return (
-      <View style={styles.container}>
-        <Text style={styles.welcome}>
-          Monopoly Wallet
-        </Text>
-        <Link to="/new">
-          New Game
-        </Link>
-      </View>
+      <Container>
+        <Centered>
+          <Title style={styles.welcome}>
+            Monopoly Wallet
+          </Title>
+
+          <Button onPress={this.newGame}>
+            New Game
+          </Button>
+        </Centered>
+      </Container>
     )
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F5FCFF'
-  },
   welcome: {
-    fontSize: 20,
-    textAlign: 'center',
-    margin: 10
+    fontSize: 36,
+    marginBottom: 20
   }
 })

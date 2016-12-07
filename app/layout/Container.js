@@ -1,8 +1,8 @@
 import React from 'react'
 import { StyleSheet, View } from 'react-native'
 
-export const Container = ({ children }) => (
-  <View style={styles.container}>
+export const Container = ({ style, children }) => (
+  <View style={[styles.container, style]}>
     {children}
   </View>
 )
