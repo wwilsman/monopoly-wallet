@@ -13,20 +13,6 @@ belong in the `public/themes` directory under a folder by the name of the theme.
 **See `public/themes/classic` for an example.**
 
 
-React Todo:
------
-
-- [X] Setup
-- [X] Wireframes
-- [X] Create a new game
-- [ ] Join an existing game
-  - [X] First player can join
-  - [ ] Other players can join
-- [ ] More wireframes
-- [ ] Play a game
-- [ ] UI
-
-
 App Setup
 ---------
 
