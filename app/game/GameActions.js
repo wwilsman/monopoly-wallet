@@ -4,6 +4,10 @@ export function updateGame(state) {
   return { type: 'UPDATE_GAME', state }
 }
 
+export function setCurrentPlayer(data) {
+  return { type: 'SET_CURRENT_PLAYER', data }
+}
+
 export function updateTheme(theme) {
   return { type: 'UPDATE_THEME', theme }
 }

@@ -3,6 +3,7 @@ import { View } from 'react-native'
 import io from 'socket.io-client'
 
 import { ThemeIcons } from '../core/components'
+import { Toaster } from '../toaster'
 
 export class Game extends Component {
   static propTypes = {
@@ -10,54 +11,90 @@ export class Game extends Component {
   }
 
   static childContextTypes = {
-    socket: PropTypes.object,
-    currentPlayer: PropTypes.object
+    socket: PropTypes.object
   }
 
   constructor(props) {
     super(props)
 
-    let socket = io.connect('/game')
-
-    socket.on('game:joined', this.joinGame.bind(this))
-
-    this.state = {
-      currentPlayer: null,
-      socket
-    }
+    this.socket = io.connect('/game', { forceNew: true })
   }
 
   getChildContext() {
-    let { socket, currentPlayer } = this.state
-
-    return { socket, currentPlayer }
+    return { socket: this.socket }
   }
 
   componentWillMount() {
-    let { route, router, params, fetchGameInfo } = this.props
+    let {
+      route,
+      router,
+      params,
+      currentPlayer,
+      fetchGameInfo
+    } = this.props
 
-    fetchGameInfo(this.props.params.gameID)
+    fetchGameInfo(params.gameID)
 
     // TODO: Automatically join the game if there's a cookie
-    if (!this.state.currentPlayer && route.path != '/:gameID/join') {
+    if (!currentPlayer && route.path != '/:gameID/join') {
       router.push(`/${params.gameID}/join`)
     }
   }
 
-  joinGame(pid, gameState) {
-    let { router, params, updateGame } = this.props
+  componentDidUpdate() {
+    let { currentPlayer } = this.props
 
-    let currentPlayer = gameState.players.find((p) => p._id === pid)
+    if (currentPlayer && !this._socketHasEvents) {
+      this.socket.on('game:error', this.triggerError.bind(this))
+      this.socket.on('game:notice', this.triggerNotice.bind(this))
+      this.socket.on('poll:new', this.triggerPoll.bind(this))
 
-    updateGame(gameState)
-    this.setState({ currentPlayer })
-    router.push(`/${params.gameID}/`)
+      this._socketHasEvents = true
+    }
+  }
+
+  triggerNotice(message) {
+    let { toaster } = this.refs
+    let options = {}
+
+    if (message.indexOf('You ') !== 0) {
+      options.secondaryButton = 'Veto'
+      options.onSecondaryButtonPress = () => console.log('veto')
+    }
+
+    toaster.showToast(message, options)
+  }
+
+  triggerError(message) {
+    let { toaster } = this.refs
+    toaster.showToast(message, { isError: true })
+  }
+
+  triggerPoll(pollID, message) {
+    let socket = this.socket
+    let { toaster } = this.refs
+
+    toaster.showToast(message, {
+      timeout: 0,
+      primaryButton: 'Yes',
+      onPrimaryButtonPress(dismiss) {
+        socket.emit('poll:vote', pollID, true)
+        dismiss()
+      },
+      secondaryButton: 'No',
+      onSecondaryButtonPress(dismiss) {
+        socket.emit('poll:vote', pollID, false)
+        dismiss()
+      }
+    })
   }
 
   render() {
     return (
       <View style={{ flex: 1 }}>
         <ThemeIcons theme={this.props.theme}/>
+        <Toaster ref="toaster"/>
+
         {this.props.children}
       </View>
     )

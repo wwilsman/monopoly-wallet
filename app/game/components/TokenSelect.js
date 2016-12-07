@@ -48,13 +48,13 @@ export class TokenSelect extends Component {
 
     let iconStyle = [
       styles.icon,
-      isSelected ? styles.activeIcon : null,
-      isDisabled ? styles.disabledIcon : null
+      isSelected ? styles.activeIcon : null
     ]
 
     return (
       <View style={styles.cardContainer} key={i}>
-        <TouchableHighlight onPress={() => this.selectToken(token)}>
+        <TouchableHighlight disabled={isDisabled}
+            onPress={() => this.selectToken(token)}>
           <View style={cardStyle}>
             <Icon name={token} style={iconStyle}/>
           </View>
@@ -100,8 +100,5 @@ const styles = StyleSheet.create({
   },
   activeIcon: {
     color: 'white'
-  },
-  disabledIcon: {
-    color: 'black'
   }
 })

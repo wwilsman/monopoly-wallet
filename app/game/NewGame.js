@@ -79,7 +79,7 @@ export class NewGame extends Component {
 
         <Footer>
           <Button secondary
-              disabled={!selectedTheme}>
+              disabled={true || !selectedTheme}>
             Adjust Settings
           </Button>
 

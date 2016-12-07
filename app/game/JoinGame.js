@@ -3,7 +3,9 @@ import React, { Component, PropTypes } from 'react'
 import {
   Container,
   Header,
+  Title,
   Content,
+  Centered,
   Footer
 } from '../layout'
 
@@ -20,7 +22,7 @@ import {
 export class JoinGame extends Component {
   static propTypes = {
     tokens: PropTypes.array.isRequired,
-    usedTokens: PropTypes.array.isRequired
+    players: PropTypes.array.isRequired
   }
 
   static contextTypes = {
@@ -33,18 +35,27 @@ export class JoinGame extends Component {
 
     this.setPlayerName = this.setPlayerName.bind(this)
     this.selectToken = this.selectToken.bind(this)
+    this.startJoinGame = this.startJoinGame.bind(this)
+    this.showError = this.showError.bind(this)
     this.joinGame = this.joinGame.bind(this)
 
     this.state = {
       playerName: '',
-      selectedToken: ''
+      selectedToken: '',
+      isWaiting: false,
+      error: null
     }
   }
 
   componentWillMount() {
-    let { router, params } = this.props
+    let {
+      router,
+      params,
+      currentPlayer,
+      gameClosed
+    } = this.props
 
-    if (this.context.currentPlayer) {
+    if (currentPlayer || gameClosed) {
       router.push(`/${params.gameID}/`)
     }
   }
@@ -57,7 +68,7 @@ export class JoinGame extends Component {
     this.setState({ selectedToken: token })
   }
 
-  joinGame() {
+  startJoinGame() {
     let { socket } = this.context
     let { gameID } = this.props.params
     let { playerName, selectedToken } = this.state
@@ -67,12 +78,60 @@ export class JoinGame extends Component {
       token: selectedToken
     }
 
+    socket.once('game:error', this.showError)
+    socket.once('game:joined', this.joinGame)
+
     socket.emit('game:join', gameID, playerData)
+    this.setState({ isWaiting: true })
   }
 
-  render() {
-    let { theme, tokens, usedTokens } = this.props
+  joinGame(pid, gameState) {
+    let {
+      router,
+      params,
+      updateGame,
+      setCurrentPlayer
+    } = this.props
+
+    updateGame(gameState)
+    setCurrentPlayer(gameState.players.find((p) => p._id === pid))
+
+    router.push(`/${params.gameID}/`)
+  }
+
+  showError(message) {
+    this.setState({ error: message })
+  }
+
+  _renderWaiting() {
+    let { error } = this.state
+    let containerStyle = !error ? null :
+      { backgroundColor: 'rgb(225,50,50)' }
+
+    return (
+      <Container style={containerStyle}>
+        <Centered>
+          <Title>{error || 'Waiting to join'}</Title>
+        </Centered>
+      </Container>
+    )
+  }
+
+  _renderJoin() {
+    let { tokens, players } = this.props
     let { playerName, selectedToken } = this.state
+
+    let usedTokens = players.map((p) => p.token)
+    let activePlayers = players.filter((p) => p.isActive)
+    let preexistingPlayer = players.find((p) => {
+      return p.name === playerName && !p.isActive
+    })
+
+    if (preexistingPlayer) {
+      usedTokens = usedTokens.filter((t) => {
+        return t !== preexistingPlayer.token
+      })
+    }
 
     return (
       <Container>
@@ -99,11 +158,17 @@ export class JoinGame extends Component {
         <Footer>
           <Button
               disabled={!(playerName && selectedToken)}
-              onPress={this.joinGame}>
-            {usedTokens.length ? 'Ask to join' : 'Join Game'}
+              onPress={this.startJoinGame}>
+            {activePlayers.length ? 'Ask to join' : 'Join Game'}
           </Button>
         </Footer>
       </Container>
     )
+  }
+
+  render() {
+    return this.state.isWaiting ?
+      this._renderWaiting() :
+      this._renderJoin()
   }
 }

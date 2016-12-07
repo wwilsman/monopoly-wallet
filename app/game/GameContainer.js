@@ -4,9 +4,10 @@ import { fetchGameInfo, updateGame } from './GameActions'
 import { Game } from './Game'
 
 function mapStateToProps({
-  theme: { _id: theme = '' }
+  theme: { _id: theme = '' },
+  currentPlayer
 }) {
-  return { theme }
+  return { theme, currentPlayer }
 }
 
 function mapDispatchToProps(dispatch) {
