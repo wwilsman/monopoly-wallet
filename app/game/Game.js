@@ -1,6 +1,14 @@
 import React, { Component, PropTypes } from 'react'
-import { View } from 'react-native'
+import { View, Text } from 'react-native'
 import io from 'socket.io-client'
+import {
+  Container,
+  Header,
+  Title,
+  Content,
+  Centered,
+  Footer
+} from '../layout'
 
 import { ThemeIcons } from '../core/components'
 import { Toaster } from '../toaster'
@@ -45,15 +53,15 @@ export class Game extends Component {
     let { currentPlayer } = this.props
 
     if (currentPlayer && !this._socketHasEvents) {
-      this.socket.on('game:error', this.triggerError.bind(this))
-      this.socket.on('game:notice', this.triggerNotice.bind(this))
-      this.socket.on('poll:new', this.triggerPoll.bind(this))
+      this.socket.on('game:error', this.triggerError)
+      this.socket.on('game:notice', this.triggerNotice)
+      this.socket.on('poll:new', this.triggerPoll)
 
       this._socketHasEvents = true
     }
   }
 
-  triggerNotice(message) {
+  triggerNotice = (message) => {
     let { toaster } = this.refs
     let options = {}
 
@@ -65,12 +73,12 @@ export class Game extends Component {
     toaster.showToast(message, options)
   }
 
-  triggerError(message) {
+  triggerError = (message) => {
     let { toaster } = this.refs
     toaster.showToast(message, { isError: true })
   }
 
-  triggerPoll(pollID, message) {
+  triggerPoll = (pollID, message) => {
     let socket = this.socket
     let { toaster } = this.refs
 

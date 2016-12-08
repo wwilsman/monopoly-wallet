@@ -11,7 +11,8 @@ import {
 import {
   NewGame,
   GameContainer,
-  JoinGameContainer
+  JoinGameContainer,
+  InProgressGameContainer
 } from '../game'
 
 const store = configureStore({})
@@ -25,6 +26,7 @@ export class Root extends Component {
           <Route path="/" component={Welcome}/>
           <Route path="/new" component={NewGame}/>
           <Route path="/:gameID" component={GameContainer}>
+            <IndexRoute component={InProgressGameContainer} />
             <Route path="/:gameID/join" component={JoinGameContainer}/>
           </Route>
         </Router>
