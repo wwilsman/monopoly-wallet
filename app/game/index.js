@@ -7,3 +7,6 @@ export * from './NewGame'
 
 export * from './JoinGame'
 export * from './JoinGameContainer'
+
+export * from './InProgressGame'
+export * from './InProgressGameContainer'
