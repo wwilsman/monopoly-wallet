@@ -12,6 +12,7 @@ export const Header = ({ children }) => (
 
 const styles = StyleSheet.create({
   header: {
-    padding: 40
+    padding: 40,
+    alignItems: 'center'
   }
 })

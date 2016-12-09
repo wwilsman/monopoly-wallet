@@ -26,18 +26,11 @@ export class JoinGame extends Component {
   }
 
   static contextTypes = {
-    socket: PropTypes.object,
-    currentPlayer: PropTypes.object
+    socket: PropTypes.object
   }
 
   constructor(props) {
     super(props)
-
-    this.setPlayerName = this.setPlayerName.bind(this)
-    this.selectToken = this.selectToken.bind(this)
-    this.startJoinGame = this.startJoinGame.bind(this)
-    this.showError = this.showError.bind(this)
-    this.joinGame = this.joinGame.bind(this)
 
     this.state = {
       playerName: '',
@@ -60,47 +53,10 @@ export class JoinGame extends Component {
     }
   }
 
-  setPlayerName(name) {
-    this.setState({ playerName: name })
-  }
-
-  selectToken(token) {
-    this.setState({ selectedToken: token })
-  }
-
-  startJoinGame() {
-    let { socket } = this.context
-    let { gameID } = this.props.params
-    let { playerName, selectedToken } = this.state
-
-    let playerData = {
-      name: playerName,
-      token: selectedToken
-    }
-
-    socket.once('game:error', this.showError)
-    socket.once('game:joined', this.joinGame)
-
-    socket.emit('game:join', gameID, playerData)
-    this.setState({ isWaiting: true })
-  }
-
-  joinGame(pid, gameState) {
-    let {
-      router,
-      params,
-      updateGame,
-      setCurrentPlayer
-    } = this.props
-
-    updateGame(gameState)
-    setCurrentPlayer(gameState.players.find((p) => p._id === pid))
-
-    router.push(`/${params.gameID}/`)
-  }
-
-  showError(message) {
-    this.setState({ error: message })
+  render() {
+    return this.state.isWaiting ?
+      this._renderWaiting() :
+      this._renderJoin()
   }
 
   _renderWaiting() {
@@ -166,9 +122,46 @@ export class JoinGame extends Component {
     )
   }
 
-  render() {
-    return this.state.isWaiting ?
-      this._renderWaiting() :
-      this._renderJoin()
+  setPlayerName = (name) => {
+    this.setState({ playerName: name })
+  }
+
+  selectToken = (token) => {
+    this.setState({ selectedToken: token })
+  }
+
+  startJoinGame = () => {
+    let { socket } = this.context
+    let { gameID } = this.props.params
+    let { playerName, selectedToken } = this.state
+
+    let playerData = {
+      name: playerName,
+      token: selectedToken
+    }
+
+    socket.once('game:error', this.showError)
+    socket.once('game:joined', this.joinGame)
+
+    socket.emit('game:join', gameID, playerData)
+    this.setState({ isWaiting: true })
+  }
+
+  joinGame = (pid, gameState) => {
+    let {
+      router,
+      params,
+      updateGame,
+      setCurrentPlayer
+    } = this.props
+
+    updateGame(gameState)
+    setCurrentPlayer(gameState.players.find((p) => p._id === pid))
+
+    router.push(`/${params.gameID}/`)
+  }
+
+  showError = (message) => {
+    this.setState({ error: message })
   }
 }

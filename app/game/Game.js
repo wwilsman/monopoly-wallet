@@ -45,15 +45,26 @@ export class Game extends Component {
     let { currentPlayer } = this.props
 
     if (currentPlayer && !this._socketHasEvents) {
-      this.socket.on('game:error', this.triggerError.bind(this))
-      this.socket.on('game:notice', this.triggerNotice.bind(this))
-      this.socket.on('poll:new', this.triggerPoll.bind(this))
+      this.socket.on('game:error', this.triggerError)
+      this.socket.on('game:notice', this.triggerNotice)
+      this.socket.on('poll:new', this.triggerPoll)
 
       this._socketHasEvents = true
     }
   }
 
-  triggerNotice(message) {
+  render() {
+    return (
+      <View style={{ flex: 1 }}>
+        <ThemeIcons theme={this.props.theme}/>
+        <Toaster ref="toaster"/>
+
+        {this.props.children}
+      </View>
+    )
+  }
+
+  triggerNotice = (message) => {
     let { toaster } = this.refs
     let options = {}
 
@@ -65,12 +76,12 @@ export class Game extends Component {
     toaster.showToast(message, options)
   }
 
-  triggerError(message) {
+  triggerError = (message) => {
     let { toaster } = this.refs
     toaster.showToast(message, { isError: true })
   }
 
-  triggerPoll(pollID, message) {
+  triggerPoll = (pollID, message) => {
     let socket = this.socket
     let { toaster } = this.refs
 
@@ -87,16 +98,5 @@ export class Game extends Component {
         dismiss()
       }
     })
-  }
-
-  render() {
-    return (
-      <View style={{ flex: 1 }}>
-        <ThemeIcons theme={this.props.theme}/>
-        <Toaster ref="toaster"/>
-
-        {this.props.children}
-      </View>
-    )
   }
 }

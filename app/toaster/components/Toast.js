@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, View, Text } from 'react-native'
 
-import { Button } from '../core/components'
+import { Button } from '../../core/components'
 
 export const Toast = ({
   message,

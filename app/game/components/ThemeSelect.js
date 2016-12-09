@@ -11,9 +11,6 @@ export class ThemeSelect extends Component {
   constructor(props) {
     super(props)
 
-    this.renderThemeOption = this.renderThemeOption.bind(this)
-    this.selectTheme = this.selectTheme.bind(this)
-
     this.ds = new ListView.DataSource({
       rowHasChanged(prev, next) {
         return JSON.stringify(prev) !== JSON.stringify(next)
@@ -33,7 +30,17 @@ export class ThemeSelect extends Component {
     })
   }
 
-  selectTheme(theme) {
+  render() {
+    return (
+      <ListView
+        style={styles.list}
+        dataSource={this.state.themes}
+        renderRow={this.renderThemeOption}
+      />
+    )
+  }
+
+  selectTheme = (theme) => {
     this.setState({ selectedTheme: theme._id })
 
     if (this.props.onChange) {
@@ -41,7 +48,7 @@ export class ThemeSelect extends Component {
     }
   }
 
-  renderThemeOption(theme) {
+  renderThemeOption = (theme) => {
     let isSelected = theme._id === this.state.selectedTheme
 
     let cardStyle = [styles.card, isSelected ? styles.activeCard : null]
@@ -57,16 +64,6 @@ export class ThemeSelect extends Component {
           </View>
         </TouchableHighlight>
       </View>
-    )
-  }
-
-  render() {
-    return (
-      <ListView
-        style={styles.list}
-        dataSource={this.state.themes}
-        renderRow={this.renderThemeOption}
-      />
     )
   }
 }

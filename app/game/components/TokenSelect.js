@@ -14,9 +14,6 @@ export class TokenSelect extends Component {
   constructor(props) {
     super(props)
 
-    this.renderTokenOption = this.renderTokenOption.bind(this)
-    this.selectToken = this.selectToken.bind(this)
-
     this.state = {
       selectedToken: props.selectedToken || ''
     }
@@ -28,7 +25,15 @@ export class TokenSelect extends Component {
     })
   }
 
-  selectToken(token) {
+  render() {
+    return (
+      <View style={styles.grid}>
+        {this.props.tokens.map(this.renderTokenOption)}
+      </View>
+    )
+  }
+
+  selectToken = (token) => {
     this.setState({ selectedToken: token })
 
     if (this.props.onChange) {
@@ -36,7 +41,7 @@ export class TokenSelect extends Component {
     }
   }
 
-  renderTokenOption(token, i) {
+  renderTokenOption = (token, i) => {
     let isSelected = token === this.state.selectedToken
     let isDisabled = this.props.usedTokens.indexOf(token) !== -1
 
@@ -59,14 +64,6 @@ export class TokenSelect extends Component {
             <Icon name={token} style={iconStyle}/>
           </View>
         </TouchableHighlight>
-      </View>
-    )
-  }
-
-  render() {
-    return (
-      <View style={styles.grid}>
-        {this.props.tokens.map(this.renderTokenOption)}
       </View>
     )
   }

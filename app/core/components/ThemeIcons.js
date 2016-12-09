@@ -26,6 +26,10 @@ export class ThemeIcons extends Component {
     this.injectStyleSheet()
   }
 
+  render() {
+    return null
+  }
+
   injectStyleSheet() {
     let { theme } = this.props
 
@@ -69,10 +73,6 @@ export class ThemeIcons extends Component {
     }
 
     return style
-  }
-
-  render() {
-    return null
   }
 }
 

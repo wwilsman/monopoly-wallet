@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { StyleSheet, View } from 'react-native'
 
-import { Toast } from './Toast'
+import { Toast } from './components/Toast'
 
 export class Toaster extends Component {
 
@@ -11,6 +11,18 @@ export class Toaster extends Component {
     this.state = {
       toasts: []
     }
+  }
+
+  render() {
+    return (
+      <View style={styles.toaster}>
+        {this.state.toasts.map((toast) => (
+          <Toast {...toast}
+            onDismiss={() => this.removeToast(toast.key)}
+          />
+        ))}
+      </View>
+    )
   }
 
   showToast(message, { timeout = 3000, ...options } = {}) {
@@ -34,18 +46,6 @@ export class Toaster extends Component {
       toasts: [ ...this.state.toasts.slice(0, i),
         ...this.state.toasts.slice(i + 1) ]
     })
-  }
-
-  render() {
-    return (
-      <View style={styles.toaster}>
-        {this.state.toasts.map((toast) => (
-          <Toast {...toast}
-            onDismiss={() => this.removeToast(toast.key)}
-          />
-        ))}
-      </View>
-    )
   }
 }
 

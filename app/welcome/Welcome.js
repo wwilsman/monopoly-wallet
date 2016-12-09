@@ -11,33 +11,19 @@ import {
   Button
 } from '../core/components'
 
-export class Welcome extends Component {
-  constructor(props) {
-    super(props)
+export const Welcome = ({ router }) => (
+  <Container>
+    <Centered>
+      <Title style={styles.welcome}>
+        Monopoly Wallet
+      </Title>
 
-    this.newGame = this.newGame.bind(this)
-  }
-
-  newGame() {
-    this.props.router.push('/new')
-  }
-
-  render() {
-    return (
-      <Container>
-        <Centered>
-          <Title style={styles.welcome}>
-            Monopoly Wallet
-          </Title>
-
-          <Button onPress={this.newGame}>
-            New Game
-          </Button>
-        </Centered>
-      </Container>
-    )
-  }
-}
+      <Button onPress={() => router.push('/new')}>
+        New Game
+      </Button>
+    </Centered>
+  </Container>
+)
 
 const styles = StyleSheet.create({
   welcome: {

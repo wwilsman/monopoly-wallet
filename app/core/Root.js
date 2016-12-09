@@ -17,18 +17,14 @@ import {
 const store = configureStore({})
 const history = syncHistoryWithStore(browserHistory, store)
 
-export class Root extends Component {
-  render() {
-    return (
-      <Provider store={store}>
-        <Router history={history}>
-          <Route path="/" component={Welcome}/>
-          <Route path="/new" component={NewGame}/>
-          <Route path="/:gameID" component={GameContainer}>
-            <Route path="/:gameID/join" component={JoinGameContainer}/>
-          </Route>
-        </Router>
-      </Provider>
-    )
-  }
-}
+export const Root = () => (
+  <Provider store={store}>
+    <Router history={history}>
+      <Route path="/" component={Welcome}/>
+      <Route path="/new" component={NewGame}/>
+      <Route path="/:gameID" component={GameContainer}>
+        <Route path="/:gameID/join" component={JoinGameContainer}/>
+      </Route>
+    </Router>
+  </Provider>
+)

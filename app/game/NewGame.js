@@ -25,9 +25,6 @@ export class NewGame extends Component {
   constructor(props) {
     super(props)
 
-    this.selectTheme = this.selectTheme.bind(this)
-    this.createGame = this.createGame.bind(this)
-
     this.state = {
       themes: [],
       selectedTheme: ''
@@ -41,23 +38,6 @@ export class NewGame extends Component {
         let selectedTheme = themes.length === 1 ? themes[0]._id : ''
         this.setState({ themes, selectedTheme })
       })
-  }
-
-  selectTheme(themeID) {
-    this.setState({ selectedTheme: themeID })
-  }
-
-  createGame() {
-    let { selectedTheme } = this.state
-    let { router } = this.context
-
-    fetch('/api/new', {
-      method: 'POST',
-      body: JSON.stringify({ theme: selectedTheme }),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then((response) => response.json())
-      .then(({ gameID }) => router.push(`/${gameID}/join`))
   }
 
   render() {
@@ -91,5 +71,22 @@ export class NewGame extends Component {
         </Footer>
       </Container>
     )
+  }
+
+  selectTheme = (themeID) => {
+    this.setState({ selectedTheme: themeID })
+  }
+
+  createGame = () => {
+    let { selectedTheme } = this.state
+    let { router } = this.context
+
+    fetch('/api/new', {
+      method: 'POST',
+      body: JSON.stringify({ theme: selectedTheme }),
+      headers: { 'Content-Type': 'application/json' },
+    })
+      .then((response) => response.json())
+      .then(({ gameID }) => router.push(`/${gameID}/join`))
   }
 }
