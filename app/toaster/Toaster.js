@@ -52,8 +52,8 @@ export class Toaster extends Component {
 const styles = StyleSheet.create({
   toaster: {
     position: 'absolute',
+    bottom: 0,
     zIndex: 9999,
-    width: '100%',
-    padding: 20
+    width: '100%'
   }
 })
