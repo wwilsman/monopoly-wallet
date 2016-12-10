@@ -10,6 +10,6 @@ import {
 export const rootReducer = combineReducers({
   routing: routerReducer,
   game: gameReducer,
-  currentPlayer: playerReducer,
+  player: playerReducer,
   theme: themeReducer
 })

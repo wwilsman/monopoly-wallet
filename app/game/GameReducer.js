@@ -1,4 +1,6 @@
-export const gameReducer = (state = {}, action) => {
+import { gameDefaults } from '../../lib/defaults'
+
+export const gameReducer = (state = gameDefaults, action) => {
   switch (action.type) {
     case 'UPDATE_GAME':
       return { ...state, ...action.state }
@@ -11,7 +13,7 @@ export const gameReducer = (state = {}, action) => {
 export const playerReducer = (state = null, action) => {
   switch (action.type) {
     case 'SET_CURRENT_PLAYER':
-      return { ...action.data }
+      return action.playerID
 
     default:
       return state

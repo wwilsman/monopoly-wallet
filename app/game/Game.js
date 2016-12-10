@@ -29,22 +29,22 @@ export class Game extends Component {
       route,
       router,
       params,
-      currentPlayer,
+      player,
       fetchGameInfo
     } = this.props
 
     fetchGameInfo(params.gameID)
 
     // TODO: Automatically join the game if there's a cookie
-    if (!currentPlayer && route.path != '/:gameID/join') {
+    if (!player && route.path != '/:gameID/join') {
       router.push(`/${params.gameID}/join`)
     }
   }
 
   componentDidUpdate() {
-    let { currentPlayer } = this.props
+    let { player } = this.props
 
-    if (currentPlayer && !this._socketHasEvents) {
+    if (player && !this._socketHasEvents) {
       this.socket.on('game:error', this.triggerError)
       this.socket.on('game:notice', this.triggerNotice)
       this.socket.on('poll:new', this.triggerPoll)

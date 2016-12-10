@@ -97,7 +97,7 @@ const IconComponent = ({ name, glyphs, theme, style }) => {
 }
 
 function mapStateToIconProps({
-  theme: { _id, glyphs }
+  theme: { _id, glyphs = {} }
 }) {
   return {
     theme: _id,

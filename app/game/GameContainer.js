@@ -5,24 +5,18 @@ import { Game } from './Game'
 
 function mapStateToProps({
   theme: { _id: theme = '' },
-  currentPlayer
+  game: { players },
+  player
 }) {
-  return { theme, currentPlayer }
-}
-
-function mapDispatchToProps(dispatch) {
   return {
-    fetchGameInfo(gameID) {
-      dispatch(fetchGameInfo(gameID))
-    },
-
-    updateGame(state) {
-      dispatch(updateGame(state))
-    }
+    player: players.find((p) => p._id === player),
+    theme
   }
 }
 
 export const GameContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
+  mapStateToProps, {
+    fetchGameInfo,
+    updateGame
+  }
 )(Game)

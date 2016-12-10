@@ -41,14 +41,9 @@ export class JoinGame extends Component {
   }
 
   componentWillMount() {
-    let {
-      router,
-      params,
-      currentPlayer,
-      gameClosed
-    } = this.props
+    let { router, params, player } = this.props
 
-    if (currentPlayer || gameClosed) {
+    if (player) {
       router.push(`/${params.gameID}/`)
     }
   }
@@ -74,19 +69,14 @@ export class JoinGame extends Component {
   }
 
   _renderJoin() {
-    let { tokens, players } = this.props
+    let { tokens, usedTokens, players } = this.props
     let { playerName, selectedToken } = this.state
 
-    let usedTokens = players.map((p) => p.token)
-    let activePlayers = players.filter((p) => p.isActive)
-    let preexistingPlayer = players.find((p) => {
-      return p.name === playerName && !p.isActive
-    })
+    let active = players.filter((p) => p.isActive)
+    let player = players.find((p) => p.name === playerName && !p.isActive)
 
-    if (preexistingPlayer) {
-      usedTokens = usedTokens.filter((t) => {
-        return t !== preexistingPlayer.token
-      })
+    if (player) {
+      usedTokens = usedTokens.filter((t) => t !== player.token)
     }
 
     return (
@@ -115,7 +105,7 @@ export class JoinGame extends Component {
           <Button
               disabled={!(playerName && selectedToken)}
               onPress={this.startJoinGame}>
-            {activePlayers.length ? 'Ask to join' : 'Join Game'}
+            {active.length ? 'Ask to join' : 'Join Game'}
           </Button>
         </Footer>
       </Container>
@@ -156,12 +146,21 @@ export class JoinGame extends Component {
     } = this.props
 
     updateGame(gameState)
-    setCurrentPlayer(gameState.players.find((p) => p._id === pid))
+    setCurrentPlayer(pid)
 
+    this._removeSocketEvents()
     router.push(`/${params.gameID}/`)
   }
 
   showError = (message) => {
+    this._removeSocketEvents()
     this.setState({ error: message })
+  }
+
+  _removeSocketEvents() {
+    let { socket } = this.context
+
+    socket.off('game:error', this.showError)
+    socket.off('game:joined', this.joinGame)
   }
 }

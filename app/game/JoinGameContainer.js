@@ -4,15 +4,15 @@ import { JoinGame } from './JoinGame'
 import { updateGame, setCurrentPlayer } from './GameActions'
 
 function mapStateToProps({
-  game: { players = [], isClosed },
+  game: { players = [] },
   theme: { tokens = [] },
-  currentPlayer
+  player
 }) {
   return {
-    tokens,
+    player: players.find((p) => p._id === player),
+    usedTokens: players.map((p) => p.token),
     players,
-    currentPlayer,
-    gameClosed: isClosed
+    tokens,
   }
 }
 
