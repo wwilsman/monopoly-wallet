@@ -3,7 +3,12 @@ var webpack = require('webpack');
 
 module.exports = {
   devtool: 'eval',
-  entry: './app/index',
+  entry: [
+    'webpack-hot-middleware/client',
+    'webpack/hot/only-dev-server',
+    'react-hot-loader/patch',
+    './app/index'
+  ],
   output: {
     path: path.join(__dirname, 'public'),
     filename: 'app.bundle.js',
@@ -12,17 +17,25 @@ module.exports = {
   module: {
     loaders: [{
       test: /\.js$/,
-      exclude: /node_modules/,
       loader: 'babel-loader',
-      query: { cacheDirectory: true }
+      include: path.join(__dirname, 'app'),
+      exclude: /node_modules/,
+      query: {
+        cacheDirectory: true,
+        plugins: ['react-hot-loader/babel'],
+        presets: [
+          ['es2015', { modules: false }],
+          'stage-0',
+          'react'
+        ]
+      }
     }],
   },
   plugins: [
+    new webpack.HotModuleReplacementPlugin(),
     new webpack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV || 'development')
-    }),
-    new webpack.optimize.DedupePlugin(),
-    new webpack.optimize.OccurenceOrderPlugin()
+    })
   ],
   resolve: {
     alias: {

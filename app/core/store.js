@@ -5,8 +5,8 @@ import { rootReducer } from './RootReducer'
 
 const loggerMiddleware = createLogger()
 
-export function configureStore(initialState) {
-  return createStore(
+export function configureStore(initialState = {}) {
+  const store = createStore(
     rootReducer,
     initialState,
     applyMiddleware(
@@ -14,4 +14,12 @@ export function configureStore(initialState) {
       loggerMiddleware
     )
   )
+
+  if (module.hot) {
+    module.hot.accept('./RootReducer', () => {
+      store.replaceReducer(rootReducer)
+    })
+  }
+
+  return store
 }

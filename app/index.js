@@ -3,7 +3,13 @@ import { AppRegistry } from 'react-native'
 
 import { Root } from './core'
 
-AppRegistry.registerComponent('Root', () => Root)
-AppRegistry.runApplication('Root', {
-  rootTag: document.getElementById('react-app')
-})
+const rootTag = document.getElementById('react-app')
+
+AppRegistry.registerComponent('App', () => Root)
+AppRegistry.runApplication('App', { rootTag })
+
+if (module.hot) {
+  module.hot.accept('./core', () => {
+    AppRegistry.runApplication('App', { rootTag })
+  })
+}
