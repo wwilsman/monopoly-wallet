@@ -1,7 +1,14 @@
 import React, { Component, PropTypes } from 'react'
-import { StyleSheet, Text, View, ListView, TouchableHighlight } from 'react-native'
 
-export class ThemeSelect extends Component {
+import {
+  View,
+  Text,
+  ListView,
+  TouchableHighlight,
+  StyleSheet
+ } from 'react-native'
+
+export default class ThemeSelect extends Component {
   static propTypes = {
     themes: PropTypes.array.isRequired,
     selectedTheme: PropTypes.string,

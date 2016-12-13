@@ -4,7 +4,7 @@ import { Router, Route, IndexRoute, browserHistory } from 'react-router'
 import { syncHistoryWithStore } from 'react-router-redux'
 import { AppContainer } from 'react-hot-loader'
 
-import { configureStore } from './store'
+import configureStore from './store'
 
 import {
   Welcome
@@ -16,7 +16,7 @@ import {
   JoinGameContainer
 } from '../game'
 
-export class Root extends Component {
+export default class App extends Component {
   constructor(props) {
     super(props)
 

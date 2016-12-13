@@ -17,7 +17,7 @@ import {
   ThemeSelect
 } from './components'
 
-export class NewGame extends Component {
+export default class NewGame extends Component {
   static contextTypes = {
     router: PropTypes.object
   }

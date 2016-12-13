@@ -1,7 +1,7 @@
 import React from 'react'
-import { StyleSheet, TextInput } from 'react-native'
+import { TextInput, StyleSheet } from 'react-native'
 
-export const TextField = ({ style, ...props }) => (
+const TextField = ({ style, ...props }) => (
   <TextInput {...props}
     style={[
       styles.input,
@@ -10,6 +10,8 @@ export const TextField = ({ style, ...props }) => (
     ]}
   />
 )
+
+export default TextField
 
 const styles = StyleSheet.create({
   input: {

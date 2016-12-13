@@ -1,11 +1,13 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 
-export const Centered = ({ children }) => (
+const Centered = ({ children }) => (
   <View style={styles.centered}>
     {children}
   </View>
 )
+
+export default Centered
 
 const styles = StyleSheet.create({
   centered: {

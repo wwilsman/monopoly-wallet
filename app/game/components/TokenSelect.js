@@ -1,9 +1,15 @@
 import React, { Component, PropTypes } from 'react'
-import { StyleSheet, Text, View, TouchableHighlight } from 'react-native'
+
+import {
+  View,
+  Text,
+  TouchableHighlight,
+  StyleSheet
+} from 'react-native'
 
 import { Icon } from '../../core/components'
 
-export class TokenSelect extends Component {
+export default class TokenSelect extends Component {
   static propTypes = {
     tokens: PropTypes.array.isRequired,
     selectedToken: PropTypes.string,

@@ -1,8 +1,6 @@
 import React, { Component, PropTypes } from 'react'
-import { connect } from 'react-redux'
-import { Text } from 'react-native'
 
-export class ThemeIcons extends Component {
+export default class ThemeIcons extends Component {
   static propTypes = {
     theme: PropTypes.string.isRequired
   }
@@ -75,36 +73,3 @@ export class ThemeIcons extends Component {
     return style
   }
 }
-
-const IconComponent = ({ name, glyphs, theme, style }) => {
-  let glyph = glyphs[name] || '?'
-
-  if (typeof glyph === 'number') {
-    glyph = String.fromCharCode(glyph)
-  }
-
-  let fontStyle = {
-    fontFamily: `${theme}-icons`,
-    fontWeight: 'normal',
-    fontStyle: 'normal'
-  }
-
-  return (
-    <Text style={[style, fontStyle]}>
-      {glyph}
-    </Text>
-  )
-}
-
-function mapStateToIconProps({
-  theme: { _id, glyphs = {} }
-}) {
-  return {
-    theme: _id,
-    glyphs
-  }
-}
-
-export const Icon = connect(
-  mapStateToIconProps
-)(IconComponent)

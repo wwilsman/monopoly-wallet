@@ -1,34 +1,22 @@
 import { connect } from 'react-redux'
 
-import { JoinGame } from './JoinGame'
-import { updateGame, setCurrentPlayer } from './GameActions'
+import JoinGame from './JoinGame'
+import { updateGame, setCurrentPlayer } from './actions'
 
-function mapStateToProps({
-  game: { players = [] },
-  theme: { tokens = [] },
-  player
-}) {
+function mapStateToProps(state) {
   return {
-    player: players.find((p) => p._id === player),
-    usedTokens: players.map((p) => p.token),
-    players,
-    tokens,
+    player: state.game.players.find((p) => p._id === state.player),
+    usedTokens: state.game.players.map((p) => p.token),
+    players: state.game.players,
+    tokens: state.theme.tokens
   }
 }
 
-function mapDispatchToProps(dispatch) {
-  return {
-    updateGame(state) {
-      dispatch(updateGame(state))
-    },
-
-    setCurrentPlayer(data) {
-      dispatch(setCurrentPlayer(data))
-    }
+const JoinGameContainer = connect(
+  mapStateToProps, {
+    updateGame,
+    setCurrentPlayer
   }
-}
-
-export const JoinGameContainer = connect(
-  mapStateToProps,
-  mapDispatchToProps
 )(JoinGame)
+
+export default JoinGameContainer

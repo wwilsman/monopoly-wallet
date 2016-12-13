@@ -1,11 +1,13 @@
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { Text, StyleSheet } from 'react-native'
 
-export const Title = ({ style, children }) => (
+const Title = ({ style, children }) => (
   <Text style={[styles.title, style]}>
     {children}
   </Text>
 )
+
+export default Title
 
 const styles = StyleSheet.create({
   title: {

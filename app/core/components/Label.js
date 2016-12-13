@@ -1,11 +1,13 @@
 import React from 'react'
-import { StyleSheet, Text } from 'react-native'
+import { Text, StyleSheet } from 'react-native'
 
-export const Label = ({ style, children }) => (
+const Label = ({ style, children }) => (
   <Text style={[styles.label, style]}>
     {children}
   </Text>
 )
+
+export default Label
 
 const styles = StyleSheet.create({
   label: {

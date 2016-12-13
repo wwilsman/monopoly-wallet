@@ -1,11 +1,13 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 
-export const Content = ({ children }) => (
+const Content = ({ children }) => (
   <View style={styles.content}>
     {children}
   </View>
 )
+
+export default Content
 
 const styles = StyleSheet.create({
   content: {

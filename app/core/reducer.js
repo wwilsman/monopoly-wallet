@@ -5,11 +5,13 @@ import {
   gameReducer,
   playerReducer,
   themeReducer
-} from '../game'
+} from '../game/reducers'
 
-export const rootReducer = combineReducers({
+const rootReducer = combineReducers({
   routing: routerReducer,
   game: gameReducer,
   player: playerReducer,
   theme: themeReducer
 })
+
+export default rootReducer

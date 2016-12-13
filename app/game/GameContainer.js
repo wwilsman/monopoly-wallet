@@ -1,22 +1,20 @@
 import { connect } from 'react-redux'
 
-import { fetchGameInfo, updateGame } from './GameActions'
-import { Game } from './Game'
+import Game from './Game'
+import { fetchGameInfo, updateGame } from './actions'
 
-function mapStateToProps({
-  theme: { _id: theme = '' },
-  game: { players },
-  player
-}) {
+function mapStateToProps(state) {
   return {
-    player: players.find((p) => p._id === player),
-    theme
+    player: state.game.players.find((p) => p._id === state.player),
+    theme: state.theme._id
   }
 }
 
-export const GameContainer = connect(
+const GameContainer = connect(
   mapStateToProps, {
     fetchGameInfo,
     updateGame
   }
 )(Game)
+
+export default GameContainer

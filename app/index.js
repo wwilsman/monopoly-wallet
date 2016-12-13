@@ -1,11 +1,11 @@
 import React from 'react'
 import { AppRegistry } from 'react-native'
 
-import { Root } from './core'
+import { App } from './core'
 
 const rootTag = document.getElementById('react-app')
 
-AppRegistry.registerComponent('App', () => Root)
+AppRegistry.registerComponent('App', () => App)
 AppRegistry.runApplication('App', { rootTag })
 
 if (module.hot) {

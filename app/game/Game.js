@@ -5,19 +5,14 @@ import io from 'socket.io-client'
 import { ThemeIcons } from '../core/components'
 import { Toaster } from '../toaster'
 
-export class Game extends Component {
-  static propTypes = {
-    theme: PropTypes.string.isRequired
-  }
-
+export default class Game extends Component {
   static childContextTypes = {
     socket: PropTypes.object
   }
 
   constructor(props) {
     super(props)
-
-    this.socket = io.connect('/game', { forceNew: true })
+    this._connectSocket()
   }
 
   getChildContext() {
@@ -50,18 +45,32 @@ export class Game extends Component {
       this.socket.on('poll:new', this.triggerPoll)
 
       this._socketHasEvents = true
+
+    } else if (!player && this._socketHasEvents) {
+      this._socketHasEvents = false
+      this._connectSocket()
     }
   }
 
   render() {
+    let { theme } = this.props
     return (
       <View style={{ flex: 1 }}>
-        <ThemeIcons theme={this.props.theme}/>
-        <Toaster ref="toaster"/>
+        {theme && <ThemeIcons theme={theme}/>}
 
         {this.props.children}
+
+        <Toaster ref="toaster"/>
       </View>
     )
+  }
+
+  _connectSocket() {
+    if (this.socket) {
+      this.socket.disconnect()
+    }
+
+    this.socket = io.connect('/game', { forceNew: true })
   }
 
   triggerNotice = (message) => {

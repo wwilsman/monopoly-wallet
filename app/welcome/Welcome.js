@@ -1,5 +1,5 @@
-import React, { Component } from 'react'
-import { StyleSheet, Text, View } from 'react-native'
+import React from 'react'
+import { View, Text, StyleSheet } from 'react-native'
 
 import {
   Container,
@@ -11,7 +11,7 @@ import {
   Button
 } from '../core/components'
 
-export const Welcome = ({ router }) => (
+const Welcome = ({ router }) => (
   <Container>
     <Centered>
       <Title style={styles.welcome}>
@@ -24,6 +24,8 @@ export const Welcome = ({ router }) => (
     </Centered>
   </Container>
 )
+
+export default Welcome
 
 const styles = StyleSheet.create({
   welcome: {

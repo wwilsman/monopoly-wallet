@@ -1,9 +1,9 @@
-import React, { Component } from 'react'
-import { StyleSheet, View, Text } from 'react-native'
+import React from 'react'
+import { View, Text, StyleSheet } from 'react-native'
 
 import { Button } from '../../core/components'
 
-export const Toast = ({
+const Toast = ({
   message,
   primaryButton,
   onPrimaryButtonPress,
@@ -35,6 +35,8 @@ export const Toast = ({
     )}
   </View>
 )
+
+export default Toast
 
 const styles = StyleSheet.create({
   toast: {

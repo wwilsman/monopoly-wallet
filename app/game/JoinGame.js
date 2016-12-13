@@ -19,7 +19,7 @@ import {
   TokenSelect
 } from './components'
 
-export class JoinGame extends Component {
+export default class JoinGame extends Component {
   static propTypes = {
     tokens: PropTypes.array.isRequired,
     players: PropTypes.array.isRequired

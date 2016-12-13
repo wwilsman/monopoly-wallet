@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 
-import { Toast } from './components/Toast'
+import { Toast } from './components'
 
-export class Toaster extends Component {
+export default class Toaster extends Component {
 
   constructor(props) {
     super(props)

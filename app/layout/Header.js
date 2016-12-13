@@ -1,14 +1,16 @@
 import React from 'react'
-import { StyleSheet, View } from 'react-native'
+import { View, StyleSheet } from 'react-native'
 
-import { Title } from './Title'
+import Title from './Title'
 
-export const Header = ({ children }) => (
+const Header = ({ children }) => (
   <View style={styles.header}>
     {typeof children !== 'string' ? children :
       <Title>{children}</Title>}
   </View>
 )
+
+export default Header
 
 const styles = StyleSheet.create({
   header: {

@@ -1,7 +1,13 @@
-import React, { Component, PropTypes } from 'react'
-import { StyleSheet, Text, View, TouchableOpacity } from 'react-native'
+import React from 'react'
 
-export const Button = (props) => {
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  StyleSheet
+} from 'react-native'
+
+const Button = (props) => {
   let containerProps = {
     activeOpacity: 1
   }
@@ -38,6 +44,8 @@ export const Button = (props) => {
     </View>
   )
 }
+
+export default Button
 
 const styles = StyleSheet.create({
   container: {

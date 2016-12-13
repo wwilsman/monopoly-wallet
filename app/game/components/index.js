@@ -1,2 +1,2 @@
-export * from './ThemeSelect'
-export * from './TokenSelect'
+export { default as ThemeSelect } from './ThemeSelect'
+export { default as TokenSelect } from './TokenSelect'
