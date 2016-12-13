@@ -1,7 +1,8 @@
 import { connect } from 'react-redux'
 
 import JoinGame from './JoinGame'
-import { updateGame, setCurrentPlayer } from './actions'
+import { updateGame } from './actions'
+import { setCurrentPlayer } from '../player/actions'
 
 function mapStateToProps(state) {
   return {

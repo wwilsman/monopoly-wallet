@@ -16,6 +16,10 @@ import {
   JoinGameContainer
 } from '../game'
 
+import {
+  PlayerContainer
+} from '../player'
+
 export default class App extends Component {
   constructor(props) {
     super(props)
@@ -32,6 +36,7 @@ export default class App extends Component {
             <Route path="/" component={Welcome}/>
             <Route path="/new" component={NewGame}/>
             <Route path="/:gameID" component={GameContainer}>
+              <IndexRoute component={PlayerContainer}/>
               <Route path="/:gameID/join" component={JoinGameContainer}/>
             </Route>
           </Router>
