@@ -1,11 +1,12 @@
 import { connect } from 'react-redux'
 
 import Game from './Game'
+import { getCurrentPlayer } from '../player/selectors'
 import { fetchGameInfo, updateGame } from './actions'
 
 function mapStateToProps(state) {
   return {
-    player: state.game.players.find((p) => p._id === state.player),
+    player: getCurrentPlayer(state),
     theme: state.theme._id
   }
 }

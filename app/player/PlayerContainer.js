@@ -1,10 +1,11 @@
 import { connect } from 'react-redux'
 
 import Player from './Player'
+import { getCurrentPlayer } from './selectors'
 
 function mapStateToProps(state) {
   return {
-    player: state.game.players.find((p) => p._id === state.player)
+    player: getCurrentPlayer(state)
   }
 }
 

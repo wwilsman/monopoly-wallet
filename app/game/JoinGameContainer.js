@@ -1,13 +1,17 @@
 import { connect } from 'react-redux'
 
 import JoinGame from './JoinGame'
+
+import { getUsedTokens } from './selectors'
+import { getCurrentPlayer } from '../player/selectors'
+
 import { updateGame } from './actions'
 import { setCurrentPlayer } from '../player/actions'
 
 function mapStateToProps(state) {
   return {
-    player: state.game.players.find((p) => p._id === state.player),
-    usedTokens: state.game.players.map((p) => p.token),
+    player: getCurrentPlayer(state),
+    usedTokens: getUsedTokens(state),
     players: state.game.players,
     tokens: state.theme.tokens
   }
