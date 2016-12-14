@@ -1,1 +1,1 @@
-export { default as PlayerBalance } from './PlayerBalance'
+export PlayerBalance from './PlayerBalance'
