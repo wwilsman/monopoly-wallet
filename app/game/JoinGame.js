@@ -40,14 +40,6 @@ export default class JoinGame extends Component {
     }
   }
 
-  componentWillMount() {
-    let { router, params, player } = this.props
-
-    if (player) {
-      router.push(`/${params.gameID}/`)
-    }
-  }
-
   render() {
     return this.state.isWaiting ?
       this._renderWaiting() :
@@ -139,8 +131,6 @@ export default class JoinGame extends Component {
 
   joinGame = (pid, gameState) => {
     let {
-      router,
-      params,
       updateGame,
       setCurrentPlayer
     } = this.props
@@ -149,7 +139,6 @@ export default class JoinGame extends Component {
     setCurrentPlayer(pid)
 
     this._removeSocketEvents()
-    router.push(`/${params.gameID}/`)
   }
 
   showError = (message) => {

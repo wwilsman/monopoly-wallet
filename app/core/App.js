@@ -1,47 +1,36 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
+import { View } from 'react-native'
+import { connect } from 'react-redux'
+
 import { Provider } from 'react-redux'
-import { Router, Route, IndexRoute, browserHistory } from 'react-router'
-import { syncHistoryWithStore } from 'react-router-redux'
-import { AppContainer } from 'react-hot-loader'
+import { Match, Miss } from 'react-router'
+import { AppContainer as HotContainer } from 'react-hot-loader'
 
 import configureStore from './store'
 
-import {
-  Welcome
-} from '../welcome'
-
-import {
-  NewGame,
-  GameContainer,
-  JoinGameContainer
-} from '../game'
-
-import {
-  PlayerContainer
-} from '../player'
+import Router from './Router'
+import { Welcome } from '../welcome'
+import { NewGame, GameContainer } from '../game'
 
 export default class App extends Component {
   constructor(props) {
     super(props)
-
     this.store = configureStore()
-    this.history = syncHistoryWithStore(browserHistory, this.store)
   }
 
   render() {
     return (
-      <AppContainer>
+      <HotContainer>
         <Provider store={this.store}>
-          <Router history={this.history}>
-            <Route path="/" component={Welcome}/>
-            <Route path="/new" component={NewGame}/>
-            <Route path="/:gameID" component={GameContainer}>
-              <IndexRoute component={PlayerContainer}/>
-              <Route path="/:gameID/join" component={JoinGameContainer}/>
-            </Route>
+          <Router store={this.store}>
+            <View style={{ flex: 1 }}>
+              <Match exactly pattern="/" component={Welcome}/>
+              <Match exactly pattern="/new" component={NewGame}/>
+              <Match pattern="/:gameID([^\/]{5})" component={GameContainer}/>
+            </View>
           </Router>
         </Provider>
-      </AppContainer>
+      </HotContainer>
     )
   }
 }

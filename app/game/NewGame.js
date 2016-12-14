@@ -87,6 +87,8 @@ export default class NewGame extends Component {
       headers: { 'Content-Type': 'application/json' },
     })
       .then((response) => response.json())
-      .then(({ gameID }) => router.push(`/${gameID}/join`))
+      .then(({ gameID }) => router.transitionTo({
+        pathname: `/${gameID}`
+      }))
   }
 }

@@ -1,6 +1,10 @@
 import React, { Component, PropTypes } from 'react'
 import { View } from 'react-native'
+import { Match, Miss, Redirect } from 'react-router'
 import io from 'socket.io-client'
+
+import JoinGame from './JoinGameContainer'
+import Player from '../player/PlayerContainer'
 
 import { ThemeIcons } from '../core/components'
 import { Toaster } from '../toaster'
@@ -20,20 +24,8 @@ export default class Game extends Component {
   }
 
   componentWillMount() {
-    let {
-      route,
-      router,
-      params,
-      player,
-      fetchGameInfo
-    } = this.props
-
+    let { params, fetchGameInfo } = this.props
     fetchGameInfo(params.gameID)
-
-    // TODO: Automatically join the game if there's a cookie
-    if (!player && route.path != '/:gameID/join') {
-      router.push(`/${params.gameID}/join`)
-    }
   }
 
   componentDidUpdate() {
@@ -53,12 +45,29 @@ export default class Game extends Component {
   }
 
   render() {
-    let { theme } = this.props
+    let {
+      theme,
+      player,
+      params,
+      pattern,
+      children
+    } = this.props
+
     return (
       <View style={{ flex: 1 }}>
-        {theme && <ThemeIcons theme={theme}/>}
+        {this.props.theme && (
+          <ThemeIcons theme={this.props.theme}/>
+        )}
 
-        {this.props.children}
+        <Match
+          exactly
+          pattern={pattern}
+          component={player ? Player : JoinGame}
+        />
+
+        <Miss render={() => (
+          <Redirect to={`/${params.gameID}`}/>
+        )}/>
 
         <Toaster ref="toaster"/>
       </View>

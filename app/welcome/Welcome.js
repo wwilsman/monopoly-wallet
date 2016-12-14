@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { Component, PropTypes } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 
 import {
@@ -11,21 +11,29 @@ import {
   Button
 } from '../core/components'
 
-const Welcome = ({ router }) => (
-  <Container>
-    <Centered>
-      <Title style={styles.welcome}>
-        Monopoly Wallet
-      </Title>
+export default class Welcome extends Component {
+  static contextTypes = {
+    router: PropTypes.object
+  }
 
-      <Button onPress={() => router.push('/new')}>
-        New Game
-      </Button>
-    </Centered>
-  </Container>
-)
+  render() {
+    let { router } = this.context
 
-export default Welcome
+    return (
+      <Container>
+        <Centered>
+          <Title style={styles.welcome}>
+            Monopoly Wallet
+          </Title>
+
+          <Button onPress={() => router.transitionTo({ pathname: '/new' })}>
+            New Game
+          </Button>
+        </Centered>
+      </Container>
+    )
+  }
+}
 
 const styles = StyleSheet.create({
   welcome: {
