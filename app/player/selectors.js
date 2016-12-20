@@ -7,7 +7,7 @@ export const getCurrentPlayer = createSelector(
   (players, pid) => players.find((p) => p._id === pid)
 )
 
-export const getPlayerProperties = createSelector(
-  [(state) => state.game.properties, getPlayerID],
+export const makeGetPlayerProperties = () => createSelector(
+  [(state) => state.game.properties, (s, props) => props.player._id],
   (properties, pid) => properties.filter((p) => p.owner === pid)
 )

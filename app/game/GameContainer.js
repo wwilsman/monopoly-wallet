@@ -6,7 +6,8 @@ import { fetchGameInfo, updateGame } from './actions'
 
 function mapStateToProps(state) {
   return {
-    player: getCurrentPlayer(state),
+    currentPlayer: getCurrentPlayer(state),
+    players: state.game.players,
     theme: state.theme._id
   }
 }

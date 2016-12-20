@@ -12,7 +12,7 @@ export default Content
 const styles = StyleSheet.create({
   content: {
     flex: 1,
-    paddingRight: 40,
-    paddingLeft: 40
+    paddingRight: 30,
+    paddingLeft: 30
   }
 })

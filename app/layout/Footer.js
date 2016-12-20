@@ -16,9 +16,9 @@ export default Footer
 const styles = StyleSheet.create({
   footer: {
     paddingTop: 35,
-    paddingRight: 20,
-    paddingBottom: 35,
-    paddingLeft: 20,
+    paddingRight: 15,
+    paddingBottom: 25,
+    paddingLeft: 15,
     flexDirection: 'row',
     justifyContent: 'center',
     alignItems: 'flex-end'
@@ -26,7 +26,7 @@ const styles = StyleSheet.create({
   footerSection: {
     flexBasis: '50%',
     alignItems: 'center',
-    paddingRight: 20,
-    paddingLeft: 20
+    paddingRight: 15,
+    paddingLeft: 15
   }
 })

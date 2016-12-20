@@ -163,12 +163,12 @@ const styles = StyleSheet.create({
     borderColor: 'rgba(0,0,0,0.2)'
   },
   headerWithText: {
-    padding: 20,
+    padding: 15,
     borderWidth: 2,
     borderColor: 'black'
   },
   headerText: {
-    fontSize: 24,
+    fontSize: 20,
     fontFamily: 'futura',
     textTransform: 'uppercase',
     textAlign: 'center'
@@ -178,7 +178,7 @@ const styles = StyleSheet.create({
     padding: 10
   },
   rentLine: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'futura',
     textAlign: 'center',
     marginBottom: 5
@@ -189,18 +189,18 @@ const styles = StyleSheet.create({
     marginBottom: 5
   },
   houseLineText: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'futura',
   },
   hotelLine: {
-    fontSize: 18,
+    fontSize: 16,
     fontFamily: 'futura',
     textAlign: 'center',
     marginTop: 5,
     marginBottom: 20
   },
   bottomLine: {
-    fontSize: 16,
+    fontSize: 14,
     fontFamily: 'futura',
     textAlign: 'center'
   },
@@ -208,7 +208,7 @@ const styles = StyleSheet.create({
     marginTop: 'auto'
   },
   finalLineText: {
-    fontSize: 9,
+    fontSize: 8,
     fontFamily: 'futura',
     textAlign: 'center'
   }

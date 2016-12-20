@@ -7,6 +7,7 @@ import JoinGame from './JoinGameContainer'
 import Player from '../player/PlayerContainer'
 
 import { ThemeIcons } from '../core/components'
+import { GameNav } from './components'
 import { Toaster } from '../toaster'
 
 export default class Game extends Component {
@@ -42,36 +43,6 @@ export default class Game extends Component {
       this._socketHasEvents = false
       this._connectSocket()
     }
-  }
-
-  render() {
-    let {
-      theme,
-      player,
-      params,
-      pattern,
-      children
-    } = this.props
-
-    return (
-      <View style={{ flex: 1 }}>
-        {this.props.theme && (
-          <ThemeIcons theme={this.props.theme}/>
-        )}
-
-        <Match
-          exactly
-          pattern={pattern}
-          component={player ? Player : JoinGame}
-        />
-
-        <Miss render={() => (
-          <Redirect to={`/${params.gameID}`}/>
-        )}/>
-
-        <Toaster ref="toaster"/>
-      </View>
-    )
   }
 
   _connectSocket() {
@@ -116,5 +87,44 @@ export default class Game extends Component {
         dismiss()
       }
     })
+  }
+
+  render() {
+    let {
+      theme,
+      currentPlayer,
+      players,
+      params,
+      pattern,
+      location
+    } = this.props
+
+    return (
+      <View style={{ flex: 1 }}>
+        {theme && (<ThemeIcons theme={theme}/>)}
+
+        {currentPlayer ? (
+          <View style={{ flex: 1 }}>
+            <GameNav location={location}/>
+
+            <Match exactly pattern={pattern} render={(props) => (
+              <Player {...props} player={currentPlayer}/>
+            )}/>
+
+            {players.map((p) => (
+              <Match key={p._id}
+                pattern={`${pattern}/${p.token}`}
+                render={(props) => (<Player {...props} player={p}/>)}
+              />
+            ))}
+          </View>
+        ) : (
+          <Match exactly pattern={pattern} component={JoinGame}/>
+        )}
+
+        <Miss render={() => (<Redirect to={`/${params.gameID}`}/>)}/>
+        <Toaster ref="toaster"/>
+      </View>
+    )
   }
 }

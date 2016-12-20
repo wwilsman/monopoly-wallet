@@ -121,7 +121,7 @@ const styles = StyleSheet.create({
   property: {
     width: '100%',
     position: 'absolute',
-    paddingLeft: 40,
-    paddingRight: 40
+    paddingLeft: 60,
+    paddingRight: 60
   }
 })
