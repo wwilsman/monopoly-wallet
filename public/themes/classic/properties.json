@@ -30,19 +30,19 @@
   "rent": [8, 40, 100, 300, 450, 600]
 }, {
   "name": "St. Charles Place",
-  "group": "megenta",
+  "group": "magenta",
   "price": 140,
   "cost": 100,
   "rent": [10, 50, 150, 450, 625, 750]
 }, {
   "name": "States Avenue",
-  "group": "megenta",
+  "group": "magenta",
   "price": 140,
   "cost": 100,
   "rent": [10, 50, 150, 450, 625, 750]
 }, {
   "name": "Virginia Avenue",
-  "group": "megenta",
+  "group": "magenta",
   "price": 160,
   "cost": 100,
   "rent": [12, 60, 180, 500, 700, 900]

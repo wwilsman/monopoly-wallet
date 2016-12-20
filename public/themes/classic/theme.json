@@ -10,5 +10,15 @@
     "thimble",
     "top-hat",
     "wheelbarrow"
-  ]
+  ],
+  "colors": {
+    "brown": "#A52A2A",
+    "lightblue": "#80CCFF",
+    "magenta": "#FF69B4",
+    "orange": "#FF8000",
+    "red": "#FF0000",
+    "yellow": "#FFFF00",
+    "green": "#008000",
+    "blue": "#2020CC"
+  }
 }

@@ -3,10 +3,10 @@ import { View, Text, StyleSheet } from 'react-native'
 
 import { Button } from '../../core/components'
 
-const PlayerBalance = ({ balance }) => (
-  <View style={styles.container}>
+const PlayerBalance = ({ style, balance }) => (
+  <View style={[styles.container, style]}>
     <Text style={styles.balance}>
-      {balance.toFixed().replace(/(\d)(?=(\d{3})+$)/g, '$1,')}
+      ${balance.toFixed().replace(/(\d)(?=(\d{3})+$)/g, '$1,')}
     </Text>
     <View style={styles.actions}>
       <Button
@@ -33,20 +33,20 @@ const styles = StyleSheet.create({
     alignItems: 'center'
   },
   balance: {
-    fontSize: 32,
+    fontSize: 28,
     fontFamily: 'futura',
     color: 'rgb(100,200,100)',
-    marginBottom: 20
+    marginBottom: 10
   },
   actions: {
     flexDirection: 'row'
   },
   button: {
-    marginLeft: 10,
-    marginRight: 10
+    marginLeft: 5,
+    marginRight: 5
   },
   buttonText: {
-    fontSize: 12,
+    fontSize: 16,
     color: '#CCC'
   }
 })
