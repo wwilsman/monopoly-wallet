@@ -4,7 +4,8 @@ import { tokens } from '../public/themes/classic/theme.json'
 
 // initial state
 const state = {
-  _id: 'test',
+  _id: 'T3STT',
+  theme: 'classic',
 
   ...config,
   properties,
