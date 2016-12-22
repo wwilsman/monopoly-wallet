@@ -12,7 +12,11 @@ class GameNav extends Component {
   }
 
   goToPath(pathname) {
-    this.context.router.transitionTo({ pathname })
+    let { location } = this.props
+
+    if (pathname !== location.pathname) {
+      this.context.router.transitionTo({ pathname })
+    }
   }
 
   isPathActive(pathname) {
@@ -31,7 +35,9 @@ class GameNav extends Component {
   }
 
   render() {
-    let { players } = this.props
+    let { players, gameID } = this.props
+
+    let bankPath = `/${gameID}/bank`
 
     return (
       <View style={styles.container}>
@@ -48,6 +54,14 @@ class GameNav extends Component {
             </TouchableHighlight>
           )
         })}
+
+        <TouchableHighlight
+            style={[styles.link, styles.bankLink, this.isPathActive(bankPath) && styles.selected]}
+            onPress={() => this.goToPath(bankPath)}>
+          <View>
+            <Icon style={styles.icon} name="bank"/>
+          </View>
+        </TouchableHighlight>
       </View>
     )
   }
@@ -73,16 +87,18 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: 5,
-    paddingRight: 25,
+    paddingRight: 30,
     paddingBottom: 5,
-    paddingLeft: 25
+    paddingLeft: 30
   },
   link: {
-    width: 30,
-    height: 30,
+    width: 36,
+    height: 36,
     borderRadius: 20,
-    padding: 7,
-    margin: 2
+    padding: 10
+  },
+  bankLink: {
+    marginLeft: 'auto'
   },
   selected: {
     backgroundColor: '#888'

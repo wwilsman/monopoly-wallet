@@ -58,14 +58,20 @@ export default class PropertyList extends Component {
   }
 
   _getCardHeight = ({ nativeEvent: { layout: { height } } }) => {
-    if (height !== this.cardHeight) {
+    height = Math.round(height)
+
+    if (height !== this._cardHeight) {
       this.setState({ cardHeight: height })
+      this._cardHeight = height
     }
   }
 
   _getViewHeight = ({ nativeEvent: { layout: { height } } }) => {
-    if (height !== this.viewHeight) {
+    height = Math.round(height)
+
+    if (height !== this._viewHeight) {
       this.setState({ viewHeight: height })
+      this._viewHeight = height
     }
   }
 

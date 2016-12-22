@@ -27,7 +27,7 @@ export default class Player extends Component {
   }
 
   _getHeaderHeight = ({ nativeEvent: { layout: { height } } }) => {
-    if (height !== this.headerHeight) {
+    if (height !== this.state.headerHeight) {
       this.setState({ headerHeight: height })
     }
   }

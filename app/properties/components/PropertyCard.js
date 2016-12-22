@@ -11,6 +11,39 @@ class PropertyCard extends Component {
     headerStyle: {}
   }
 
+  _onLayout = (e) => {
+    this._calculateStyles(e)
+
+    if (this.props.onLayout) {
+      this.props.onLayout(e)
+    }
+  }
+
+  _calculateStyles = ({ nativeEvent: { layout: { width } } }) => {
+    width = Math.round(width)
+
+    if (width !== this._width) {
+      this.setState({
+        cardStyle: {
+          height: width * 1.5,
+          padding: width * 0.075
+        },
+        cardWrapperStyle: {
+          height: width * 1.425,
+          width: width * 0.925,
+          margin: width * -0.0325,
+          padding: width * 0.0325
+        },
+        headerStyle: {
+          height: width * 0.3,
+          backgroundColor: this.props.color
+        }
+      })
+
+      this._width = width
+    }
+  }
+
   render() {
     let {
       style,
@@ -99,36 +132,6 @@ class PropertyCard extends Component {
         </View>
       </View>
     )
-  }
-
-  _onLayout = (e) => {
-    this._calculateStyles(e)
-
-    if (this.props.onLayout) {
-      this.props.onLayout(e)
-    }
-  }
-
-  _calculateStyles = ({ nativeEvent: { layout: { width } } }) => {
-    if (width !== this.state.width) {
-      this.setState({
-        width,
-        cardStyle: {
-          height: width * 1.5,
-          padding: width * 0.075
-        },
-        cardWrapperStyle: {
-          height: width * 1.425,
-          width: width * 0.925,
-          margin: width * -0.0325,
-          padding: width * 0.0325
-        },
-        headerStyle: {
-          height: width * 0.3,
-          backgroundColor: this.props.color
-        }
-      })
-    }
   }
 }
 

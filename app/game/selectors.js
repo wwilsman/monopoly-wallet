@@ -9,5 +9,13 @@ export const getUsedTokens = createSelector(
 
 export const getOrderedPlayers = createSelector(
   [getPlayers, (s) => s.player],
-  (players, pid) => players.slice(0).sort((a, b) => a._id === pid ? 0 : 1)
+  (players, pid) => {
+    let i = players.findIndex((p) => p._id === pid)
+
+    return [
+      players[i],
+      ...players.slice(0, i),
+      ...players.slice(i + 1)
+    ]
+  }
 )

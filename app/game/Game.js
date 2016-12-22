@@ -5,6 +5,7 @@ import io from 'socket.io-client'
 
 import JoinGame from './JoinGameContainer'
 import Player from '../player/PlayerContainer'
+import Bank from '../bank/BankContainer'
 
 import { ThemeIcons } from '../core/components'
 import { GameNav } from './components'
@@ -117,6 +118,8 @@ export default class Game extends Component {
                 render={(props) => (<Player {...props} player={p}/>)}
               />
             ))}
+
+            <Match exactly pattern={`${pattern}/bank`} component={Bank}/>
           </View>
         ) : (
           <Match exactly pattern={pattern} component={JoinGame}/>
