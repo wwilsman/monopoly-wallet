@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import { View, Text, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 
+import { Icon } from '../../core/components'
+
 class PropertyCard extends Component {
   state = {
     cardStyle: {},
@@ -50,11 +52,11 @@ class PropertyCard extends Component {
               <View style={styles.content}>
                 {property.rent.map((r, i) => i === 0 ? (
                   <Text style={styles.rentLine} key={i}>
-                    Rent ${r}
+                    Rent <Icon name="currency"/>{r}
                   </Text>
                 ) : i === 5 ? (
                   <Text style={styles.hotelLine} key={i}>
-                    With Hotel ${r}
+                    With Hotel <Icon name="currency"/>{r}
                   </Text>
                 ) : (
                   <View style={styles.houseLine} key={i}>
@@ -62,26 +64,26 @@ class PropertyCard extends Component {
                       With {i} House{i > 1 && 's'}
                     </Text>
                     <Text style={styles.houseLineText}>
-                      ${r}
+                      <Icon name="currency"/>{r}
                     </Text>
                   </View>
                 ))}
 
                 <View>
                   <Text style={styles.bottomLine}>
-                    Mortgage Value ${property.price * 0.5}
+                    Mortgage Value <Icon name="currency"/>{property.price * 0.5}
                   </Text>
                 </View>
 
                 <View>
                   <Text style={styles.bottomLine}>
-                    Houses cost ${property.cost} each
+                    Houses cost <Icon name="currency"/>{property.cost} each
                   </Text>
                 </View>
 
                 <View>
                   <Text style={styles.bottomLine}>
-                    Hotels cost ${property.cost} plus 4 houses
+                    Hotels cost <Icon name="currency"/>{property.cost} plus 4 houses
                   </Text>
                 </View>
 

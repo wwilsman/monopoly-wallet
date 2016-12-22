@@ -87,7 +87,8 @@ export default class Player extends Component {
           </Title>
 
           <Text style={styles.balance}>
-            ${fixedBalance}
+            <Icon name="currency"/>
+            {fixedBalance}
           </Text>
         </Header>
 
@@ -125,7 +126,8 @@ const styles = StyleSheet.create({
   balance: {
     fontSize: 24,
     fontFamily: 'futura',
-    color: 'rgb(100,200,100)'
+    color: 'rgb(100,200,100)',
+    alignItems: 'center'
   },
   propertyList: {
     position: 'absolute',
