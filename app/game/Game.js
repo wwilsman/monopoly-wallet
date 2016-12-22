@@ -30,16 +30,16 @@ export default class Game extends Component {
   }
 
   componentDidUpdate() {
-    let { player } = this.props
+    let { currentPlayer } = this.props
 
-    if (player && !this._socketHasEvents) {
+    if (currentPlayer && !this._socketHasEvents) {
       this.socket.on('game:error', this.triggerError)
       this.socket.on('game:notice', this.triggerNotice)
       this.socket.on('poll:new', this.triggerPoll)
 
       this._socketHasEvents = true
 
-    } else if (!player && this._socketHasEvents) {
+    } else if (!currentPlayer && this._socketHasEvents) {
       this._socketHasEvents = false
       this._connectSocket()
     }
