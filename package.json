@@ -30,7 +30,6 @@
     "react-redux": "^4.4.6",
     "react-router": "next",
     "react-router-addons-controlled": "^0.0.1",
-    "react-router-redux": "^4.0.7",
     "redux": "^3.5.2",
     "redux-logger": "^2.7.4",
     "redux-thunk": "^2.1.0",
