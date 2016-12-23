@@ -5,78 +5,43 @@ import { connect } from 'react-redux'
 import { Icon } from '../../core/components'
 
 class PropertyCard extends Component {
-  state = {
-    cardStyle: {},
-    cardWrapperStyle: {},
-    headerStyle: {}
-  }
-
-  _onLayout = (e) => {
-    this._calculateStyles(e)
-
-    if (this.props.onLayout) {
-      this.props.onLayout(e)
-    }
-  }
-
-  _calculateStyles = ({ nativeEvent: { layout: { width } } }) => {
-    width = Math.round(width)
-
-    if (width !== this._width) {
-      this.setState({
-        cardStyle: {
-          height: width * 1.5,
-          padding: width * 0.075
-        },
-        cardWrapperStyle: {
-          height: width * 1.425,
-          width: width * 0.925,
-          margin: width * -0.0325,
-          padding: width * 0.0325
-        },
-        headerStyle: {
-          height: width * 0.3,
-          backgroundColor: this.props.color
-        }
-      })
-
-      this._width = width
+  calculateStylesFromWidth(width) {
+    return {
+      card: {
+        height: width * 1.5,
+        padding: width * 0.075
+      },
+      wrapper: {
+        height: width * 1.425,
+        width: width * 0.925,
+        margin: width * -0.0325,
+        padding: width * 0.0325
+      },
+      header: {
+        height: width * 0.3
+      }
     }
   }
 
   render() {
     let {
       style,
+      width,
       property,
-      background,
-      header,
+      color,
       simple
     } = this.props
 
-    let cardStyle = [
-      styles.card,
-      this.state.cardStyle
-    ]
-
-    let cardWrapperStyle = [
-      styles.outline,
-      this.state.cardWrapperStyle
-    ]
-
-    let headerStyle = [
-      styles.header,
-      this.state.headerStyle
-    ]
+    let s = this.calculateStylesFromWidth(width)
+    let headerStyle = [styles.header, s.header, { backgroundColor: color }]
 
     return (
-      <View
-          style={style}
-          onLayout={this._onLayout}>
-        <View style={cardStyle}>
+      <View style={style}>
+        <View style={[styles.card, s.card]}>
           {simple ? (
             <View style={headerStyle}/>
           ) : (
-            <View style={cardWrapperStyle}>
+            <View style={[styles.wrapper, s.wrapper]}>
               <View style={[headerStyle, styles.headerWithText]}>
                 <Text style={styles.headerText}>
                   {property.name}
@@ -149,12 +114,12 @@ export default PropertyCardContainer
 
 const styles = StyleSheet.create({
   card: {
-    backgroundColor: 'white',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'rgba(0,0,0,0.2)'
+    borderColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: 'white'
   },
-  outline: {
+  wrapper: {
     flex: 1,
     borderWidth: 2,
     borderStyle: 'solid',

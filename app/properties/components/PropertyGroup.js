@@ -1,37 +1,17 @@
-import React, { Component } from 'react'
-import { View, StyleSheet } from 'react-native'
-import { connect } from 'react-redux'
+import React from 'react'
+import { View } from 'react-native'
 
 import PropertyCard from './PropertyCard'
 
-export default class PropertyGroup extends Component {
-  state = {
-    propertyStyle: 0
-  }
+const PropertyGroup = ({ properties, width, simple }) => (
+  <View style={{ width }}>
+    {properties.map((property, i) => (
+      <PropertyCard key={property._id}
+        style={i ? { marginTop: width * -1.2 } : null}
+        {...{ width, simple, property }}
+      />
+    ))}
+  </View>
+)
 
-  _updateLayout = ({ nativeEvent: { layout: { width } } }) => {
-    this.setState({
-      propertyStyle: {
-        marginTop: width * -1.2
-      }
-    })
-  }
-
-  render() {
-    let { properties, simple } = this.props
-
-    return (
-      <View>
-        {properties.map((p, i) => (
-          <PropertyCard key={p._id}
-            style={i ? this.state.propertyStyle : null}
-            onLayout={this._updateLayout}
-            property={p}
-            simple={simple}
-            index={i}
-          />
-        ))}
-      </View>
-    )
-  }
-}
+export default PropertyGroup
