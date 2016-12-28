@@ -1,43 +1,48 @@
 import React, { Component, PropTypes } from 'react'
 import fetch from 'isomorphic-fetch'
 
-import {
-  Container,
-  Header,
-  Content,
-  Footer
-} from '../layout'
+import { Container, Header, Content, Footer } from '../layout'
+import { Button, Label } from '../core/components'
+import { ThemeSelect } from './components'
 
-import {
-  Button,
-  Label
-} from '../core/components'
-
-import {
-  ThemeSelect
-} from './components'
-
-export default class NewGame extends Component {
+class NewGame extends Component {
   static contextTypes = {
     router: PropTypes.object
   }
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      themes: [],
-      selectedTheme: ''
-    }
+  state = {
+    themes: [],
+    selectedTheme: ''
   }
 
   componentWillMount() {
     fetch('/api/themes')
       .then((response) => response.json())
       .then(({ themes }) => {
-        let selectedTheme = themes.length === 1 ? themes[0]._id : ''
+        const selectedTheme = themes.length === 1 ? themes[0]._id : ''
         this.setState({ themes, selectedTheme })
       })
+  }
+
+  selectTheme = (themeID) => {
+    this.setState({ selectedTheme: themeID })
+  }
+
+  createGame = () => {
+    const { selectedTheme } = this.state
+    const { router } = this.context
+
+    const fetchOptions = {
+      method: 'POST',
+      body: JSON.stringify({ theme: selectedTheme }),
+      headers: { 'Content-Type': 'application/json' },
+    }
+
+    fetch('/api/new', fetchOptions)
+      .then((response) => response.json())
+      .then(({ gameID }) => router.transitionTo({
+        pathname: `/${gameID}`
+      }))
   }
 
   render() {
@@ -51,44 +56,24 @@ export default class NewGame extends Component {
           <Label>Choose a version:</Label>
 
           <ThemeSelect
-            themes={themes}
-            selectedTheme={selectedTheme}
-            onChange={this.selectTheme}
+              themes={themes}
+              selected={selectedTheme}
+              onChange={this.selectTheme}
           />
         </Content>
 
         <Footer>
-          <Button secondary
-              disabled={true || !selectedTheme}>
+          <Button secondary disabled={true || !selectedTheme}>
             Adjust Settings
           </Button>
 
-          <Button
-              disabled={!selectedTheme}
-              onPress={this.createGame}>
+          <Button disabled={!selectedTheme} onClick={this.createGame}>
             Create Game
           </Button>
         </Footer>
       </Container>
     )
   }
-
-  selectTheme = (themeID) => {
-    this.setState({ selectedTheme: themeID })
-  }
-
-  createGame = () => {
-    let { selectedTheme } = this.state
-    let { router } = this.context
-
-    fetch('/api/new', {
-      method: 'POST',
-      body: JSON.stringify({ theme: selectedTheme }),
-      headers: { 'Content-Type': 'application/json' },
-    })
-      .then((response) => response.json())
-      .then(({ gameID }) => router.transitionTo({
-        pathname: `/${gameID}`
-      }))
-  }
 }
+
+export default NewGame

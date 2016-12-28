@@ -1,24 +1,19 @@
 import React, { Component, PropTypes } from 'react'
-import { View } from 'react-native'
 import { Match, Miss, Redirect } from 'react-router'
 import io from 'socket.io-client'
+
+import { View, ThemeIcons } from '../core/components'
+import { Container } from '../layout'
+import { Toaster } from '../toaster'
+import { GameNav } from './components'
 
 import JoinGame from './JoinGameContainer'
 import Player from '../player/PlayerContainer'
 import Bank from '../bank/BankContainer'
 
-import { ThemeIcons } from '../core/components'
-import { GameNav } from './components'
-import { Toaster } from '../toaster'
-
-export default class Game extends Component {
+class Game extends Component {
   static childContextTypes = {
     socket: PropTypes.object
-  }
-
-  constructor(props) {
-    super(props)
-    this._connectSocket()
   }
 
   getChildContext() {
@@ -26,18 +21,21 @@ export default class Game extends Component {
   }
 
   componentWillMount() {
-    let { params, fetchGameInfo } = this.props
-    fetchGameInfo(params.gameID)
+    this.props.fetchGameInfo(this.props.params.gameID)
+    this._connectSocket()
+  }
+
+  shouldComponentUpdate(props) {
+    return this.props.currentPlayer !== props.currentPlayer
   }
 
   componentDidUpdate() {
-    let { currentPlayer } = this.props
+    const { currentPlayer } = this.props
 
     if (currentPlayer && !this._socketHasEvents) {
       this.socket.on('game:error', this.triggerError)
       this.socket.on('game:notice', this.triggerNotice)
       this.socket.on('poll:new', this.triggerPoll)
-
       this._socketHasEvents = true
 
     } else if (!currentPlayer && this._socketHasEvents) {
@@ -47,16 +45,13 @@ export default class Game extends Component {
   }
 
   _connectSocket() {
-    if (this.socket) {
-      this.socket.disconnect()
-    }
-
+    this.socket && this.socket.disconnect()
     this.socket = io.connect('/game', { forceNew: true })
   }
 
   triggerNotice = (message) => {
-    let { toaster } = this.refs
-    let options = {}
+    const { toaster } = this.refs
+    const options = {}
 
     if (message.indexOf('You ') !== 0) {
       options.secondaryButton = 'Veto'
@@ -67,13 +62,13 @@ export default class Game extends Component {
   }
 
   triggerError = (message) => {
-    let { toaster } = this.refs
+    const { toaster } = this.refs
     toaster.showToast(message, { isError: true })
   }
 
   triggerPoll = (pollID, message) => {
-    let socket = this.socket
-    let { toaster } = this.refs
+    const socket = this.socket
+    const { toaster } = this.refs
 
     toaster.showToast(message, {
       timeout: 0,
@@ -90,44 +85,56 @@ export default class Game extends Component {
     })
   }
 
-  render() {
-    let {
-      theme,
-      currentPlayer,
-      players,
-      params,
-      pattern,
-      location
-    } = this.props
+  renderRoutes() {
+    const { pattern, currentPlayer, players } = this.props
 
-    return (
-      <View style={{ flex: 1 }}>
-        {theme && (<ThemeIcons theme={theme}/>)}
+    if (currentPlayer) {
+      return (
+        <View style={{ flex: 1 }}>
+          <GameNav/>
 
-        {currentPlayer ? (
-          <View style={{ flex: 1 }}>
-            <GameNav location={location}/>
-
-            <Match exactly pattern={pattern} render={(props) => (
+          <Match exactly pattern={pattern} render={(props) => (
               <Player {...props} player={currentPlayer}/>
             )}/>
 
-            {players.map((p) => (
-              <Match key={p._id}
-                pattern={`${pattern}/${p.token}`}
-                render={(props) => (<Player {...props} player={p}/>)}
-              />
-            ))}
+          {players.map((p) => (
+             <Match
+                 key={p._id}
+                 pattern={`${pattern}/${p.token}`}
+                 render={(props) => (<Player {...props} player={p}/>)}
+             />
+           ))}
 
-            <Match exactly pattern={`${pattern}/bank`} component={Bank}/>
-          </View>
-        ) : (
-          <Match exactly pattern={pattern} component={JoinGame}/>
-        )}
+          <Match exactly pattern={`${pattern}/bank`} component={Bank}/>
+        </View>
+      )
+    }
 
-        <Miss render={() => (<Redirect to={`/${params.gameID}`}/>)}/>
+    return (
+      <Match exactly pattern={pattern} component={JoinGame}/>
+    )
+  }
+
+  renderRedirect = () => {
+    const { params: { gameID } } = this.props
+
+    return (
+      <Redirect to={`/${gameID}`}/>
+    )
+  }
+
+  render() {
+    return (
+      <Container>
+        <ThemeIcons/>
         <Toaster ref="toaster"/>
-      </View>
+
+        {this.renderRoutes()}
+
+        <Miss render={this.renderRedirect}/>
+      </Container>
     )
   }
 }
+
+export default Game

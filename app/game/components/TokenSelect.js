@@ -1,42 +1,21 @@
 import React, { Component, PropTypes } from 'react'
 
-import {
-  View,
-  Text,
-  TouchableHighlight,
-  StyleSheet
-} from 'react-native'
+import { View, Text, Icon } from '../../core/components'
 
-import { Icon } from '../../core/components'
-
-export default class TokenSelect extends Component {
+class TokenSelect extends Component {
   static propTypes = {
     tokens: PropTypes.array.isRequired,
-    selectedToken: PropTypes.string,
+    selected: PropTypes.string,
     usedTokens: PropTypes.array,
     onChange: PropTypes.func
   }
 
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      selectedToken: props.selectedToken || ''
-    }
+  state = {
+    selected: this.props.selected || ''
   }
 
-  componentWillReceiveProps(props) {
-    this.setState({
-      selectedToken: props.selectedToken || ''
-    })
-  }
-
-  render() {
-    return (
-      <View style={styles.grid}>
-        {this.props.tokens.map(this.renderTokenOption)}
-      </View>
-    )
+  componentWillReceiveProps({ selected = '' }) {
+    this.setState({ selected })
   }
 
   selectToken = (token) => {
@@ -48,34 +27,38 @@ export default class TokenSelect extends Component {
   }
 
   renderTokenOption = (token, i) => {
-    let isSelected = token === this.state.selectedToken
     let isDisabled = this.props.usedTokens.indexOf(token) !== -1
+    let cardStyle = styles.card
+    let iconStyle = styles.icon
 
-    let cardStyle = [
-      styles.card,
-      isSelected ? styles.activeCard : null,
-      isDisabled ? styles.disabledCard : null
-    ]
+    if (isDisabled) {
+      cardStyle = { ...cardStyle, ...styles.disabledCard }
+    }
 
-    let iconStyle = [
-      styles.icon,
-      isSelected ? styles.activeIcon : null
-    ]
+    if (token === this.state.selected) {
+      cardStyle = { ...cardStyle, ...styles.activeCard }
+      iconStyle = { ...iconStyle, ...styles.activeIcon }
+    }
 
     return (
-      <View style={styles.cardContainer} key={i}>
-        <TouchableHighlight disabled={isDisabled}
-            onPress={() => this.selectToken(token)}>
-          <View style={cardStyle}>
-            <Icon name={token} style={iconStyle}/>
-          </View>
-        </TouchableHighlight>
+      <View key={token} style={styles.cardContainer}>
+        <View style={cardStyle} onClick={() => !isDisabled && this.selectToken(token)}>
+          <Icon name={token} style={iconStyle}/>
+        </View>
+      </View>
+    )
+  }
+
+  render() {
+    return (
+      <View style={styles.grid}>
+        {this.props.tokens.map(this.renderTokenOption)}
       </View>
     )
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   grid: {
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -104,4 +87,6 @@ const styles = StyleSheet.create({
   activeIcon: {
     color: 'white'
   }
-})
+}
+
+export default TokenSelect

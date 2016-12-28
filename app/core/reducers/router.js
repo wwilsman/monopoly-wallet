@@ -1,4 +1,4 @@
-export default function(state = {}, action) {
+function routerReducer(state = {}, action) {
   switch (action.type) {
     case 'NAVIGATE':
       return {
@@ -10,3 +10,5 @@ export default function(state = {}, action) {
       return state
   }
 }
+
+export default routerReducer

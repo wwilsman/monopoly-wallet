@@ -1,5 +1,5 @@
 import React, { Component, PropTypes } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
+import { findDOMNode } from 'react-dom'
 
 import {
   Container,
@@ -10,6 +10,8 @@ import {
 } from '../layout'
 
 import {
+  View,
+  Text,
   Icon,
   Button
 } from '../core/components'
@@ -19,25 +21,40 @@ import {
   PropertyGrid
 } from '../properties'
 
-export default class Player extends Component {
+class Player extends Component {
+  static propTypes = {
+    player: PropTypes.object.isRequired
+  }
+
   state = {
-    listView: false,
+    isListView: false,
     activeProperty: null,
     headerHeight: 0
   }
 
-  _getHeaderHeight = ({ nativeEvent: { layout: { height } } }) => {
-    if (height !== this.state.headerHeight) {
-      this.setState({ headerHeight: height })
+  _getHeaderHeight = (header) => {
+    let node = null
+
+    if (header && (node = findDOMNode(header))) {
+      const height = node.offsetHeight
+
+      if (height !== this.state.headerHeight) {
+        this.setState({ headerHeight: height })
+      }
     }
   }
 
-  goToListView = (propertyID) => {
+  viewPropertyGroup = (properties) => {
+    let pid = properties[0]._id
+
     this.setState({
-      listView: true,
-      activeProperty: this.props.properties
-        .findIndex((p) => p._id === propertyID)
+      isListView: true,
+      activeProperty: this.props.properties.findIndex((p) => p._id === pid)
     })
+  }
+
+  activateProperty = (index) => {
+    this.setState({ activeProperty: index })
   }
 
   renderFooter() {
@@ -46,10 +63,10 @@ export default class Player extends Component {
     if (player === currentPlayer) {
       return (
         <Footer>
-          <Button onPress={() => console.log('collect money')}>
+          <Button onClick={() => console.log('collect money')}>
             Collect
           </Button>
-          <Button onPress={() => console.log('pay bank')}>
+          <Button onClick={() => console.log('pay bank')}>
             Pay
           </Button>
         </Footer>
@@ -58,10 +75,10 @@ export default class Player extends Component {
 
     return (
       <Footer>
-        <Button onPress={() => console.log(`message ${player.name}`)}>
+        <Button onClick={() => console.log(`message ${player.name}`)}>
           Message
         </Button>
-        <Button onPress={() => console.log(`trade ${player.name}`)}>
+        <Button onClick={() => console.log(`trade ${player.name}`)}>
           Trade
         </Button>
       </Footer>
@@ -69,19 +86,17 @@ export default class Player extends Component {
   }
 
   render() {
-    let { player, currentPlayer, properties } = this.props
-    let { listView, activeProperty, headerHeight } = this.state
+    const { player, currentPlayer, properties } = this.props
+    const { isListView, activeProperty, headerHeight } = this.state
 
-    if (!player) return null
-
-    let fixedBalance = player.balance.toFixed()
+    const fixedBalance = player.balance.toFixed()
       .replace(/(\d)(?=(\d{3})+$)/g, '$1,')
 
     return (
       <Container>
         <Header
-            style={styles.header}
-            onLayout={this._getHeaderHeight}>
+            ref={this._getHeaderHeight}
+            style={styles.header}>
           <Title style={styles.title}>
             {player === currentPlayer ? 'You' : player.name}
           </Title>
@@ -92,19 +107,21 @@ export default class Player extends Component {
           </Text>
         </Header>
 
-        {listView ? (
+        {isListView ? (
           <PropertyList
-            style={styles.propertyList}
-            properties={properties}
-            start={activeProperty}
-            offset={headerHeight}
+              style={styles.propertyList}
+              properties={properties}
+              index={activeProperty}
+              offset={headerHeight}
+              onChange={this.activateProperty}
+              cardsToShow={4}
           />
         ) : (
           <View style={{ flex: 1 }}>
             <Content>
               <PropertyGrid
                 properties={properties}
-                onGroupPress={this.goToListView}
+                onGroupPress={this.viewPropertyGroup}
               />
             </Content>
 
@@ -116,7 +133,7 @@ export default class Player extends Component {
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   header: {
     alignItems: 'center'
   },
@@ -136,4 +153,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0
   }
-})
+}
+
+export default Player

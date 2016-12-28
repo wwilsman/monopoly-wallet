@@ -31,6 +31,25 @@ class Router extends Component {
     this._updateHistory(props.location, props.action)
   }
 
+  _updateHistory(
+    location = this.history.location,
+    action = this.history.action
+  ) {
+    if (!this.props.location && !this.props.action) {
+      this.props.transitionTo(location, action)
+    }
+
+    this.setState({ location, action })
+  }
+
+  syncHistory = (location, action) => {
+    if (action === 'SYNC') {
+      this.props.transitionTo(location, this.props.action)
+    } else  {
+      this.props.transitionTo(location, action)
+    }
+  }
+
   render() {
     const {
       basename,
@@ -52,21 +71,6 @@ class Router extends Component {
         {...routerProps}
       />
     )
-  }
-
-  _updateHistory(
-    location = this.history.location,
-    action = this.history.action
-  ) {
-    this.setState({ location, action })
-  }
-
-  syncHistory = (location, action) => {
-    if (action === 'SYNC') {
-      this.props.transitionTo(location, this.props.action)
-    } else  {
-      this.props.transitionTo(location, action)
-    }
   }
 }
 

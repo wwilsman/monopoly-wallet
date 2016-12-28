@@ -1,68 +1,60 @@
 import React from 'react'
 
-import {
-  View,
-  Text,
-  TouchableOpacity,
-  StyleSheet
-} from 'react-native'
+import Text from './Text'
 
-const Button = (props) => {
-  let containerProps = {
-    activeOpacity: 1
+const Button = ({
+  style,
+  disabledStyle,
+  textStyle,
+  disabledTextStyle,
+  secondary,
+  disabled,
+  children,
+  onPress,
+  ...props
+}) => {
+  let btnStyle = { ...styles.button, ...style }
+  let btnTxtStyle = { ...styles.text }
+
+  if (secondary) {
+    btnTxtStyle = { ...btnTxtStyle, ...styles.secondaryText }
   }
 
-  if (!props.disabled) {
-    containerProps.onPress = props.onPress
-    containerProps.onPressIn = props.onPressIn
-    containerProps.onPressOut = props.onPressOut
-    containerProps.onLongPress = props.onLongPress
-    containerProps.activeOpacity = props.activeOpacity || 0.2
+  if (disabled) {
+    btnStyle = { ...btnStyle, ...styles.disabled, ...disabledStyle }
+    btnTxtStyle = { ...btnTxtStyle, ...disabledTextStyle }
   }
-
-  let containerStyle = [
-    styles.container, props.disabled ? styles.disabledContainer : null,
-    props.style, props.disabled ? props.disabledStyle : null
-  ]
-
-  let textStyle = [
-    styles.text,
-    props.textStyle, props.disabled ? props.disabledTextStyle : null,
-    props.secondary ? styles.secondaryText : null
-  ]
 
   return (
-    <View style={containerStyle}>
-      <TouchableOpacity
-          {...containerProps}
-          accessibilityTraits="button"
-          accessibilityComponentType="button">
-        <Text style={textStyle}>
-          {props.children}
-        </Text>
-      </TouchableOpacity>
-    </View>
+    <button
+        style={btnStyle}
+        disabled={disabled}
+        onClick={(e) => !disabled && onPress(e)}
+        {...props}>
+      <Text style={btnTxtStyle}>
+        {children}
+      </Text>
+    </button>
   )
 }
 
-export default Button
-
-const styles = StyleSheet.create({
-  container: {
+const styles = {
+  button: {
     paddingLeft: 10,
     paddingRight: 10,
     paddingTop: 5,
     paddingBottom: 5
   },
-  disabledContainer: {
-    opacity: 0.2
+  disabled: {
+    opacity: 0.3
   },
   text: {
-    fontFamily: 'Futura',
     fontSize: 16,
     color: 'white'
   },
   secondaryText: {
-    opacity: 0.6
+    color: '#eee'
   }
-})
+}
+
+export default Button

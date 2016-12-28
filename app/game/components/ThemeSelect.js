@@ -1,54 +1,24 @@
 import React, { Component, PropTypes } from 'react'
 
-import {
-  View,
-  Text,
-  ListView,
-  TouchableHighlight,
-  StyleSheet
- } from 'react-native'
+import { View, Text } from '../../core/components'
 
-export default class ThemeSelect extends Component {
+class ThemeSelect extends Component {
   static propTypes = {
     themes: PropTypes.array.isRequired,
-    selectedTheme: PropTypes.string,
+    selected: PropTypes.string,
     onChange: PropTypes.func
   }
 
-  constructor(props) {
-    super(props)
-
-    this.ds = new ListView.DataSource({
-      rowHasChanged(prev, next) {
-        return JSON.stringify(prev) !== JSON.stringify(next)
-      }
-    })
-
-    this.state = {
-      themes: this.ds.cloneWithRows(props.themes),
-      selectedTheme: props.selectedTheme || ''
-    }
+  state = {
+    selected: this.props.selected || ''
   }
 
   componentWillReceiveProps(props) {
-    this.setState({
-      themes: this.ds.cloneWithRows(props.themes),
-      selectedTheme: props.selectedTheme || ''
-    })
-  }
-
-  render() {
-    return (
-      <ListView
-        style={styles.list}
-        dataSource={this.state.themes}
-        renderRow={this.renderThemeOption}
-      />
-    )
+    this.setState({ selected: props.selected || '' })
   }
 
   selectTheme = (theme) => {
-    this.setState({ selectedTheme: theme._id })
+    this.setState({ selected: theme._id })
 
     if (this.props.onChange) {
       this.props.onChange(theme._id)
@@ -56,29 +26,36 @@ export default class ThemeSelect extends Component {
   }
 
   renderThemeOption = (theme) => {
-    let isSelected = theme._id === this.state.selectedTheme
+    let cardStyle = styles.card
+    let titleStyle = styles.title
+    let descrStyle = styles.descr
 
-    let cardStyle = [styles.card, isSelected ? styles.activeCard : null]
-    let titleStyle = [styles.title, isSelected ? styles.activeText : null]
-    let descrStyle = [styles.descr, isSelected ? styles.activeText : null]
+    if (theme._id === this.state.selected) {
+      cardStyle = { ...cardStyle, ...styles.activeCard }
+      titleStyle = { ...titleStyle, ...styles.activeText }
+      descrStyle = { ...descrStyle, ...styles.activeText }
+    }
 
     return (
-      <View style={cardStyle}>
-        <TouchableHighlight onPress={() => this.selectTheme(theme)}>
-          <View>
-            <Text style={titleStyle}>{theme.name}</Text>
-            <Text style={descrStyle}>{theme.description}</Text>
-          </View>
-        </TouchableHighlight>
+      <View key={theme._id} style={cardStyle}>
+        <View onClick={() => this.selectTheme(theme)}>
+          <Text style={titleStyle}>{theme.name}</Text>
+          <Text style={descrStyle}>{theme.description}</Text>
+        </View>
+      </View>
+    )
+  }
+
+  render() {
+    return (
+      <View>
+        {this.props.themes.map(this.renderThemeOption)}
       </View>
     )
   }
 }
 
-const styles = StyleSheet.create({
-  list: {
-    flex: 1
-  },
+const styles = {
   card: {
     borderRadius: 3,
     backgroundColor: 'rgba(255,255,255,0.1)',
@@ -105,4 +82,6 @@ const styles = StyleSheet.create({
     fontSize: 13,
     color: '#CCCCCC'
   }
-})
+}
+
+export default ThemeSelect

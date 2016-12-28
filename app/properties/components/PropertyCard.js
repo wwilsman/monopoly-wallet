@@ -1,132 +1,107 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 
-import { Icon } from '../../core/components'
+import { View, Text, Icon } from '../../core/components'
 
 class PropertyCard extends Component {
-  state = {
-    cardStyle: {},
-    cardWrapperStyle: {},
-    headerStyle: {}
-  }
-
-  _onLayout = (e) => {
-    this._calculateStyles(e)
-
-    if (this.props.onLayout) {
-      this.props.onLayout(e)
+  calculateStylesFromWidth(width) {
+    return {
+      card: {
+        width: width,
+        height: width * 1.5,
+        padding: width * 0.075
+      },
+      wrapper: {
+        height: width * 1.425,
+        width: width * 0.925,
+        margin: width * -0.0325,
+        padding: width * 0.0325
+      },
+      header: {
+        height: width * 0.3,
+      }
     }
   }
 
-  _calculateStyles = ({ nativeEvent: { layout: { width } } }) => {
-    width = Math.round(width)
+  renderContent() {
+    let { property } = this.props
 
-    if (width !== this._width) {
-      this.setState({
-        cardStyle: {
-          height: width * 1.5,
-          padding: width * 0.075
-        },
-        cardWrapperStyle: {
-          height: width * 1.425,
-          width: width * 0.925,
-          margin: width * -0.0325,
-          padding: width * 0.0325
-        },
-        headerStyle: {
-          height: width * 0.3,
-          backgroundColor: this.props.color
-        }
-      })
+    return (
+      <View style={styles.content}>
+        {property.rent.map((r, i) => i === 0 ? (
+          <Text style={styles.rentLine} key={i}>
+            Rent <Icon name="currency"/>{r}
+          </Text>
+        ) : i === 5 ? (
+          <Text style={styles.hotelLine} key={i}>
+            With Hotel <Icon name="currency"/>{r}
+          </Text>
+        ) : (
+          <View style={styles.houseLine} key={i}>
+            <Text style={styles.houseLineText}>
+              With {i} House{i > 1 && 's'}
+            </Text>
+            <Text style={styles.houseLineText}>
+              <Icon name="currency"/>{r}
+            </Text>
+          </View>
+        ))}
 
-      this._width = width
-    }
+        <View>
+          <Text style={styles.bottomLine}>
+            Mortgage Value <Icon name="currency"/>{property.price * 0.5}
+          </Text>
+        </View>
+
+        <View>
+          <Text style={styles.bottomLine}>
+            Houses cost <Icon name="currency"/>{property.cost} each
+          </Text>
+        </View>
+
+        <View>
+          <Text style={styles.bottomLine}>
+            Hotels cost <Icon name="currency"/>{property.cost} plus 4 houses
+          </Text>
+        </View>
+
+        <View style={styles.finalLine}>
+          <Text style={styles.finalLineText}>
+            If a player owns ALL of the properties of any color group
+            the rent is doubled on unimproved properties in that group
+          </Text>
+        </View>
+      </View>
+    )
   }
 
   render() {
     let {
       style,
       property,
-      background,
-      header,
+      width,
+      color,
       simple
     } = this.props
 
-    let cardStyle = [
-      styles.card,
-      this.state.cardStyle
-    ]
-
-    let cardWrapperStyle = [
-      styles.outline,
-      this.state.cardWrapperStyle
-    ]
-
-    let headerStyle = [
-      styles.header,
-      this.state.headerStyle
-    ]
+    let s = this.calculateStylesFromWidth(width)
+    let headerStyle = { ...styles.header, ...s.header, backgroundColor: color }
+    let cardStyle = { ...styles.card, ...s.card }
 
     return (
-      <View
-          style={style}
-          onLayout={this._onLayout}>
+      <View style={style}>
         <View style={cardStyle}>
           {simple ? (
             <View style={headerStyle}/>
           ) : (
-            <View style={cardWrapperStyle}>
-              <View style={[headerStyle, styles.headerWithText]}>
+            <View style={{ ...styles.wrapper, ...s.wrapper }}>
+              <View style={{ ...headerStyle, ...styles.headerWithText }}>
                 <Text style={styles.headerText}>
                   {property.name}
                 </Text>
               </View>
-              <View style={styles.content}>
-                {property.rent.map((r, i) => i === 0 ? (
-                  <Text style={styles.rentLine} key={i}>
-                    Rent <Icon name="currency"/>{r}
-                  </Text>
-                ) : i === 5 ? (
-                  <Text style={styles.hotelLine} key={i}>
-                    With Hotel <Icon name="currency"/>{r}
-                  </Text>
-                ) : (
-                  <View style={styles.houseLine} key={i}>
-                    <Text style={styles.houseLineText}>
-                      With {i} House{i > 1 && 's'}
-                    </Text>
-                    <Text style={styles.houseLineText}>
-                      <Icon name="currency"/>{r}
-                    </Text>
-                  </View>
-                ))}
 
-                <View>
-                  <Text style={styles.bottomLine}>
-                    Mortgage Value <Icon name="currency"/>{property.price * 0.5}
-                  </Text>
-                </View>
-
-                <View>
-                  <Text style={styles.bottomLine}>
-                    Houses cost <Icon name="currency"/>{property.cost} each
-                  </Text>
-                </View>
-
-                <View>
-                  <Text style={styles.bottomLine}>
-                    Hotels cost <Icon name="currency"/>{property.cost} plus 4 houses
-                  </Text>
-                </View>
-
-                <View style={styles.finalLine}>
-                  <Text style={styles.finalLineText}>
-                    If a player owns ALL of the properties of any color group
-                    the rent is doubled on unimproved properties in that group
-                  </Text>
-                </View>
-              </View>
+              {this.renderContent()}
             </View>
           )}
         </View>
@@ -145,16 +120,14 @@ const PropertyCardContainer = connect(
   mapStateToProps
 )(PropertyCard)
 
-export default PropertyCardContainer
-
-const styles = StyleSheet.create({
+const styles = {
   card: {
     backgroundColor: 'white',
     borderWidth: 1,
     borderStyle: 'solid',
     borderColor: 'rgba(0,0,0,0.2)'
   },
-  outline: {
+  wrapper: {
     flex: 1,
     borderWidth: 2,
     borderStyle: 'solid',
@@ -217,4 +190,6 @@ const styles = StyleSheet.create({
     fontFamily: 'futura',
     textAlign: 'center'
   }
-})
+}
+
+export default PropertyCardContainer

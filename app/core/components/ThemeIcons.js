@@ -1,10 +1,7 @@
-import React, { Component, PropTypes } from 'react'
+import React, { Component } from 'react'
+import { connect } from 'react-redux'
 
-export default class ThemeIcons extends Component {
-  static propTypes = {
-    theme: PropTypes.string.isRequired
-  }
-
+class ThemeIcons extends Component {
   constructor(props) {
     super(props)
 
@@ -22,10 +19,6 @@ export default class ThemeIcons extends Component {
 
   componentDidUpdate() {
     this.injectStyleSheet()
-  }
-
-  render() {
-    return null
   }
 
   injectStyleSheet() {
@@ -72,4 +65,20 @@ export default class ThemeIcons extends Component {
 
     return style
   }
+
+  render() {
+    return null
+  }
 }
+
+function mapStateToProps(state) {
+  return {
+    theme: state.theme._id
+  }
+}
+
+const ThemeIconsContainer = connect(
+  mapStateToProps
+)(ThemeIcons)
+
+export default ThemeIconsContainer

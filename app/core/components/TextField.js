@@ -1,28 +1,30 @@
 import React from 'react'
-import { TextInput, StyleSheet } from 'react-native'
 
-const TextField = ({ style, ...props }) => (
-  <TextInput {...props}
-    style={[
-      styles.input,
-      !props.value ? styles.emptyInput : null,
-      style
-    ]}
-  />
-)
+const TextField = ({ style, ...props }) => {
+  let inputStyle = styles.input
 
-export default TextField
+  if (!props.value) {
+    inputStyle = { ...inputStyle, ...styles.empty }
+  }
 
-const styles = StyleSheet.create({
+  return (
+    <input style={{ ...inputStyle, ...style }} {...props}/>
+  )
+}
+
+const styles = {
   input: {
     fontSize: 16,
     color: 'white',
     borderBottomWidth: 1,
+    borderBottomStyle: 'solid',
     borderBottomColor: 'white',
     paddingBottom: 10,
     marginBottom: 40
   },
-  emptyInput: {
+  empty: {
     opacity: 0.6
   }
-})
+}
+
+export default TextField

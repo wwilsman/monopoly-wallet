@@ -1,18 +1,19 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
+
+import { View } from '../core/components'
 
 const Container = ({ style, children }) => (
-  <View style={[styles.container, style]}>
+  <View style={{ ...styles.container, ...style }}>
     {children}
   </View>
 )
 
-export default Container
-
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
     alignItems: 'stretch',
     backgroundColor: '#222'
   }
-})
+}
+
+export default Container

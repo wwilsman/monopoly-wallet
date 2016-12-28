@@ -39,7 +39,8 @@ module.exports = {
   ],
   resolve: {
     alias: {
-      'react-native': 'react-native-web'
+      // Animated library needs update
+      'react/lib/CSSPropertyOperations': 'react-dom/lib/CSSPropertyOperations'
     }
   }
 };

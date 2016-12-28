@@ -1,28 +1,11 @@
 import React, { Component } from 'react'
-import { View, StyleSheet } from 'react-native'
 
+import { View } from '../core/components'
 import { Toast } from './components'
 
-export default class Toaster extends Component {
-
-  constructor(props) {
-    super(props)
-
-    this.state = {
-      toasts: []
-    }
-  }
-
-  render() {
-    return (
-      <View style={styles.toaster}>
-        {this.state.toasts.map((toast) => (
-          <Toast {...toast}
-            onDismiss={() => this.removeToast(toast.key)}
-          />
-        ))}
-      </View>
-    )
+class Toaster extends Component {
+  state = {
+    toasts: []
   }
 
   showToast(message, { timeout = 3000, ...options } = {}) {
@@ -47,13 +30,25 @@ export default class Toaster extends Component {
         ...this.state.toasts.slice(i + 1) ]
     })
   }
+
+  render() {
+    return (
+      <View style={styles.toaster}>
+        {this.state.toasts.map((toast) => (
+           <Toast onDismiss={() => this.removeToast(toast.key)} {...toast}/>
+         ))}
+      </View>
+    )
+  }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   toaster: {
     position: 'absolute',
     top: 0,
     zIndex: 9999,
     width: '100%'
   }
-})
+}
+
+export default Toaster

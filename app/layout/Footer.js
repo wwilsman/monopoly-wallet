@@ -1,5 +1,6 @@
 import React, { Children } from 'react'
-import { View, StyleSheet } from 'react-native'
+
+import { View } from '../core/components'
 
 const Footer = ({ children }) => (
   <View style={styles.footer}>
@@ -11,9 +12,7 @@ const Footer = ({ children }) => (
   </View>
 )
 
-export default Footer
-
-const styles = StyleSheet.create({
+const styles = {
   footer: {
     paddingTop: 35,
     paddingRight: 15,
@@ -29,4 +28,6 @@ const styles = StyleSheet.create({
     paddingRight: 15,
     paddingLeft: 15
   }
-})
+}
+
+export default Footer

@@ -1,10 +1,9 @@
 import React, { Component, PropTypes } from 'react'
-import { View, TouchableHighlight, StyleSheet } from 'react-native'
 import { createSelector } from 'reselect'
 import { connect } from 'react-redux'
 
 import { getOrderedPlayers } from '../selectors'
-import { Icon } from '../../core/components'
+import { View, Icon } from '../../core/components'
 
 class GameNav extends Component {
   static contextTypes = {
@@ -38,30 +37,37 @@ class GameNav extends Component {
     let { players, gameID } = this.props
 
     let bankPath = `/${gameID}/bank`
+    let bankLinkStyle = { ...styles.link, ...styles.bankLink }
+
+    if (this.isPathActive(bankPath)) {
+      bankLinkStyle = { ...bankLinkStyle, ...styles.selected }
+    }
 
     return (
       <View style={styles.container}>
         {players.map((p) => {
-          let path = this.getPlayerPath(p)
+           let path = this.getPlayerPath(p)
+           let linkStyle = styles.link
 
-          return (
-            <TouchableHighlight key={p._id}
-                style={[styles.link, this.isPathActive(path) && styles.selected]}
-                onPress={() => this.goToPath(path)}>
-              <View>
-                <Icon style={styles.icon} name={p.token}/>
-              </View>
-            </TouchableHighlight>
+           if (this.isPathActive(path)) {
+             linkStyle = { ...linkStyle, ...styles.selected }
+           }
+
+           return (
+             <View
+                 key={p._id}
+                 style={linkStyle}
+                 onClick={() => this.goToPath(path)}>
+               <Icon style={styles.icon} name={p.token}/>
+             </View>
           )
         })}
 
-        <TouchableHighlight
-            style={[styles.link, styles.bankLink, this.isPathActive(bankPath) && styles.selected]}
-            onPress={() => this.goToPath(bankPath)}>
-          <View>
-            <Icon style={styles.icon} name="bank"/>
-          </View>
-        </TouchableHighlight>
+        <View
+            style={bankLinkStyle}
+            onClick={() => this.goToPath(bankPath)}>
+          <Icon style={styles.icon} name="bank"/>
+        </View>
       </View>
     )
   }
@@ -71,7 +77,8 @@ function mapStateToProps(state) {
   return {
     gameID: state.game._id,
     currentPlayer: state.player,
-    players: getOrderedPlayers(state)
+    players: getOrderedPlayers(state),
+    location: state.routing.location
   }
 }
 
@@ -79,9 +86,7 @@ const GameNavContainer = connect(
   mapStateToProps
 )(GameNav)
 
-export default GameNavContainer
-
-const styles = StyleSheet.create({
+const styles = {
   container: {
     backgroundColor: '#444',
     flexDirection: 'row',
@@ -107,4 +112,6 @@ const styles = StyleSheet.create({
     fontSize: 16,
     color: '#DDD'
   }
-})
+}
+
+export default GameNavContainer

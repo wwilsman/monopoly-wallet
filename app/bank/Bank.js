@@ -1,16 +1,9 @@
 import React, { Component } from 'react'
-import { StyleSheet } from 'react-native'
 
-import {
-  Container,
-  Content
-} from '../layout'
+import { Container, Content } from '../layout'
+import { PropertyList } from '../properties'
 
-import {
-  PropertyList
-} from '../properties'
-
-export default class extends Component {
+class Bank extends Component {
 
   render() {
     let { properties } = this.props
@@ -18,17 +11,17 @@ export default class extends Component {
     return (
       <Container>
         <PropertyList
-          style={styles.propertyList}
-          properties={properties}
-          start={0}
-          offset={40}
+            style={styles.propertyList}
+            properties={properties}
+            cardsToShow={5}
+            offset={40}
         />
       </Container>
     )
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   propertyList: {
     position: 'absolute',
     height: '100%',
@@ -36,4 +29,6 @@ const styles = StyleSheet.create({
     top: 0,
     left: 0
   }
-})
+}
+
+export default Bank
