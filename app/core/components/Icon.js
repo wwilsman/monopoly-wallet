@@ -1,22 +1,29 @@
 import React from 'react'
-import { Text } from 'react-native'
 import { connect } from 'react-redux'
 
-const Icon = ({ name, glyphs, theme, style }) => {
+import Text from './Text'
+
+const Icon = ({
+  name,
+  glyphs,
+  theme,
+  style
+}) => {
   let glyph = glyphs[name] || '?'
 
   if (typeof glyph === 'number') {
     glyph = String.fromCharCode(glyph)
   }
 
-  let fontStyle = {
+  const fontStyle = {
     fontFamily: `${theme}-icons`,
     fontWeight: 'normal',
-    fontStyle: 'normal'
+    fontStyle: 'normal',
+    lineHeight: 1
   }
 
   return (
-    <Text style={[style, fontStyle]}>
+    <Text style={{ ...style, ...fontStyle }}>
       {glyph}
     </Text>
   )

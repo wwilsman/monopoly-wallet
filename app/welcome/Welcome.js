@@ -1,24 +1,19 @@
 import React, { Component, PropTypes } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
 
-import {
-  Container,
-  Title,
-  Centered
-} from '../layout'
+import { Container, Title, Centered } from '../layout'
+import { View, Text, Button } from '../core/components'
 
-import {
-  Button
-} from '../core/components'
-
-export default class Welcome extends Component {
+class Welcome extends Component {
   static contextTypes = {
     router: PropTypes.object
   }
 
-  render() {
-    let { router } = this.context
+  goToNewGame = () => {
+    const { router } = this.context
+    router.transitionTo({ pathname: '/new' })
+  }
 
+  render() {
     return (
       <Container>
         <Centered>
@@ -26,7 +21,7 @@ export default class Welcome extends Component {
             Monopoly Wallet
           </Title>
 
-          <Button onPress={() => router.transitionTo({ pathname: '/new' })}>
+          <Button onClick={this.goToNewGame}>
             New Game
           </Button>
         </Centered>
@@ -35,9 +30,11 @@ export default class Welcome extends Component {
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   welcome: {
     fontSize: 36,
     marginBottom: 20
   }
-})
+}
+
+export default Welcome

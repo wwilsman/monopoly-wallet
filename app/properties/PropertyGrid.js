@@ -1,21 +1,13 @@
-import React, { Component } from 'react'
-import { View, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
+import React, { Component, PropTypes } from 'react'
 
+import { View } from '../core/components'
 import { PropertyGroup } from './components'
 
-export default class PropertyGrid extends Component {
-  constructor(props) {
-    super(props)
 
-    this.state = {
-      groups: this.groupProperties(props.properties)
-    }
-  }
-
-  componentWillReceiveProps({ properties }) {
-    this.setState({
-      groups: this.groupProperties(properties)
-    })
+class PropertyGrid extends Component {
+  static propTypes = {
+    properties: PropTypes.array.isRequired,
+    onGroupPress: PropTypes.func
   }
 
   groupProperties(properties) {
@@ -35,30 +27,30 @@ export default class PropertyGrid extends Component {
   }
 
   render() {
-    let { onGroupPress } = this.props
-    let groupWidth = ((Dimensions.get('window').width - 30) / 4) - 30
+    let { properties, onGroupPress } = this.props
+    let groups = this.groupProperties(properties)
+    let groupWidth = ((window.innerWidth - 30) / 4) - 30
 
     return (
       <View style={styles.container}>
-        {this.state.groups.map((properties, i) => (
-          <TouchableOpacity key={i}
-              style={styles.group}
-              onPress={() => onGroupPress(properties[0]._id)}>
-            <View>
-              <PropertyGroup
-                width={groupWidth}
-                properties={properties}
-                simple
-              />
-            </View>
-          </TouchableOpacity>
-        ))}
+        {groups.map((properties, i) => (
+           <View
+               key={properties[0].group}
+               style={styles.group}
+               onClick={() => onGroupPress(properties)}>
+             <PropertyGroup
+                 width={groupWidth}
+                 properties={properties}
+                 simple
+             />
+           </View>
+         ))}
       </View>
     )
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     flex: 1,
     flexDirection: 'row',
@@ -71,4 +63,6 @@ const styles = StyleSheet.create({
     marginRight: 15,
     marginBottom: 30
   }
-})
+}
+
+export default PropertyGrid

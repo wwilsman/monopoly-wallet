@@ -1,20 +1,20 @@
 import React from 'react'
-import { Text, StyleSheet } from 'react-native'
+
+import Text from './Text'
 
 const Label = ({ style, children }) => (
-  <Text style={[styles.label, style]}>
+  <Text style={{ ...styles.label, ...style }}>
     {children}
   </Text>
 )
 
-export default Label
-
-const styles = StyleSheet.create({
+const styles = {
   label: {
-    color: '#888888',
-    fontFamily: 'Futura',
     fontSize: 11,
+    color: '#888888',
     textTransform: 'uppercase',
     marginBottom: 15
   }
-})
+}
+
+export default Label

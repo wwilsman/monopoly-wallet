@@ -1,26 +1,35 @@
-import React, { Component } from 'react'
+import React, { Component, PropTypes } from 'react'
+import { Animated, PanResponder } from '../core/apis'
 
-import {
-  View,
-  Animated,
-  PanResponder,
-  Dimensions,
-  StyleSheet
-} from 'react-native'
-
+import { View } from '../core/components'
 import { PropertyCard } from './components'
 
-export default class PropertyList extends Component {
+class PropertyList extends Component {
+  static propTypes = {
+    properties: PropTypes.array.isRequired,
+    cardsToShow: PropTypes.number.isRequired,
+    index: PropTypes.number,
+    onChange: PropTypes.func,
+    style: PropTypes.object
+  }
+
+  state = {
+    index: this.props.index || 0,
+    anim: new Animated.Value(this.props.index || 0)
+  }
+
   panResponder = PanResponder.create({
     onMoveShouldSetPanResponder: (e, { dx, dy }) => {
       return Math.abs(dy) > Math.abs(dx)
     },
+
     onPanResponderMove: (e, { dy }) => {
       let rel = dy / (this.getCardWidth() * 1.5)
       this.state.anim.setValue(this.state.index - rel)
     },
+
     onPanResponderRelease: (e, { dy, vy }) => {
-      let { properties, onUpdate } = this.props
+      let { properties, onChange } = this.props
       let rel = dy / (this.getCardWidth() * 1.5)
       let index = parseInt(Math.round(this.state.index - rel))
 
@@ -43,37 +52,41 @@ export default class PropertyList extends Component {
         duration: 200
       }).start(() => {
         if (this.state.index !== index) {
-          onUpdate ? onUpdate(index) :
-            this.setState({ index })
+          onChange ? onChange(index) : this.setState({ index })
         }
       })
     }
   })
 
-  constructor(props) {
-    super(props)
-
-    let cardWidth = Dimensions.get('window').width - 120
-    let cardHeight = cardWidth * 1.5
-
-    this.state = {
-      index: props.index,
-      anim: new Animated.Value(props.index),
-      cardWidth,
-      cardHeight
-    }
-  }
-
   componentWillReceiveProps(props) {
-    this.setState({ index: props.index })
+    this.setState({ index: props.index || 0 })
   }
 
   componentDidUpdate() {
     this.state.anim.setValue(this.state.index)
   }
 
+  getVisibleProperties() {
+    let { properties, cardsToShow } = this.props
+    let { index } = this.state
+
+    let startIndex = index - 2
+    let endIndex = index + cardsToShow + 2
+
+    return properties.reduce((visible, p, i) => {
+      if (startIndex <= i && i <= endIndex) {
+        visible.push({
+          property: p,
+          style: this.getPropertyStyle(i)
+        })
+      }
+
+      return visible
+    }, [])
+  }
+
   getPropertyStyle(i) {
-    let { offset } = this.props
+    let { offset, properties } = this.props
     let cardHeight = this.getCardWidth() * 1.5
     let space = cardHeight + 20
     let overlap = cardHeight * 0.1
@@ -88,9 +101,11 @@ export default class PropertyList extends Component {
       ]
     })
 
-    return {
-      transform: [{ translateY: top }]
-    }
+    return { top }
+  }
+
+  getCardWidth() {
+    return window.innerWidth - 120
   }
 
   getCardWidth() {
@@ -98,32 +113,27 @@ export default class PropertyList extends Component {
   }
 
   render() {
-    let { properties, cardsToShow } = this.props
-    let startIndex = this.state.index + cardsToShow + 2
-    let endIndex = this.state.index - 1
+    let { style } = this.props
     let cardWidth = this.getCardWidth()
 
     return (
       <View
-          style={styles.container}
+          style={{ ...styles.container, ...style }}
           onTouchMove={(e) => e.preventDefault()}
           {...this.panResponder.panHandlers}>
-        {properties.map((p, i) => {
-          if (i <= startIndex && i >= endIndex) {
-            return (
-              <Animated.View key={i}
-                  style={[styles.property, this.getPropertyStyle(i)]}>
-                <PropertyCard width={cardWidth} property={p}/>
-              </Animated.View>
-            )
-          }
-        })}
+        {this.getVisibleProperties().map((p) => (
+           <Animated.View
+               key={p.property._id}
+               style={{ ...styles.property, ...p.style }}>
+             <PropertyCard width={cardWidth} property={p.property}/>
+           </Animated.View>
+         ))}
       </View>
     )
   }
 }
 
-const styles = StyleSheet.create({
+const styles = {
   container: {
     overflow: 'hidden',
     position: 'absolute',
@@ -138,4 +148,6 @@ const styles = StyleSheet.create({
     paddingLeft: 60,
     paddingRight: 60
   }
-})
+}
+
+export default PropertyList

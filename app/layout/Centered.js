@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
+
+import { View } from '../core/components'
 
 const Centered = ({ children }) => (
   <View style={styles.centered}>
@@ -7,13 +8,13 @@ const Centered = ({ children }) => (
   </View>
 )
 
-export default Centered
-
-const styles = StyleSheet.create({
+const styles = {
   centered: {
     flex: 1,
     padding: 40,
     alignItems: 'center',
     justifyContent: 'center'
   }
-})
+}
+
+export default Centered

@@ -1,18 +1,21 @@
-import React from 'react'
-import { View, StyleSheet } from 'react-native'
+import React, { Component } from 'react'
 
+import { View } from '../core/components'
 import Title from './Title'
 
-const Header = ({ style, onLayout, children }) => (
-  <View style={[styles.header, style]} onLayout={onLayout}>
-    {typeof children !== 'string' ? children :
-      <Title>{children}</Title>}
-  </View>
-)
+class Header extends Component {
+  render() {
+    const { style, children, ...props } = this.props
 
-export default Header
+    return (
+      <View style={{ ...styles.header, ...style }} {...props}>
+        {typeof children !== 'string' ? children : (<Title>{children}</Title>)}
+      </View>
+    )
+  }
+}
 
-const styles = StyleSheet.create({
+const styles = {
   header: {
     paddingTop: 20,
     paddingRight: 30,
@@ -20,4 +23,6 @@ const styles = StyleSheet.create({
     paddingLeft: 30,
     alignItems: 'center'
   }
-})
+}
+
+export default Header

@@ -9,46 +9,66 @@ import {
   Footer
 } from '../layout'
 
-import {
-  Button,
-  Label,
-  TextField
-} from '../core/components'
+import { Button, Label, TextField } from '../core/components'
+import { TokenSelect } from './components'
 
-import {
-  TokenSelect
-} from './components'
-
-export default class JoinGame extends Component {
-  static propTypes = {
-    tokens: PropTypes.array.isRequired,
-    players: PropTypes.array.isRequired
-  }
-
+class JoinGame extends Component {
   static contextTypes = {
     socket: PropTypes.object
   }
 
-  constructor(props) {
-    super(props)
+  state = {
+    playerName: '',
+    selectedToken: '',
+    isWaiting: false,
+    error: null
+  }
 
-    this.state = {
-      playerName: '',
-      selectedToken: '',
-      isWaiting: false,
-      error: null
+  _removeSocketEvents() {
+    const { socket } = this.context
+
+    socket.off('game:error', this.showError)
+    socket.off('game:joined', this.joinGame)
+  }
+
+  setPlayerName = (name) => {
+    this.setState({ playerName: name })
+  }
+
+  selectToken = (token) => {
+    this.setState({ selectedToken: token })
+  }
+
+  showError = (message) => {
+    this._removeSocketEvents()
+    this.setState({ error: message })
+  }
+
+  startJoinGame = () => {
+    const { socket } = this.context
+    const { params: { gameID } } = this.props
+
+    const playerData = {
+      name: this.state.playerName,
+      token: this.state.selectedToken
     }
+
+    socket.once('game:error', this.showError)
+    socket.once('game:joined', this.joinGame)
+
+    socket.emit('game:join', gameID, playerData)
+    this.setState({ isWaiting: true })
   }
 
-  render() {
-    return this.state.isWaiting ?
-      this._renderWaiting() :
-      this._renderJoin()
+  joinGame = (pid, gameState) => {
+    this.props.updateGame(gameState)
+    this.props.setCurrentPlayer(pid)
+    this._removeSocketEvents()
   }
 
-  _renderWaiting() {
-    let { error } = this.state
-    let containerStyle = !error ? null :
+  renderWaiting() {
+    const { error } = this.state
+    const containerStyle = !error ? null :
       { backgroundColor: 'rgb(225,50,50)' }
 
     return (
@@ -60,12 +80,12 @@ export default class JoinGame extends Component {
     )
   }
 
-  _renderJoin() {
+  renderJoin() {
     let { tokens, usedTokens, players } = this.props
-    let { playerName, selectedToken } = this.state
+    const { playerName, selectedToken } = this.state
 
-    let active = players.filter((p) => p.isActive)
-    let player = players.find((p) => p.name === playerName && !p.isActive)
+    const active = players.filter((p) => p.isActive)
+    const player = players.find((p) => p.name === playerName && !p.isActive)
 
     if (player) {
       usedTokens = usedTokens.filter((t) => t !== player.token)
@@ -79,24 +99,24 @@ export default class JoinGame extends Component {
           <Label>Your Name:</Label>
 
           <TextField
-            onChangeText={this.setPlayerName}
-            value={playerName}
+              onChange={(e) => this.setPlayerName(e.target.value)}
+              value={playerName}
           />
 
           <Label>Select A Token:</Label>
 
           <TokenSelect
-            tokens={tokens}
-            selectedToken={selectedToken}
-            usedTokens={usedTokens}
-            onChange={this.selectToken}
+              tokens={tokens}
+              selected={selectedToken}
+              usedTokens={usedTokens}
+              onChange={this.selectToken}
           />
         </Content>
 
         <Footer>
           <Button
               disabled={!(playerName && selectedToken)}
-              onPress={this.startJoinGame}>
+              onClick={this.startJoinGame}>
             {active.length ? 'Ask to join' : 'Join Game'}
           </Button>
         </Footer>
@@ -104,52 +124,11 @@ export default class JoinGame extends Component {
     )
   }
 
-  setPlayerName = (name) => {
-    this.setState({ playerName: name })
-  }
-
-  selectToken = (token) => {
-    this.setState({ selectedToken: token })
-  }
-
-  startJoinGame = () => {
-    let { socket } = this.context
-    let { gameID } = this.props.params
-    let { playerName, selectedToken } = this.state
-
-    let playerData = {
-      name: playerName,
-      token: selectedToken
-    }
-
-    socket.once('game:error', this.showError)
-    socket.once('game:joined', this.joinGame)
-
-    socket.emit('game:join', gameID, playerData)
-    this.setState({ isWaiting: true })
-  }
-
-  joinGame = (pid, gameState) => {
-    let {
-      updateGame,
-      setCurrentPlayer
-    } = this.props
-
-    updateGame(gameState)
-    setCurrentPlayer(pid)
-
-    this._removeSocketEvents()
-  }
-
-  showError = (message) => {
-    this._removeSocketEvents()
-    this.setState({ error: message })
-  }
-
-  _removeSocketEvents() {
-    let { socket } = this.context
-
-    socket.off('game:error', this.showError)
-    socket.off('game:joined', this.joinGame)
+  render() {
+    return this.state.isWaiting ?
+           this.renderWaiting() :
+           this.renderJoin()
   }
 }
+
+export default JoinGame

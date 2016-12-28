@@ -1,13 +1,13 @@
 import React, { Component } from 'react'
-import { View, Text, StyleSheet } from 'react-native'
 import { connect } from 'react-redux'
 
-import { Icon } from '../../core/components'
+import { View, Text, Icon } from '../../core/components'
 
 class PropertyCard extends Component {
   calculateStylesFromWidth(width) {
     return {
       card: {
+        width: width,
         height: width * 1.5,
         padding: width * 0.075
       },
@@ -18,9 +18,61 @@ class PropertyCard extends Component {
         padding: width * 0.0325
       },
       header: {
-        height: width * 0.3
+        height: width * 0.3,
       }
     }
+  }
+
+  renderContent() {
+    let { property } = this.props
+
+    return (
+      <View style={styles.content}>
+        {property.rent.map((r, i) => i === 0 ? (
+          <Text style={styles.rentLine} key={i}>
+            Rent <Icon name="currency"/>{r}
+          </Text>
+        ) : i === 5 ? (
+          <Text style={styles.hotelLine} key={i}>
+            With Hotel <Icon name="currency"/>{r}
+          </Text>
+        ) : (
+          <View style={styles.houseLine} key={i}>
+            <Text style={styles.houseLineText}>
+              With {i} House{i > 1 && 's'}
+            </Text>
+            <Text style={styles.houseLineText}>
+              <Icon name="currency"/>{r}
+            </Text>
+          </View>
+        ))}
+
+        <View>
+          <Text style={styles.bottomLine}>
+            Mortgage Value <Icon name="currency"/>{property.price * 0.5}
+          </Text>
+        </View>
+
+        <View>
+          <Text style={styles.bottomLine}>
+            Houses cost <Icon name="currency"/>{property.cost} each
+          </Text>
+        </View>
+
+        <View>
+          <Text style={styles.bottomLine}>
+            Hotels cost <Icon name="currency"/>{property.cost} plus 4 houses
+          </Text>
+        </View>
+
+        <View style={styles.finalLine}>
+          <Text style={styles.finalLineText}>
+            If a player owns ALL of the properties of any color group
+            the rent is doubled on unimproved properties in that group
+          </Text>
+        </View>
+      </View>
+    )
   }
 
   render() {
@@ -28,70 +80,29 @@ class PropertyCard extends Component {
       style,
       width,
       property,
+      width,
       color,
       simple
     } = this.props
 
     let s = this.calculateStylesFromWidth(width)
-    let headerStyle = [styles.header, s.header, { backgroundColor: color }]
+    let headerStyle = { ...styles.header, ...s.header, backgroundColor: color }
+    let cardStyle = { ...styles.card, ...s.card }
 
     return (
       <View style={style}>
-        <View style={[styles.card, s.card]}>
+        <View style={cardStyle}>
           {simple ? (
             <View style={headerStyle}/>
           ) : (
-            <View style={[styles.wrapper, s.wrapper]}>
-              <View style={[headerStyle, styles.headerWithText]}>
+            <View style={{ ...styles.wrapper, ...s.wrapper }}>
+              <View style={{ ...headerStyle, ...styles.headerWithText }}>
                 <Text style={styles.headerText}>
                   {property.name}
                 </Text>
               </View>
-              <View style={styles.content}>
-                {property.rent.map((r, i) => i === 0 ? (
-                  <Text style={styles.rentLine} key={i}>
-                    Rent <Icon name="currency"/>{r}
-                  </Text>
-                ) : i === 5 ? (
-                  <Text style={styles.hotelLine} key={i}>
-                    With Hotel <Icon name="currency"/>{r}
-                  </Text>
-                ) : (
-                  <View style={styles.houseLine} key={i}>
-                    <Text style={styles.houseLineText}>
-                      With {i} House{i > 1 && 's'}
-                    </Text>
-                    <Text style={styles.houseLineText}>
-                      <Icon name="currency"/>{r}
-                    </Text>
-                  </View>
-                ))}
 
-                <View>
-                  <Text style={styles.bottomLine}>
-                    Mortgage Value <Icon name="currency"/>{property.price * 0.5}
-                  </Text>
-                </View>
-
-                <View>
-                  <Text style={styles.bottomLine}>
-                    Houses cost <Icon name="currency"/>{property.cost} each
-                  </Text>
-                </View>
-
-                <View>
-                  <Text style={styles.bottomLine}>
-                    Hotels cost <Icon name="currency"/>{property.cost} plus 4 houses
-                  </Text>
-                </View>
-
-                <View style={styles.finalLine}>
-                  <Text style={styles.finalLineText}>
-                    If a player owns ALL of the properties of any color group
-                    the rent is doubled on unimproved properties in that group
-                  </Text>
-                </View>
-              </View>
+              {this.renderContent()}
             </View>
           )}
         </View>
@@ -110,9 +121,7 @@ const PropertyCardContainer = connect(
   mapStateToProps
 )(PropertyCard)
 
-export default PropertyCardContainer
-
-const styles = StyleSheet.create({
+const styles = {
   card: {
     borderWidth: 1,
     borderStyle: 'solid',
@@ -182,4 +191,6 @@ const styles = StyleSheet.create({
     fontFamily: 'futura',
     textAlign: 'center'
   }
-})
+}
+
+export default PropertyCardContainer

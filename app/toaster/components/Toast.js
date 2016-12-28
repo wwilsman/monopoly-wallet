@@ -1,7 +1,6 @@
 import React from 'react'
-import { View, Text, StyleSheet } from 'react-native'
 
-import { Button } from '../../core/components'
+import { View, Text, Button } from '../../core/components'
 
 const Toast = ({
   message,
@@ -11,34 +10,42 @@ const Toast = ({
   onSecondaryButtonPress,
   onDismiss,
   isError
-}) => (
-  <View style={[styles.toast, isError ? styles.error : null]}>
-    <Text style={styles.message}>
-      {message}
-    </Text>
+}) => {
+  let toastStyles = styles.toast
 
-    {secondaryButton && (
-      <Button style={styles.button}
-          textStyle={styles.buttonText}
-          onPress={(e) => onSecondaryButtonPress(onDismiss, e)}
-          secondary>
-        {secondaryButton}
-      </Button>
-    )}
+  if (isError) {
+    toastStyles = { ...toastStyles, ...styles.error }
+  }
+
+  return (
+    <View style={toastStyles}>
+      <Text style={styles.message}>
+        {message}
+      </Text>
+
+      {secondaryButton && (
+         <Button
+             style={styles.button}
+             textStyle={styles.buttonText}
+             onPress={(e) => onSecondaryButtonPress(onDismiss, e)}
+             secondary>
+           {secondaryButton}
+         </Button>
+       )}
 
     {primaryButton && (
-      <Button style={styles.button}
-          textStyle={styles.buttonText}
-          onPress={(e) => onPrimaryButtonPress(onDismiss, e)}>
-        {primaryButton}
-      </Button>
-    )}
-  </View>
-)
+       <Button
+           style={styles.button}
+           textStyle={styles.buttonText}
+           onPress={(e) => onPrimaryButtonPress(onDismiss, e)}>
+         {primaryButton}
+       </Button>
+     )}
+    </View>
+  )
+}
 
-export default Toast
-
-const styles = StyleSheet.create({
+const styles = {
   toast: {
     borderRadius: 3,
     backgroundColor: 'rgb(100,200,100)',
@@ -65,4 +72,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     textTransform: 'uppercase'
   }
-})
+}
+
+export default Toast

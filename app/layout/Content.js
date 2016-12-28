@@ -1,5 +1,6 @@
 import React from 'react'
-import { View, StyleSheet } from 'react-native'
+
+import { View } from '../core/components'
 
 const Content = ({ children }) => (
   <View style={styles.content}>
@@ -7,12 +8,12 @@ const Content = ({ children }) => (
   </View>
 )
 
-export default Content
-
-const styles = StyleSheet.create({
+const styles = {
   content: {
     flex: 1,
     paddingRight: 30,
     paddingLeft: 30
   }
-})
+}
+
+export default Content
