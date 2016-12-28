@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 
 import { View } from '../../core/components'
 import PropertyCard from './PropertyCard'

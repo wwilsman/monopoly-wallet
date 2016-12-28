@@ -3,6 +3,7 @@ import React, { Component, PropTypes } from 'react'
 import { View } from '../core/components'
 import { PropertyGroup } from './components'
 
+
 class PropertyGrid extends Component {
   static propTypes = {
     properties: PropTypes.array.isRequired,
@@ -51,10 +52,11 @@ class PropertyGrid extends Component {
 
 const styles = {
   container: {
+    flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginRight: -15,
-    marginLeft: -15
+    paddingRight: 15,
+    paddingLeft: 15
   },
   group: {
     marginLeft: 15,

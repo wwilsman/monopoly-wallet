@@ -4,9 +4,10 @@ import { Container, Content } from '../layout'
 import { PropertyList } from '../properties'
 
 class Bank extends Component {
-
+  
   render() {
     let { properties } = this.props
+    let { activeProperty } = this.state
 
     return (
       <Container>

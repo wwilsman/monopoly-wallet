@@ -78,6 +78,7 @@ class PropertyCard extends Component {
   render() {
     let {
       style,
+      width,
       property,
       width,
       color,
@@ -122,10 +123,10 @@ const PropertyCardContainer = connect(
 
 const styles = {
   card: {
-    backgroundColor: 'white',
     borderWidth: 1,
     borderStyle: 'solid',
-    borderColor: 'rgba(0,0,0,0.2)'
+    borderColor: 'rgba(0,0,0,0.2)',
+    backgroundColor: 'white'
   },
   wrapper: {
     flex: 1,
