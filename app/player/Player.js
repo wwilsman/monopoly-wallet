@@ -94,19 +94,18 @@ export default class Player extends Component {
 
         {listView ? (
           <PropertyList
-            style={styles.propertyList}
+            onUpdate={(i) => this.setState({ activeProperty: i })}
+            index={activeProperty}
             properties={properties}
-            start={activeProperty}
             offset={headerHeight}
+            cardsToShow={3}
           />
         ) : (
           <View style={{ flex: 1 }}>
-            <Content>
-              <PropertyGrid
-                properties={properties}
-                onGroupPress={this.goToListView}
-              />
-            </Content>
+            <PropertyGrid
+              properties={properties}
+              onGroupPress={this.goToListView}
+            />
 
             {this.renderFooter()}
           </View>
@@ -128,12 +127,5 @@ const styles = StyleSheet.create({
     fontFamily: 'futura',
     color: 'rgb(100,200,100)',
     alignItems: 'center'
-  },
-  propertyList: {
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    top: 0,
-    left: 0
   }
 })

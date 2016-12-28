@@ -1,44 +1,20 @@
 import React, { Component } from 'react'
-import { View, TouchableOpacity, StyleSheet } from 'react-native'
+import { View, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
 
 import { PropertyGroup } from './components'
 
 export default class PropertyGrid extends Component {
-  state = {
-    groupStyle: {}
+  constructor(props) {
+    super(props)
+
+    this.state = {
+      groups: this.groupProperties(props.properties)
+    }
   }
 
-  render() {
-    let { properties, onGroupPress } = this.props
-    let { groupStyle } = this.state
-
-    let groups = this.groupProperties(properties)
-
-    return (
-      <View
-          style={styles.container}
-          onLayout={this._updateStyles}>
-        {groups.map((properties, i) => (
-          <TouchableOpacity key={i}
-              style={[styles.group, groupStyle]}
-              onPress={() => onGroupPress(properties[0]._id)}>
-            <View>
-              <PropertyGroup
-                properties={properties}
-                simple
-              />
-            </View>
-          </TouchableOpacity>
-        ))}
-      </View>
-    )
-  }
-
-  _updateStyles = ({ nativeEvent: { layout: { width } } }) => {
+  componentWillReceiveProps({ properties }) {
     this.setState({
-      groupStyle: {
-        width: (width / 4) - 30
-      }
+      groups: this.groupProperties(properties)
     })
   }
 
@@ -57,14 +33,38 @@ export default class PropertyGrid extends Component {
 
     return groups.map((g) => grouped[g])
   }
+
+  render() {
+    let { onGroupPress } = this.props
+    let groupWidth = ((Dimensions.get('window').width - 30) / 4) - 30
+
+    return (
+      <View style={styles.container}>
+        {this.state.groups.map((properties, i) => (
+          <TouchableOpacity key={i}
+              style={styles.group}
+              onPress={() => onGroupPress(properties[0]._id)}>
+            <View>
+              <PropertyGroup
+                width={groupWidth}
+                properties={properties}
+                simple
+              />
+            </View>
+          </TouchableOpacity>
+        ))}
+      </View>
+    )
+  }
 }
 
 const styles = StyleSheet.create({
   container: {
+    flex: 1,
     flexDirection: 'row',
     flexWrap: 'wrap',
-    marginRight: -15,
-    marginLeft: -15
+    paddingRight: 15,
+    paddingLeft: 15
   },
   group: {
     marginLeft: 15,

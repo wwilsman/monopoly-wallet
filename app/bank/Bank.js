@@ -10,17 +10,23 @@ import {
   PropertyList
 } from '../properties'
 
-export default class extends Component {
+export default class Bank extends Component {
+  state = {
+    activeProperty: 0
+  }
 
   render() {
     let { properties } = this.props
+    let { activeProperty } = this.state
 
     return (
       <Container>
         <PropertyList
           style={styles.propertyList}
+          onUpdate={(i) => this.setState({ activeProperty: i })}
+          index={activeProperty}
           properties={properties}
-          start={0}
+          cardsToShow={5}
           offset={40}
         />
       </Container>
