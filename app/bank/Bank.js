@@ -4,10 +4,9 @@ import { Container, Content } from '../layout'
 import { PropertyList } from '../properties'
 
 class Bank extends Component {
-  
+
   render() {
     let { properties } = this.props
-    let { activeProperty } = this.state
 
     return (
       <Container>
@@ -15,7 +14,7 @@ class Bank extends Component {
             style={styles.propertyList}
             properties={properties}
             cardsToShow={5}
-            offset={40}
+            offset={100}
         />
       </Container>
     )
@@ -24,7 +23,7 @@ class Bank extends Component {
 
 const styles = {
   propertyList: {
-    position: 'absolute',
+    position: 'fixed',
     height: '100%',
     width: '100%',
     top: 0,

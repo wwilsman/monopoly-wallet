@@ -118,12 +118,10 @@ class Player extends Component {
           />
         ) : (
           <View style={{ flex: 1 }}>
-            <Content>
-              <PropertyGrid
+            <PropertyGrid
                 properties={properties}
                 onGroupPress={this.viewPropertyGroup}
-              />
-            </Content>
+            />
 
             {this.renderFooter()}
           </View>

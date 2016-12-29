@@ -108,10 +108,6 @@ class PropertyList extends Component {
     return window.innerWidth - 120
   }
 
-  getCardWidth() {
-    return Dimensions.get('window').width - 120
-  }
-
   render() {
     let { style } = this.props
     let cardWidth = this.getCardWidth()

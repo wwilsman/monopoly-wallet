@@ -78,7 +78,6 @@ class PropertyCard extends Component {
   render() {
     let {
       style,
-      width,
       property,
       width,
       color,
