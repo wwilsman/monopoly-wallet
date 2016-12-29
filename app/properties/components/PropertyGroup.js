@@ -8,7 +8,7 @@ const PropertyGroup = ({ properties, width, simple }) => (
     {properties.map((property, i) => (
        <PropertyCard
            key={property._id}
-           style={i ? { position: 'absolute', top: width * 0.3 } : null}
+           style={!!i ? { position: 'absolute', top: width * 0.3 * i } : null}
            {...{ width, simple, property }}
        />
      ))}
