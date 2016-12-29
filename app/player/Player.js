@@ -29,17 +29,17 @@ class Player extends Component {
   state = {
     isListView: false,
     activeProperty: null,
-    headerHeight: 0
+    headerOffset: 0
   }
 
-  _getHeaderHeight = (header) => {
+  _getHeaderOffset = (header) => {
     let node = null
 
     if (header && (node = findDOMNode(header))) {
-      const height = node.offsetHeight
+      const offset = node.getBoundingClientRect().bottom
 
-      if (height !== this.state.headerHeight) {
-        this.setState({ headerHeight: height })
+      if (offset !== this.state.headerOffset) {
+        this.setState({ headerOffset: offset })
       }
     }
   }
@@ -87,7 +87,7 @@ class Player extends Component {
 
   render() {
     const { player, currentPlayer, properties } = this.props
-    const { isListView, activeProperty, headerHeight } = this.state
+    const { isListView, activeProperty, headerOffset } = this.state
 
     const fixedBalance = player.balance.toFixed()
       .replace(/(\d)(?=(\d{3})+$)/g, '$1,')
@@ -95,7 +95,7 @@ class Player extends Component {
     return (
       <Container>
         <Header
-            ref={this._getHeaderHeight}
+            ref={this._getHeaderOffset}
             style={styles.header}>
           <Title style={styles.title}>
             {player === currentPlayer ? 'You' : player.name}
@@ -112,7 +112,7 @@ class Player extends Component {
               style={styles.propertyList}
               properties={properties}
               index={activeProperty}
-              offset={headerHeight}
+              offset={headerOffset}
               onChange={this.activateProperty}
               cardsToShow={4}
           />
@@ -142,9 +142,15 @@ const styles = {
   },
   balance: {
     fontSize: 24,
-    fontFamily: 'futura',
     color: 'rgb(100,200,100)',
     alignItems: 'center'
+  },
+  propertyList: {
+    position: 'fixed',
+    height: '100%',
+    width: '100%',
+    top: 0,
+    left: 0
   }
 }
 

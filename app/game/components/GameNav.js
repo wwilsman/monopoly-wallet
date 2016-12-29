@@ -88,7 +88,6 @@ const GameNavContainer = connect(
 
 const styles = {
   container: {
-    backgroundColor: '#444',
     flexDirection: 'row',
     alignItems: 'center',
     paddingTop: 5,
@@ -100,17 +99,18 @@ const styles = {
     width: 36,
     height: 36,
     borderRadius: 20,
-    padding: 10
+    padding: 10,
+    color: '#AAA'
   },
   bankLink: {
     marginLeft: 'auto'
   },
   selected: {
-    backgroundColor: '#888'
+    backgroundColor: '#444',
+    color: 'white'
   },
   icon: {
-    fontSize: 16,
-    color: '#DDD'
+    fontSize: 16
   }
 }
 

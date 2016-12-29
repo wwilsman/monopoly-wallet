@@ -136,15 +136,11 @@ class PropertyList extends Component {
 const styles = {
   container: {
     overflow: 'hidden',
-    position: 'absolute',
-    height: '100%',
-    width: '100%',
-    top: 0,
-    left: 0
+    pointerEvents: 'none'
   },
   property: {
-    width: '100%',
     position: 'absolute',
+    pointerEvents: 'auto',
     paddingLeft: 60,
     paddingRight: 60
   }
