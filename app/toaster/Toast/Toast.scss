@@ -1,0 +1,25 @@
+.root {
+  border-radius: 3px;
+  background-color: rgb(100,200,100);
+  flex-direction: row;
+  align-items: center;
+  margin: 15px;
+  padding: 15px 30px;
+
+  .button {
+    font-size: 12px;
+    text-transform: uppercase;
+    margin: -5px -10px -5px 10px;
+  }
+}
+
+.error {
+  background-color: rgb(255,50,50);
+}
+
+.message {
+  flex: 1;
+  color: white;
+  font-size: 14px;
+  margin-right: 20px;
+}

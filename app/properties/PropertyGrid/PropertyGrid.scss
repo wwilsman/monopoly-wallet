@@ -1,0 +1,27 @@
+.root {
+  flex: 1;
+  justify-content: center;
+}
+
+.grid {
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 0 50px;
+
+  /**
+   * height calc
+   * -----------
+   * inside = 100vw - 50px
+   * card width = (inside / 4) - 20px
+   * card height = card width * 1.5
+   * group height = card height * 1.4
+   * height = (group height * 3) + 80px
+   */
+  height: calc(((((((100vw - 50px) / 4) - 20px) * 1.5) * 1.4) * 3) + 80px);
+}
+
+.cell {
+  width: 25%;
+  padding: 0 10px;
+  margin-bottom: 40px;
+}

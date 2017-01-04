@@ -1,0 +1,46 @@
+.grid {
+  flex-direction: row;
+  flex-wrap: wrap;
+  padding: 30px;
+  margin-top: -30px;
+}
+
+.cell {
+  width: 33.3333%;
+  padding-top: 33.3333%;
+}
+
+.tile {
+  position: absolute;
+  top: 10%;
+  left: 10%;
+  width: 80%;
+  height: 80%;
+  transition: opacity 0.2s ease-out;
+  border-radius: 50%;
+  padding: 20px;
+  text-align: center;
+  font-size: 40px;
+  color: #aaa;
+}
+
+.active {
+  transition: none;
+  background-color: rgb(100,200,100);
+  color: white;
+}
+
+.notActive {
+  opacity: 0.5;
+}
+
+.disabled {
+  opacity: 0.2;
+}
+
+.icon {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%)
+}

@@ -1,19 +1,15 @@
 import React, { Component } from 'react'
-import { connect } from 'react-redux'
+import s from './App.scss'
 
 import { Provider } from 'react-redux'
-import { Match, Miss } from 'react-router'
+import { Match, Miss, Redirect } from 'react-router'
 import { AppContainer as HotContainer } from 'react-hot-loader'
 
 import configureStore from './store'
 
 import Router from './Router'
-import { View } from './components'
-import { Welcome } from '../welcome'
-import {
-  NewGame,
-  GameContainer as Game
-} from '../game'
+import { View } from '../common'
+import { Welcome, NewGame, Game } from '../views'
 
 class App extends Component {
   store = configureStore()
@@ -23,10 +19,11 @@ class App extends Component {
       <HotContainer>
         <Provider store={this.store}>
           <Router store={this.store}>
-            <View>
-              <Match exactly pattern="/" component={Welcome}/>
-              <Match exactly pattern="/new" component={NewGame}/>
+            <View onTouchMove={(e) => e.preventDefault()}>
+              <Match pattern="/" exactly component={Welcome}/>
+              <Match pattern="/new" exactly component={NewGame}/>
               <Match pattern="/:gameID([^\/]{5})" component={Game}/>
+              <Miss render={() => (<Redirect to="/"/>)}/>
             </View>
           </Router>
         </Provider>

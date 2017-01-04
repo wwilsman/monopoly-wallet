@@ -64,11 +64,11 @@ class Router extends Component {
 
     return (
       <ControlledBrowserRouter
-        history={this.history}
-        location={this.state.location}
-        action={this.state.action}
-        onChange={this.syncHistory}
-        {...routerProps}
+          history={this.history}
+          location={this.state.location}
+          action={this.state.action}
+          onChange={this.syncHistory}
+          {...routerProps}
       />
     )
   }

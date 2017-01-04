@@ -1,7 +1,4 @@
-export Game from './Game'
-export GameContainer from './GameContainer'
-
-export NewGame from './NewGame'
-
-export JoinGame from './JoinGame'
-export JoinGameContainer from './JoinGameContainer'
+export PlayerNav from './PlayerNav'
+export ThemeIcons from './ThemeIcons'
+export ThemeSelect from './ThemeSelect'
+export TokenSelect from './TokenSelect'

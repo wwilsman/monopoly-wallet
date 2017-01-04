@@ -1,7 +1,0 @@
-export View from './View'
-export Text from './Text'
-export Button from './Button'
-export Label from './Label'
-export TextField from './TextField'
-export ThemeIcons from './ThemeIcons'
-export Icon from './Icon'
