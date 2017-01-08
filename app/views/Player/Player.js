@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 
-import { View, Text, Icon, Container } from '../../common'
+import { Container, Content } from '../../common'
 import { PropertyList, PropertyGrid } from '../../properties'
 
 class Player extends Component {
@@ -30,18 +30,20 @@ class Player extends Component {
 
     return (
       <Container>
-        {isListView ? (
-           <PropertyList
-               properties={properties}
-               active={activeProperty}
-               onChange={this.activateProperty}
-           />
-         ) : (
-           <PropertyGrid
-               properties={properties}
-               onGroupPress={this.viewPropertyGroup}
-           />
-         )}
+        <Content centered>
+          {isListView ? (
+             <PropertyList
+                 properties={properties}
+                 active={activeProperty}
+                 onChange={this.activateProperty}
+             />
+           ) : (
+             <PropertyGrid
+                 properties={properties}
+                 onGroupPress={this.viewPropertyGroup}
+             />
+           )}
+        </Content>
       </Container>
     )
   }
