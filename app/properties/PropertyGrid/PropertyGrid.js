@@ -7,7 +7,8 @@ import PropertyGroup from '../PropertyGroup'
 class PropertyGrid extends Component {
   static propTypes = {
     properties: PropTypes.array.isRequired,
-    onGroupPress: PropTypes.func
+    onGroupPress: PropTypes.func,
+    small: PropTypes.bool
   }
 
   groupProperties(properties) {
@@ -27,22 +28,20 @@ class PropertyGrid extends Component {
   }
 
   render() {
-    const { properties, onGroupPress } = this.props
+    const { properties, onGroupPress, small } = this.props
     const groups = this.groupProperties(properties)
 
     return (
-      <View className={s.root}>
-        <View className={s.grid}>
-          {groups.map((properties, i) => (
-            <View key={properties[0].group}
-                  className={s.cell}
-                  onClick={() => onGroupPress(properties)}>
-              <PropertyGroup
-                properties={properties}
-                simple/>
-            </View>
-          ))}
-        </View>
+      <View className={[s.grid, (small && s.small)]}>
+        {groups.map((properties, i) => (
+           <View key={properties[0].group}
+                 className={s.cell}
+                 onClick={() => onGroupPress(properties)}>
+             <PropertyGroup
+                 properties={properties}
+                 simple/>
+           </View>
+         ))}
       </View>
     )
   }

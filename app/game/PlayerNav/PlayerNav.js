@@ -15,12 +15,16 @@ class PlayerNav extends Component {
   }
 
   goToPath(pathname) {
-    const { location } = this.props
     const { router } = this.context
 
-    if (pathname !== location.pathname) {
+    if (!this.isActive(pathname)) {
       router.transitionTo({ pathname })
     }
+  }
+
+  isActive(pathname) {
+    const { location } = this.props
+    return location.pathname === pathname
   }
 
   render() {
@@ -34,7 +38,7 @@ class PlayerNav extends Component {
           {formatCurrency(player.balance)}
         </Text>
 
-        <View className={s.bank}
+        <View className={[s.bank, (this.isActive(bankPath) && s.active)]}
               onClick={() => this.goToPath(bankPath)}>
           <Icon name="bank"/>
         </View>

@@ -47,9 +47,10 @@ class Game extends Component {
   }
 
   componentDidUpdate() {
-    const { currentPlayer } = this.props
+    const { currentPlayer, updateGame } = this.props
 
     if (currentPlayer && !this._socketHasEvents) {
+      this.socket.on('game:update', updateGame)
       this.socket.on('game:error', this.triggerError)
       this.socket.on('game:notice', this.triggerNotice)
       this.socket.on('poll:new', this.triggerPoll)

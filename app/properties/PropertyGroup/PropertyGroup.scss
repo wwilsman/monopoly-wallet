@@ -4,5 +4,16 @@
 
 .property:not(:first-child) {
   position: absolute;
-  top: 18%;
+
+  &:nth-child(2) {
+    top: 18%;
+  }
+
+  &:nth-child(3) {
+    top: 36%;
+  }
+
+  &:nth-child(4) {
+    top: 54%;
+  }
 }
