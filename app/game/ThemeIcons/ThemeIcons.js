@@ -1,68 +1,85 @@
 import React, { Component } from 'react'
+import fetch from 'isomorphic-fetch'
+
+const svgCache = {}
+
+const loadSVG = (url, callback) => {
+  if (svgCache[url]) {
+    callback(svgCache[url])
+  } else {
+    fetch(url)
+      .then((res) => res.text())
+      .then((svg) => {
+        let node = document.createElement('div')
+        node.innerHTML = svg
+        node = node.firstChild
+        svgCache[url] = node
+        callback(node)
+      })
+  }
+}
 
 class ThemeIcons extends Component {
   constructor(props) {
     super(props)
 
-    this.styleNode = document.getElementById(`${props.theme}-css`)
+    this.svgNode = document.getElementById(`${props.theme}-icons`)
     this.currentTheme = props.theme
   }
 
   componentWillMount() {
-    this.injectStyleSheet()
+    this.injectSVG()
   }
 
   componentWillUnmount() {
-    this.removeStyleSheet()
+    this.removeSVG()
   }
 
   componentDidUpdate() {
-    this.injectStyleSheet()
+    this.injectSVG()
   }
 
-  injectStyleSheet() {
+  injectSVG() {
     const { theme } = this.props
 
     if (theme !== this.currentTheme) {
-      this.removeStyleSheet()
+      this.removeSVG()
     }
 
-    if (!theme || this.getStyleNode()) {
+    if (!theme || this.getSVGNode()) {
       return
     }
 
-    const style = document.createElement('link')
-    style.rel = 'stylesheet'
-    style.href = `/themes/${theme}/icons/style.css`
-    style.id = `${theme}-css`
+    loadSVG(`/themes/${theme}/icons.svg`, (svg) => {
+      svg.id = `${theme}-icons`
+      document.head.appendChild(svg)
+      this.svgNode = svg
+    })
 
-    document.head.appendChild(style)
-
-    this.styleNode = style
     this.currentTheme = theme
   }
 
-  removeStyleSheet() {
+  removeSVG() {
     const { theme } = this.props
-    const style = this.getStyleNode()
+    const svg = this.getSVGNode()
 
-    if (style && style.parentNode) {
-      style.parentNode.removeChild(style)
+    if (svg && svg.parentNode) {
+      svg.parentNode.removeChild(svg)
     }
 
-    this.styleNode = null
+    this.svgNode = null
   }
 
-  getStyleNode() {
+  getSVGNode() {
     const { theme } = this.props
-    let style = this.styleNode
+    let svg = this.svgNode
 
-    if (theme && !style) {
-      style = document.getElementById(`${theme}-css`)
-      this.styleNode = style
+    if (theme && !svg) {
+      svg = document.getElementById(`${theme}-icons`)
+      this.svgNode = svg
     }
 
-    return style
+    return svg
   }
 
   render() {
