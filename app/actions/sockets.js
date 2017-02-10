@@ -1,6 +1,12 @@
 import io from 'socket.io-client'
 
 import { setError } from './error'
+import {
+  triggerError,
+  triggerNotice,
+  triggerPoll,
+  removePoll
+} from './toasts'
 import { updateGame } from './game'
 import { setCurrentPlayer } from './player'
 
@@ -8,6 +14,8 @@ function handleError(error, message) {
   return (dispatch) => {
     if (error && message) {
       dispatch(setError(error, message))
+    } else {
+      dispatch(triggerError(error))
     }
   }
 }
@@ -25,6 +33,9 @@ const socketMiddleware = (store) => (next) => {
   on('game:error', handleError)
   on('game:update', updateGame)
   on('game:joined', setCurrentPlayer)
+  on('game:notice', triggerNotice)
+  on('poll:new', triggerPoll)
+  on('poll:end', removePoll)
   //on('auction:new', )
   //on('auction:update', )
   //on('auction:end', )

@@ -1,5 +1,6 @@
 import fetch from 'isomorphic-fetch'
 import { setError } from './error'
+import { triggerError } from './toasts'
 import { updateTheme, clearTheme } from './theme'
 
 export function updateGame(payload) {
@@ -33,6 +34,8 @@ export function fetchGameInfo(gameID, hardError = true) {
       if (error) {
         if (hardError) {
           dispatch(setError(error, message))
+        } else {
+          dispatch(triggerError(message))
         }
       } else {
         return Promise.all([

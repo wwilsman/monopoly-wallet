@@ -1,0 +1,48 @@
+@import '../../core/variables';
+
+.root {
+  margin: var(--pad-med) var(--pad-lg);
+  background-color: var(--color-green);
+  box-shadow: var(--shadow-lg);
+  border-radius: 5px;
+  padding: var(--pad-sm);
+  padding-left: var(--pad-med);
+  color: white;
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  align-items: center;
+
+  &:first-child {
+    margin-top: var(--pad-lg);
+  }
+
+  &:last-child {
+    margin-bottom: var(--pad-lg);
+  }
+}
+
+.error {
+  background-color: var(--color-red);
+}
+
+.poll {
+  background-color: var(--color-blue);
+}
+
+.buttons {
+  display: flex;
+  flex-direction: row;
+
+  button {
+    text-transform: uppercase;
+  }
+}
+
+.dismiss {
+  font-size: var(--size-sm);
+}
+
+.unimportant {
+  color: color(white a(50%));
+}
