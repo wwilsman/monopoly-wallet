@@ -1,0 +1,27 @@
+@import '../../core/variables';
+
+.input {
+  text-align: center;
+  text-transform: uppercase;
+  text-shadow: var(--shadow-med);
+  font-size: var(--size-big);
+  color: white;
+
+  &::-webkit-input-placeholder {
+    text-shadow: none;
+    color: var(--color-text);
+    opacity: 0.4;
+  }
+
+  &::-moz-placeholder {
+    text-shadow: none;
+    color: var(--color-text);
+    opacity: 0.4;
+  }
+
+  &:-ms-input-placeholder {
+    text-shadow: none;
+    color: var(--color-text);
+    opacity: 0.4;
+  }
+}
