@@ -3,6 +3,7 @@ import styles from './Player.css'
 
 import { Flex, Box, Header, Text } from '../../layout'
 import { Icon, Button, Currency } from '../../common'
+import { PropertyGrid, PropertyList } from '../../properties'
 import { BankModal } from '../../game'
 
 class Player extends Component {
@@ -123,6 +124,11 @@ class Player extends Component {
          )}
 
         {showProperty ? (
+           <PropertyList
+               properties={properties}
+               activeProperty={showProperty}
+               onChange={this._showProperty}
+           />
          ) : (
            <Box stretch>
              <PropertyGrid

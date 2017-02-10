@@ -1,0 +1,12 @@
+.root {
+  flex: 1;
+  overflow: hidden;
+}
+
+.property {
+  width: 55%;
+  position: absolute;
+  top: 50%;
+  margin-top: -12.5%;
+  transform: translate(-50%,-50%);
+}
