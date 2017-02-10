@@ -20,7 +20,7 @@ const state = {
 // Player 1
 state.players.push({
   _id: 'player-1',
-  name: 'Player 1',
+  name: 'PLAYER 1',
   token: tokens[0],
   balance: config.start
 })
@@ -38,7 +38,7 @@ state.properties.forEach((p, i) => {
 // Player 2
 state.players.push({
   _id: 'player-2',
-  name: 'Player 2',
+  name: 'PLAYER 2',
   token: tokens[1],
   balance: config.start
 })
@@ -55,7 +55,7 @@ state.properties.forEach((p, i) => {
 // Player 3
 state.players.push({
   _id: 'player-3',
-  name: 'Player 3',
+  name: 'PLAYER 3',
   token: tokens[2],
   balance: config.start
 })
