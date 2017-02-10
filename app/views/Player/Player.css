@@ -1,0 +1,15 @@
+@import '../../core/variables';
+
+.balance {
+  font-size: var(--size-xxl);
+  color: var(--color-green);
+  margin-bottom: var(--pad-lg);
+  filter: drop-shadow(var(--shadow-med));
+}
+
+.buttons {
+  display: flex;
+  direction: row;
+  justify-content: center;
+  width: 100%;
+}

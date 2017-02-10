@@ -1,0 +1,16 @@
+@import '../../core/variables';
+
+.input {
+  margin-bottom: var(--pad-med);
+}
+
+.amount {
+  text-align: center;
+  font-size: var(--size-xxxl);
+  color: var(--color-green);
+  filter: drop-shadow(var(--shadow-med));
+
+  &.is-negative {
+    color: var(--color-red);
+  }
+}
