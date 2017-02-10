@@ -1,0 +1,5 @@
+@import '../../core/variables';
+
+.input {
+  margin-bottom: var(--pad-med);
+}

@@ -3,6 +3,7 @@ import styles from './Welcome.css'
 
 import { Flex, Box, Title } from '../../layout'
 import { Button } from '../../common'
+import { JoinGameModal } from '../../game'
 import { Toaster } from '../../toaster'
 
 class Welcome extends Component {
@@ -80,6 +81,11 @@ class Welcome extends Component {
 
         {showJoinModal && (
            <div>
+             <JoinGameModal
+                 onClose={this._hideJoinModal}
+                 onContinue={this._getGameInfo}
+             />
+
              <Toaster/>
            </div>
          )}

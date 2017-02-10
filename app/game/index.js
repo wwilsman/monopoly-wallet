@@ -1,0 +1,1 @@
+export JoinGameModal from './JoinGameModal'
