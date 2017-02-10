@@ -1,0 +1,123 @@
+@import '../../core/variables';
+
+.root {
+  height: 40px;
+  text-align: center;
+  font-size: var(--size-med);
+  border-radius: 3px;
+  padding: 0 var(--pad-sm);
+  box-shadow: var(--shadow-med);
+  color: color(white a(60%));
+
+  &:active {
+    box-shadow: var(--shadow-sm);
+  }
+
+  &.is-disabled {
+    opacity: 0.4;
+    box-shadow: none;
+  }
+
+  &.is-small {
+    height: 32px;
+    font-size: var(--size-sm);
+  }
+
+  &.has-icon {
+    font-size: var(--size-lg);
+  }
+}
+
+.plain {
+  box-shadow: none;
+
+  &:active {
+    background-color: color(black a(10%));
+  }
+}
+
+.blue {
+  background-color: var(--color-blue);
+  color: white;
+
+  &:active {
+    background-color: color(var(--color-blue) shade(10%));
+    color: color(white alpha(90%));
+  }
+}
+
+.green {
+  background-color: var(--color-green);
+  color: white;
+
+  &:active {
+    background-color: color(var(--color-green) shade(10%));
+    color: color(white alpha(90%));
+  }
+}
+
+.red {
+  background-color: var(--color-red);
+  color: white;
+
+  &:active {
+    background-color: color(var(--color-red) shade(10%));
+    color: color(white alpha(90%));
+  }
+}
+
+.grey {
+  background-color: var(--color-grey);
+  color: color(white a(60%));
+
+  &:active {
+    background-color: color(var(--color-grey) shade(10%));
+    color: color(white alpha(50%));
+  }
+}
+
+.dark {
+  background-color: color(black a(20%));
+  color: color(white a(60%));
+
+  &:active {
+    background-color: color(black a(30%));
+    color: color(white a(50%));
+  }
+}
+
+.half-width {
+  /* half - (total margins / 2 = single margin) */
+  width: calc(50% - var(--pad-sm));
+
+  &:first-child {
+    margin-right: var(--pad-sm);
+  }
+
+  &:last-child {
+    margin-left: var(--pad-sm);
+  }
+}
+
+.third-width {
+  /* third - (total margins / 3) */
+  width: calc(33.33% - ((var(--pad-sm) * 4) / 3));
+
+  &:first-child {
+    margin-right: var(--pad-sm);
+  }
+
+  &:nth-child(2) {
+    margin-right: var(--pad-sm);
+    margin-left: var(--pad-sm);
+  }
+
+  &:last-child {
+    margin-left: var(--pad-sm);
+    margin-right: 0;
+  }
+}
+
+.full-width {
+  width: 100%;
+}
