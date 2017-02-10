@@ -1,0 +1,7 @@
+@import '../../core/variables';
+
+.root {
+  text-shadow: var(--shadow-med);
+  line-height: 1.25;
+  color: white;
+}

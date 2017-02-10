@@ -1,0 +1,16 @@
+@import '../../core/variables';
+
+.root {
+
+  button {
+    position: absolute;
+    top: 50%;
+    left: -10px;
+    transform: translateY(-50%);
+
+    &:last-child:not(:only-child) {
+      left: auto;
+      right: -10px;
+    }
+  }
+}

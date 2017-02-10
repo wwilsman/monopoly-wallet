@@ -1,0 +1,25 @@
+@import '../../core/variables';
+
+.root {
+  padding: var(--pad-lg);
+}
+
+.stretch {
+  flex: 1;
+}
+
+.half-size {
+  flex-basis: 50%;
+}
+
+.quarter-size {
+  flex-basis: 25%;
+}
+
+.three-quarter-size {
+  flex-basis: 75%;
+}
+
+.eighth-size {
+  flex-basis: 12.5%;
+}

@@ -1,0 +1,37 @@
+@import '../../core/variables';
+
+.root {
+  font-size: var(--size-big);
+}
+
+.is-centered {
+  text-align: center;
+}
+
+.is-sm {
+  font-size: var(--size-sm);
+}
+
+.is-med {
+  font-size: var(--size-med);
+}
+
+.is-lg {
+  font-size: var(--size-lg);
+}
+
+.is-xl {
+  font-size: var(--size-xl);
+}
+
+.is-xxl {
+  font-size: var(--size-xxl);
+}
+
+.is-xxxl {
+  font-size: var(--size-xxxl);
+}
+
+.is-uppercase {
+  text-transform: uppercase;
+}
