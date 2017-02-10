@@ -1,0 +1,30 @@
+@import '../../core/variables';
+
+.root {
+  margin: 0 -calc(var(--pad-mid) / 2);
+  align-items: flex-start;
+  width: auto;
+}
+
+.group {
+  width: calc(20% - var(--pad-mid));
+  margin: 0 calc(var(--pad-mid) / 2) var(--pad-med);
+  /* height = (width * 1.5) + (3 * spacing) */
+  padding-top: calc(((20% - var(--pad-mid)) * 1.5) + (var(--pad-mid) * 3));
+
+  & > * {
+    position: absolute;
+
+    &:nth-child(2) {
+      top: var(--pad-mid);
+    }
+
+    &:nth-child(3) {
+      top: calc(var(--pad-mid) * 2);
+    }
+
+    &:nth-child(4) {
+      top: calc(var(--pad-mid) * 3);
+    }
+  }
+}

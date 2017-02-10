@@ -122,6 +122,16 @@ class Player extends Component {
            </Box>
          )}
 
+        {showProperty ? (
+         ) : (
+           <Box stretch>
+             <PropertyGrid
+                 properties={properties}
+                 onClickGroup={this._showProperty}
+             />
+           </Box>
+         )}
+
         {showBankModal && (
            <BankModal
                type={bankModalType}
