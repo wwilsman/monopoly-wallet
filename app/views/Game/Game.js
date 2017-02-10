@@ -6,6 +6,7 @@ import { Toaster } from '../../toaster'
 import {
   JoinGame,
   Player,
+  Search,
   Errored
 } from '../'
 
@@ -66,6 +67,7 @@ class Game extends Component {
         {currentPlayer ? (
            <Switch>
              <Route path={path} exact render={() => <Player/>}/>
+             <Route path={`${path}/search`} exact render={() => <Search/>}/>
              <Route render={() => <Redirect to={url}/>}/>
            </Switch>
          ) : (
