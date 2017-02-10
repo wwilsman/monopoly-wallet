@@ -1,0 +1,44 @@
+@import './variables';
+
+:global {
+  *, *::before, *::after {
+    box-sizing: border-box;
+    position: relative;
+    top: 0;
+    left: 0;
+    padding: 0;
+    margin: 0;
+  }
+
+  html, body {
+    font: 100%/1 'futura', sans-serif;
+    width: 100%;
+    height: 100%;
+    background: var(--color-bg);
+    color: var(--color-text);
+  }
+
+  div, input, textarea, button {
+    border-width: 0;
+    border-style: solid;
+    border-radius: 0;
+    background-color: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: inherit;
+    text-decoration: none;
+    min-height: 0;
+    min-width: 0;
+    outline: none;
+    appearance: none;
+  }
+
+  span {
+    display: inline-block;
+  }
+
+  #react-app, [data-reactroot] {
+    width: 100%;
+    height: 100%;
+  }
+}
