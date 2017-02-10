@@ -1,0 +1,26 @@
+@import '../../core/variables';
+
+.root {
+  overflow-y: auto;
+}
+
+.theme {
+  padding: var(--pad-med) var(--pad-lg);
+  border-radius: var(--rad-lg);
+  margin-bottom: var(--pad-med);
+  background-color: var(--color-bg-light);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  &.is-selected {
+    background-color: var(--color-green);
+    box-shadow: var(--shadow-med);
+    color: white;
+  }
+}
+
+.title {
+  margin-bottom: var(--pad-mid);
+}

@@ -17,6 +17,7 @@ class App extends Component {
         <Router history={this.history}>
           <Switch>
             <Route path="/" exact render={() => <Welcome/>}/>
+            <Route path="/new" exact render={() => <NewGame/>}/>
             <Route render={() => <Redirect to="/"/>}/>
           </Switch>
         </Router>
