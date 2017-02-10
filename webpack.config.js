@@ -7,6 +7,7 @@ module.exports = {
     'webpack-hot-middleware/client',
     'webpack/hot/only-dev-server',
     'react-hot-loader/patch',
+    'babel-polyfill',
     './app/index'
   ],
   output: {
@@ -18,19 +19,22 @@ module.exports = {
     loaders: [{
       test: /\.js$/,
       loader: 'babel-loader',
-      include: path.join(__dirname, 'app'),
       exclude: /node_modules/,
       query: {
         cacheDirectory: true,
         plugins: ['react-hot-loader/babel'],
         presets: [
-          ['es2015', { modules: false }],
+          ['latest', {
+            es2015: {
+              modules: false
+            }
+          }],
           'stage-0',
           'react'
         ]
       }
     },{
-      test: /\.scss$/,
+      test: /\.css$/,
       loaders: [
         'style-loader',
         'css-loader?modules&importLoaders=1&localIdentName=[name]__[local]___[hash:base64:5]',
