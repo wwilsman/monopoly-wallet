@@ -1,0 +1,14 @@
+.top {
+  margin-top: 25%;
+}
+
+.buttons {
+
+  button:first-child {
+    margin: 0 0 30px;
+  }
+
+  button:last-child {
+    margin: 0;
+  }
+}

@@ -15,6 +15,10 @@ class App extends Component {
     return (
       <Provider store={this.store}>
         <Router history={this.history}>
+          <Switch>
+            <Route path="/" exact render={() => <Welcome/>}/>
+            <Route render={() => <Redirect to="/"/>}/>
+          </Switch>
         </Router>
       </Provider>
     )
