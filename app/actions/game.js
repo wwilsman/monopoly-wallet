@@ -10,6 +10,22 @@ export function clearGame() {
   return { type: 'CLEAR_GAME' }
 }
 
+export function joinGame(gameID, playerData) {
+  return { type: 'SOCKET_EMIT', event: 'game:join', args: [gameID, playerData] }
+}
+
+export function voteInPoll(pollID, vote) {
+  return { type: 'SOCKET_EMIT', event: 'poll:vote', args: [pollID, vote] }
+}
+
+export function payBank(amount) {
+  return { type: 'SOCKET_EMIT', event: 'game:pay-bank', args: [amount] }
+}
+
+export function collectMoney(amount) {
+  return { type: 'SOCKET_EMIT', event: 'game:collect-money', args: [amount] }
+}
+
 export function fetchGameInfo(gameID, hardError = true) {
   return (dispatch) => fetch(`/api/info?game=${gameID}`)
     .then((response) => response.json())

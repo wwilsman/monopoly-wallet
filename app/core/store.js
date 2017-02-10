@@ -3,6 +3,7 @@ import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
 import io from 'socket.io-client'
 
+import socketMiddleware from '../actions/sockets'
 import rootReducer from '../reducers'
 
 const loggerMiddleware = createLogger()
@@ -15,6 +16,7 @@ const configureStore = (initialState = {}) => {
     composeEnhancers(
       applyMiddleware(
         thunkMiddleware,
+        socketMiddleware,
         loggerMiddleware
       )
     )
