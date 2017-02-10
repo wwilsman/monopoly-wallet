@@ -1,0 +1,119 @@
+@import '../../core/variables';
+
+.root {
+  width: 100%;
+  padding-top: 150%;
+  background: white;
+  box-shadow: var(--shadow-med);
+  color: black;
+
+  &.is-simple {
+    box-shadow: var(--shadow-sm);
+
+    .container {
+      border-width: 1px;
+      margin: 2px;
+      padding: 2px;
+    }
+
+    .header {
+      border-width: 0.25vw;
+      padding: 0;
+
+      &.has-icon {
+        height: 50%;
+      }
+
+      &-icon {
+        font-size: 8vw;
+      }
+    }
+  }
+}
+
+.container {
+  border: 0.5vw solid;
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  margin: 1.25vw;
+  padding: 1.25vw;
+}
+
+.header {
+  height: 30%;
+  border: 0.5vw solid;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  padding: 2.5vw;
+  font-size: 4vw;
+  line-height: 1.25;
+  text-transform: uppercase;
+
+  &-icon {
+    font-size: 18vw;
+    margin: auto;
+    flex: 1;
+    display: flex;
+    justify-content: center;
+
+    svg {
+      height: 1em;
+      width: 1em;
+      margin: auto;
+      display: block;
+    }
+  }
+
+  &.has-icon {
+    padding: 0 2.5vw;
+    margin-bottom: 1vw;
+    border: none;
+    height: 40%;
+  }
+}
+
+.content {
+  padding: 2.5vw;
+}
+
+.rent {
+  text-align: center;
+  font-size: 2.75vw;
+  margin: 2vw 0;
+
+  &:first-child {
+    margin-top: 0;
+  }
+
+  & > span {
+    vertical-align: bottom;
+    margin: 0 0.125em;
+  }
+
+  &-line {
+    font-size: 2.5vw;
+    line-height: 2;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+  }
+}
+
+.info {
+  text-align: center;
+  margin-top: 4vw;
+  font-size: 2.5vw;
+  line-height: 1.5;
+
+  &:first-child {
+    margin-top: 2vw;
+  }
+
+  & > div > span {
+    vertical-align: bottom;
+    margin: 0 0.125em;
+  }
+}
