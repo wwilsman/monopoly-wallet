@@ -7,6 +7,8 @@ import styles from './App.css'
 
 import '../utils/injectResponderEventPlugin'
 
+import { Welcome, NewGame, Game } from '../views'
+
 class App extends Component {
   store = configureStore()
   history = createHistory()
@@ -18,6 +20,7 @@ class App extends Component {
           <Switch>
             <Route path="/" exact render={() => <Welcome/>}/>
             <Route path="/new" exact render={() => <NewGame/>}/>
+            <Route path="/:gameID([^\/]{5})" render={() => <Game/>}/>
             <Route render={() => <Redirect to="/"/>}/>
           </Switch>
         </Router>

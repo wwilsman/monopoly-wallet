@@ -1,0 +1,5 @@
+@import '../../core/variables';
+
+.name-input {
+  margin-bottom: var(--pad-lg);
+}

@@ -1,0 +1,38 @@
+@import '../../core/variables';
+
+.root {
+  display: flex;
+  flex-wrap: wrap;
+  margin: -var(--pad-sm);
+}
+
+.token {
+  $width: calc(33.333% - 20px);
+
+  width: calc(33.333% - var(--pad-med));
+  padding-top: calc(33.333% - var(--pad-med));
+  text-shadow: var(--shadow-med);
+  margin: var(--pad-sm);
+  border-radius: 50%;
+
+  &.is-selected {
+    background-color: var(--color-green);
+    box-shadow: var(--shadow-med);
+    text-shadow: none;
+    color: white;
+  }
+
+  &.is-disabled {
+    text-shadow: none;
+    color: var(--color-bg-light);
+    opacity: 1;
+  }
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%,-50%);
+    font-size: var(--size-xxxl);
+  }
+}

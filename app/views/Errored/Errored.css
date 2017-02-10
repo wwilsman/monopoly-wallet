@@ -1,0 +1,15 @@
+@import '../../core/variables';
+
+.root {
+  background-color: var(--color-red);
+}
+
+.title {
+  margin-bottom: var(--pad-sm);
+}
+
+.message {
+  text-align: center;
+  font-size: var(--size-big);
+  color: white;
+}
