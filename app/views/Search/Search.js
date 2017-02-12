@@ -25,16 +25,25 @@ class Search extends Component {
     this.input.focus()
   }
 
-  _handleSearch = (query) => {
-    const filtered = this.props.properties.filter((p) => {
-      const reg = new RegExp(`${query}`, 'i')
-      return p.name.match(reg) || p.group.match(reg)
+  componentWillReceiveProps(props) {
+    const filteredProperties = this.filterProperties(this.state.query, props.properties)
+    const currentPropertyIndex = this.props.properties.indexOf(this.state.currentProperty)
+    const currentProperty = props.properties[currentPropertyIndex]
+    
+    this.setState({
+      filteredProperties,
+      currentProperty
     })
+  }
 
+  _handleSearch = (query) => {
+    const filteredProperties = this.filterProperties(query)
+    const currentProperty = filteredProperties[0]
+    
     this.setState({
       query,
-      filteredProperties: filtered,
-      currentProperty: filtered[0]
+      filteredProperties,
+      currentProperty
     })
   }
 
@@ -58,6 +67,13 @@ class Search extends Component {
 
   _goBack = () => {
     this.context.router.goBack()
+  }
+
+  filterProperties(query, properties = this.props.properties) {    
+    return properties.filter((p) => {
+      const reg = new RegExp(`${query}`, 'i')
+      return p.name.match(reg) || p.group.match(reg)
+    })
   }
 
   render() {
