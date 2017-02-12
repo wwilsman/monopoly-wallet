@@ -1,16 +1,17 @@
 @import '../../core/variables';
-
 .root {
   width: 100%;
   padding-top: 150%;
   background: white;
   box-shadow: var(--shadow-med);
+
   color: black;
 
   &.is-simple {
     box-shadow: var(--shadow-sm);
 
-    .container {
+    .container,
+    .overlay::before {
       border-width: 1px;
       margin: 2px;
       padding: 2px;
@@ -77,6 +78,44 @@
 
 .content {
   padding: 2.5vw;
+}
+
+.overlay {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  background: color(var(--color-red) a(80%));
+  color: white;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+
+  &::before {
+    content: '';
+    border: 0.5vw solid;
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    margin: 1.25vw;
+    padding: 1.25vw;
+  }
+
+  &-title {
+    font-size: 5vw;
+    text-transform: uppercase;
+    margin-bottom: 5vw;
+  }
+
+  &-text {
+    font-size: 2.5vw;
+    text-transform: uppercase;
+
+    & > span {
+      vertical-align: bottom;
+      margin: 0 0.125em;
+    }
+  }
 }
 
 .rent {

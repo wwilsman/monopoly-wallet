@@ -6,7 +6,15 @@ const cx = className.bind(styles)
 
 import { Currency } from '../../common'
 
-const PropertyCardUtility = ({ name, rent, mortgage, simple, iconPath }) => (
+const PropertyCardUtility = ({
+  name,
+  rent,
+  mortgageValue,
+  mortgageCost,
+  isMortgaged,
+  simple,
+  iconPath
+}) => (
   <div className={cx('root', { 'is-simple': simple })}>
     <div className={styles.container}>
       <div className={cx('header', 'has-icon')}>
@@ -34,12 +42,24 @@ const PropertyCardUtility = ({ name, rent, mortgage, simple, iconPath }) => (
            <div className={styles.info}>
              <div>
                <span>Mortgage Value</span>
-               <span><Currency amount={mortgage}/></span>
+               <span><Currency amount={mortgageValue}/></span>
              </div>
            </div>
          </div>
        )}
     </div>
+
+    {isMortgaged && (simple ? (
+       <div className={styles.overlay}/> 
+     ) : (
+       <div className={styles.overlay}>
+         <span className={styles['overlay-title']}>Mortgaged</span>
+         <div className={styles['overlay-text']}>
+           <span>Unmortgage for</span>
+           <Currency amount={mortgageCost}/>
+         </div>
+       </div>
+     ))}
   </div>
 )
 

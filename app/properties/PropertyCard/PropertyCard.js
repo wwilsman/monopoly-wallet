@@ -4,15 +4,15 @@ import Property from './PropertyCardDefault'
 import RailRoad from './PropertyCardRailRoad'
 import Utility from './PropertyCardUtility'
 
-const PropertyCard = ({ property, color, mortgage, simple, theme }) => (
+const PropertyCard = ({ property, theme, ...props }) => (
   (property.group === 'railroad' ? (
-    <RailRoad {...property} {...{ mortgage, simple }}
-              iconPath={`/themes/${theme}/icons.svg#railroad`}/>
+    <RailRoad {...property} {...props}
+        iconPath={`/themes/${theme}/icons.svg#railroad`}/>
   ) : property.group === 'utility' ? (
-    <Utility {...property} {...{ mortgage, simple }}
-             iconPath={`/themes/${theme}/icons.svg#${property._id}`}/>
+    <Utility {...property} {...props}
+        iconPath={`/themes/${theme}/icons.svg#${property._id}`}/>
   ) : (
-    <Property {...property} {...{ color, mortgage, simple }}/>
+    <Property {...property} {...props}/>
   ))
 )
 
