@@ -4,6 +4,7 @@ import styles from './Toast.css'
 
 const cx = className.bind(styles)
 
+import { Text } from '../../layout'
 import { Button, Icon } from '../../common'
 
 class Toast extends Component {
