@@ -1,0 +1,40 @@
+@import '../../core/variables';
+
+.top {
+  position: absolute;
+  top: auto;
+  bottom: 100%;
+  width: 100%;
+  margin-bottom: var(--pad-mid);
+  display: flex;
+  align-items: center;
+
+  &-right {
+    margin-left: auto;
+    color: var(--color-green);
+
+    & > * {
+      margin-left: 0.25em;
+    }
+  }
+}
+
+.icon {
+  margin-right: var(--pad-sm);
+  margin-bottom: 0.25em;
+}
+
+.hotel {
+  color: var(--color-red);
+}
+
+.bottom {
+  position: absolute;
+  top: 100%;
+  width: 100%;
+  margin-top: var(--pad-med);
+}
+
+.buttons {
+  margin-bottom: var(--pad-med);
+}

@@ -11,20 +11,52 @@ export function clearGame() {
   return { type: 'CLEAR_GAME' }
 }
 
-export function joinGame(gameID, playerData) {
-  return { type: 'SOCKET_EMIT', event: 'game:join', args: [gameID, playerData] }
+export function joinGame(...args) {
+  return { type: 'SOCKET_EMIT', event: 'game:join', args }
 }
 
-export function voteInPoll(pollID, vote) {
-  return { type: 'SOCKET_EMIT', event: 'poll:vote', args: [pollID, vote] }
+export function voteInPoll(...args) {
+  return { type: 'SOCKET_EMIT', event: 'poll:vote', args }
 }
 
-export function payBank(amount) {
-  return { type: 'SOCKET_EMIT', event: 'game:pay-bank', args: [amount] }
+export function payBank(...args) {
+  return { type: 'SOCKET_EMIT', event: 'game:pay-bank', args }
 }
 
-export function collectMoney(amount) {
-  return { type: 'SOCKET_EMIT', event: 'game:collect-money', args: [amount] }
+export function collectMoney(...args) {
+  return { type: 'SOCKET_EMIT', event: 'game:collect-money', args }
+}
+
+export function improveProperty(...args) {
+  return { type: 'SOCKET_EMIT', event: 'game:improve-property', args }
+}
+
+export function unimproveProperty(...args) {
+  return { type: 'SOCKET_EMIT', event: 'game:unimprove-property', args }
+}
+
+export function mortgageProperty(...args) {
+  return { type: 'SOCKET_EMIT', event: 'game:mortgage-property', args }
+}
+
+export function unmortgageProperty(...args) {
+  return { type: 'SOCKET_EMIT', event: 'game:unmortgage-property', args }
+}
+
+export function offerTrade(...args) {
+  return { type: '@TODO', event: 'trade:offer', args }
+}
+
+export function payRent(...args) {
+  return { type: 'SOCKET_EMIT', event: 'game:pay-rent', args }
+}
+
+export function auctionProperty(...args) {
+  return { type: '@TODO', event: 'auction:start', args }
+}
+
+export function buyProperty(...args) {
+  return { type: 'SOCKET_EMIT', event: 'game:buy-property', args }
 }
 
 export function fetchGameInfo(gameID, hardError = true) {

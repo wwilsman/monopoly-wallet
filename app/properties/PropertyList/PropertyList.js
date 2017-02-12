@@ -4,6 +4,7 @@ import PanResponder from '../../apis/PanResponder'
 import styles from './PropertyList.css'
 
 import PropertyCard from '../PropertyCard'
+import PropertyControls from '../PropertyControls'
 
 class PropertyList extends Component {
   static propTypes = {
@@ -96,7 +97,9 @@ class PropertyList extends Component {
                    outputRange: ['195%', '50%', '-95%']
                  })
                }}>
-             <PropertyCard property={property}/>
+             <PropertyControls property={property}>
+               <PropertyCard property={property}/>
+             </PropertyControls>
            </Animated.div>
          ))}
       </div>
