@@ -12,13 +12,13 @@
     "wheelbarrow"
   ],
   "colors": {
-    "brown": "#A52A2A",
+    "brown": "#963232",
     "lightblue": "#80CCFF",
     "magenta": "#FF69B4",
     "orange": "#FF8000",
     "red": "#FF0000",
     "yellow": "#FFFF00",
-    "green": "#008000",
-    "blue": "#2020CC"
+    "green": "#32963C",
+    "blue": "#2858C8"
   }
 }
