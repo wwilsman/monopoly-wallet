@@ -9,6 +9,7 @@ const PropertyControlsBank = ({
   owner,
   onAuctionProperty,
   onBuyProperty,
+  isMonopoly,
   className,
   children,
   ...props

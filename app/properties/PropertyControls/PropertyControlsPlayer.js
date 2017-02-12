@@ -9,6 +9,7 @@ const PropertyControlsPlayer = ({
   owner,
   onOfferTrade,
   onPayRent,
+  isMonopoly,
   className,
   children,
   ...props

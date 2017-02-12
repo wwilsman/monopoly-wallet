@@ -7,11 +7,11 @@ import { Button, Icon } from '../../common'
 const PropertyControlsOwned = ({
   property,
   owner,
-  isMonopoly,
   onImproveProperty,
   onUnimproveProperty,
   onMortgageProperty,
   onUnmortgageProperty,
+  isMonopoly,
   children,
   ...props
 }) => (
