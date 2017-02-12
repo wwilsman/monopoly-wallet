@@ -13,6 +13,20 @@ class App extends Component {
   store = configureStore()
   history = createHistory()
 
+  componentDidMount() {
+    window.addEventListener('touchmove',
+      this._preventDefault, { passive: false })
+  }
+
+  componentWillUnmount() {
+    window.removeEventListener('touchmove',
+      this._preventDefault, { passive: false })
+  }
+
+  _preventDefault(e) {
+    e.preventDefault()
+  }
+
   render() {
     return (
       <Provider store={this.store}>

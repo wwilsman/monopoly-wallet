@@ -18,7 +18,6 @@ const Flex = ({
           'justify-center': justify === 'center',
           'justify-between': justify === 'space-between'
         }, className)}
-      onTouchMove={(e) => e.preventDefault()}
       {...props}
   />
 )
