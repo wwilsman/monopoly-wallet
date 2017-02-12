@@ -78,11 +78,11 @@
 
 .dark {
   background-color: color(black a(20%));
-  color: color(white a(60%));
+  color: color(white a(20%));
+  box-shadow: none;
 
   &:active {
     background-color: color(black a(30%));
-    color: color(white a(50%));
   }
 }
 
