@@ -8,8 +8,8 @@
     "url": "git://github.com/wwilsman/monopoly-wallet.git"
   },
   "scripts": {
-    "test": "mocha --compilers js:babel-core/register",
-    "start": "babel-node lib/server.js --presets latest,stage-0",
+    "test": "mocha --require babel-polyfill --compilers js:babel-core/register",
+    "start": "babel-node lib/server.js",
     "db:reset": "mongo monopoly-wallet --eval \"db.getCollectionNames().forEach(n=>db[n].remove({}));\""
   },
   "author": "Wil Wilsman <hello@wilwilsman.com>",

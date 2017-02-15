@@ -30,7 +30,7 @@ describe('Game', () => {
 
     beforeEach(() => {
       p4 = {
-        name: 'Player 4',
+        name: 'PLAYER 4',
         token: tokens[3]
       }
 

@@ -21,6 +21,7 @@ module.exports = {
       loader: 'babel-loader',
       exclude: /node_modules/,
       query: {
+        babelrc: false,
         cacheDirectory: true,
         plugins: ['react-hot-loader/babel'],
         presets: [

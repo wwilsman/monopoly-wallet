@@ -2,10 +2,12 @@ import '../lib/server'
 import http from 'http'
 import assert from 'assert'
 import io from 'socket.io-client'
+import config from '../config'
 
 import { tokens } from '../public/themes/classic/theme.json'
 
-const socketURL = 'http://localhost:3000/game'
+const socketURL = `${config.uri}/game`
+console.log(socketURL)
 
 const socketOpts = {
   transports: ['websocket'],
@@ -18,8 +20,8 @@ const gameOptions = JSON.stringify({
 })
 
 const requestOpts = {
-  hostname: 'localhost',
-  port: 3000,
+  hostname: config.host,
+  port: config.port,
   path: '/api/new',
   method: 'POST',
   headers: {
@@ -30,8 +32,8 @@ const requestOpts = {
 
 describe('Room', () => {
   let gameID, client1, client2, state
-  let p1 = { name: 'Player 1', token: tokens[0] }
-  let p2 = { name: 'Player 2', token: tokens[1] }
+  let p1 = { name: 'PLAYER 1', token: tokens[0] }
+  let p2 = { name: 'PLAYER 2', token: tokens[1] }
 
   beforeEach((done) => {
     client1 = io.connect(socketURL, socketOpts)
@@ -97,7 +99,7 @@ describe('Room', () => {
 
     it('The new player should poll other players before joining', (done) => {
       client1.on('poll:new', (pollID, message) => {
-        assert.ok(/Player 2 .* join/.test(message))
+        assert.ok(/PLAYER 2 .* join/.test(message))
         done()
       })
 
@@ -112,7 +114,7 @@ describe('Room', () => {
       client2.on('game:joined', () => done())
 
       client1.on('poll:new', (pollID, message) => {
-        assert.ok(/Player 2 .* join/.test(message))
+        assert.ok(/PLAYER 2 .* join/.test(message))
         client1.emit('poll:vote', pollID, true)
       })
 
@@ -125,7 +127,7 @@ describe('Room', () => {
 
     it('The new player should recieve a notice once they join', (done) => {
       client1.on('game:notice', (message) => {
-        assert.ok(/You joined/.test(message))
+        assert.ok(/YOU joined/.test(message))
         done()
       })
 
@@ -196,7 +198,7 @@ describe('Room', () => {
       })
 
       client1.on('poll:new', (pollID, message) => {
-        assert.ok(/Player 2 .* join/.test(message))
+        assert.ok(/PLAYER 2 .* join/.test(message))
       })
 
       client1.on('game:joined', () => {
@@ -207,7 +209,7 @@ describe('Room', () => {
     })
 
     it('The poll should close after majority rules', (done) => {
-      let p3 = { name: 'Player 3', token: tokens[2] }
+      let p3 = { name: 'PLAYER 3', token: tokens[2] }
       let client3 = io.connect(socketURL, socketOpts)
       let poll = null
 
@@ -221,7 +223,7 @@ describe('Room', () => {
       client1.on('poll:new', (pollID, message) => {
         client1.emit('poll:vote', pollID, true)
 
-        if (/Player 3 .* join/.test(message)) {
+        if (/PLAYER 3 .* join/.test(message)) {
           poll = pollID
         }
       })
@@ -296,7 +298,7 @@ describe('Room', () => {
     })
 
     it('The bid must be higher than the current highest', (done) => {
-      let p3 = { name: 'Player 3', token: tokens[2] }
+      let p3 = { name: 'PLAYER 3', token: tokens[2] }
       let client3 = io.connect(socketURL, socketOpts)
       let bal1 = 0
 
@@ -343,7 +345,7 @@ describe('Room', () => {
     })
 
     it('The player should not be able to bid after conceding', (done) => {
-      let p3 = { name: 'Player 3', token: tokens[2] }
+      let p3 = { name: 'PLAYER 3', token: tokens[2] }
       let client3 = io.connect(socketURL, socketOpts)
 
       client1.on('game:error', (message) => {
@@ -466,14 +468,14 @@ describe('Room', () => {
 
     beforeEach((done) => {
       client1.on('game:update', (state) => {
-        if (/^Player 1 purchased Oriental Avenue/.test(state.note)) {
+        if (/^PLAYER 1 purchased Oriental Avenue/.test(state.note)) {
           entryID = state.entry
           done()
         }
       })
 
       client1.on('poll:new', (pollID, message) => {
-        if (/Player 2 .* join/.test(message)) {
+        if (/PLAYER 2 .* join/.test(message)) {
           client1.emit('poll:vote', pollID, true)
         }
       })
@@ -495,7 +497,7 @@ describe('Room', () => {
 
     it('The room should poll other players to undo a specific action', (done) => {
       client1.on('poll:new', (pollID, message) => {
-        assert.ok(/Player 2 is contesting/.test(message))
+        assert.ok(/PLAYER 2 is contesting/.test(message))
         done()
       })
 
@@ -512,7 +514,7 @@ describe('Room', () => {
       })
 
       client2.on('poll:new', (pollID, message) => {
-        if (/Player 1 is contesting/.test(message)) {
+        if (/PLAYER 1 is contesting/.test(message)) {
           client2.emit('poll:vote', pollID, false)
           poll = pollID
         }
@@ -532,7 +534,7 @@ describe('Room', () => {
       })
 
       client2.on('poll:new', (pollID, message) => {
-        if (/Player 1 is contesting/.test(message)) {
+        if (/PLAYER 1 is contesting/.test(message)) {
           client2.emit('poll:vote', pollID, true)
         }
       })
@@ -546,7 +548,7 @@ describe('Room', () => {
 
     beforeEach((done) => {
       client1.on('poll:new', (pollID, message) => {
-        if (/Player 2 .* join/.test(message)) {
+        if (/PLAYER 2 .* join/.test(message)) {
           client1.emit('poll:vote', pollID, true)
         }
       })
@@ -584,9 +586,9 @@ describe('Room', () => {
 
     beforeEach((done) => {
       client1.on('game:update', (state) => {
-        if (/Player 1 purchased Oriental Avenue/.test(state.note)) {
+        if (/PLAYER 1 purchased Oriental Avenue/.test(state.note)) {
           client2.emit('game:buy-property', 'st-james-place')
-        } else if (/Player 2 purchased St\. James Place/.test(state.note)) {
+        } else if (/PLAYER 2 purchased St\. James Place/.test(state.note)) {
           player1 = state.players.find((p) => p.token === p1.token)
           player2 = state.players.find((p) => p.token === p2.token)
 
@@ -598,7 +600,7 @@ describe('Room', () => {
       })
 
       client1.on('poll:new', (pollID, message) => {
-        if (/Player 2 .* join/.test(message)) {
+        if (/PLAYER 2 .* join/.test(message)) {
           client1.emit('poll:vote', pollID, true)
         }
       })
@@ -616,7 +618,7 @@ describe('Room', () => {
 
     it('The trade can only be accepted by the player who was offered', (done) => {
       client1.on('game:error', (message) => {
-        assert.ok(/Player 2 didn't make you an offer/.test(message))
+        assert.ok(/PLAYER 2 didn't make you an offer/.test(message))
         done()
       })
 
@@ -648,7 +650,7 @@ describe('Room', () => {
 
     it('The trade should cancel when the other player declines', (done) => {
       client1.on('trade:declined', (tradeID, message) => {
-        assert.ok(/Player 2 has declined/.test(message))
+        assert.ok(/PLAYER 2 has declined/.test(message))
         done()
       })
 
@@ -663,7 +665,7 @@ describe('Room', () => {
 
     it('The trade should occur when a player accepts an offer', (done) => {
       client1.on('game:update', (state) => {
-        assert.ok(/Player 1 traded Player 2/.test(state.note))
+        assert.ok(/PLAYER 1 traded PLAYER 2/.test(state.note))
         assert.equal(state.properties.find((p) => p._id === 'st-james-place').owner, player1._id)
         assert.equal(state.properties.find((p) => p._id === 'oriental-avenue').owner, player2._id)
         assert.equal(state.players.find((p) => p._id === player1._id).balance, player1.balance - 100)
