@@ -32,8 +32,8 @@ const requestOpts = {
 
 describe('Room', () => {
   let gameID, client1, client2, state
-  let p1 = { name: 'PLAYER 1', token: tokens[0] }
-  let p2 = { name: 'PLAYER 2', token: tokens[1] }
+  let p1 = { name: 'player 1', token: tokens[0] }
+  let p2 = { name: 'player 2', token: tokens[1] }
 
   beforeEach((done) => {
     client1 = io.connect(socketURL, socketOpts)
@@ -99,7 +99,7 @@ describe('Room', () => {
 
     it('The new player should poll other players before joining', (done) => {
       client1.on('poll:new', (pollID, message) => {
-        assert.ok(/PLAYER 2 .* join/.test(message))
+        assert.ok(/player 2 .* join/.test(message))
         done()
       })
 
@@ -114,7 +114,7 @@ describe('Room', () => {
       client2.on('game:joined', () => done())
 
       client1.on('poll:new', (pollID, message) => {
-        assert.ok(/PLAYER 2 .* join/.test(message))
+        assert.ok(/player 2 .* join/.test(message))
         client1.emit('poll:vote', pollID, true)
       })
 
@@ -198,7 +198,7 @@ describe('Room', () => {
       })
 
       client1.on('poll:new', (pollID, message) => {
-        assert.ok(/PLAYER 2 .* join/.test(message))
+        assert.ok(/player 2 .* join/.test(message))
       })
 
       client1.on('game:joined', () => {
@@ -209,7 +209,7 @@ describe('Room', () => {
     })
 
     it('The poll should close after majority rules', (done) => {
-      let p3 = { name: 'PLAYER 3', token: tokens[2] }
+      let p3 = { name: 'player 3', token: tokens[2] }
       let client3 = io.connect(socketURL, socketOpts)
       let poll = null
 
@@ -223,7 +223,7 @@ describe('Room', () => {
       client1.on('poll:new', (pollID, message) => {
         client1.emit('poll:vote', pollID, true)
 
-        if (/PLAYER 3 .* join/.test(message)) {
+        if (/player 3 .* join/.test(message)) {
           poll = pollID
         }
       })
@@ -247,8 +247,8 @@ describe('Room', () => {
   describe('Auctions', () => {
 
     it('The player should auction a property', (done) => {
-      client1.on('auction:new', (propertyID) => {
-        assert.equal(propertyID, 'oriental-avenue')
+      client1.on('auction:new', (propertyName) => {
+        assert.equal(propertyName, 'Oriental Avenue')
         done()
       })
 
@@ -261,7 +261,7 @@ describe('Room', () => {
       })
 
       client2.on('game:joined', () => {
-        client2.emit('auction:start', 'oriental-avenue')
+        client2.emit('auction:start', 'Oriental Avenue')
       })
 
       client1.emit('game:join', gameID, p1)
@@ -275,30 +275,30 @@ describe('Room', () => {
         done()
       })
 
-      client1.on('auction:new', (propertyID) => {
-        client1.emit('auction:bid', propertyID, bal1 + 100)
+      client1.on('auction:new', (propertyName) => {
+        client1.emit('auction:bid', propertyName, bal1 + 100)
       })
 
       client1.on('poll:new', (pollID, message) => {
         client1.emit('poll:vote', pollID, true)
       })
 
-      client1.on('game:joined', (pid, state) => {
-        bal1 = state.players.find((p) => p._id === pid).balance
+      client1.on('game:joined', (token, state) => {
+        bal1 = state.players.find((p) => p.token === token).balance
         assert.ok(bal1)
 
         client2.emit('game:join', gameID, p2)
       })
 
       client2.on('game:joined', () => {
-        client2.emit('auction:start', 'oriental-avenue')
+        client2.emit('auction:start', 'Oriental Avenue')
       })
 
       client1.emit('game:join', gameID, p1)
     })
 
     it('The bid must be higher than the current highest', (done) => {
-      let p3 = { name: 'PLAYER 3', token: tokens[2] }
+      let p3 = { name: 'player 3', token: tokens[2] }
       let client3 = io.connect(socketURL, socketOpts)
       let bal1 = 0
 
@@ -307,15 +307,15 @@ describe('Room', () => {
         done()
       })
 
-      client1.on('auction:update', (propertyID, winning, bid) => {
-        assert.equal(winning, state.players.find((p) => p.token === p2.token)._id)
+      client1.on('auction:update', (propertyName, winning, bid) => {
+        assert.equal(winning, p2.token)
         assert.equal(bid, bal1)
 
-        client1.emit('auction:bid', propertyID, bal1 / 2)
+        client1.emit('auction:bid', propertyName, bal1 / 2)
       })
 
-      client2.on('auction:new', (propertyID) => {
-        client2.emit('auction:bid', propertyID, bal1)
+      client2.on('auction:new', (propertyName) => {
+        client2.emit('auction:bid', propertyName, bal1)
       })
 
       client1.on('poll:new', (pollID, message) => {
@@ -326,7 +326,7 @@ describe('Room', () => {
         client2.emit('poll:vote', pollID, true)
       })
 
-      client1.on('game:joined', (pid, state) => {
+      client1.on('game:joined', (token, state) => {
         bal1 = state.players.find((p) => p.token === p1.token).balance
         assert.ok(bal1)
 
@@ -338,14 +338,14 @@ describe('Room', () => {
       })
 
       client3.on('game:joined', () => {
-        client3.emit('auction:start', 'oriental-avenue')
+        client3.emit('auction:start', 'Oriental Avenue')
       })
 
       client1.emit('game:join', gameID, p1)
     })
 
     it('The player should not be able to bid after conceding', (done) => {
-      let p3 = { name: 'PLAYER 3', token: tokens[2] }
+      let p3 = { name: 'player 3', token: tokens[2] }
       let client3 = io.connect(socketURL, socketOpts)
 
       client1.on('game:error', (message) => {
@@ -353,12 +353,12 @@ describe('Room', () => {
         done()
       })
 
-      client1.on('auction:update', (propertyID) => {
-        client1.emit('auction:bid', propertyID, 100)
+      client1.on('auction:update', (propertyName) => {
+        client1.emit('auction:bid', propertyName, 100)
       })
 
-      client1.on('auction:new', (propertyID) => {
-        client1.emit('auction:concede', propertyID)
+      client1.on('auction:new', (propertyName) => {
+        client1.emit('auction:concede', propertyName)
       })
 
       client1.on('poll:new', (pollID, message) => {
@@ -378,22 +378,20 @@ describe('Room', () => {
       })
 
       client3.on('game:joined', () => {
-        client3.emit('auction:start', 'oriental-avenue')
+        client3.emit('auction:start', 'Oriental Avenue')
       })
 
       client1.emit('game:join', gameID, p1)
     })
 
     it('The auction should end once enough players concede', (done) => {
-      let p2id = null
-
-      client2.on('auction:end', (propertyID, winner) => {
-        assert.equal(winner, p2id)
+      client2.on('auction:end', (propertyName, winner) => {
+        assert.equal(winner, p2.token)
         done()
       })
 
-      client1.on('auction:new', (propertyID) => {
-        client1.emit('auction:concede', propertyID)
+      client1.on('auction:new', (propertyName) => {
+        client1.emit('auction:concede', propertyName)
       })
 
       client1.on('poll:new', (pollID, message) => {
@@ -404,24 +402,22 @@ describe('Room', () => {
         client2.emit('game:join', gameID, p2)
       })
 
-      client2.on('game:joined', (pid, state) => {
-        p2id = pid
-
-        client2.emit('auction:start', 'oriental-avenue')
+      client2.on('game:joined', () => {
+        client2.emit('auction:start', 'Oriental Avenue')
       })
 
       client1.emit('game:join', gameID, p1)
     })
 
     it('The auction should end after a timeout', (done) => {
-      client1.on('auction:end', (propertyID, winner) => {
-        assert.equal(propertyID, 'oriental-avenue')
+      client1.on('auction:end', (propertyName, winner) => {
+        assert.equal(propertyName, 'Oriental Avenue')
         assert.ok(!winner)
         done()
       })
 
       client1.on('game:joined', () => {
-        client1.emit('auction:start', 'oriental-avenue')
+        client1.emit('auction:start', 'Oriental Avenue')
       })
 
       client1.emit('game:join', gameID, p1)
@@ -430,33 +426,33 @@ describe('Room', () => {
     it('The winning bid should buy the property at that price', (done) => {
       let player1 = null
 
-      client1.on('auction:end', (propertyID, winner) => {
+      client1.on('auction:end', (propertyName, winner) => {
         let bal1 = player1.balance
 
         player1 = state.players.find((p) => p.token === p1.token)
 
-        assert.equal(winner, player1._id)
+        assert.equal(winner, player1.token)
         assert.equal(player1.balance, bal1 - 100)
         done()
       })
 
-      client1.on('auction:new', (propertyID) => {
-        client1.emit('auction:bid', propertyID, 100)
+      client1.on('auction:new', (propertyName) => {
+        client1.emit('auction:bid', propertyName, 100)
       })
 
       client1.on('poll:new', (pollID, message) => {
         client1.emit('poll:vote', pollID, true)
       })
 
-      client1.on('game:joined', (pid, state) => {
-        player1 = state.players.find((p) => p._id === pid)
+      client1.on('game:joined', (token, state) => {
+        player1 = state.players.find((p) => p.token === token)
         assert.ok(player1)
-
+        
         client2.emit('game:join', gameID, p2)
       })
 
       client2.on('game:joined', () => {
-        client2.emit('auction:start', 'oriental-avenue')
+        client2.emit('auction:start', 'Oriental Avenue')
       })
 
       client1.emit('game:join', gameID, p1)
@@ -468,14 +464,14 @@ describe('Room', () => {
 
     beforeEach((done) => {
       client1.on('game:update', (state) => {
-        if (/^PLAYER 1 purchased Oriental Avenue/.test(state.note)) {
+        if (/^player 1 purchased Oriental Avenue/.test(state.note)) {
           entryID = state.entry
           done()
         }
       })
 
       client1.on('poll:new', (pollID, message) => {
-        if (/PLAYER 2 .* join/.test(message)) {
+        if (/player 2 .* join/.test(message)) {
           client1.emit('poll:vote', pollID, true)
         }
       })
@@ -485,7 +481,7 @@ describe('Room', () => {
       })
 
       client2.on('game:joined', () => {
-        client1.emit('game:buy-property', 'oriental-avenue')
+        client1.emit('game:buy-property', 'Oriental Avenue')
       })
 
       client1.emit('game:join', gameID, p1)
@@ -497,7 +493,7 @@ describe('Room', () => {
 
     it('The room should poll other players to undo a specific action', (done) => {
       client1.on('poll:new', (pollID, message) => {
-        assert.ok(/PLAYER 2 is contesting/.test(message))
+        assert.ok(/player 2 is contesting/.test(message))
         done()
       })
 
@@ -514,7 +510,7 @@ describe('Room', () => {
       })
 
       client2.on('poll:new', (pollID, message) => {
-        if (/PLAYER 1 is contesting/.test(message)) {
+        if (/player 1 is contesting/.test(message)) {
           client2.emit('poll:vote', pollID, false)
           poll = pollID
         }
@@ -525,7 +521,7 @@ describe('Room', () => {
 
     it('The game state should be set to before the action was taken', (done) => {
       client1.on('game:update', (state) => {
-        let property = state.properties.find((p) => p._id === 'oriental-avenue')
+        let property = state.properties.find((p) => p.name === 'Oriental Avenue')
 
         assert.ok(/Game reset/.test(state.note))
         assert.equal(property.owner, 'bank')
@@ -534,7 +530,7 @@ describe('Room', () => {
       })
 
       client2.on('poll:new', (pollID, message) => {
-        if (/PLAYER 1 is contesting/.test(message)) {
+        if (/player 1 is contesting/.test(message)) {
           client2.emit('poll:vote', pollID, true)
         }
       })
@@ -548,20 +544,20 @@ describe('Room', () => {
 
     beforeEach((done) => {
       client1.on('poll:new', (pollID, message) => {
-        if (/PLAYER 2 .* join/.test(message)) {
+        if (/player 2 .* join/.test(message)) {
           client1.emit('poll:vote', pollID, true)
         }
       })
 
-      client1.on('game:joined', (pid, state) => {
-        player1 = state.players.find((p) => p._id === pid)
+      client1.on('game:joined', (token, state) => {
+        player1 = state.players.find((p) => p.token === token)
         assert.ok(player1)
 
         client2.emit('game:join', gameID, p2)
       })
 
-      client2.on('game:joined', (pid, state) => {
-        player2 = state.players.find((p) => p._id === pid)
+      client2.on('game:joined', (token, state) => {
+        player2 = state.players.find((p) => p.token === token)
         assert.ok(player2)
 
         done()
@@ -571,36 +567,31 @@ describe('Room', () => {
     })
 
     it('The room should curry the message to another player', (done) => {
-      client2.on('message:new', (playerID, message) => {
-        assert.equal(player1._id, playerID)
+      client2.on('message:new', (token, message) => {
+        assert.equal(player1.token, token)
         assert.ok(/Test Message/.test(message))
         done()
       })
 
-      client1.emit('message:send', player2._id, 'Test Message')
+      client1.emit('message:send', player2.token, 'Test Message')
     })
   })
 
   describe('Trading', () => {
-    let player1, player2
 
     beforeEach((done) => {
       client1.on('game:update', (state) => {
-        if (/PLAYER 1 purchased Oriental Avenue/.test(state.note)) {
-          client2.emit('game:buy-property', 'st-james-place')
-        } else if (/PLAYER 2 purchased St\. James Place/.test(state.note)) {
-          player1 = state.players.find((p) => p.token === p1.token)
-          player2 = state.players.find((p) => p.token === p2.token)
-
-          assert.equal(state.properties.find((p) => p._id === 'oriental-avenue').owner, player1._id)
-          assert.equal(state.properties.find((p) => p._id === 'st-james-place').owner, player2._id)
-          assert.ok(player1 && player2)
+        if (/player 1 purchased Oriental Avenue/.test(state.note)) {
+          client2.emit('game:buy-property', 'St. James Place')
+        } else if (/player 2 purchased St\. James Place/.test(state.note)) {
+          assert.equal(state.properties.find((p) => p.name === 'Oriental Avenue').owner, p1.token)
+          assert.equal(state.properties.find((p) => p.name === 'St. James Place').owner, p2.token)
           done()
         }
       })
 
       client1.on('poll:new', (pollID, message) => {
-        if (/PLAYER 2 .* join/.test(message)) {
+        if (/player 2 .* join/.test(message)) {
           client1.emit('poll:vote', pollID, true)
         }
       })
@@ -610,7 +601,7 @@ describe('Room', () => {
       })
 
       client2.on('game:joined', () => {
-        client1.emit('game:buy-property', 'oriental-avenue')
+        client1.emit('game:buy-property', 'Oriental Avenue')
       })
 
       client1.emit('game:join', gameID, p1)
@@ -618,7 +609,7 @@ describe('Room', () => {
 
     it('The trade can only be accepted by the player who was offered', (done) => {
       client1.on('game:error', (message) => {
-        assert.ok(/PLAYER 2 didn't make you an offer/.test(message))
+        assert.ok(/player 2 didn't make you an offer/.test(message))
         done()
       })
 
@@ -626,31 +617,31 @@ describe('Room', () => {
         client1.emit('trade:accept', tradeID)
       })
 
-      client1.emit('trade:offer', player2._id,
-        { money: 100, properties: ['oriental-avenue'] },
-        { properties: ['st-james-place'] })
+      client1.emit('trade:offer', p2.token,
+        { money: 100, properties: ['Oriental Avenue'] },
+        { properties: ['St. James Place'] })
     })
 
     it('The room should notify the other player of the offer', (done) => {
-      client2.on('trade:new', (tradeID, pid, offer, trade) => {
-        assert.equal(pid, player1._id)
+      client2.on('trade:new', (tradeID, token, offer, trade) => {
+        assert.equal(token, p1.token)
         assert.equal(offer.money, 100)
         assert.equal(offer.properties.length, 1)
-        assert.equal(offer.properties[0], 'oriental-avenue')
+        assert.equal(offer.properties[0], 'Oriental Avenue')
         assert.ok(!trade.money)
         assert.equal(trade.properties.length, 1)
-        assert.equal(trade.properties[0], 'st-james-place')
+        assert.equal(trade.properties[0], 'St. James Place')
         done()
       })
 
-      client1.emit('trade:offer', player2._id,
-        { money: 100, properties: ['oriental-avenue'] },
-        { properties: ['st-james-place'] })
+      client1.emit('trade:offer', p2.token,
+        { money: 100, properties: ['Oriental Avenue'] },
+        { properties: ['St. James Place'] })
     })
 
     it('The trade should cancel when the other player declines', (done) => {
       client1.on('trade:declined', (tradeID, message) => {
-        assert.ok(/PLAYER 2 has declined/.test(message))
+        assert.ok(/player 2 has declined/.test(message))
         done()
       })
 
@@ -658,28 +649,34 @@ describe('Room', () => {
         client2.emit('trade:decline', tradeID)
       })
 
-      client1.emit('trade:offer', player2._id,
-        { money: 100, properties: ['oriental-avenue'] },
-        { properties: ['st-james-place'] })
+      client1.emit('trade:offer', p2.token,
+        { money: 100, properties: ['Oriental Avenue'] },
+        { properties: ['St. James Place'] })
     })
 
     it('The trade should occur when a player accepts an offer', (done) => {
+      let bal1, bal2
+      
       client1.on('game:update', (state) => {
-        assert.ok(/PLAYER 1 traded PLAYER 2/.test(state.note))
-        assert.equal(state.properties.find((p) => p._id === 'st-james-place').owner, player1._id)
-        assert.equal(state.properties.find((p) => p._id === 'oriental-avenue').owner, player2._id)
-        assert.equal(state.players.find((p) => p._id === player1._id).balance, player1.balance - 100)
-        assert.equal(state.players.find((p) => p._id === player2._id).balance, player2.balance + 100)
+        assert.ok(/player 1 traded player 2/.test(state.note))
+        assert.equal(state.properties.find((p) => p.name === 'St. James Place').owner, p1.token)
+        assert.equal(state.properties.find((p) => p.name === 'Oriental Avenue').owner, p2.token)
+        assert.equal(state.players.find((p) => p.token === p1.token).balance, bal1 - 100)
+        assert.equal(state.players.find((p) => p.token === p2.token).balance, bal2 + 100)
         done()
       })
 
       client2.on('trade:new', (tradeID) => {
+        bal1 = state.players.find((p) => p.token === p1.token).balance
+        bal2 = state.players.find((p) => p.token === p2.token).balance
+        assert.ok(bal1 && bal2)
+        
         client2.emit('trade:accept', tradeID)
       })
 
-      client1.emit('trade:offer', player2._id,
-        { money: 100, properties: ['oriental-avenue'] },
-        { properties: ['st-james-place'] })
+      client1.emit('trade:offer', p2.token,
+        { money: 100, properties: ['Oriental Avenue'] },
+        { properties: ['St. James Place'] })
     })
   })
 })

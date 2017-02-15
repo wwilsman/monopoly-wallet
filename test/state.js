@@ -1,28 +1,26 @@
 import config from '../public/themes/classic/config.json'
 import properties from '../public/themes/classic/properties.json'
-import { tokens } from '../public/themes/classic/theme.json'
+
+const tokens = config.playerTokens
 
 // initial state
 const state = {
   _id: 'T3STT',
   theme: 'classic',
+  config,
 
-  ...config,
-  properties,
-
-  bank: config.start,
-  passGo: config.start * 2/3,
-  players: [],
+  bank: config.playerStart,
   houses: 4,
-  hotels: 1
+  hotels: 1,
+  players: [],
+  properties
 }
 
 // Player 1
 state.players.push({
-  _id: 'player-1',
-  name: 'PLAYER 1',
+  name: 'player 1',
   token: tokens[0],
-  balance: config.start
+  balance: config.playerStart
 })
 
 // Player 1 owns the first monopoly with a hotel
@@ -31,16 +29,15 @@ let property1 = state.properties[0]
 state.properties.forEach((p, i) => {
   if (p.group === property1.group) {
     p.buildings = i === 0 ? 5 : 4
-    p.owner = 'player-1'
+    p.owner = tokens[0]
   }
 })
 
 // Player 2
 state.players.push({
-  _id: 'player-2',
-  name: 'PLAYER 2',
+  name: 'player 2',
   token: tokens[1],
-  balance: config.start
+  balance: config.playerStart
 })
 
 // Player 2 owns the second monopoly without any improvements
@@ -48,26 +45,25 @@ let property2 = state.properties.find((p) => !p.owner)
 
 state.properties.forEach((p, i) => {
   if (p.group === property2.group) {
-    p.owner = 'player-2'
+    p.owner = tokens[1]
   }
 })
 
 // Player 3
 state.players.push({
-  _id: 'player-3',
-  name: 'PLAYER 3',
+  name: 'player 3',
   token: tokens[2],
-  balance: config.start
+  balance: config.playerStart
 })
 
 // Player 3 owns a property, 2 railroads, and a utility
 let property3 = state.properties.find((p) => !p.owner)
-property3.owner = 'player-3'
+property3.owner = tokens[2]
 property3.isMortgaged = true
 
-state.properties.find((p) => p.group === 'utility').owner = 'player-3'
+state.properties.find((p) => p.group === 'utility').owner = tokens[2]
 state.properties.filter((p) => p.group === 'railroad').forEach((p, i) => {
-  if (i < 2) p.owner = 'player-3'
+  if (i < 2) p.owner = tokens[2]
 })
 
 // export

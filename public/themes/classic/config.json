@@ -1,10 +1,34 @@
 {
-  "bank": -1,
-  "start": 1500,
-  "houses": 32,
-  "hotels": 12,
+  "themeName": "Classic",
+  "themeDescr": "The classic Monopoly board game",
+  "bankStart": -1,
+  "playerStart": 1500,
+  "houseCount": 32,
+  "hotelCount": 12,
   "mortgageRate": 0.5,
   "interestRate": 0.1,
   "buildingRate": 0.5,
-  "passGo": 200
+  "passGoReward": 200,
+  "pollTimeout": 3000,
+  "auctionTimeout": 3000,
+  "playerTokens": [
+    "automobile",
+    "battleship",
+    "boot",
+    "iron",
+    "scottish-terrier",
+    "thimble",
+    "top-hat",
+    "wheelbarrow"
+  ],
+  "groupColors": {
+    "brown": "#963232",
+    "lightblue": "#80CCFF",
+    "magenta": "#FF69B4",
+    "orange": "#FF8000",
+    "red": "#FF0000",
+    "yellow": "#FFFF00",
+    "green": "#32963C",
+    "blue": "#2858C8"
+  }
 }
