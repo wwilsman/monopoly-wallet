@@ -9,8 +9,8 @@ import { Currency } from '../../common'
 const PropertyCardUtility = ({
   name,
   rent,
-  mortgageValue,
-  mortgageCost,
+  mortgage,
+  interest,
   isMortgaged,
   simple,
   iconPath
@@ -42,7 +42,7 @@ const PropertyCardUtility = ({
            <div className={styles.info}>
              <div>
                <span>Mortgage Value</span>
-               <span><Currency amount={mortgageValue}/></span>
+               <span><Currency amount={mortgage}/></span>
              </div>
            </div>
          </div>
@@ -56,7 +56,7 @@ const PropertyCardUtility = ({
          <span className={styles['overlay-title']}>Mortgaged</span>
          <div className={styles['overlay-text']}>
            <span>Unmortgage for</span>
-           <Currency amount={mortgageCost}/>
+           <Currency amount={mortgage + interest}/>
          </div>
        </div>
      ))}

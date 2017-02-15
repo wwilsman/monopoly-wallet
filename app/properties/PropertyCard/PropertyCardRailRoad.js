@@ -14,8 +14,8 @@ const splitLast = (str, sep) => {
 const PropertyCardRailRoad = ({
   name,
   rent,
-  mortgageValue,
-  mortgageCost,
+  mortgage,
+  interest,
   isMortgaged,
   simple,
   iconPath
@@ -48,7 +48,7 @@ const PropertyCardRailRoad = ({
            <div className={styles.info}>
              <div>
                <span>Mortgage Value</span>
-               <Currency amount={mortgageValue}/>
+               <Currency amount={mortgage}/>
              </div>
            </div>
          </div>
@@ -62,7 +62,7 @@ const PropertyCardRailRoad = ({
          <span className={styles['overlay-title']}>Mortgaged</span>
          <div className={styles['overlay-text']}>
            <span>Unmortgage for</span>
-           <Currency amount={mortgageCost}/>
+           <Currency amount={mortgage + interest}/>
          </div>
        </div>
      ))}
