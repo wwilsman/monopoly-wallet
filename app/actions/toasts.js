@@ -1,50 +1,43 @@
 import { voteInPoll } from './game'
 
-export function addToast(toastType, content, { timeout, buttons }) {
-  return { type: 'ADD_TOAST', toastType, content, timeout, buttons }
+export function showToast(message) {
+  return { type: 'SHOW_TOAST', message }
 }
 
-export function removeToast(toastID) {
-  return { type: 'REMOVE_TOAST', toastID }
+export function showErrorToast(message) {
+  return { type: 'SHOW_ERROR_TOAST', message }
+}
+
+export function showPollToast(poll, message) {
+  return { type: 'SHOW_ERROR_TOAST', poll, message }
+}
+
+export function removeToast(toast) {
+  return { type: 'REMOVE_TOAST', toast }
 }
 
 export function clearTimedToasts() {
   return { type: 'CLEAR_TIMED_TOASTS' }
 }
 
-export function triggerError(message) {
-  return addToast('error', message, {
-    timeout: 5000
-  })
-}
+const toasterMiddleware = (store) => (next) => (action) => {
+  const middle = next(action)
+  
+  if (action.type === 'UPDATE_GAME') {
+    const { game: { notice } } = store.getState()
 
-export function triggerNotice(message) {
-  return addToast('notice', message, {
-    timeout: 5000
-  })
-}
-
-export function triggerPoll(pollID, message) {
-  return addToast('poll', message, {
-    meta: { pollID },
-    buttons: [{
-      label: 'no',
-      action: voteInPoll(pollID, false)
-    }, {
-      label: 'yes',
-      action: voteInPoll(pollID, true)
-    }]
-  })
-}
-
-export function removePoll(pollID) {
-  return (dispatch, getState) => {
-    const toast = getState().toasts.find((t) => {
-      return t.meta && pollID === t.meta.pollID
-    })
-
-    if (toast) {
-      dispatch(removeToast(toast._id))
+    if (notice) {
+      switch (notice.type) {
+        case 'game':
+          store.dispatch(showToast(notice.message))
+          break;
+        // case 'auction':
+        // case 'trade':
+      }
     }
   }
+
+  return middle
 }
+
+export default toasterMiddleware

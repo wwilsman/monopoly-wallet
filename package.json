@@ -16,7 +16,6 @@
   "license": "MIT",
   "dependencies": {
     "animated": "^0.1.4",
-    "babel-preset-react-native": "^1.9.1",
     "body-parser": "^1.15.2",
     "classnames": "^2.2.5",
     "cookie-parser": "^1.4.3",
@@ -30,7 +29,7 @@
     "react": "^15.4.1",
     "react-dom": "^15.4.1",
     "react-redux": "^4.4.6",
-    "react-router": "next",
+    "react-router": "4.0.0-beta.6",
     "react-router-redux": "^4.0.7",
     "redux": "^3.5.2",
     "redux-logger": "^2.7.4",

@@ -1,16 +1,14 @@
 const initialState = {
-  tokens: []
+  playerTokens: [],
+  groupColors: {}
 }
 
 const themeReducer = (state = initialState, action) => {
   switch (action.type) {
-    case 'UPDATE_THEME':
-      return {
-        ...state,
-        ...action.payload
-      }
+    case 'GAME_CONNECTED':
+      return { ...state, ...action.theme }
 
-    case 'CLEAR_THEME':
+    case 'DISCONNECT_GAME':
       return { ...initialState }
 
     default:

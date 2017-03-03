@@ -34,7 +34,7 @@ class App extends Component {
           <Switch>
             <Route path="/" exact render={() => <Welcome/>}/>
             <Route path="/new" exact render={() => <NewGame/>}/>
-            <Route path="/:gameID([^\/]{5})" render={() => <Game/>}/>
+            <Route path="/:room([^\/]{5})" render={() => <Game/>}/>
             <Route render={() => <Redirect to="/"/>}/>
           </Switch>
         </Router>

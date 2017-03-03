@@ -2,9 +2,12 @@ const errorReducer = (state = false, action) => {
   switch (action.type) {
     case 'ERROR':
       return {
-        title: action.title,
+        name: action.name,
         message: action.message
       }
+      
+    case 'CLEAR_ERROR':
+      return false
 
     default:
       return state

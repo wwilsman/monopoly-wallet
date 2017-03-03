@@ -1,52 +1,33 @@
 import io from 'socket.io-client'
 
-import { setError } from './error'
-import {
-  triggerError,
-  triggerNotice,
-  triggerPoll,
-  removePoll
-} from './toasts'
-import { updateGame } from './game'
-import { setCurrentPlayer } from './player'
-
-function handleError(error, message) {
-  return (dispatch) => {
-    if (error && message) {
-      dispatch(setError(error, message))
-    } else {
-      dispatch(triggerError(error))
-    }
-  }
+const socketActions = {
+  'room:error': 'ERROR',
+  'room:connected': 'GAME_CONNECTED',
+  'game:error': 'SHOW_ERROR_TOAST',
+  'game:update': 'UPDATE_GAME',
+  'game:joined': 'SET_CURRENT_PLAYER',
+  'poll:new': 'SHOW_POLL_TOAST',
+  'poll:end': 'REMOVE_POLL_TOAST',
+  'message:new': 'NEW_MESSAGE'
 }
 
 const socketMiddleware = (store) => (next) => {
-  const socket = io.connect('/game', { forceNew: true })
+  const socket = io.connect('/', { forceNew: true })
 
-  const on = (event, actionCreator) => {
-    socket.on(event, (...args) => {
-      store.dispatch({ type: 'SOCKET_ON', event, args })
-      store.dispatch(actionCreator(...args))
+  for (const [event, action] of Object.entries(socketActions)) {
+    socket.on(event, (data) => {
+      store.dispatch({ type: action, ...data })
     })
   }
 
-  on('game:error', handleError)
-  on('game:update', updateGame)
-  on('game:joined', setCurrentPlayer)
-  on('game:notice', triggerNotice)
-  on('poll:new', triggerPoll)
-  on('poll:end', removePoll)
-  //on('auction:new', )
-  //on('auction:update', )
-  //on('auction:end', )
-  //on('message:new', )
-  //on('trade:new', )
-  //on('trade:decline', )
-  //on('trade:end', )
-
   return (action) => {
-    if (action.type === 'SOCKET_EMIT') {
-      socket.emit(action.event, ...action.args)
+    if (action.event) {
+      socket.emit(action.event, action.payload)
+    }
+
+    if (action.type === 'DISCONNECT_GAME') {
+      socket.disconnect()
+      socket.connect()
     }
 
     return next(action)

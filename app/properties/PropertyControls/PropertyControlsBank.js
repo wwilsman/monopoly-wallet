@@ -28,12 +28,12 @@ const PropertyControlsBank = ({
 
     <div className={styles.bottom}>
       <Button small width="1/2" color="blue"
-              onClick={() => onAuctionProperty(property._id)}>
+              onClick={() => onAuctionProperty(property.name)}>
         Auction
       </Button>
 
       <Button small width="1/2" color="green"
-              onClick={() => onBuyProperty(property._id)}>
+              onClick={() => onBuyProperty(property.name)}>
         Purchase
       </Button>
     </div>

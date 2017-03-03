@@ -4,8 +4,8 @@ import PropertyCard from './PropertyCard'
 
 const PropertyCardContainer = connect(
   (state, props) => ({
-    theme: state.theme._id,
-    color: state.theme.colors[props.property.group]
+    theme: state.theme.theme,
+    color: state.theme.groupColors[props.property.group]
   })
 )(PropertyCard)
 

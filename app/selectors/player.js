@@ -1,8 +1,8 @@
 import { createSelector } from 'reselect'
 
 export const createGetPlayer = () => createSelector(
-  [(state) => state.game.players, (s, pid) => pid],
-  (players, pid) => players.find((p) => p._id === pid)
+  [(state) => state.game.players, (s, token) => token],
+  (players, token) => players.find((p) => p.token === token)
 )
 
 export const getCurrentPlayer = createSelector(
@@ -11,6 +11,6 @@ export const getCurrentPlayer = createSelector(
 )
 
 export const createGetProperties = () => createSelector(
-  [(state) => state.game.properties, (s, pid) => pid],
-  (properties, pid) => properties.filter((p) => p.owner === pid)
+  [(state) => state.game.properties, (s, token) => token],
+  (properties, token) => properties.filter((p) => p.owner === token)
 )

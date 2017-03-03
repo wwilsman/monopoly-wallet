@@ -14,7 +14,12 @@ class Welcome extends Component {
   }
 
   static propTypes = {
-    clearGameInfo: PropTypes.func.isRequired
+    connectGame: PropTypes.func.isRequired,
+    disconnectGame: PropTypes.func.isRequired,
+    showErrorToast: PropTypes.func.isRequired,
+    clearError: PropTypes.func.isRequired,
+    error: PropTypes.object,
+    room: PropTypes.string
   }
 
   state = {
@@ -22,14 +27,16 @@ class Welcome extends Component {
   }
 
   componentWillMount() {
-    if (this.props.gameID) {
-      this.props.clearGameInfo()
+    if (this.props.room) {
+      this.props.disconnectGame()
     }
   }
 
-  componentWillReceiveProps({ gameID }) {
-    if (gameID) {
-      this.context.router.push(`/${gameID}`)
+  componentWillReceiveProps({ error, room }) {
+    if (error) {
+      this.props.showErrorToast(error.message)
+    } else if (room) {
+      this.context.router.push(`/${room}`)
     }
   }
 
@@ -45,8 +52,9 @@ class Welcome extends Component {
     })
   }
 
-  _getGameInfo = (gameID) => {
-    this.props.fetchGameInfo(gameID, false)
+  _tryConnect = (room) => {
+    this.props.clearError()
+    this.props.connectGame(room)
   }
 
   _goToNewGame = () => {
@@ -83,7 +91,7 @@ class Welcome extends Component {
            <div>
              <JoinGameModal
                  onClose={this._hideJoinModal}
-                 onContinue={this._getGameInfo}
+                 onContinue={this._tryConnect}
              />
 
              <Toaster/>

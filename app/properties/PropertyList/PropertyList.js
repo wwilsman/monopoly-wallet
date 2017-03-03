@@ -89,7 +89,7 @@ class PropertyList extends Component {
       <div className={styles.root} {...this.panResponder.panHandlers}>
         {properties.map((property, i) => (i > index - 3 && i < index + 3) && (
            <Animated.div
-               key={property._id}
+               key={property.name}
                className={styles.property}
                style={{
                  left: this.anim.interpolate({

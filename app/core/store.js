@@ -1,9 +1,9 @@
 import { createStore, applyMiddleware, compose } from 'redux'
-import thunkMiddleware from 'redux-thunk'
 import createLogger from 'redux-logger'
 import io from 'socket.io-client'
 
 import socketMiddleware from '../actions/sockets'
+import toasterMiddleware from '../actions/toasts'
 import rootReducer from '../reducers'
 
 const loggerMiddleware = createLogger()
@@ -15,8 +15,8 @@ const configureStore = (initialState = {}) => {
     initialState,
     composeEnhancers(
       applyMiddleware(
-        thunkMiddleware,
         socketMiddleware,
+        toasterMiddleware,
         loggerMiddleware
       )
     )

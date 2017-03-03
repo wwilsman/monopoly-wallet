@@ -32,13 +32,13 @@ const PropertyControlsPlayer = ({
 
     <div className={styles.bottom}>
       <Button small width="1/2" color="green"
-              onClick={() => onOfferTrade(property._id)}>
+              onClick={() => onOfferTrade(property.name)}>
         Offer Trade
       </Button>
 
       <Button small width="1/2" color="red"
               disabled={property.isMortgaged}
-              onClick={() => onPayRent(property._id)}>
+              onClick={() => onPayRent(property.name)}>
         Pay Rent
       </Button>
     </div>

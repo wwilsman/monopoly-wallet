@@ -7,7 +7,7 @@ import { ThemeSelect } from '../../game'
 
 class NewGame extends Component {
   static contextTypes = {
-    router: PropTypes.shape({
+    history: PropTypes.shape({
       push: PropTypes.func.isRequired
     }).isRequired
   }
@@ -28,7 +28,7 @@ class NewGame extends Component {
   }
 
   _createGame = () => {
-    const { router } = this.context
+    const { history } = this.context
     const { selectedTheme } = this.state
 
     const fetchOptions = {
@@ -39,7 +39,7 @@ class NewGame extends Component {
 
     fetch('/api/new', fetchOptions)
       .then((response) => response.json())
-      .then(({ gameID }) => router.push(`/${gameID}`))
+      .then(({ gameID }) => history.push(`/${gameID}`))
   }
 
   render() {

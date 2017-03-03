@@ -38,13 +38,13 @@ const PropertyControlsOwned = ({
           <div className={styles.buttons}>
             <Button small width="1/2" color="blue"
                     disabled={!property.buildings}
-                    onClick={() => onUnimproveProperty(property._id)}>
+                    onClick={() => onUnimproveProperty(property.name)}>
               Unimprove
             </Button>
 
             <Button small width="1/2" color="green"
                     disabled={property.buildings === 5}
-                    onClick={() => onImproveProperty(property._id)}>
+                    onClick={() => onImproveProperty(property.name)}>
               Improve
             </Button>
           </div>
@@ -53,12 +53,12 @@ const PropertyControlsOwned = ({
       <div className={styles.buttons}>
         {property.isMortgaged ? (
            <Button small width="full" color="green"
-                   onClick={() => onUnmortgageProperty(property._id)}>
+                   onClick={() => onUnmortgageProperty(property.name)}>
              Unmortgage
            </Button>
          ) : (
            <Button small width="full" color="dark"
-                   onClick={() => onMortgageProperty(property._id)}>
+                   onClick={() => onMortgageProperty(property.name)}>
              Mortgage
            </Button>
          )}

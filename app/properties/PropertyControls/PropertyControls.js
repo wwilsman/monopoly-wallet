@@ -26,13 +26,13 @@ const PropertyControls = ({
     />
   ) : props.owner ? (
     <PropertyControlsPlayer
-        onOfferTrade={offerTrade}
+        onOfferTrade={() => console.log('@TODO: show trade modal')}
         onPayRent={payRent}
         {...props}
     />
   ) : (
     <PropertyControlsBank
-        onAuctionProperty={auctionProperty}
+        onAuctionProperty={() => console.log('@TODO: auction property')}
         onBuyProperty={buyProperty}
         {...props}
     />

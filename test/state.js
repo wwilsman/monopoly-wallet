@@ -1,20 +1,20 @@
-import config from '../public/themes/classic/config.json'
+import theme from '../public/themes/classic/config.json'
 import properties from '../public/themes/classic/properties.json'
+import { createState } from '../lib/game'
 
-const tokens = config.playerTokens
+const tokens = theme.playerTokens
+
+// config
+const config = {
+  ...theme,
+  theme: 'classic',
+  bankStart: theme.playerStart,
+  houseCount: 4,
+  hotelCount: 1
+}
 
 // initial state
-const state = {
-  _id: 'T3STT',
-  theme: 'classic',
-  config,
-
-  bank: config.playerStart,
-  houses: 4,
-  hotels: 1,
-  players: [],
-  properties
-}
+let state = createState(config, properties)
 
 // Player 1
 state.players.push({
@@ -41,7 +41,7 @@ state.players.push({
 })
 
 // Player 2 owns the second monopoly without any improvements
-let property2 = state.properties.find((p) => !p.owner)
+let property2 = state.properties.find((p) => p.owner === 'bank')
 
 state.properties.forEach((p, i) => {
   if (p.group === property2.group) {
@@ -57,7 +57,7 @@ state.players.push({
 })
 
 // Player 3 owns a property, 2 railroads, and a utility
-let property3 = state.properties.find((p) => !p.owner)
+let property3 = state.properties.find((p) => p.owner === 'bank')
 property3.owner = tokens[2]
 property3.isMortgaged = true
 
@@ -67,4 +67,4 @@ state.properties.filter((p) => p.group === 'railroad').forEach((p, i) => {
 })
 
 // export
-export default state
+export default { config, state }

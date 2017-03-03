@@ -19,7 +19,7 @@ const PropertyGrid = ({ properties, onClickGroup }) => (
             onClick={() => onClickGroup(group)}>
          {group.map((property) => (
             <PropertyCard
-                key={property._id}
+                key={property.name}
                 property={property}
                 simple
             />

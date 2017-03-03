@@ -12,10 +12,10 @@ import {
 
 class Game extends Component {
   static propTypes = {
-    fetchGameInfo: PropTypes.func.isRequired,
+    connectGame: PropTypes.func.isRequired,
     currentPlayer: PropTypes.object,
     hasError: PropTypes.bool,
-    hasInfo: PropTypes.bool
+    room: PropTypes.string
   }
 
   static contextTypes = {
@@ -24,7 +24,7 @@ class Game extends Component {
         url: PropTypes.string.isRequired,
         path: PropTypes.string.isRequired,
         params: PropTypes.shape({
-          gameID: PropTypes.string.isRequired
+          room: PropTypes.string.isRequired
         }).isRequired
       }).isRequired
     }).isRequired
@@ -32,16 +32,11 @@ class Game extends Component {
 
   componentWillMount() {
     const {
-      hasInfo,
-      fetchGameInfo,
-    } = this.props
-
-    const {
       match: { params }
     } = this.context.router
 
-    if (!hasInfo) {
-      fetchGameInfo(params.gameID)
+    if (!this.props.room) {
+      this.props.connectGame(params.room)
     }
   }
 

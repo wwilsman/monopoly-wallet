@@ -1,86 +1,83 @@
-import fetch from 'isomorphic-fetch'
-import { setError } from './error'
-import { triggerError } from './toasts'
-import { updateTheme, clearTheme } from './theme'
-
-export function updateGame(payload) {
-  return { type: 'UPDATE_GAME', payload }
+export function updateGame(game) {
+  return { type: 'UPDATE_GAME', game }
 }
 
-export function clearGame() {
-  return { type: 'CLEAR_GAME' }
+export function connectGame(room) {
+  return { type: 'CONNECT_GAME', event: 'room:connect', payload: { room } }
 }
 
-export function joinGame(...args) {
-  return { type: 'SOCKET_EMIT', event: 'game:join', args }
+export function disconnectGame() {
+  return { type: 'DISCONNECT_GAME' }
 }
 
-export function voteInPoll(...args) {
-  return { type: 'SOCKET_EMIT', event: 'poll:vote', args }
+export function joinGame(name, token) {
+  return { type: 'JOIN_GAME', event: 'game:join', payload: { name, token } }
 }
 
-export function payBank(...args) {
-  return { type: 'SOCKET_EMIT', event: 'game:pay-bank', args }
+export function voteInPoll(poll, vote) {
+  return { type: 'POLL_VOTE', event: 'poll:vote', payload: { poll, vote } }
 }
 
-export function collectMoney(...args) {
-  return { type: 'SOCKET_EMIT', event: 'game:collect-money', args }
+export function payBank(amount) {
+  return { type: 'PAY_BANK', event: 'game:pay-bank', payload: { amount } }
 }
 
-export function improveProperty(...args) {
-  return { type: 'SOCKET_EMIT', event: 'game:improve-property', args }
+export function collectMoney(amount) {
+  return { type: 'COLLECT_MONEY', event: 'game:collect-money', payload: { amount } }
 }
 
-export function unimproveProperty(...args) {
-  return { type: 'SOCKET_EMIT', event: 'game:unimprove-property', args }
+export function payRent(property) {
+  return { type: 'PAY_RENT', event: 'game:pay-rent', payload: { property } }
 }
 
-export function mortgageProperty(...args) {
-  return { type: 'SOCKET_EMIT', event: 'game:mortgage-property', args }
+export function claimBankruptcy(beneficiary = 'bank') {
+  return { type: 'CLAIM_BANKRUPTCY', event: 'game:claim-bankruptcy', payload: { beneficiary } }
 }
 
-export function unmortgageProperty(...args) {
-  return { type: 'SOCKET_EMIT', event: 'game:unmortgage-property', args }
+export function buyProperty(property) {
+  return { type: 'BUY_PROPERTY', event: 'game:buy-property', payload: { property } }
 }
 
-export function offerTrade(...args) {
-  return { type: '@TODO', event: 'trade:offer', args }
+export function improveProperty(property) {
+  return { type: 'IMPROVE_PROPERTY', event: 'game:improve-property', payload: { property } }
 }
 
-export function payRent(...args) {
-  return { type: 'SOCKET_EMIT', event: 'game:pay-rent', args }
+export function unimproveProperty(property) {
+  return { type: 'UNIMPROVE_PROPERTY', event: 'game:unimprove-property', payload: { property } }
 }
 
-export function auctionProperty(...args) {
-  return { type: '@TODO', event: 'auction:start', args }
+export function mortgageProperty(property) {
+  return { type: 'MORTGAGE_PROPERTY', event: 'game:mortgage-property', payload: { property } }
 }
 
-export function buyProperty(...args) {
-  return { type: 'SOCKET_EMIT', event: 'game:buy-property', args }
+export function unmortgageProperty(property) {
+  return { type: 'UNMORTGAGE_PROPERTY', event: 'game:unmortgage-property', payload: { property } }
 }
 
-export function fetchGameInfo(gameID, hardError = true) {
-  return (dispatch) => fetch(`/api/info?game=${gameID}`)
-    .then((response) => response.json())
-    .then(({ error, message, game, theme }) => {
-      if (error) {
-        if (hardError) {
-          dispatch(setError(error, message))
-        } else {
-          dispatch(triggerError(message))
-        }
-      } else {
-        return Promise.all([
-          dispatch(updateGame(game)),
-          dispatch(updateTheme(theme))
-        ])
-      }
-    })
+export function auctionProperty(property) {
+  return { type: 'AUCTION_PROPERTY', event: 'auction:start', payload: { property } }
 }
 
-export function clearGameInfo() {
-  return (dispatch) => Promise.all([
-    dispatch(clearGame()),
-    dispatch(clearTheme())
-  ])
+export function placeAuctionBid(property, amount) {
+  return { type: 'PLACE_AUCTION_BID', event: 'auction:bid', payload: { property, amount } }
+}
+
+export function concedeAuction(property) {
+  return { type: 'CONCEDE_AUCTION', event: 'auction:concede', payload: { property } }
+}
+
+export function offerTrade(player, offer, trade) {
+  return { type: 'OFFER_TRADE', event: 'trade:offer', payload: { player, trade: [offer, trade] } }
+}
+
+export function declineTrade(player) {
+  return { type: 'DECLINE_TRADE', event: 'trade:decline', payload: { player } }
+}
+
+export function acceptTrade(player) {
+  return { type: 'ACCEPT_TRADE', event: 'trade:accept', payload: { player } }
+}
+
+export function sendMessage(player, message) {
+  return { type: 'SEND_MESSAGE', event: 'message:send', payload: { player, message } }
 }

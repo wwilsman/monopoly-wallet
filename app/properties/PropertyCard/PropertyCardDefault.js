@@ -9,7 +9,7 @@ import { Currency } from '../../common'
 const PropertyCardDefault = ({
   name,
   rent,
-  cost,
+  build,
   color,
   mortgage,
   interest,
@@ -51,13 +51,13 @@ const PropertyCardDefault = ({
 
              <div>
                <span>Houses cost</span>
-               <Currency amount={cost}/>
+               <Currency amount={build}/>
                <span>each</span>
              </div>
 
              <div>
                <span>Hotels,</span>
-               <Currency amount={cost}/>
+               <Currency amount={build}/>
                <span>plus 4 houses</span>
              </div>
            </div>

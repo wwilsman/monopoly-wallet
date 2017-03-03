@@ -8,18 +8,9 @@ import { TokenSelect } from '../../game'
 class JoinGame extends Component {
   static propTypes = {
     tokens: PropTypes.array.isRequired,
+    active: PropTypes.array.isRequired,
     players: PropTypes.array.isRequired,
     joinGame: PropTypes.func.isRequired
-  }
-
-  static contextTypes = {
-    router: PropTypes.shape({
-      match: PropTypes.shape({
-        params: PropTypes.shape({
-          gameID: PropTypes.string.isRequired
-        }).isRequired
-      }).isRequired
-    }).isRequired
   }
 
   state = {
@@ -30,7 +21,7 @@ class JoinGame extends Component {
   }
 
   componentWillReceiveProps({ tokens, players }) {
-    if (tokens !== this.props.tokens ||
+    if (tokens !== this.props.tokens || 
         players !== this.props.players) {
       this.setState({
         tokens: this.getTokenObjects(tokens, players)
@@ -39,7 +30,7 @@ class JoinGame extends Component {
   }
 
   _handleNameChange = (name) => {
-    const playerName = name.toUpperCase()
+    const playerName = name.toLowerCase()
     const { selectedToken } = this.state
     let state = { playerName }
 
@@ -61,15 +52,9 @@ class JoinGame extends Component {
   }
 
   _handleAskToJoin = () => {
-    const { joinGame } = this.props
-    const { match: { params } } = this.context.router
+    const { playerName, selectedToken } = this.state
 
-    const playerData = {
-      name: this.state.playerName,
-      token: this.state.selectedToken.name
-    }
-
-    joinGame(params.gameID, playerData)
+    this.props.joinGame(playerName, selectedToken.name)
     this.setState({ isWaiting: true })
   }
 
@@ -77,13 +62,15 @@ class JoinGame extends Component {
     tokens = this.props.tokens,
     players = this.props.players
   ) {
+    const { active } = this.props
+    
     return tokens.map((token) => {
       const player = players.find((p) => p.token === token)
 
       return {
         name: token,
         player: player ? player.name : false,
-        isActive: player ? player.isActive : false,
+        isActive: player ? active.includes(token) : false,
         disabled: !!player
       }
     })

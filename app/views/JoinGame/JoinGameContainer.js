@@ -5,8 +5,9 @@ import JoinGame from './JoinGame'
 
 const JoinGameContainer = connect(
   (state) => ({
-    tokens: state.theme.tokens,
-    players: state.game.players
+    tokens: state.theme.playerTokens,
+    players: state.game.players,
+    active: state.game.active
   }), {
     joinGame
   }

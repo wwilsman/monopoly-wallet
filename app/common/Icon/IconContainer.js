@@ -4,7 +4,7 @@ import Icon from './Icon'
 
 const IconContainer = connect(
   (state) => ({
-    theme: state.theme._id
+    theme: state.theme.theme
   })
 )(Icon)
 

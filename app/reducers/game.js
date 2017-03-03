@@ -1,17 +1,16 @@
 const initialState = {
+  active: [],
   players: [],
-  properties: []
+  properties: [],
 }
 
 const gameReducer = (state = initialState, action) => {
   switch(action.type) {
+    case 'GAME_CONNECTED':
     case 'UPDATE_GAME':
-      return {
-        ...state,
-        ...action.payload
-      }
+      return { ...state, ...action.game }
 
-    case 'CLEAR_GAME':
+    case 'DISCONNECT_GAME':
       return { ...initialState }
 
     default:

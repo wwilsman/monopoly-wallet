@@ -10,13 +10,13 @@ const ThemeSelect = ({ themes, selected, onChange }) => (
   <div className={styles.root}>
     {themes.map((theme) => (
        <div
-           key={theme._id}
+           key={theme.theme}
            onClick={() => onChange(theme)}
            className={cx('theme', {
                'is-selected': theme === selected
              })}>
          <Text lg className={styles.title}>{theme.name}</Text>
-         <Text sm>{theme.description}</Text>
+         <Text sm>{theme.descr}</Text>
        </div>
      ))}
   </div>
