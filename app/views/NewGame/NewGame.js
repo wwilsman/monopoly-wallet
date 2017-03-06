@@ -7,14 +7,15 @@ import { ThemeSelect } from '../../game'
 
 class NewGame extends Component {
   static contextTypes = {
-    history: PropTypes.shape({
+    router: PropTypes.shape({
       push: PropTypes.func.isRequired
     }).isRequired
   }
 
   state = {
     themes: [],
-    selectedTheme: null
+    selectedTheme: null,
+    loading: false
   }
 
   componentWillMount() {
@@ -23,12 +24,18 @@ class NewGame extends Component {
       .then(({ themes }) => this.setState({ themes }))
   }
 
+  componentWillUnmount() {
+    if (this._loadingTimeout) {
+      clearTimeout(this._loadingTimeout)
+    }
+  }
+
   _handleThemeChange = (selectedTheme) => {
     this.setState({ selectedTheme })
   }
 
   _createGame = () => {
-    const { history } = this.context
+    const { router } = this.context
     const { selectedTheme } = this.state
 
     const fetchOptions = {
@@ -37,13 +44,17 @@ class NewGame extends Component {
       headers: { 'Content-Type': 'application/json' }
     }
 
+    this._loadingTimeout = setTimeout(() => {
+      this.setState({ loading: true })
+    }, 100)
+
     fetch('/api/new', fetchOptions)
       .then((response) => response.json())
-      .then(({ gameID }) => history.push(`/${gameID}`))
+      .then(({ room }) => router.push(`/${room}`))
   }
 
   render() {
-    const { themes, selectedTheme } = this.state
+    const { themes, selectedTheme, loading } = this.state
 
     return (
       <Flex>
