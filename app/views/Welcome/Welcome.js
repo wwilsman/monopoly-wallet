@@ -18,12 +18,14 @@ class Welcome extends Component {
     disconnectGame: PropTypes.func.isRequired,
     showErrorToast: PropTypes.func.isRequired,
     clearError: PropTypes.func.isRequired,
+    loading: PropTypes.string,
     error: PropTypes.object,
     room: PropTypes.string
   }
 
   state = {
-    showJoinModal: false
+    showJoinModal: false,
+    loading: false
   }
 
   componentWillMount() {
@@ -32,12 +34,32 @@ class Welcome extends Component {
     }
   }
 
-  componentWillReceiveProps({ error, room }) {
+  componentWillUnmount() {
+    this._cancelLoading()
+  }
+
+  componentWillReceiveProps({ error, loading, room }) {
     if (error) {
       this.props.showErrorToast(error.message)
     } else if (room) {
       this.context.router.push(`/${room}`)
     }
+
+    if (loading) {
+      this._loadingTimeout = setTimeout(() => {
+        this.setState({ loading: true })
+      }, 100)
+    } else {
+      this._cancelLoading()
+    }
+  }
+
+  _cancelLoading() {
+    if (this._loadingTimeout) {
+      clearTimeout(this._loadingTimeout)
+    }
+    
+    this.setState({ loading: false })
   }
 
   _showJoinModal = () => {
@@ -62,7 +84,7 @@ class Welcome extends Component {
   }
 
   render() {
-    const { showJoinModal } = this.state
+    const { loading, showJoinModal } = this.state
 
     return (
       <Flex>
@@ -92,6 +114,7 @@ class Welcome extends Component {
              <JoinGameModal
                  onClose={this._hideJoinModal}
                  onContinue={this._tryConnect}
+                 loading={loading}
              />
 
              <Toaster/>

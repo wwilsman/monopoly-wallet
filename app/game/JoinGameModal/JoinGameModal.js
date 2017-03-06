@@ -29,7 +29,7 @@ class JoinGameModal extends Component {
   }
 
   render() {
-    const { onClose } = this.props
+    const { loading, onClose } = this.props
     const { gameID } = this.state
 
     return (
@@ -49,6 +49,7 @@ class JoinGameModal extends Component {
           <Button
               color="blue"
               width="full"
+              loading={!!loading}
               disabled={!gameID.match(/[^\/]{5}/)}
               onClick={this._joinGame}>
             Continue

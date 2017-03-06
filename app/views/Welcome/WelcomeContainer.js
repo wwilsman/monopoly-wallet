@@ -8,7 +8,8 @@ import Welcome from './Welcome'
 const WelcomeContainer = connect(
   (state) => ({
     room: state.game.room,
-    error: state.error || null
+    error: state.error || null,
+    loading: state.loading || null
   }), {
     showErrorToast,
     clearError,
