@@ -32,7 +32,7 @@ const PropertyInfo = ({
     />
   ) : (
     <PropertyInfoBank
-        onAuctionProperty={() => console.log('@TODO: auction property')}
+        onAuctionProperty={auctionProperty}
         onBuyProperty={buyProperty}
         {...props}
     />
