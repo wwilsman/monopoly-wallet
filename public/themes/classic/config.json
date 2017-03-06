@@ -9,7 +9,7 @@
   "interestRate": 0.1,
   "buildingRate": 0.5,
   "passGoReward": 200,
-  "pollTimeout": 3000,
+  "pollTimeout": 10000,
   "playerTokens": [
     "automobile",
     "battleship",
