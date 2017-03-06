@@ -7,7 +7,8 @@ const JoinGameContainer = connect(
   (state) => ({
     tokens: state.theme.playerTokens,
     players: state.game.players,
-    active: state.game.active
+    active: state.game.active,
+    loading: state.loading || null
   }), {
     joinGame
   }

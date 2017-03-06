@@ -10,29 +10,44 @@ class JoinGame extends Component {
     tokens: PropTypes.array.isRequired,
     active: PropTypes.array.isRequired,
     players: PropTypes.array.isRequired,
-    joinGame: PropTypes.func.isRequired
+    joinGame: PropTypes.func.isRequired,
+    loading: PropTypes.string
   }
 
   state = {
     playerName: '',
     selectedToken: '',
     tokens: this.getTokenObjects(),
-    isWaiting: false
+    loading: false
   }
 
-  componentWillReceiveProps({ tokens, players }) {
+  componentWillReceiveProps({ tokens, players, loading }) {
     if (tokens !== this.props.tokens || 
         players !== this.props.players) {
       this.setState({
         tokens: this.getTokenObjects(tokens, players)
       })
     }
+
+    if (loading) {
+      this._loadingTimeout = setTimeout(() => {
+        this.setState({ loading: true })
+      }, 100)
+    } else {
+      this._cancelLoading()
+    }
   }
 
   componentWillUnmount() {
-    if (this._waitingTimeout) {
-      clearTimeout(this._waitingTimeout)
+    this._cancelLoading()
+  }
+
+  _cancelLoading() {
+    if (this._loadingTimeout) {
+      clearTimeout(this._loadingTimeout)
     }
+
+    this.setState({ loading: false })
   }
 
   _handleNameChange = (name) => {
@@ -59,12 +74,7 @@ class JoinGame extends Component {
 
   _handleAskToJoin = () => {
     const { playerName, selectedToken } = this.state
-
     this.props.joinGame(playerName, selectedToken.name)
-
-    this._waitingTimeout = setTimeout(() => {
-      this.setState({ isWaiting: true })
-    }, 100)
   }
 
   getTokenObjects(
@@ -90,7 +100,7 @@ class JoinGame extends Component {
       tokens,
       playerName,
       selectedToken,
-      isWaiting
+      loading
     } = this.state
 
     return (
@@ -120,7 +130,7 @@ class JoinGame extends Component {
           <Button
               onClick={this._handleAskToJoin}
               disabled={!playerName || !selectedToken}
-              loading={isWaiting}
+              loading={loading}
               color="blue">
             Join Game
           </Button>
