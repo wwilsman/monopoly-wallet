@@ -21,11 +21,16 @@ class JoinGame extends Component {
     loading: false
   }
 
-  componentWillReceiveProps({ tokens, players, loading }) {
-    if (tokens !== this.props.tokens || 
+  componentWillReceiveProps({ active, tokens, players, loading }) {
+    if (active !== this.props.active ||
+        tokens !== this.props.tokens ||
         players !== this.props.players) {
+      const { selectedToken } = this.state
+      const isTokenTaken = selectedToken && active.includes(selectedToken.name)
+
       this.setState({
-        tokens: this.getTokenObjects(tokens, players)
+        tokens: this.getTokenObjects(tokens, players, active),
+        selectedToken: !isTokenTaken ? selectedToken : null
       })
     }
 
@@ -79,18 +84,18 @@ class JoinGame extends Component {
 
   getTokenObjects(
     tokens = this.props.tokens,
-    players = this.props.players
+    players = this.props.players,
+    active = this.props.active
   ) {
-    const { active } = this.props
-
     return tokens.map((token) => {
       const player = players.find((p) => p.token === token)
+      const isActive = player ? active.includes(token) : false
 
       return {
         name: token,
         player: player ? player.name : false,
-        isActive: player ? active.includes(token) : false,
-        disabled: !!player
+        disabled: !!player && (player.name !== this.state.playerName || isActive),
+        isActive
       }
     })
   }
