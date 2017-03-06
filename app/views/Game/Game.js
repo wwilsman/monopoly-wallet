@@ -8,6 +8,7 @@ import {
   JoinGame,
   Player,
   Search,
+  Auction,
   Errored
 } from '../'
 
@@ -15,12 +16,14 @@ class Game extends Component {
   static propTypes = {
     connectGame: PropTypes.func.isRequired,
     currentPlayer: PropTypes.object,
+    loading: PropTypes.string,
     hasError: PropTypes.bool,
     room: PropTypes.string
   }
 
   static contextTypes = {
     router: PropTypes.shape({
+      push: PropTypes.func.isRequired,
       match: PropTypes.shape({
         url: PropTypes.string.isRequired,
         path: PropTypes.string.isRequired,
@@ -40,9 +43,20 @@ class Game extends Component {
     }
   }
 
-  shouldComponentUpdate(props) {
-    return this.props.currentPlayer !== props.currentPlayer ||
-           this.props.hasError !== props.hasError
+  componentWillReceiveProps({ loading }) {
+    const {
+      push,
+      match: { params }
+    } = this.context.router
+
+    if (!loading && this.props.loading === 'AUCTION_PROPERTY') {
+      push(`/${params.room}/auction`)
+    }
+  }
+
+  shouldComponentUpdate({ currentPlayer, hasError }) {
+    return this.props.currentPlayer !== currentPlayer ||
+           this.props.hasError !== hasError
   }
 
   render() {
@@ -63,6 +77,7 @@ class Game extends Component {
            <Switch>
              <Route path={path} exact render={() => <Player/>}/>
              <Route path={`${path}/search`} exact render={() => <Search/>}/>
+             <Route path={`${path}/auction`} exact render={() => <Auction/>}/>
              <Route render={() => <Redirect to={url}/>}/>
            </Switch>
          ) : (

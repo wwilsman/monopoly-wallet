@@ -8,6 +8,7 @@ const GameContainer = connect(
   (state) => ({
     room: state.game.room,
     currentPlayer: getCurrentPlayer(state),
+    loading: state.loading || null,
     hasError: !!state.error
   }), {
     connectGame

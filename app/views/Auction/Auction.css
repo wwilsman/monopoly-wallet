@@ -1,0 +1,6 @@
+@import '../../core/variables';
+
+.property {
+  width: 55vw;
+  margin: auto;
+}
