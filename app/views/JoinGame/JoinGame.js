@@ -29,6 +29,12 @@ class JoinGame extends Component {
     }
   }
 
+  componentWillUnmount() {
+    if (this._waitingTimeout) {
+      clearTimeout(this._waitingTimeout)
+    }
+  }
+
   _handleNameChange = (name) => {
     const playerName = name.toLowerCase()
     const { selectedToken } = this.state
@@ -55,7 +61,10 @@ class JoinGame extends Component {
     const { playerName, selectedToken } = this.state
 
     this.props.joinGame(playerName, selectedToken.name)
-    this.setState({ isWaiting: true })
+
+    this._waitingTimeout = setTimeout(() => {
+      this.setState({ isWaiting: true })
+    }, 100)
   }
 
   getTokenObjects(
@@ -63,7 +72,7 @@ class JoinGame extends Component {
     players = this.props.players
   ) {
     const { active } = this.props
-    
+
     return tokens.map((token) => {
       const player = players.find((p) => p.token === token)
 
@@ -110,7 +119,8 @@ class JoinGame extends Component {
         <Box>
           <Button
               onClick={this._handleAskToJoin}
-              disabled={isWaiting || !playerName || !selectedToken}
+              disabled={!playerName || !selectedToken}
+              loading={isWaiting}
               color="blue">
             Join Game
           </Button>

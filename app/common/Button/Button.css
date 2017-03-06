@@ -1,5 +1,11 @@
 @import '../../core/variables';
 
+/* localizations were buggy */
+@keyframes :global(spin) {
+  from { transform: rotate(0deg); }
+  to { transform: rotate(360deg); }
+}
+
 .root {
   height: 40px;
   text-align: center;
@@ -11,6 +17,18 @@
 
   &:active {
     box-shadow: var(--shadow-sm);
+  }
+
+  &.is-loading::before :global {
+    content: '';
+    opacity: 0.8;
+    display: inline-block;
+    width: var(--size-lg);
+    height: var(--size-lg);
+    border-radius: 50%;
+    border: 0.25em solid;
+    border-bottom-color: transparent;
+    animation: 0.5s spin infinite ease-in-out;
   }
 
   &.is-disabled {
