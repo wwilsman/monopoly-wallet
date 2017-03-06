@@ -1,18 +1,18 @@
 import { combineReducers } from 'redux'
-import { routerReducer } from 'react-router-redux'
 
 import errorReducer from './error'
-import toastsReducer from './toasts'
-import themeReducer from './theme'
+import loadingReducer from './loading'
 import gameReducer from './game'
+import themeReducer from './theme'
+import toastsReducer from './toasts'
 import playerReducer from './player'
 
 const rootReducer = combineReducers({
-  routing: routerReducer,
   error: errorReducer,
-  toasts: toastsReducer,
-  theme: themeReducer,
+  loading: loadingReducer,
   game: gameReducer,
+  theme: themeReducer,
+  toasts: toastsReducer,
   player: playerReducer
 })
 
