@@ -4,7 +4,7 @@ import Errored from './Errored'
 
 const ErroredContainer = connect(
   (state) => ({
-    title: state.error.title,
+    name: state.error.name,
     message: state.error.message
   })
 )(Errored)
