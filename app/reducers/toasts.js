@@ -25,6 +25,14 @@ const toastsReducer = (state = initialState, action) => {
         message: action.message
       }]
 
+    case 'SHOW_AUCTION_TOAST':
+      return [...state, {
+        _id: Date.now(),
+        type: 'auction',
+        message: action.message,
+        property: action.property
+      }]
+
     case 'REMOVE_POLL_TOAST':
       action.toast = action.poll
 

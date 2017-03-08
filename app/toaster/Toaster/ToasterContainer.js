@@ -1,6 +1,6 @@
 import { connect } from 'react-redux'
 import { removeToast, clearTimedToasts } from '../../actions/toasts'
-import { voteInPoll } from '../../actions/game'
+import { voteInPoll, concedeAuction } from '../../actions/game'
 
 import Toaster from './Toaster'
 
@@ -12,7 +12,8 @@ const ToasterContainer = connect(
   }), {
     removeToast,
     clearTimedToasts,
-    voteInPoll
+    voteInPoll,
+    concedeAuction
   }
 )(Toaster)
 
