@@ -6,7 +6,8 @@ import { Flex } from '../../layout'
 import {
   ToastNotice,
   ToastError,
-  ToastPoll
+  ToastPoll,
+  ToastAuction
 } from '../Toast'
 
 class Toaster extends Component {
@@ -16,6 +17,7 @@ class Toaster extends Component {
     removeToast: PropTypes.func.isRequired,
     clearTimedToasts: PropTypes.func.isRequired,
     voteInPoll: PropTypes.func.isRequired,
+    concedeAuction: PropTypes.func.isRequired,
     currentPlayer: PropTypes.string
   }
 
@@ -45,7 +47,8 @@ class Toaster extends Component {
     const {
       toasts,
       removeToast,
-      voteInPoll
+      voteInPoll,
+      concedeAuction
     } = this.props
 
     return (
@@ -56,7 +59,18 @@ class Toaster extends Component {
 
            return (type === 'poll' ? (
              <ToastPoll
-                 onVote={(v) => voteInPoll(_id, v)}
+                 onVote={(v) => {
+                     voteInPoll(_id, v)
+                     removeToast(_id)
+                   }}
+                 {...toast}
+             />
+           ) : type === 'auction' ? (
+             <ToastAuction
+                 onConcede={(p) => {
+                     concedeAuction(p)
+                     removeToast(_id)
+                   }}
                  {...toast}
              />
            ) : type === 'error' ? (
