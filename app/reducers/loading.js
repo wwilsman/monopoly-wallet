@@ -2,7 +2,7 @@ const triggerActions = [
   ['CONNECT_GAME', 'GAME_CONNECTED'],
   ['JOIN_GAME', 'SET_CURRENT_PLAYER'],
   ['AUCTION_PROPERTY', 'UPDATE_GAME', ({ game }) =>
-    game.notice && game.notice.type === 'auction'],
+    game.notice && game.notice.type === 'auction:new'],
 ]
 
 const shouldLoadAction = (action) => {
