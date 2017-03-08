@@ -1,5 +1,3 @@
-import { voteInPoll } from '../actions/game'
-
 const initialState = []
 
 const toastsReducer = (state = initialState, action) => {
@@ -8,7 +6,7 @@ const toastsReducer = (state = initialState, action) => {
       return [...state, {
         _id: Date.now(),
         type: 'notice',
-        content: action.message,
+        message: action.message,
         timeout: 5000
       }]
 
@@ -16,7 +14,7 @@ const toastsReducer = (state = initialState, action) => {
       return [...state, {
         _id: Date.now(),
         type: 'error',
-        content: action.message,
+        message: action.message,
         timeout: 5000
       }]
 
@@ -24,11 +22,7 @@ const toastsReducer = (state = initialState, action) => {
       return [...state, {
         _id: action.poll,
         type: 'poll',
-        content: action.message,
-        buttons: [
-          { label: 'no', action: voteInPoll(action.poll, false) },
-          { label: 'yes', action: voteInPoll(action.poll, true) }
-        ]
+        message: action.message
       }]
 
     case 'REMOVE_POLL_TOAST':
