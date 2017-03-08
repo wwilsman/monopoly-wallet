@@ -23,7 +23,7 @@ export function clearTimedToasts() {
 }
 
 const toasterMiddleware = (store) => (next) => (action) => {
-  const { player, loading } = store.getState()
+  const { loading, player } = store.getState()
   const middle = next(action)
   
   if (player && action.type === 'UPDATE_GAME') {
