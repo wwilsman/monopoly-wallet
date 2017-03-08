@@ -16,7 +16,7 @@ class Game extends Component {
   static propTypes = {
     connectGame: PropTypes.func.isRequired,
     currentPlayer: PropTypes.object,
-    loading: PropTypes.string,
+    isWaitingForAuction: PropTypes.bool,
     hasError: PropTypes.bool,
     room: PropTypes.string
   }
@@ -43,14 +43,14 @@ class Game extends Component {
     }
   }
 
-  componentWillReceiveProps({ loading }) {
-    const {
-      push,
-      match: { params }
-    } = this.context.router
+  componentWillReceiveProps(props) {
+    const { push, match } = this.context.router
 
-    if (!loading && this.props.loading === 'AUCTION_PROPERTY') {
-      push(`/${params.room}/auction`)
+    const wasWaitingForAuction = this.props.isWaitingForAuction
+    const notWaitingForAuction = !props.isWaitingForAuction
+
+    if (notWaitingForAuction && wasWaitingForAuction) {
+      push(`/${match.params.room}/auction`)
     }
   }
 

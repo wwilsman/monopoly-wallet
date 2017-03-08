@@ -1,6 +1,7 @@
 import { connect } from 'react-redux'
-import { connectGame } from '../../actions/game'
+import { isWaitingForAuction } from '../../selectors/loading'
 import { getCurrentPlayer } from '../../selectors/player'
+import { connectGame } from '../../actions/game'
 
 import Game from './Game'
 
@@ -8,7 +9,7 @@ const GameContainer = connect(
   (state) => ({
     room: state.game.room,
     currentPlayer: getCurrentPlayer(state),
-    loading: state.loading || null,
+    isWaitingForAuction: isWaitingForAuction(state),
     hasError: !!state.error
   }), {
     connectGame
