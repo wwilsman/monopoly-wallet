@@ -1,15 +1,50 @@
-const loadingReducer = (state = false, action) => {
+const triggerActions = [
+  ['CONNECT_GAME', 'GAME_CONNECTED'],
+  ['JOIN_GAME', 'SET_CURRENT_PLAYER'],
+  ['AUCTION_PROPERTY', 'UPDATE_GAME', ({ game }) =>
+    game.notice && game.notice.type === 'auction'],
+]
+
+const shouldLoadAction = (action) => {
+  return !!triggerActions.find((a) => a[0] === action.type)
+}
+
+const getLoadingAction = (action) => {
+  const loading = triggerActions.find((a) => {
+    return a[1] === action.type && (!a[2] || a[2](action))
+  })
+
+  return loading && loading[0]
+}
+
+const loadingReducer = (state = [], action) => {
   switch (action.type) {
+<<<<<<< Updated upstream
     case 'CONNECT_GAME':
     case 'JOIN_GAME':
       return action.type
       
+=======
+>>>>>>> Stashed changes
     case 'ERROR':
-    case 'GAME_CONNECTED':
-    case 'SET_CURRENT_PLAYER':
-      return false
+      return []
 
     default:
+      const loaded = getLoadingAction(action)
+      const i = loaded ? state.indexOf(loaded) : -1
+
+      if (i > -1) {
+        return [
+          ...state.slice(0, i),
+          ...state.slice(i + 1)
+        ]
+      }
+
+      if (!state.includes(action.type) &&
+          shouldLoadAction(action)) {
+        return [...state, action.type]
+      }
+
       return state
   }
 }

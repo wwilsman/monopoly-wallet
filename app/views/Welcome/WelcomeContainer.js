@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { isWaitingToConnect } from '../../selectors/loading'
 import { connectGame, disconnectGame } from '../../actions/game'
 import { showErrorToast } from '../../actions/toasts'
 import { clearError } from '../../actions/error'
@@ -9,7 +10,7 @@ const WelcomeContainer = connect(
   (state) => ({
     room: state.game.room,
     error: state.error || null,
-    loading: state.loading || null
+    isConnecting: isWaitingToConnect(state)
   }), {
     showErrorToast,
     clearError,

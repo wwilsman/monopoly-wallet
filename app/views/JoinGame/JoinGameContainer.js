@@ -1,4 +1,5 @@
 import { connect } from 'react-redux'
+import { isWaitingToJoin } from '../../selectors/loading'
 import { joinGame } from '../../actions/game'
 
 import JoinGame from './JoinGame'
@@ -8,7 +9,7 @@ const JoinGameContainer = connect(
     tokens: state.theme.playerTokens,
     players: state.game.players,
     active: state.game.active,
-    loading: state.loading || null
+    isWaiting: isWaitingToJoin(state)
   }), {
     joinGame
   }
