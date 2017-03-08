@@ -1,24 +1,22 @@
 import React, { Component, PropTypes } from 'react'
-import className from 'classnames/bind'
 import styles from './Toast.css'
 
-const cx = className.bind(styles)
-
 import { Text } from '../../layout'
-import { Button, Icon } from '../../common'
+import { Icon, Currency } from '../../common'
+
+const messageReg = /(\{(?:p|\$):.*?\})/
+const playerReg = /^\{p:(.*?)\}$|.*/
+const currencyReg = /^\{\$:(.*?)\}$|.*/
 
 class Toast extends Component {
   static propTypes = {
     onDismiss: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired,
-    type: PropTypes.oneOf([
-      'notice',
-      'error',
-      'poll'
-    ]).isRequired,
-    content: PropTypes.string.isRequired,
-    timeout: PropTypes.number,
-    buttons: PropTypes.array
+    message: PropTypes.string.isRequired,
+    timeout: PropTypes.number
+  }
+
+  static contextTypes = {
+    players: PropTypes.object.isRequired
   }
 
   componentDidMount() {
@@ -35,42 +33,34 @@ class Toast extends Component {
     }
   }
 
-  render() {
-    const {
-      type,
-      content,
-      buttons,
-      onDismiss,
-      dispatch
-    } = this.props
+  renderMessage() {
+    const { players } = this.context
+    const { message } = this.props
+
+    let parts = message.split(messageReg)
+    parts = parts.filter(Boolean).map((part) => ({
+      currency: parseInt(part.replace(currencyReg, '$1'), 10),
+      player: part.replace(playerReg, '$1'),
+      content: part
+    }))
 
     return (
-      <div className={cx('root', {
-          'error': type === 'error',
-          'poll': type === 'poll'
-        })}>
-        <Text sm>{content}</Text>
-
-        <div className={styles.buttons}>
-          {buttons ? buttons.map((btn, i) => (
-             <Button
-                 key={i}
-                 className={!i && styles.unimportant}
-                 onClick={() => {
-                     dispatch(btn.action)
-                     onDismiss()
-                   }}
-                 small>
-               {btn.label}
-             </Button>
-           )) : (
-             <Button small onClick={onDismiss}>
-               <Icon name="x" className={styles.dismiss}/>
-             </Button>
-           )}
-        </div>
-      </div>
+      <Text sm className={styles.message}>
+        {parts.filter(Boolean).map((part, i) => (
+           (part.player ? (
+             <span key={i}>{players[part.player]}</span>
+           ) : part.currency ? (
+             <Currency key={i} amount={part.currency}/>
+           ) : (
+             <span key={i}>{part.content}</span>
+           ))
+         ))}
+      </Text>
     )
+  }
+
+  render() {
+    return null
   }
 }
 

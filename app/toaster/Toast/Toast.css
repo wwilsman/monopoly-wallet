@@ -4,7 +4,7 @@
   margin: var(--pad-med) var(--pad-lg);
   background-color: var(--color-green);
   box-shadow: var(--shadow-lg);
-  border-radius: 5px;
+  border-radius: var(--rad-sm);
   padding: var(--pad-sm);
   padding-left: var(--pad-med);
   color: white;
@@ -28,6 +28,20 @@
 
 .poll {
   background-color: var(--color-blue);
+}
+
+.message > span {
+  display: inline-block;
+  vertical-align: middle;
+  margin: 0 0.125em;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
+  }
 }
 
 .buttons {
