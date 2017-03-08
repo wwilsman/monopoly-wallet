@@ -11,21 +11,33 @@ class JoinGame extends Component {
     active: PropTypes.array.isRequired,
     players: PropTypes.array.isRequired,
     joinGame: PropTypes.func.isRequired,
-    loading: PropTypes.string
+    isWaiting: PropTypes.bool
   }
 
   state = {
     playerName: '',
     selectedToken: '',
     tokens: this.getTokenObjects(),
-    loading: false
+    isWaiting: false
   }
 
-  componentWillReceiveProps({ active, tokens, players, loading }) {
-    if (active !== this.props.active ||
-        tokens !== this.props.tokens ||
-        players !== this.props.players) {
-      const { selectedToken } = this.state
+  componentWillReceiveProps(props) {
+    const { selectedToken } = this.state
+
+    const {
+      active:oldActive,
+      tokens:oldTokens,
+      players:oldPlayers
+    } = this.props
+
+    const {
+      active,
+      tokens,
+      players,
+      isWaiting
+    } = props
+
+    if (active !== oldActive || tokens !== oldTokens || players !== oldPlayers) {
       const isTokenTaken = selectedToken && active.includes(selectedToken.name)
 
       this.setState({
@@ -34,25 +46,27 @@ class JoinGame extends Component {
       })
     }
 
-    if (loading) {
-      this._loadingTimeout = setTimeout(() => {
-        this.setState({ loading: true })
+    if (isWaiting) {
+      this._waitingTimeout = setTimeout(() => {
+        this.setState({ isWaiting })
       }, 100)
     } else {
-      this._cancelLoading()
+      this._cancelWaiting()
     }
   }
 
   componentWillUnmount() {
-    this._cancelLoading()
+    this._cancelWaiting()
   }
 
-  _cancelLoading() {
-    if (this._loadingTimeout) {
-      clearTimeout(this._loadingTimeout)
+  _cancelWaiting() {
+    if (this._waitingTimeout) {
+      clearTimeout(this._waitingTimeout)
     }
 
-    this.setState({ loading: false })
+    this.setState({
+      isWaiting: false
+    })
   }
 
   _handleNameChange = (name) => {
@@ -87,6 +101,8 @@ class JoinGame extends Component {
     players = this.props.players,
     active = this.props.active
   ) {
+    const playerName = this.state && this.state.playerName
+
     return tokens.map((token) => {
       const player = players.find((p) => p.token === token)
       const isActive = player ? active.includes(token) : false
@@ -94,7 +110,7 @@ class JoinGame extends Component {
       return {
         name: token,
         player: player ? player.name : false,
-        disabled: !!player && (player.name !== this.state.playerName || isActive),
+        disabled: !!player && (player.name !== playerName || isActive),
         isActive
       }
     })
@@ -105,7 +121,7 @@ class JoinGame extends Component {
       tokens,
       playerName,
       selectedToken,
-      loading
+      isWaiting
     } = this.state
 
     return (
@@ -135,7 +151,7 @@ class JoinGame extends Component {
           <Button
               onClick={this._handleAskToJoin}
               disabled={!playerName || !selectedToken}
-              loading={loading}
+              loading={isWaiting}
               color="blue">
             Join Game
           </Button>

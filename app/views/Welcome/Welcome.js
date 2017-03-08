@@ -18,14 +18,14 @@ class Welcome extends Component {
     disconnectGame: PropTypes.func.isRequired,
     showErrorToast: PropTypes.func.isRequired,
     clearError: PropTypes.func.isRequired,
-    loading: PropTypes.string,
+    isConnecting: PropTypes.bool,
     error: PropTypes.object,
     room: PropTypes.string
   }
 
   state = {
     showJoinModal: false,
-    loading: false
+    isConnecting: false
   }
 
   componentWillMount() {
@@ -34,32 +34,36 @@ class Welcome extends Component {
     }
   }
 
-  componentWillUnmount() {
-    this._cancelLoading()
-  }
+  componentWillReceiveProps(props) {
+    const { isConnecting, error, room } = props
 
-  componentWillReceiveProps({ error, loading, room }) {
     if (error) {
       this.props.showErrorToast(error.message)
     } else if (room) {
       this.context.router.push(`/${room}`)
     }
 
-    if (loading) {
-      this._loadingTimeout = setTimeout(() => {
-        this.setState({ loading: true })
+    if (isConnecting) {
+      this._connectingTimeout = setTimeout(() => {
+        this.setState({ isConnecting })
       }, 100)
     } else {
-      this._cancelLoading()
+      this._cancelConnecting()
     }
   }
 
-  _cancelLoading() {
-    if (this._loadingTimeout) {
-      clearTimeout(this._loadingTimeout)
+  componentWillUnmount() {
+    this._cancelConnecting()
+  }
+
+  _cancelConnecting() {
+    if (this._connectingTimeout) {
+      clearTimeout(this._connectingTimeout)
     }
     
-    this.setState({ loading: false })
+    this.setState({
+      isConnecting: false
+    })
   }
 
   _showJoinModal = () => {
@@ -84,7 +88,7 @@ class Welcome extends Component {
   }
 
   render() {
-    const { loading, showJoinModal } = this.state
+    const { isConnecting, showJoinModal } = this.state
 
     return (
       <Flex>
@@ -114,7 +118,7 @@ class Welcome extends Component {
              <JoinGameModal
                  onClose={this._hideJoinModal}
                  onContinue={this._tryConnect}
-                 loading={loading}
+                 loading={isConnecting}
              />
 
              <Toaster/>
