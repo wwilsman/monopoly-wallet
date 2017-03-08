@@ -19,13 +19,6 @@ const getLoadingAction = (action) => {
 
 const loadingReducer = (state = [], action) => {
   switch (action.type) {
-<<<<<<< Updated upstream
-    case 'CONNECT_GAME':
-    case 'JOIN_GAME':
-      return action.type
-      
-=======
->>>>>>> Stashed changes
     case 'ERROR':
       return []
 
