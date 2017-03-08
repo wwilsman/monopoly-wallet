@@ -24,7 +24,7 @@ const toasterMiddleware = (store) => (next) => (action) => {
   const middle = next(action)
   
   if (action.type === 'UPDATE_GAME') {
-    const { game: { notice } } = store.getState()
+    const { game: { notice } } = action
 
     if (notice) {
       switch (notice.type) {
