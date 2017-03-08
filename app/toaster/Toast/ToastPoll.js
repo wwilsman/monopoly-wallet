@@ -12,7 +12,7 @@ class ToastPoll extends Toast {
     const { onDismiss, onVote } = this.props
 
     return (
-      <Flex className={[styles.root, styles.poll].join(' ')}>
+      <Flex className={[styles.root, styles.attention].join(' ')}>
         {this.renderMessage()}
 
         <Flex className={styles.buttons}>
