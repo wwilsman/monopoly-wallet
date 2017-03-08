@@ -97,7 +97,7 @@ describe('Room', () => {
 
     it('The new player should poll other players before joining', (done) => {
       client1.on('poll:new', ({ message }) => {
-        assert.equal(message, `{p:${p2.token}} would like to join`)
+        assert.equal(message, `${p2.name.toUpperCase()} would like to join`)
         done()
       })
 
@@ -111,7 +111,7 @@ describe('Room', () => {
       client2.on('game:joined', () => done())
 
       client1.on('poll:new', ({ poll, message }) => {
-        assert.equal(message, `{p:${p2.token}} would like to join`)
+        assert.equal(message, `${p2.name.toUpperCase()} would like to join`)
         client1.emit('poll:vote', { poll, vote: true })
       })
 
@@ -175,7 +175,7 @@ describe('Room', () => {
       })
 
       client1.on('poll:new', ({ message }) =>
-        assert.equal(message, `{p:${p2.token}} would like to join`))
+        assert.equal(message, `${p2.name.toUpperCase()} would like to join`))
 
       client1.on('game:joined', () =>
         client2.emit('game:join', p2))
@@ -198,7 +198,7 @@ describe('Room', () => {
       client1.on('poll:new', ({ poll, message }) => {
         client1.emit('poll:vote', { poll, vote: true })
 
-        if (message === `{p:${p3.token}} would like to join`) {
+        if (message === `${p3.name.toUpperCase()} would like to join`) {
           pollID = poll
         }
       })
@@ -231,7 +231,7 @@ describe('Room', () => {
       })
 
       client1.on('poll:new', ({ poll, message }) => {
-        if (message === `{p:${p2.token}} would like to join`) {
+        if (message === `${p2.name.toUpperCase()} would like to join`) {
           client1.emit('poll:vote', { poll, vote: true })
         }
       })
@@ -317,7 +317,7 @@ describe('Room', () => {
       client2.on('game:joined', () => done())
 
       client1.on('poll:new', ({ poll, message }) => {
-        if (message === `{p:${p2.token}} would like to join`) {
+        if (message === `${p2.name.toUpperCase()} would like to join`) {
           client1.emit('poll:vote', { poll, vote: true })
         }
       })
