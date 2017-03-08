@@ -47,26 +47,29 @@ class JoinGame extends Component {
     }
 
     if (isWaiting) {
+      this._clearWaiting()
       this._waitingTimeout = setTimeout(() => {
         this.setState({ isWaiting })
       }, 100)
     } else {
-      this._cancelWaiting()
+      this._clearWaiting(true)
     }
   }
 
   componentWillUnmount() {
-    this._cancelWaiting()
+    this._clearWaiting()
   }
 
-  _cancelWaiting() {
+  _clearWaiting(setState) {
     if (this._waitingTimeout) {
       clearTimeout(this._waitingTimeout)
     }
 
-    this.setState({
-      isWaiting: false
-    })
+    if (setState) {
+      this.setState({
+        isWaiting: false
+      })
+    }
   }
 
   _handleNameChange = (name) => {
@@ -76,7 +79,7 @@ class JoinGame extends Component {
 
     state.tokens = this.getTokenObjects().map((token, i) => (
       (token.player === playerName && !token.isActive) ?
-        { ...token, disabled: false } : token
+      { ...token, disabled: false } : token
     ))
 
     if (selectedToken && selectedToken.player &&

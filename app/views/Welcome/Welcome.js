@@ -44,26 +44,29 @@ class Welcome extends Component {
     }
 
     if (isConnecting) {
+      this._clearConnecting()
       this._connectingTimeout = setTimeout(() => {
         this.setState({ isConnecting })
       }, 100)
     } else {
-      this._cancelConnecting()
+      this._clearConnecting(true)
     }
   }
 
   componentWillUnmount() {
-    this._cancelConnecting()
+    this._clearConnecting()
   }
 
-  _cancelConnecting() {
+  _clearConnecting(setState) {
     if (this._connectingTimeout) {
       clearTimeout(this._connectingTimeout)
     }
-    
-    this.setState({
-      isConnecting: false
-    })
+
+    if (setState) {
+      this.setState({
+        isConnecting: false
+      })
+    }
   }
 
   _showJoinModal = () => {
