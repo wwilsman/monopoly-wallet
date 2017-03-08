@@ -21,9 +21,10 @@ export function clearTimedToasts() {
 }
 
 const toasterMiddleware = (store) => (next) => (action) => {
+  const { player } = store.getState()
   const middle = next(action)
   
-  if (action.type === 'UPDATE_GAME') {
+  if (player && action.type === 'UPDATE_GAME') {
     const { game: { notice } } = action
 
     if (notice) {
