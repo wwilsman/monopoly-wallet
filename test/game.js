@@ -1117,6 +1117,37 @@ describe('Game', () => {
         assert.equal(p1.balance, bal - 1)
         assert.ok(!auction)
       })
+
+      it('The auction should cancel if players concede without bidding', () => {
+        game.concedeAuction(p1.token, property.name)
+        game.concedeAuction(p2.token, property.name)
+        game.concedeAuction(p3.token, property.name)
+
+        assert.equal(property.owner, 'bank')
+        assert.ok(!auction)
+      })
+    })
+
+    describe('#_closeAuction()', () => {
+
+      it('The auction should be cancelled when nobody has bid', () => {
+        game._closeAuction()
+
+        assert.equal(property.owner, 'bank')
+        assert.ok(!auction)
+      })
+
+      it('The highest bidding player should win the auction', () => {
+        const bal = p1.balance
+
+        game.placeAuctionBid(p1.token, property.name, 1)
+
+        game._closeAuction()
+
+        assert.equal(property.owner, p1.token)
+        assert.equal(p1.balance, bal - 1)
+        assert.ok(!auction)
+      })
     })
   })
 
