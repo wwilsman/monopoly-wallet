@@ -138,29 +138,37 @@ describe('Room', () => {
       client1.emit('game:join', p1)
     })
 
-    const actions = {
-      'game:pay-bank': { amount: 100 },
-      'game:collect-money': { amount: 100 },
-      'game:pay-player': { player: p2.token, amount: 100 },
-      'game:pay-rent': { property: 'Oriental Avenue' },
-      'game:claim-bankruptcy': { player: 'bank' },
-      'game:buy-property': { property: 'Oriental Avenue' },
-      'game:improve-property': { property: 'Oriental Avenue' },
-      'game:unimprove-property': { property: 'Oriental Avenue' },
-      'game:mortgage-property': { property: 'Oriental Avenue' },
-      'game:unmortgage-property': { property: 'Oriental Avenue' },
-      'auction:start': { property: 'Oriental Avenue' },
-      'auction:bid': { property: 'Oriental Avenue' },
-      'auction:concede': { property: 'Oriental Avenue' },
-      'trade:offer': { player: p2.token, trade: [{ properties: ['Oriental Avenue'] }] },
-      'trade:decline': { player: p2.token },
-      'trade:accept': { player: p2.token }
-    }
+    const actions = [
+      ['game:pay-bank', { amount: 100 }],
+      ['game:collect-money', { amount: 100 }],
+      ['game:pay-player', { player: p2.token, amount: 100 }],
+      ['game:pay-rent', { property: 'Oriental Avenue' }],
+      ['game:claim-bankruptcy', { player: 'bank' }],
+      ['game:buy-property', { property: 'Oriental Avenue' }],
+      ['game:improve-property', { property: 'Oriental Avenue' }],
+      ['game:unimprove-property', { property: 'Oriental Avenue' }],
+      ['game:mortgage-property', { property: 'Oriental Avenue' }],
+      ['game:unmortgage-property', { property: 'Oriental Avenue' }],
+      ['auction:start', { property: 'Oriental Avenue' }],
+      ['auction:bid', { property: 'Oriental Avenue' }],
+      ['auction:concede', { property: 'Oriental Avenue' }],
+      ['trade:offer', { player: p2.token, trade: [{ properties: ['Oriental Avenue'] }] }],
+      ['trade:decline', { player: p2.token }],
+      ['trade:accept', { player: p2.token }]
+    ]
 
-    for (const [event, data] of Object.entries(actions)) {
+    for (const [event, data] of actions) {
       it(`The room should respond to "${event}"`, (done) => {
-        client1.on('game:update', () => done())
-        client1.on('game:error', () => done())
+        let isDone = false
+
+        const finish = () => {
+          !isDone && done()
+          isDone = true
+        }
+
+        client1.on('game:update', finish)
+        client1.on('game:error', finish)
+
         client1.emit(event, data)
       })
     }
