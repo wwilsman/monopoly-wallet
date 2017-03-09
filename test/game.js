@@ -968,6 +968,7 @@ describe('Game', () => {
   })
 
   describe('Auctions', () => {
+    const participants = initialState.players.map((p) => p.token)
     let property, auction, winning
 
     beforeEach(() => {
@@ -979,7 +980,7 @@ describe('Game', () => {
         winning = auction && auction.bids[0]
       })
 
-      game.auctionProperty(p1.token, property.name)
+      game.auctionProperty(p1.token, property.name, participants)
     })
 
     describe('#auctionProperty()', () => {
@@ -989,7 +990,7 @@ describe('Game', () => {
           p.owner === 'bank' && p.name !== property.name)
         
         assert.throws(() => {
-          game.auctionProperty(p1.token, property2.name)
+          game.auctionProperty(p1.token, property2.name, participants)
         }, isMonopolyError)
       })
 
@@ -997,7 +998,7 @@ describe('Game', () => {
         property = game.state.properties.find((p) => p.owner === p2.token)
 
         assert.throws(() => {
-          game.auctionProperty(p1.token, property.name)
+          game.auctionProperty(p1.token, property.name, participants)
         }, isMonopolyError)
       })
 
