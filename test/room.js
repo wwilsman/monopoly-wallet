@@ -134,7 +134,14 @@ describe('Room', () => {
   describe('Game Actions', () => {
 
     beforeEach((done) => {
-      client1.on('game:joined', () => done())
+      client2.on('game:joined', () => done())
+
+      client1.on('poll:new', ({ poll }) =>
+        client1.emit('poll:vote', { poll, vote: true }))
+
+      client1.on('game:joined', () =>
+        client2.emit('game:join', p2))
+
       client1.emit('game:join', p1)
     })
 
@@ -172,6 +179,24 @@ describe('Room', () => {
         client1.emit(event, data)
       })
     }
+
+    it('The player should concede from an auction on disconnect', (done) => {
+      client2.on('game:update', ({ game: { notice }}) => {
+        if (notice && notice.type === 'auction:concede') {
+          assert.ok(notice.message.includes(p1.token))
+          done()
+        }
+      })
+
+      client1.on('game:update', ({ game: { auction }}) => {
+        if (auction) {
+          assert.equal(auction.property, 'Oriental Avenue')
+          client1.disconnect()
+        }
+      })
+
+      client1.emit('auction:start', { property: 'Oriental Avenue' })
+    })
   })
 
   describe('Polls', () => {
