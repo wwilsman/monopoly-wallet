@@ -86,8 +86,8 @@ describe('Room', () => {
         done()
       })
 
-      client1.on('poll:new', (pollID, message) =>
-        client1.emit('poll:vote', pollID, false))
+      client1.on('poll:new', ({ poll, message }) =>
+        client1.emit('poll:vote', { poll, vote: false }))
 
       client1.on('game:joined', () =>
         client2.emit('game:join', p2))
