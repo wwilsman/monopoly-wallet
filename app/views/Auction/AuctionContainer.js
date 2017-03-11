@@ -1,7 +1,7 @@
 import { connect } from 'react-redux'
 import { createGetProperty } from '../../selectors/game'
 import { getCurrentPlayer } from '../../selectors/player'
-import { concedeAuction } from '../../actions/game'
+import { concedeAuction, placeAuctionBid } from '../../actions/game'
 
 import Auction from './Auction'
 
@@ -15,7 +15,8 @@ const AuctionContainer = connect(
       player: getCurrentPlayer(state)
     })
   }, {
-    concedeAuction
+    concedeAuction,
+    placeAuctionBid
   }
 )(Auction)
 
