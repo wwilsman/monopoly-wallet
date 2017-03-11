@@ -1,5 +1,5 @@
 @import '../../core/variables';
 
-.root {
+.margin-bottom {
   margin-bottom: var(--pad-sm);
 }

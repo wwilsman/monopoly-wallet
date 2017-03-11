@@ -1,16 +1,30 @@
 import React, { Component, PropTypes } from 'react'
 import styles from './Auction.css'
 
-import { Flex, Box, Title } from '../../layout'
-import { Button } from '../../common'
+import {
+  Flex,
+  Box,
+  Title,
+  Label
+} from '../../layout'
+
+import {
+  Icon,
+  Button,
+  Currency,
+  CurrencyField,
+  Stepper
+} from '../../common'
+
 import { PropertyCard } from '../../properties'
 
 class Auction extends Component {
   static propTypes = {
-    bids: PropTypes.array.isRequired,
-    property: PropTypes.object.isRequired,
     player: PropTypes.object.isRequired,
-    concedeAuction: PropTypes.func.isRequired
+    concedeAuction: PropTypes.func.isRequired,
+    placeAuctionBid: PropTypes.func.isRequired,
+    property: PropTypes.object,
+    bids: PropTypes.array
   }
 
   static contextTypes = {
@@ -24,20 +38,53 @@ class Auction extends Component {
     }).isRequired
   }
 
+  state = {
+    bid: 0
+  }
+
   componentWillReceiveProps(props) {
     const { push, match } = this.context.router
+    const { params: { room } } = match
     const { bids, player } = props
 
-    if (!bids.find((b) => b.player === player.token)) {
-      push(`/${match.params.room}`)
+    const notInvited = !bids || !bids.find((b) =>
+      b.player === player.token)
+
+    if (notInvited) {
+      push(`/${room}`)
     }
   }
 
+  _handleConcede = () => {
+    const { property, concedeAuction } = this.props
+    concedeAuction(property.name)
+  }
+
+  _handleChangeBid = (bid) => {
+    this.setState({ bid })
+  }
+
+  _handlePlaceBid = () => {
+    const { property, placeAuctionBid } = this.props
+    placeAuctionBid(property.name, this.state.bid)
+  }
+
   render() {
+    const { bid } = this.state
+
     const {
+      bids,
+      player,
       property,
-      concedeAuction
+      concedeAuction,
+      placeAuctionBid
     } = this.props
+
+    if (!bids) {
+      return null
+    }
+
+    const winning = bids[0]
 
     return (
       <Flex>
@@ -47,23 +94,59 @@ class Auction extends Component {
 
         <Box stretch>
           <div className={styles.property}>
+            <div className={styles.winning}>
+              <Icon themed name={winning.amount > 0 ? winning.player : 'bank'}
+                    className={styles['winning-icon']}/>
+
+              <div className={styles['winning-bid']}>
+                <Currency amount={winning.amount}
+                          className={styles['winning-amount']}/>
+                <Label close>Current Bid</Label>
+              </div>
+            </div>
+
             <PropertyCard property={property}/>
           </div>
         </Box>
 
-        <Box direction="row">
-          <Button
-              onClick={() => concedeAuction(property.name)}
-              color="grey"
-              width="1/2">
-            Concede
-          </Button>
+        <Box>
+          <Flex direction="row">
+            <Button
+                onClick={this._handleConcede}
+                color="grey"
+                width="1/2">
+              Concede
+            </Button>
 
-          <Button
-              color="green"
-              width="1/2">
-            Bid
-          </Button>
+            <Button
+                onClick={this._handlePlaceBid}
+                color="green"
+                width="1/2">
+              Bid
+            </Button>
+          </Flex>
+
+          <Flex direction="row" className={styles.bidding}>
+            <div className={styles['bidding-balance']}>
+              <Label left>Available</Label>
+
+              <Currency
+                  className={styles.balance}
+                  amount={player.balance}
+              />
+            </div>
+
+            <div className={styles['bidding-bid']}>
+              <Stepper
+                  input={bid}
+                  onStep={this._handleChangeBid}>
+                <CurrencyField
+                    amount={bid}
+                    onChange={this._handleChangeBid}
+                />
+              </Stepper>
+            </div>
+          </Flex>
         </Box>
       </Flex>
     )
