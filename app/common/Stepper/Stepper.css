@@ -1,0 +1,43 @@
+@import '../../core/variables';
+
+.root {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  justify-content: stretch;
+}
+
+.center {
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.decrement, .increment {
+  display: flex;
+  align-items: center;
+  padding: var(--pad-sm);
+  border-radius: var(--rad-sm);
+  line-height: 1;
+
+  &:active {
+    background-color: color(black a(10%));
+  }
+}
+
+.decrement {
+  color: var(--color-red);
+
+  &:before {
+    content: '-';
+  }
+}
+
+.increment {
+  color: var(--color-green);
+
+  &:before {
+    content: '+';
+  }
+}
