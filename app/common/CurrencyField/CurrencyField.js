@@ -8,11 +8,17 @@ class CurrencyField extends Component {
     amount: PropTypes.number.isRequired,
     onChange: PropTypes.func.isRequired,
     onEnter: PropTypes.func,
-    onBlur: PropTypes.func
+    onBlur: PropTypes.func,
+    max: PropTypes.number
+  }
+
+  static defaultProps = {
+    max: 99999
   }
 
   _handleKeyDown = (e) => {
     const { which } = e
+    const { onEnter, onChange, max } = this.props
     const char = String.fromCharCode(which)
     let amount = (this.props.amount + '')
 
@@ -24,20 +30,20 @@ class CurrencyField extends Component {
     } else if (char.match(/^\d+$/)) {
       amount = amount + char
 
-      if (parseInt(amount, 10) > 99999) {
+      if (parseInt(amount, 10) > max) {
         return
       }
 
     } else {
-      if (which === 13 && this.props.onEnter) {
-        this.props.onEnter()
+      if (which === 13 && onEnter) {
+        onEnter()
       }
 
       return
     }
 
     amount = parseInt(amount, 10) || 0
-    this.props.onChange(amount)
+    onChange(amount)
   }
 
   focus = () => {
