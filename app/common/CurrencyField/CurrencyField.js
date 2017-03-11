@@ -40,7 +40,7 @@ class CurrencyField extends Component {
     this.props.onChange(amount)
   }
 
-  focus() {
+  focus = () => {
     this.input.focus()
   }
 
@@ -52,7 +52,7 @@ class CurrencyField extends Component {
     } = this.props
 
     return (
-      <span className={className}>
+      <span className={className} onClick={this.focus}>
         <Currency amount={amount}/>
 
         <input
