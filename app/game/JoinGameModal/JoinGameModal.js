@@ -34,7 +34,7 @@ class JoinGameModal extends Component {
     return (
       <Modal onClose={onClose}>
         <Flex className={styles.input}>
-          <Label>Room Code</Label>
+          <Label center>Room Code</Label>
 
           <TextInput
               ref={(input) => this.input = input}

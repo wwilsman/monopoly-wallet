@@ -128,7 +128,7 @@ class Auction extends Component {
 
           <Flex direction="row" className={styles.bidding}>
             <div className={styles['bidding-balance']}>
-              <Label left>Available</Label>
+              <Label>Available</Label>
 
               <Currency
                   className={styles.balance}
