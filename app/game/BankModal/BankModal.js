@@ -49,7 +49,7 @@ class BankModal extends Component {
     return (
       <Modal onClose={onClose}>
         <Flex className={styles.input}>
-          <Label>Amount</Label>
+          <Label center>Amount</Label>
 
           <CurrencyField
               ref={(input) => this.input = input}

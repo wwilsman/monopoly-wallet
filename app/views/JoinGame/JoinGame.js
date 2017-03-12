@@ -134,7 +134,7 @@ class JoinGame extends Component {
         </Header>
 
         <Section stretch>
-          <Label>Your Name</Label>
+          <Label center>Your Name</Label>
 
           <TextInput
               className={styles['name-input']}
