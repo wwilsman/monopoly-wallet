@@ -5,6 +5,10 @@
   flex-direction: row;
   align-items: stretch;
   justify-content: stretch;
+
+  &.is-disabled {
+    opacity: 0.6
+  }
 }
 
 .center {

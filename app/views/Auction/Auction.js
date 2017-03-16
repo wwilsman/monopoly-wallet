@@ -90,6 +90,8 @@ class Auction extends Component {
     }
 
     const winning = bids[0]
+    const isWinning = winning.player === player.token && winning.amount > 0
+    const canBid = !isWinning && winning.amount < player.balance
 
     return (
       <Flex container>
@@ -118,6 +120,9 @@ class Auction extends Component {
             <Flex className={styles['bidding-bid']}>
               <Stepper
                   input={bid}
+                  max={player.balance}
+                  min={winning.amount}
+                  disabled={!canBid}
                   onStep={this._handleChangeBid}>
                 <CurrencyField
                     amount={bid}
@@ -137,6 +142,7 @@ class Auction extends Component {
 
             <Button
                 onClick={this._handlePlaceBid}
+                disabled={!canBid}
                 color="green"
                 width="1/2">
               Bid

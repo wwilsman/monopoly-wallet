@@ -1,18 +1,30 @@
 import React, { Component, PropTypes } from 'react'
+import className from 'classnames/bind'
 import styles from './Stepper.css'
+
+const cx = className.bind(styles)
 
 class Stepper extends Component {
   static propTypes = {
     input: PropTypes.number.isRequired,
     onStep: PropTypes.func.isRequired,
-    max: PropTypes.number
+    disabled: PropTypes.bool,
+    max: PropTypes.number,
+    min: PropTypes.number
   }
 
   static defaultProps = {
-    max: 99999
+    max: 99999,
+    min: 0
   }
 
   frequency = 0
+
+  componentWillReceiveProps({ input, min, max, onStep }) {
+    if (input <= min) {
+      onStep(Math.max(input + this.getStep(), min))
+    }
+  }
 
   getStep() {
     const { input } = this.props
@@ -42,6 +54,8 @@ class Stepper extends Component {
   }
 
   _handleIncrement = () => {
+    if (this.props.disabled) return
+
     const { input, max, onStep } = this.props
     const step = this.getStep()
     const rounded = (Math.ceil(input / step) + 1) * step
@@ -50,18 +64,22 @@ class Stepper extends Component {
   }
 
   _handleDecrement = () => {
-    const { input, onStep } = this.props
+    if (this.props.disabled) return
+
+    const { input, min, onStep } = this.props
     const step = this.getStep()
     const rounded = (Math.floor(input / step) - 1) * step
 
-    onStep(Math.max(rounded, 0))
+    onStep(Math.max(rounded, min))
   }
 
   render() {
-    const { className } = this.props
+    const { className, disabled } = this.props
 
     return (
-      <div className={[styles.root, className].join(' ')}>
+      <div className={cx('root', {
+          'is-disabled': disabled
+        }, className)}>
         <div className={styles.decrement}
              onClick={this._handleDecrement}/>
 
