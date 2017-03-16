@@ -29,6 +29,7 @@ const PropertyInfoContainer = connect(
         owner: getPlayer(state, props.property.owner),
         isMonopoly: isPropertyMonopoly(state, props.property),
         winning: winning && getPlayer(state, winning.player),
+        winningAmount: winning && auction.bids[0].amount,
         auction
       }
     }
