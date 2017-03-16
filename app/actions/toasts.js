@@ -29,8 +29,18 @@ const toasterMiddleware = (store) => (next) => (action) => {
   if (player && action.type === 'UPDATE_GAME') {
     const { game: { notice } } = action
 
+    const removeAuctionToasts = () => {
+      const auctionToast = toasts.find((t) => t.type === 'auction');
+
+      if (auctionToast && notice.blame.includes(player)) {
+        store.dispatch(removeToast(auctionToast._id))
+      }
+    }
+
     if (notice) {
       switch (notice.type) {
+        case 'auction:end':
+          removeAuctionToasts()
         case 'game':
           store.dispatch(showToast(notice.message))
           break
@@ -41,12 +51,7 @@ const toasterMiddleware = (store) => (next) => (action) => {
           break
 
         case 'auction:concede':
-          const auctionToast = toasts.find((t) => t.type === 'auction');
-
-          if (auctionToast && notice.blame.includes(player)) {
-            store.dispatch(removeToast(auctionToast._id))
-          }
-
+          removeAuctionToasts()
           break
 
         // case 'trade':
