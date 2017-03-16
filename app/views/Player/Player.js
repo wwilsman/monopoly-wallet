@@ -10,7 +10,8 @@ class Player extends Component {
   static propTypes = {
     player: PropTypes.object.isRequired,
     payBank: PropTypes.func.isRequired,
-    collectMoney: PropTypes.func.isRequired
+    collectMoney: PropTypes.func.isRequired,
+    showProperty: PropTypes.string
   }
 
   static contextTypes = {
@@ -25,9 +26,14 @@ class Player extends Component {
   state = {
     showBankModal: false,
     bankModalType: 'collect',
-    showProperty: false
+    showProperty: this.props.showProperty
   }
 
+  componentWillReceiveProps({ showProperty }) {
+    if (showProperty) {
+      this.setState({ showProperty })
+    }
+  }
 
   _handleShowCollectModal = () => {
     this.setState({
