@@ -36,10 +36,8 @@ const toasterMiddleware = (store) => (next) => (action) => {
           break
 
         case 'auction:new':
-          if (!loading.includes('AUCTION_PROPERTY')) {
-            const { property } = action.game.auction
-            store.dispatch(showAuctionToast(property, notice.message))
-          }
+          const { property } = action.game.auction
+          store.dispatch(showAuctionToast(property, notice.message))
           break
 
         case 'auction:concede':
