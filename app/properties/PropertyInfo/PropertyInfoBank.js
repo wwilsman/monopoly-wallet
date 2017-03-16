@@ -25,13 +25,19 @@ const PropertyInfoBank = ({
     {children}
 
     <Flex row className={styles.bottom}>
-      <Button small width="1/2" color="blue"
-              onClick={() => onAuctionProperty(property.name)}>
+      <Button
+          onClick={() => onAuctionProperty(property.name)}
+          width="1/2"
+          color="blue"
+          small>
         Auction
       </Button>
 
-      <Button small width="1/2" color="green"
-              onClick={() => onBuyProperty(property.name)}>
+      <Button
+          onClick={() => onBuyProperty(property.name)}
+          width="1/2"
+          color="green"
+          small>
         Purchase
       </Button>
     </Flex>

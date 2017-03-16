@@ -3,8 +3,10 @@ import React from 'react'
 import PropertyInfoOwned from './PropertyInfoOwned'
 import PropertyInfoPlayer from './PropertyInfoPlayer'
 import PropertyInfoBank from './PropertyInfoBank'
+import PropertyInfoAuction from './PropertyInfoAuction'
 
 const PropertyInfo = ({
+  auction,
   currentPlayer,
   improveProperty,
   unimproveProperty,
@@ -16,7 +18,9 @@ const PropertyInfo = ({
   buyProperty,
   ...props
 }) => (
-  (props.owner === currentPlayer ? (
+  (auction ? (
+    <PropertyInfoAuction {...props}/>
+  ) : props.owner === currentPlayer ? (
     <PropertyInfoOwned
         onImproveProperty={improveProperty}
         onUnimproveProperty={unimproveProperty}

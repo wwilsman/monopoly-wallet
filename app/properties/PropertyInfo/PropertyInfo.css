@@ -17,15 +17,28 @@
   }
 }
 
-.hotel {
-  color: var(--color-red);
-}
-
 .bottom {
   position: absolute;
   top: 100%;
   width: 100%;
   margin-top: var(--pad-med);
+
+  &.close {
+    margin-top: var(--pad-mid);
+  }
+}
+
+.hotel {
+  color: var(--color-red);
+}
+
+.bid {
+  font-size: var(--size-lg);
+}
+
+.price {
+  color: var(--color-green);
+  margin-left: 0.25em;
 }
 
 .buttons {

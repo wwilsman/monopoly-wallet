@@ -3,8 +3,10 @@ import styles from './Auction.css'
 
 import {
   Flex,
-  Box,
+  Section,
+  Header,
   Title,
+  Text,
   Label
 } from '../../layout'
 
@@ -16,7 +18,10 @@ import {
   Stepper
 } from '../../common'
 
-import { PropertyCard } from '../../properties'
+import {
+  PropertyCard,
+  PropertyInfo
+} from '../../properties'
 
 class Auction extends Component {
   static propTypes = {
@@ -87,30 +92,42 @@ class Auction extends Component {
     const winning = bids[0]
 
     return (
-      <Flex>
-        <Box size="1/8">
+      <Flex container>
+        <Header>
           <Title>Auction</Title>
-        </Box>
+        </Header>
 
-        <Box stretch>
-          <div className={styles.property}>
-            <div className={styles.winning}>
-              <Icon themed name={winning.amount > 0 ? winning.player : 'bank'}
-                    className={styles['winning-icon']}/>
+        <Section stretch>
+          <Flex className={styles.property}>
+            <PropertyInfo auction property={property}>
+              <PropertyCard property={property}/>
+            </PropertyInfo>
+          </Flex>
+        </Section>
 
-              <div className={styles['winning-bid']}>
-                <Currency amount={winning.amount}
-                          className={styles['winning-amount']}/>
-                <Label close>Current Bid</Label>
-              </div>
-            </div>
+        <Section>
+          <Flex row align="end" className={styles.bidding}>
+            <Flex className={styles['bidding-balance']}>
+              <Label>Balance</Label>
 
-            <PropertyCard property={property}/>
-          </div>
-        </Box>
+              <Text>
+                <Currency amount={player.balance} className={styles.balance}/>
+              </Text>
+            </Flex>
 
-        <Box>
-          <Flex direction="row">
+            <Flex className={styles['bidding-bid']}>
+              <Stepper
+                  input={bid}
+                  onStep={this._handleChangeBid}>
+                <CurrencyField
+                    amount={bid}
+                    onChange={this._handleChangeBid}
+                />
+              </Stepper>
+            </Flex>
+          </Flex>
+
+          <Flex row>
             <Button
                 onClick={this._handleConcede}
                 color="grey"
@@ -125,29 +142,7 @@ class Auction extends Component {
               Bid
             </Button>
           </Flex>
-
-          <Flex direction="row" className={styles.bidding}>
-            <div className={styles['bidding-balance']}>
-              <Label>Available</Label>
-
-              <Currency
-                  className={styles.balance}
-                  amount={player.balance}
-              />
-            </div>
-
-            <div className={styles['bidding-bid']}>
-              <Stepper
-                  input={bid}
-                  onStep={this._handleChangeBid}>
-                <CurrencyField
-                    amount={bid}
-                    onChange={this._handleChangeBid}
-                />
-              </Stepper>
-            </div>
-          </Flex>
-        </Box>
+        </Section>
       </Flex>
     )
   }
