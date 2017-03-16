@@ -23,7 +23,7 @@ export function clearTimedToasts() {
 }
 
 const toasterMiddleware = (store) => (next) => (action) => {
-  const { loading, player } = store.getState()
+  const { loading, player, toasts } = store.getState()
   const middle = next(action)
   
   if (player && action.type === 'UPDATE_GAME') {
@@ -40,6 +40,15 @@ const toasterMiddleware = (store) => (next) => (action) => {
             const { property } = action.game.auction
             store.dispatch(showAuctionToast(property, notice.message))
           }
+          break
+
+        case 'auction:concede':
+          const auctionToast = toasts.find((t) => t.type === 'auction');
+
+          if (auctionToast && notice.blame.includes(player)) {
+            store.dispatch(removeToast(auctionToast._id))
+          }
+
           break
 
         // case 'trade':
