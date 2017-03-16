@@ -13,7 +13,7 @@ function groupProperties(properties) {
 }
 
 const PropertyGrid = ({ properties, onClickGroup }) => (
-  <Flex direction="row" className={styles.root}>
+  <Flex row className={styles.root}>
     {groupProperties(properties).map((group) => (
        <Flex
            key={group[0].group}
