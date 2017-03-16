@@ -3,8 +3,10 @@ import Animated from 'animated/lib/targets/react-dom'
 import PanResponder from '../../apis/PanResponder'
 import styles from './PropertyList.css'
 
+import { Flex } from '../../layout'
+
 import PropertyCard from '../PropertyCard'
-import PropertyControls from '../PropertyControls'
+import PropertyInfo from '../PropertyInfo'
 
 class PropertyList extends Component {
   static propTypes = {
@@ -86,7 +88,7 @@ class PropertyList extends Component {
     const { index } = this.state
 
     return (
-      <div className={styles.root} {...this.panResponder.panHandlers}>
+      <Flex className={styles.root} {...this.panResponder.panHandlers}>
         {properties.map((property, i) => (i > index - 3 && i < index + 3) && (
            <Animated.div
                key={property.name}
@@ -97,12 +99,12 @@ class PropertyList extends Component {
                    outputRange: ['195%', '50%', '-95%']
                  })
                }}>
-             <PropertyControls property={property}>
+             <PropertyInfo property={property}>
                <PropertyCard property={property}/>
-             </PropertyControls>
+             </PropertyInfo>
            </Animated.div>
          ))}
-      </div>
+      </Flex>
     )
   }
 }

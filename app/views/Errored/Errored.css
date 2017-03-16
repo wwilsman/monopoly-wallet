@@ -2,14 +2,9 @@
 
 .root {
   background-color: var(--color-red);
+  color: white;
 }
 
 .title {
   margin-bottom: var(--pad-sm);
-}
-
-.message {
-  text-align: center;
-  font-size: var(--size-big);
-  color: white;
 }

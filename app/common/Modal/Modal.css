@@ -1,13 +1,14 @@
 @import '../../core/variables';
 
 .root {
+  z-index: 99;
   position: fixed;
   background: color(var(--color-bg-dark) a(90%));
   -webkit-backdrop-filter: blur(3px);
 }
 
 .modal {
-  border-radius: 5px;
+  border-radius: var(--rad-lg);
   background-color: var(--color-bg);
   box-shadow: var(--shadow-lg);
   padding: var(--pad-med);

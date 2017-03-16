@@ -1,6 +1,6 @@
 import React, { Component, PropTypes } from 'react'
 
-import { Flex, Box, Header } from '../../layout'
+import { Flex, Header, Section } from '../../layout'
 import { Button, Icon, TextInput } from '../../common'
 import { PropertyList } from '../../properties'
 
@@ -47,7 +47,7 @@ class Search extends Component {
     })
   }
 
-  _clearSearch = () => {
+  _handleClearSearch = () => {
     const { properties } = this.props
 
     this.setState({
@@ -59,13 +59,13 @@ class Search extends Component {
     this.input.focus()
   }
 
-  _changeProperty = (property) => {
+  _handleChangeProperty = (property) => {
     this.setState({
       currentProperty: property
     })
   }
 
-  _goBack = () => {
+  _handleBack = () => {
     this.context.router.goBack()
   }
 
@@ -84,21 +84,21 @@ class Search extends Component {
     } = this.state
 
     return (
-      <Flex>
+      <Flex container>
         <Header>
-          <Button icon onClick={this._goBack}>
+          <Button icon onClick={this._handleBack}>
             <Icon name="larr"/>
           </Button>
 
           <TextInput
-              ref={(ref) => this.input = ref}
+              ref={(input) => this.input = input}
               onChangeText={this._handleSearch}
               placeholder="Search Properties"
               value={query}
           />
 
           {query && (
-             <Button icon onClick={this._clearSearch}>
+             <Button icon onClick={this._handleClearSearch}>
                <Icon name="x"/>
              </Button>
            )}
@@ -107,7 +107,7 @@ class Search extends Component {
         <PropertyList
             properties={filteredProperties}
             activeProperty={currentProperty}
-            onChange={this._changeProperty}
+            onChange={this._handleChangeProperty}
         />
       </Flex>
     )

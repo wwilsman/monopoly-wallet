@@ -1,11 +1,16 @@
 import React from 'react'
 import styles from './Modal.css'
 
-import { Flex, Box, Header, Title } from '../../layout'
+import { Flex, Header, Section, Title } from '../../layout'
 import { Button, Icon } from '../'
 
-const Modal = ({ title, footer, onClose, children }) => (
-  <Flex className={styles.root}>
+const Modal = ({
+  title,
+  footer,
+  onClose,
+  children
+}) => (
+  <Flex container className={styles.root}>
     <Header>
       <Button icon onClick={onClose}>
         <Icon name="x"/>
@@ -16,16 +21,16 @@ const Modal = ({ title, footer, onClose, children }) => (
        )}
     </Header>
 
-    <Box stretch>
-      <div className={styles.modal}>
+    <Section stretch>
+      <Flex className={styles.modal}>
         {children}
-      </div>
-    </Box>
+      </Flex>
+    </Section>
 
-    <Box size="1/8">
+    <Section size="1/8">
       {footer}
-    </Box>
-  </Flex>
+    </Section>
+      </Flex>
 )
 
 export default Modal

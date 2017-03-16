@@ -1,6 +1,8 @@
 import React, { Component, PropTypes } from 'react'
 import styles from './Toaster.css'
 
+import { Flex } from '../../layout'
+
 import {
   ToastNotice,
   ToastError,
@@ -47,7 +49,7 @@ class Toaster extends Component {
     } = this.props
 
     return (
-      <div className={styles.root}>
+      <Flex className={styles.root}>
         {toasts.map(({ _id, type, ...toast }) => {
            toast.onDismiss = () => removeToast(_id)
            toast.key = _id
@@ -63,7 +65,7 @@ class Toaster extends Component {
              <ToastNotice {...toast}/>
            ))
          })}
-      </div>
+      </Flex>
     )
   }
 }

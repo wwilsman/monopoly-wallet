@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import styles from './Player.css'
 
-import { Flex, Box, Header, Text } from '../../layout'
+import { Flex, Header, Section, Text } from '../../layout'
 import { Icon, Button, Currency } from '../../common'
 import { PropertyGrid, PropertyList } from '../../properties'
 import { BankModal } from '../../game'
@@ -28,37 +28,44 @@ class Player extends Component {
     showProperty: false
   }
 
-  _showCollectModal = () => {
+
+  _handleShowCollectModal = () => {
     this.setState({
       showBankModal: true,
       bankModalType: 'collect'
     })
   }
 
-  _showPayModal = () => {
+  _handleShowPayModal = () => {
     this.setState({
       showBankModal: true,
       bankModalType: 'pay'
     })
   }
 
-  _hideBankModal = () => {
+  _handleHideBankModal = () => {
     this.setState({
       showBankModal: false
     })
   }
 
-  _payBank = (amount) => {
+  _handlePayBank = (amount) => {
     this.props.payBank(amount)
-    this._hideBankModal()
+
+    this.setState({
+      showBankModal: false
+    })
   }
 
-  _collectFromBank = (amount) => {
+  _handleCollectMoney = (amount) => {
     this.props.collectMoney(amount)
-    this._hideBankModal()
+
+    this.setState({
+      showBankModal: false
+    })
   }
 
-  _showProperty = (property) => {
+  _handleShowProperty = (property) => {
     if (Array.isArray(property)) {
       property = property[0]
     }
@@ -68,29 +75,38 @@ class Player extends Component {
     })
   }
 
-  _goToSearch = () => {
+  _handleSearch = () => {
     const {
-      router: { push, match }
-    } = this.context
+      push,
+      match: { url }
+    } = this.context.router
 
-    push(`${match.url}/search`)
+    push(`${url}/search`)
   }
 
-  _hideProperty = () => {
+  _handleHideProperty = () => {
     this.setState({
       showProperty: false
     })
   }
 
   render() {
-    const { player, properties } = this.props
-    const { showBankModal, bankModalType, showProperty } = this.state
+    const {
+      player,
+      properties
+    } = this.props
+
+    const {
+      showBankModal,
+      bankModalType,
+      showProperty
+    } = this.state
 
     return (
-      <Flex>
+      <Flex container>
         <Header>
           {showProperty ? (
-             <Button icon onClick={this._hideProperty}>
+             <Button icon onClick={this._handleHideProperty}>
                <Icon name="x"/>
              </Button>
            ) : (
@@ -99,51 +115,59 @@ class Player extends Component {
              </Button>
            )}
 
-          <Button icon onClick={this._goToSearch}>
+          <Button icon onClick={this._handleSearch}>
             <Icon name="search"/>
           </Button>
         </Header>
 
         {!showProperty && (
-           <Box size="1/4" justify="center">
-             <Currency className={styles.balance}
-                       amount={player.balance}/>
+           <Section size="1/4" justify="center">
+             <Currency
+                 amount={player.balance}
+                 className={styles.balance}
+             />
 
-             <div className={styles.buttons}>
-               <Button small color="green" width="1/3"
-                       onClick={this._showCollectModal}>
+             <Flex row justify="center">
+               <Button
+                   onClick={this._handleShowCollectModal}
+                   color="green"
+                   width="1/3"
+                   small>
                  Collect
                </Button>
 
-               <Button small color="red" width="1/3"
-                       onClick={this._showPayModal}>
+               <Button
+                   onClick={this._handleShowPayModal}
+                   color="red"
+                   width="1/3"
+                   small>
                  Pay
                </Button>
-             </div>
-           </Box>
+             </Flex>
+           </Section>
          )}
 
         {showProperty ? (
            <PropertyList
                properties={properties}
                activeProperty={showProperty}
-               onChange={this._showProperty}
+               onChange={this._handleShowProperty}
            />
          ) : (
-           <Box stretch>
+           <Section stretch>
              <PropertyGrid
                  properties={properties}
-                 onClickGroup={this._showProperty}
+                 onClickGroup={this._handleShowProperty}
              />
-           </Box>
+           </Section>
          )}
 
         {showBankModal && (
            <BankModal
                type={bankModalType}
-               onClose={this._hideBankModal}
-               onCollect={this._collectFromBank}
-               onPayBank={this._payBank}
+               onClose={this._handleHideBankModal}
+               onCollect={this._handleCollectMoney}
+               onPayBank={this._handlePayBank}
            />
          )}
       </Flex>

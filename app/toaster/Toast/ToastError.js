@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react'
 import styles from './Toast.css'
 
+import { Flex } from '../../layout'
+import { Button, Icon } from '../../common'
+
 import Toast from './Toast'
-import { Icon, Button } from '../../common'
 
 class ToastError extends Toast {
 
@@ -10,15 +12,15 @@ class ToastError extends Toast {
     const { onDismiss } = this.props
 
     return (
-      <div className={[styles.root, styles.error].join(' ')}>
+      <Flex className={[styles.root, styles.error].join(' ')}>
         {this.renderMessage()}
 
-        <div className={styles.buttons}>
+        <Flex className={styles.buttons}>
           <Button small onClick={onDismiss}>
             <Icon name="x" className={styles.dismiss}/>
           </Button>
-        </div>
-      </div>
+        </Flex>
+      </Flex>
     )
   }
 }

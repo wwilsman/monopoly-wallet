@@ -1,7 +1,11 @@
 @import '../../core/variables';
 
-.root {
+.default {
   font-size: var(--size-big);
+}
+
+.is-block {
+  display: block;
 }
 
 .is-centered {

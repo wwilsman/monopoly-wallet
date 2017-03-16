@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import styles from './JoinGame.css'
 
-import { Flex, Box, Title, Label } from '../../layout'
+import { Flex, Header, Label, Section, Title } from '../../layout'
 import { Button, TextInput } from '../../common'
 import { TokenSelect } from '../../game'
 
@@ -47,22 +47,22 @@ class JoinGame extends Component {
     }
 
     if (isWaiting) {
-      this._clearWaiting()
-      this._waitingTimeout = setTimeout(() => {
+      this.clearWaiting()
+      this.waitingTimeout = setTimeout(() => {
         this.setState({ isWaiting })
       }, 100)
     } else {
-      this._clearWaiting(true)
+      this.clearWaiting(true)
     }
   }
 
   componentWillUnmount() {
-    this._clearWaiting()
+    this.clearWaiting()
   }
 
-  _clearWaiting(setState) {
-    if (this._waitingTimeout) {
-      clearTimeout(this._waitingTimeout)
+  clearWaiting(setState) {
+    if (this.waitingTimeout) {
+      clearTimeout(this.waitingTimeout)
     }
 
     if (setState) {
@@ -94,7 +94,7 @@ class JoinGame extends Component {
     this.setState({ selectedToken })
   }
 
-  _handleAskToJoin = () => {
+  _handleJoinGame = () => {
     const { playerName, selectedToken } = this.state
     this.props.joinGame(playerName, selectedToken.name)
   }
@@ -128,12 +128,12 @@ class JoinGame extends Component {
     } = this.state
 
     return (
-      <Flex>
-        <Box size="1/8">
+      <Flex container>
+        <Header>
           <Title>Join Game</Title>
-        </Box>
+        </Header>
 
-        <Box stretch>
+        <Section stretch>
           <Label>Your Name</Label>
 
           <TextInput
@@ -148,17 +148,17 @@ class JoinGame extends Component {
               selected={selectedToken}
               onChange={this._handleTokenChange}
           />
-        </Box>
+        </Section>
 
-        <Box>
+        <Section>
           <Button
-              onClick={this._handleAskToJoin}
+              onClick={this._handleJoinGame}
               disabled={!playerName || !selectedToken}
               loading={isWaiting}
               color="blue">
             Join Game
           </Button>
-        </Box>
+        </Section>
       </Flex>
     )
   }

@@ -2,7 +2,7 @@ import React, { Component, PropTypes } from 'react'
 import styles from './JoinGameModal.css'
 
 import { Flex, Label } from '../../layout'
-import { TextInput, Button, Modal } from '../../common'
+import { Button, Modal, TextInput } from '../../common'
 
 class JoinGameModal extends Component {
   static propTypes = {
@@ -11,26 +11,25 @@ class JoinGameModal extends Component {
   }
 
   state = {
-    gameID: ''
+    roomCode: ''
   }
 
   componentDidMount() {
     this.input.focus()
   }
 
-  _setGameID = (gameID) => {
-    this.setState({
-      gameID: gameID.substr(0, 5).toUpperCase()
-    })
+  _handleChangeRoomCode = (roomCode) => {
+    roomCode = roomCode.substr(0, 5).toUpperCase()
+    this.setState({ roomCode })
   }
 
-  _joinGame = () => {
-    this.props.onContinue(this.state.gameID)
+  _handleJoinGame = () => {
+    this.props.onContinue(this.state.roomCode)
   }
 
   render() {
     const { loading, onClose } = this.props
-    const { gameID } = this.state
+    const { roomCode } = this.state
 
     return (
       <Modal onClose={onClose}>
@@ -38,20 +37,20 @@ class JoinGameModal extends Component {
           <Label>Room Code</Label>
 
           <TextInput
-              ref={(ref) => this.input = ref}
-              onChangeText={this._setGameID}
+              ref={(input) => this.input = input}
+              onChangeText={this._handleChangeRoomCode}
               placeholder="Enter Code"
-              value={gameID}
+              value={roomCode}
           />
         </Flex>
 
-        <Flex direction="row" justify="space-between">
+        <Flex direction="row">
           <Button
-              color="blue"
-              width="full"
+              onClick={this._handleJoinGame}
+              disabled={!roomCode.match(/[^\/]{5}/)}
               loading={!!loading}
-              disabled={!gameID.match(/[^\/]{5}/)}
-              onClick={this._joinGame}>
+              color="blue"
+              width="full">
             Continue
           </Button>
         </Flex>

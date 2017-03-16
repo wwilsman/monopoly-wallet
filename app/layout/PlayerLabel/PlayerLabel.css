@@ -1,0 +1,7 @@
+@import '../../core/variables';
+
+.icon {
+  margin-right: var(--pad-sm);
+  margin-bottom: 0.25em;
+  vertical-align: middle;
+}

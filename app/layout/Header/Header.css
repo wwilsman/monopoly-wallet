@@ -7,6 +7,7 @@
     top: 50%;
     left: -10px;
     transform: translateY(-50%);
+    z-index: 10;
 
     &:last-child:not(:only-child) {
       left: auto;

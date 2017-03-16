@@ -5,7 +5,7 @@ import styles from './BankModal.css'
 const cx = className.bind(styles)
 
 import { Flex, Label } from '../../layout'
-import { CurrencyField, Modal, Button } from '../../common'
+import { Button, CurrencyField, Modal } from '../../common'
 
 class BankModal extends Component {
   static propTypes = {
@@ -23,11 +23,7 @@ class BankModal extends Component {
     this.input.focus()
   }
 
-  _payAmount = () => {
-    this.props.onPayBank(this.state.amount)
-  }
-
-  _confirmAmount = () => {
+  _handleConfirmAmount = () => {
     const { type, onPayBank, onCollect } = this.props
     const { amount } = this.state
 
@@ -40,7 +36,7 @@ class BankModal extends Component {
     }
   }
 
-  _changeAmount = (amount) => {
+  _handleChangeAmount = (amount) => {
     this.setState({ amount })
   }
 
@@ -57,22 +53,22 @@ class BankModal extends Component {
 
           <CurrencyField
               ref={(input) => this.input = input}
-              amount={amount}
-              onChange={this._changeAmount}
-              onEnter={this._confirmAmount}
+              onChange={this._handleChangeAmount}
+              onEnter={this._handleConfirmAmount}
               onBlur={() => this.input.focus()}
+              amount={amount}
               className={cx('amount', {
                   'is-negative': isPaying
                 })}
           />
         </Flex>
 
-        <Flex direction="row" justify="space-between">
+        <Flex direction="row">
           <Button
-              width="full"
+              onClick={this._handleConfirmAmount}
               color={isPaying ? 'red' : 'green'}
               disabled={!amount}
-              onClick={this._confirmAmount}>
+              width="full">
             {isPaying ? 'Pay Bank' : 'Collect'}
           </Button>
         </Flex>

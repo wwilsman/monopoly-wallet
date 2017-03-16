@@ -1,13 +1,16 @@
 import React from 'react'
 import styles from './Header.css'
 
-import Box from '../Box'
+import Section from '../Section'
 
 const Header = ({ children }) => (
-  <Box size="1/8" direction="row" justify="center"
-       className={styles.root}>
+  <Section
+      size="1/8"
+      direction="row"
+      justify="center"
+      className={styles.root}>
     {children}
-  </Box>
+  </Section>
 )
 
 export default Header

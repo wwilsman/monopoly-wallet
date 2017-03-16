@@ -13,9 +13,9 @@ import {
   buyProperty
 } from '../../actions/game'
 
-import PropertyControls from './PropertyControls'
+import PropertyInfo from './PropertyInfo'
 
-const PropertyControlsContainer = connect(
+const PropertyInfoContainer = connect(
   () => {
     const getPlayer = createGetPlayer()
     const isPropertyMonopoly = createIsPropertyMonopoly()
@@ -35,6 +35,6 @@ const PropertyControlsContainer = connect(
     auctionProperty,
     buyProperty
   }
-)(PropertyControls)
+)(PropertyInfo)
 
-export default PropertyControlsContainer
+export default PropertyInfoContainer

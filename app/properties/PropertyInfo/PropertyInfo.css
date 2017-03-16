@@ -5,9 +5,7 @@
   top: auto;
   bottom: 100%;
   width: 100%;
-  margin-bottom: var(--pad-mid);
-  display: flex;
-  align-items: center;
+  margin-bottom: var(--pad-sm);
 
   &-right {
     margin-left: auto;
@@ -17,11 +15,6 @@
       margin-left: 0.25em;
     }
   }
-}
-
-.icon {
-  margin-right: var(--pad-sm);
-  margin-bottom: 0.25em;
 }
 
 .hotel {

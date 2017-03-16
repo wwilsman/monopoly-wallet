@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import styles from './Welcome.css'
 
-import { Flex, Box, Title } from '../../layout'
+import { Flex, Section, Title } from '../../layout'
 import { Button } from '../../common'
 import { JoinGameModal } from '../../game'
 import { Toaster } from '../../toaster'
@@ -44,22 +44,22 @@ class Welcome extends Component {
     }
 
     if (isConnecting) {
-      this._clearConnecting()
-      this._connectingTimeout = setTimeout(() => {
+      this.clearConnecting()
+      this.connectingTimeout = setTimeout(() => {
         this.setState({ isConnecting })
       }, 100)
     } else {
-      this._clearConnecting(true)
+      this.clearConnecting(true)
     }
   }
 
   componentWillUnmount() {
-    this._clearConnecting()
+    this.clearConnecting()
   }
 
-  _clearConnecting(setState) {
-    if (this._connectingTimeout) {
-      clearTimeout(this._connectingTimeout)
+  clearConnecting(setState) {
+    if (this.connectingTimeout) {
+      clearTimeout(this.connectingTimeout)
     }
 
     if (setState) {
@@ -69,63 +69,70 @@ class Welcome extends Component {
     }
   }
 
-  _showJoinModal = () => {
+  _handleShowJoinModal = () => {
     this.setState({
       showJoinModal: true
     })
   }
 
-  _hideJoinModal = () => {
+  _handleHideJoinModal = () => {
     this.setState({
       showJoinModal: false
     })
   }
 
-  _tryConnect = (room) => {
+  _handleConnect = (roomCode) => {
     this.props.clearError()
-    this.props.connectGame(room)
+    this.props.connectGame(roomCode)
   }
 
-  _goToNewGame = () => {
+  _handleNewGame = () => {
     this.context.router.push('/new');
   }
 
   render() {
-    const { isConnecting, showJoinModal } = this.state
+    const {
+      isConnecting,
+      showJoinModal
+    } = this.state
 
     return (
-      <Flex>
-        <Box className={styles.top} stretch justify="center">
-          <Title lg>Monopoly<br/>Wallet</Title>
-        </Box>
+      <Flex container>
+        <Section stretch justify="center" align="center">
+          <Title lg className={styles.title}>
+            Monopoly<br/>Wallet
+          </Title>
+        </Section>
 
-        <Box align="center" size="1/2"
-             className={styles.buttons}>
+        <Section
+            size="1/2"
+            align="center"
+            className={styles.buttons}>
           <Button
-              onClick={this._showJoinModal}
+              onClick={this._handleShowJoinModal}
               color="blue"
               width="1/2">
             Join Game
           </Button>
 
           <Button
-              onClick={this._goToNewGame}
+              onClick={this._handleNewGame}
               color="green"
               width="1/2">
             New Game
           </Button>
-        </Box>
+        </Section>
 
         {showJoinModal && (
-           <div>
-             <JoinGameModal
-                 onClose={this._hideJoinModal}
-                 onContinue={this._tryConnect}
-                 loading={isConnecting}
-             />
+           <JoinGameModal
+               onClose={this._handleHideJoinModal}
+               onContinue={this._handleConnect}
+               loading={isConnecting}
+           />
+         )}
 
-             <Toaster/>
-           </div>
+        {showJoinModal && (
+           <Toaster/>
          )}
       </Flex>
     )

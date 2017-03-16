@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
-import { Route, Switch, Redirect } from 'react-router'
+import { Route, Redirect, Switch } from 'react-router'
 
+import { Flex } from '../../layout'
 import { Toaster } from '../../toaster'
 
 import {
@@ -31,12 +32,11 @@ class Game extends Component {
   }
 
   componentWillMount() {
-    const {
-      match: { params }
-    } = this.context.router
+    const { match: { params } } = this.context.router
+    const { room, connectGame } = this.props
 
-    if (!this.props.room) {
-      this.props.connectGame(params.room)
+    if (!room) {
+      connectGame(params.room)
     }
   }
 
@@ -58,7 +58,7 @@ class Game extends Component {
     return hasError ? (
       <Errored/>
     ) : (
-      <div>
+      <Flex container>
         {currentPlayer ? (
            <Switch>
              <Route path={path} exact render={() => <Player/>}/>
@@ -73,7 +73,7 @@ class Game extends Component {
          )}
         
         <Toaster/>
-      </div>
+      </Flex>
     )
   }
 }

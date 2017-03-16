@@ -4,12 +4,12 @@ import styles from './ThemeSelect.css'
 
 const cx = className.bind(styles)
 
-import { Text } from '../../layout'
+import { Flex, Text } from '../../layout'
 
 const ThemeSelect = ({ themes, selected, onChange }) => (
-  <div className={styles.root}>
+  <Flex className={styles.root}>
     {themes.map((theme) => (
-       <div
+       <Flex
            key={theme.theme}
            onClick={() => onChange(theme)}
            className={cx('theme', {
@@ -17,9 +17,9 @@ const ThemeSelect = ({ themes, selected, onChange }) => (
              })}>
          <Text lg className={styles.title}>{theme.name}</Text>
          <Text sm>{theme.descr}</Text>
-       </div>
+       </Flex>
      ))}
-  </div>
+  </Flex>
 )
 
 export default ThemeSelect

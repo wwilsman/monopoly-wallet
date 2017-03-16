@@ -1,30 +1,28 @@
 import React, { Component } from 'react'
 import { Provider } from 'react-redux'
-import { Router, Route, Switch, Redirect } from 'react-router'
+import { Router, Route, Redirect, Switch } from 'react-router'
 import createHistory from 'history/createBrowserHistory'
 import configureStore from './store'
 import styles from './App.css'
 
 import '../utils/injectResponderEventPlugin'
 
-import { Welcome, NewGame, Game } from '../views'
+import { Game, NewGame, Welcome } from '../views'
+
+function preventDefault(e) {
+  e.preventDefault()
+}
 
 class App extends Component {
   store = configureStore()
   history = createHistory()
 
   componentDidMount() {
-    window.addEventListener('touchmove',
-      this._preventDefault, { passive: false })
+    window.addEventListener('touchmove', preventDefault, { passive: false })
   }
 
   componentWillUnmount() {
-    window.removeEventListener('touchmove',
-      this._preventDefault, { passive: false })
-  }
-
-  _preventDefault(e) {
-    e.preventDefault()
+    window.removeEventListener('touchmove', preventDefault, { passive: false })
   }
 
   render() {

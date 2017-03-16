@@ -13,11 +13,13 @@ const Text = ({
   xxxl,
   center,
   upcase,
+  block,
+  inherit,
   className,
   ...props
 }) => (
-  <div
-      className={cx('root', {
+  <span
+      className={cx({
           'is-sm': sm,
           'is-med': med,
           'is-lg': lg,
@@ -25,7 +27,9 @@ const Text = ({
           'is-xxl': xxl,
           'is-xxxl': xxxl,
           'is-uppercase': upcase,
-          'is-centered': center
+          'is-centered': center,
+          'is-block': block,
+          'default': !(inherit||sm||med||lg||xl||xxl)
         }, className)}
       {...props}
   />

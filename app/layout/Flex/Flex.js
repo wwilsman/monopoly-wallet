@@ -5,16 +5,19 @@ import styles from './Flex.css'
 const cx = className.bind(styles)
 
 const Flex = ({
-  direction,
+  row,
   align,
   justify,
+  container,
   className,
   ...props
 }) => (
   <div
       className={cx('root', {
-          'row': direction === 'row',
+          'row': row,
+          'full-size': container,
           'align-center': align === 'center',
+          'align-end': align === 'end',
           'justify-center': justify === 'center',
           'justify-between': justify === 'space-between'
         }, className)}

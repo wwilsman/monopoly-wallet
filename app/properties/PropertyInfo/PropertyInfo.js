@@ -1,10 +1,10 @@
 import React from 'react'
 
-import PropertyControlsOwned from './PropertyControlsOwned'
-import PropertyControlsPlayer from './PropertyControlsPlayer'
-import PropertyControlsBank from './PropertyControlsBank'
+import PropertyInfoOwned from './PropertyInfoOwned'
+import PropertyInfoPlayer from './PropertyInfoPlayer'
+import PropertyInfoBank from './PropertyInfoBank'
 
-const PropertyControls = ({
+const PropertyInfo = ({
   currentPlayer,
   improveProperty,
   unimproveProperty,
@@ -17,7 +17,7 @@ const PropertyControls = ({
   ...props
 }) => (
   (props.owner === currentPlayer ? (
-    <PropertyControlsOwned
+    <PropertyInfoOwned
         onImproveProperty={improveProperty}
         onUnimproveProperty={unimproveProperty}
         onMortgageProperty={mortgageProperty}
@@ -25,13 +25,13 @@ const PropertyControls = ({
         {...props}
     />
   ) : props.owner ? (
-    <PropertyControlsPlayer
+    <PropertyInfoPlayer
         onOfferTrade={() => console.log('@TODO: show trade modal')}
         onPayRent={payRent}
         {...props}
     />
   ) : (
-    <PropertyControlsBank
+    <PropertyInfoBank
         onAuctionProperty={() => console.log('@TODO: auction property')}
         onBuyProperty={buyProperty}
         {...props}
@@ -39,4 +39,4 @@ const PropertyControls = ({
   ))
 )
 
-export default PropertyControls
+export default PropertyInfo

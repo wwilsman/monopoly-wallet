@@ -1,7 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import fetch from 'isomorphic-fetch'
 
-import { Flex, Box, Title } from '../../layout'
+import { Flex, Header, Section, Title } from '../../layout'
 import { Button } from '../../common'
 import { ThemeSelect } from '../../game'
 
@@ -15,18 +15,18 @@ class NewGame extends Component {
   state = {
     themes: [],
     selectedTheme: null,
-    loading: false
+    isLoading: false
   }
 
   componentWillMount() {
      return fetch('/api/themes')
-      .then((response) => response.json())
-      .then(({ themes }) => this.setState({ themes }))
+       .then((response) => response.json())
+       .then(({ themes }) => this.setState({ themes }))
   }
 
   componentWillUnmount() {
-    if (this._loadingTimeout) {
-      clearTimeout(this._loadingTimeout)
+    if (this.loadingTimeout) {
+      clearTimeout(this.loadingTimeout)
     }
   }
 
@@ -34,51 +34,56 @@ class NewGame extends Component {
     this.setState({ selectedTheme })
   }
 
-  _createGame = () => {
-    const { router } = this.context
-    const { selectedTheme } = this.state
+  _handleCreateGame = () => {
+    const { push } = this.context.router
+    const { selectedTheme: { theme } } = this.state
 
     const fetchOptions = {
       method: 'POST',
-      body: JSON.stringify({ theme: selectedTheme._id }),
+      body: JSON.stringify({ theme }),
       headers: { 'Content-Type': 'application/json' }
     }
 
-    this._loadingTimeout = setTimeout(() => {
-      this.setState({ loading: true })
+    this.loadingTimeout = setTimeout(() => {
+      this.setState({ isLoading: true })
     }, 100)
 
     fetch('/api/new', fetchOptions)
       .then((response) => response.json())
-      .then(({ room }) => router.push(`/${room}`))
+      .then(({ room }) => push(`/${room}`))
   }
 
   render() {
-    const { themes, selectedTheme, loading } = this.state
+    const {
+      themes,
+      selectedTheme,
+      isLoading
+    } = this.state
 
     return (
-      <Flex>
-        <Box size="1/8">
+      <Flex container>
+        <Header>
           <Title>New Game</Title>
-        </Box>
+        </Header>
 
-        <Box stretch>
+        <Section stretch>
           <ThemeSelect
               themes={themes}
               selected={selectedTheme}
               onChange={this._handleThemeChange}
           />
-        </Box>
+        </Section>
 
-        <Box>
+        <Section>
           <Button
-              color="blue"
-              width="full"
+              onClick={this._handleCreateGame}
               disabled={!selectedTheme}
-              onClick={this._createGame}>
+              loading={isLoading}
+              color="blue"
+              width="full">
             Create Game
           </Button>
-        </Box>
+        </Section>
       </Flex>
     )
   }

@@ -1,14 +1,17 @@
-.top {
+@import '../../core/variables';
+
+.title {
   margin-top: 25%;
 }
 
-.buttons {
+.buttons button {
+  margin-bottom: var(--pad-med);
 
-  button:first-child {
-    margin: 0 0 30px;
+  &:first-child {
+    margin-right: 0;
   }
 
-  button:last-child {
-    margin: 0;
+  &:last-child {
+    margin-left: 0;
   }
 }

@@ -1,8 +1,10 @@
 import React, { PropTypes } from 'react'
 import styles from './Toast.css'
 
+import { Flex } from '../../layout'
+import { Button, Icon } from '../../common'
+
 import Toast from './Toast'
-import { Icon, Button } from '../../common'
 
 class ToastPoll extends Toast {
 
@@ -10,10 +12,10 @@ class ToastPoll extends Toast {
     const { onDismiss, onVote } = this.props
 
     return (
-      <div className={[styles.root, styles.poll].join(' ')}>
+      <Flex className={[styles.root, styles.poll].join(' ')}>
         {this.renderMessage()}
 
-        <div className={styles.buttons}>
+        <Flex className={styles.buttons}>
           <Button small onClick={() => onVote(false)}>
             No
           </Button>
@@ -21,8 +23,8 @@ class ToastPoll extends Toast {
           <Button small onClick={() => onVote(true)}>
             Yes
           </Button>
-        </div>
-      </div>
+        </Flex>
+      </Flex>
     )
   }
 }
