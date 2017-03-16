@@ -13,7 +13,8 @@ const PlayerContainer = connect(
     return (state) => {
       const { notice } = state.game
       const property = notice.meta && notice.meta.property
-      const wonAuction = property && notice.type === 'auction:end'
+      const wonAuction = property && notice.type === 'auction:end' &&
+                         notice.blame.includes(state.player)
 
       return {
         player: getCurrentPlayer(state),
