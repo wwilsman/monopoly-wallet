@@ -25,7 +25,6 @@ class ToastAuction extends Toast {
   _goToAuction = () => {
     const { push, match } = this.context.router
     push(`/${match.params.room}/auction`)
-    this.props.onDismiss()
   }
 
   render() {
