@@ -13,11 +13,12 @@ const PlayerContainer = connect(
     return (state) => {
       const { notice } = state.game
       const property = notice.meta && notice.meta.property
+      const wonAuction = property && notice.type === 'auction:end'
 
       return {
         player: getCurrentPlayer(state),
         properties: getProperties(state, state.player),
-        showProperty: property && getProperty(state, property)
+        showProperty: wonAuction && getProperty(state, property)
       }
     }
   }, {
