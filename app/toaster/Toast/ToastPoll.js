@@ -11,18 +11,15 @@ class ToastPoll extends Toast {
   render() {
     const { onDismiss, onVote } = this.props
 
+    const className = [styles.root, styles.attention].join(' ')
+
     return (
-      <Flex className={[styles.root, styles.attention].join(' ')}>
+      <Flex row align="center" justify="space-between" className={className}>
         {this.renderMessage()}
 
-        <Flex className={styles.buttons}>
-          <Button small onClick={() => onVote(false)}>
-            No
-          </Button>
-
-          <Button small onClick={() => onVote(true)}>
-            Yes
-          </Button>
+        <Flex row align="center" className={styles.buttons}>
+          <Button small onClick={() => onVote(false)}>No</Button>
+          <Button small onClick={() => onVote(true)}>Yes</Button>
         </Flex>
       </Flex>
     )

@@ -15,6 +15,7 @@
   --color-text: #AAAABA;
 
   /* Font Sizes */
+  --size-tiny: 11px;
   --size-sm: 12px;
   --size-med: 14px;
   --size-big: 16px;

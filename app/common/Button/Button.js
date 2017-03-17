@@ -8,6 +8,7 @@ const Button = ({
   color,
   width,
   small,
+  tiny,
   icon,
   loading,
   onClick,
@@ -30,6 +31,7 @@ const Button = ({
           'is-disabled': props.disabled,
           'is-loading': loading,
           'is-small': small,
+          'is-tiny': tiny,
           'has-icon': icon
         }, className)}
       {...props}>

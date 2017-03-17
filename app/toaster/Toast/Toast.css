@@ -1,17 +1,13 @@
 @import '../../core/variables';
 
 .root {
-  margin: calc(var(--pad-sm) / 2) var(--pad-lg);
+  margin: var(--pad-sm) var(--pad-lg);
   background-color: var(--color-green);
   box-shadow: var(--shadow-lg);
   border-radius: var(--rad-sm);
   padding: var(--pad-sm);
   padding-left: var(--pad-med);
   color: white;
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
 
   &:first-child {
     margin-top: var(--pad-lg);
@@ -44,13 +40,8 @@
   }
 }
 
-.buttons {
-  display: flex;
-  flex-direction: row;
-
-  button {
-    text-transform: uppercase;
-  }
+.buttons button {
+  text-transform: uppercase;
 }
 
 .dismiss {
