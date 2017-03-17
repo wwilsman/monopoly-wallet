@@ -1,7 +1,7 @@
 @import '../../core/variables';
 
 .root {
-  margin: var(--pad-med) var(--pad-lg);
+  margin: calc(var(--pad-sm) / 2) var(--pad-lg);
   background-color: var(--color-green);
   box-shadow: var(--shadow-lg);
   border-radius: var(--rad-sm);
