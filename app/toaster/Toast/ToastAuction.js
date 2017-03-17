@@ -2,6 +2,7 @@ import React, { PropTypes } from 'react'
 import styles from './Toast.css'
 
 import Toast from './Toast'
+import { Flex } from '../../layout'
 import { Button } from '../../common'
 
 class ToastAuction extends Toast {
@@ -22,7 +23,7 @@ class ToastAuction extends Toast {
     }).isRequired
   }
 
-  _goToAuction = () => {
+  _handleJoinAuction = () => {
     const { push, match } = this.context.router
     push(`/${match.params.room}/auction`)
   }
@@ -31,19 +32,14 @@ class ToastAuction extends Toast {
     const { property, onConcede } = this.props
 
     return (
-      <div className={styles.root}>
+      <Flex row align="center" justify="space-between" className={styles.root}>
         {this.renderMessage()}
 
-        <div className={styles.buttons}>
-          <Button small onClick={() => onConcede(property)}>
-            Concede
-          </Button>
-
-          <Button small onClick={this._goToAuction}>
-            Join
-          </Button>
-        </div>
-      </div>
+        <Flex row align="center" className={styles.buttons}>
+          <Button tiny onClick={() => onConcede(property)}>Concede</Button>
+          <Button tiny onClick={this._handleJoinAuction}>Join</Button>
+        </Flex>
+      </Flex>
     )
   }
 }

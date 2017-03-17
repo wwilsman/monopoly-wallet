@@ -12,11 +12,11 @@ class ToastNotice extends Toast {
     const { onDismiss } = this.props
 
     return (
-      <Flex className={styles.root}>
+      <Flex row align="center" justify="space-between" className={styles.root}>
         {this.renderMessage()}
 
         <Flex className={styles.buttons}>
-          <Button small onClick={onDismiss}>
+          <Button tiny onClick={onDismiss}>
             <Icon name="x" className={styles.dismiss}/>
           </Button>
         </Flex>

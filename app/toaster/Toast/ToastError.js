@@ -11,12 +11,14 @@ class ToastError extends Toast {
   render() {
     const { onDismiss } = this.props
 
+    const className = [styles.root, styles.error].join(' ')
+
     return (
-      <Flex className={[styles.root, styles.error].join(' ')}>
+      <Flex row align="center" justify="space-between" className={className}>
         {this.renderMessage()}
 
         <Flex className={styles.buttons}>
-          <Button small onClick={onDismiss}>
+          <Button tiny onClick={onDismiss}>
             <Icon name="x" className={styles.dismiss}/>
           </Button>
         </Flex>
