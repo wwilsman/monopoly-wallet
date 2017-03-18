@@ -12,7 +12,6 @@ const PlayerContainer = connect(
 
     return (state) => {
       const { notice } = state.game
-      console.log(notice)
       const property = notice && notice.meta.property
       const wonAuction = property && notice.meta.action === 'auction:end' &&
                          notice.meta.players.includes(state.player)

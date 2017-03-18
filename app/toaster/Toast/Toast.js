@@ -42,8 +42,6 @@ class Toast extends Component {
       content: part.replace(lastSpaceReg, '\u00A0$1')
     }))
 
-    console.dir(parts)
-
     return (
       <Text sm className={styles.message}>
         {parts.map((part) => (
