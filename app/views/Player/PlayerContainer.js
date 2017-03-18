@@ -19,7 +19,9 @@ const PlayerContainer = connect(
       return {
         player: getCurrentPlayer(state),
         properties: getProperties(state, state.player),
-        showProperty: wonAuction && getProperty(state, property)
+        showProperty: wonAuction && getProperty(state, property),
+        payJailAmount: state.theme.payJailAmount,
+        passGoAmount: state.theme.passGoAmount
       }
     }
   }, {

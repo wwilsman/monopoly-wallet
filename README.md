@@ -21,6 +21,8 @@ The config file contains rules for a game
   "themeDescr": "..."                  // description of this theme
   "bankStart": -1,                     // initial bank balance (-1 = Infinite)
   "playerStart": 1500,                 // starting balance of new players
+  "passGoAmount": 200,                 // amount collected for passing go
+  "payJailAmount": 50,                 // amount needed to get out of jail
   "houseCount": 32,                    // starting number of houses
   "hotelCount": 12,                    // starting number of hotels
   "mortgageRate": 0.5,                 // rate that mortgage value is calculated

@@ -3,6 +3,8 @@
   "themeDescr": "The classic Monopoly board game",
   "bankStart": -1,
   "playerStart": 1500,
+  "passGoAmount": 200,
+  "payJailAmount": 50,
   "houseCount": 32,
   "hotelCount": 12,
   "mortgageRate": 0.5,

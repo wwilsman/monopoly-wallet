@@ -9,6 +9,7 @@ import { BankModal } from '../../game'
 class Player extends Component {
   static propTypes = {
     player: PropTypes.object.isRequired,
+    passGoAmount: PropTypes.number.isRequired,
     payBank: PropTypes.func.isRequired,
     collectMoney: PropTypes.func.isRequired,
     showProperty: PropTypes.oneOfType([
@@ -28,7 +29,6 @@ class Player extends Component {
 
   state = {
     showBankModal: false,
-    bankModalType: 'collect',
     showProperty: this.props.showProperty
   }
 
@@ -40,15 +40,13 @@ class Player extends Component {
 
   _handleShowCollectModal = () => {
     this.setState({
-      showBankModal: true,
-      bankModalType: 'collect'
+      showBankModal: 'collect'
     })
   }
 
   _handleShowPayModal = () => {
     this.setState({
-      showBankModal: true,
-      bankModalType: 'pay'
+      showBankModal: 'pay'
     })
   }
 
@@ -102,12 +100,13 @@ class Player extends Component {
   render() {
     const {
       player,
-      properties
+      properties,
+      passGoAmount,
+      payJailAmount
     } = this.props
 
     const {
       showBankModal,
-      bankModalType,
       showProperty
     } = this.state
 
@@ -173,10 +172,12 @@ class Player extends Component {
 
         {showBankModal && (
            <BankModal
-               type={bankModalType}
+               type={showBankModal}
                onClose={this._handleHideBankModal}
                onCollect={this._handleCollectMoney}
                onPayBank={this._handlePayBank}
+               initial={showBankModal === 'pay' ?
+                        payJailAmount : passGoAmount}
            />
          )}
       </Flex>
