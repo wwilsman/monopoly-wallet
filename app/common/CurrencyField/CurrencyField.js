@@ -1,6 +1,7 @@
 import React, { Component, PropTypes } from 'react'
 import styles from './CurrencyField.css'
 
+import { Flex } from '../../layout'
 import Currency from '../Currency'
 
 class CurrencyField extends Component {
@@ -58,7 +59,7 @@ class CurrencyField extends Component {
     } = this.props
 
     return (
-      <span className={className} onClick={this.focus}>
+      <Flex className={className} onClick={this.focus}>
         <Currency amount={amount}/>
 
         <input
@@ -69,7 +70,7 @@ class CurrencyField extends Component {
             pattern="\d*"
             value=""
         />
-      </span>
+      </Flex>
     )
   }
 }
