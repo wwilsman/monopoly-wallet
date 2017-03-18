@@ -12,23 +12,36 @@ class BankModal extends Component {
     type: PropTypes.oneOf(['collect', 'pay']).isRequired,
     onClose: PropTypes.func.isRequired,
     onPayBank: PropTypes.func.isRequired,
-    onCollect: PropTypes.func.isRequired
+    onCollect: PropTypes.func.isRequired,
+    initial: PropTypes.number
+  }
+
+  static defaultProps = {
+    initial: 0
   }
 
   state = {
-    amount: 200
+    isPaying: this.props.type === 'pay',
+    isInitial: !!this.props.initial,
+    amount: this.props.initial
   }
 
   componentDidMount() {
     this.input.focus()
   }
 
+  componentWillReceiveProps({ type }) {
+    this.setState({
+      isPaying: type === 'pay'
+    })
+  }
+
   _handleConfirmAmount = () => {
-    const { type, onPayBank, onCollect } = this.props
-    const { amount } = this.state
+    const { onPayBank, onCollect } = this.props
+    const { isPaying, amount } = this.state
 
     if (amount) {
-      if (type === 'pay') {
+      if (isPaying) {
         onPayBank(amount)
       } else {
         onCollect(amount)
@@ -37,14 +50,19 @@ class BankModal extends Component {
   }
 
   _handleChangeAmount = (amount) => {
-    this.setState({ amount })
+    if (this.state.isInitial) {
+      amount = amount % 10
+    }
+
+    this.setState({
+      isInitial: false,
+      amount
+    })
   }
 
   render() {
-    const { onClose, type } = this.props
-    const { amount } = this.state
-
-    const isPaying = type === 'pay'
+    const { onClose } = this.props
+    const { isPaying, amount } = this.state
 
     return (
       <Modal onClose={onClose}>
