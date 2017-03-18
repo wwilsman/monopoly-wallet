@@ -90,9 +90,13 @@ The state of the game at any given time
     }
   }],
   "notice": false||{                   // notice about the last state change (if any)
-    "type": "game||auction||trade",      // type of change that was made
-    "blame": ["automobile"],             // array of players that caused the change
-    "message": "..."                     // notice message
+    "message": "...",                    // notice message
+    "meta": {                            // optinal meta info about the state change
+      "players": ["automobile"],           // array of players that caused the change
+      "properties": ["Park Place"],        // array of properties affected
+      "action": "auction:new",             // action that caused the change
+      "save": false                        // whether this change caused a save
+    }
   }
 }
 ```
