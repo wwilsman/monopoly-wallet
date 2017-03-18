@@ -46,9 +46,13 @@ const toasterMiddleware = (store) => (next) => (action) => {
           break
 
         case 'auction:end':
+        case 'auction:cancel':
           toasts.filter((t) => t.type === 'auction').forEach((t) => {
             store.dispatch(removeToast(t._id))
           })
+
+          if (meta.action === 'auction:cancel')
+            break
 
         case undefined:
           store.dispatch(showToast(notice.message))
