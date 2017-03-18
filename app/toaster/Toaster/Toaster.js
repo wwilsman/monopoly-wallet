@@ -1,5 +1,8 @@
 import React, { Component, PropTypes } from 'react'
+import className from 'classnames/bind'
 import styles from './Toaster.css'
+
+const cx = className.bind(styles)
 
 import { Flex } from '../../layout'
 
@@ -70,10 +73,13 @@ class Toaster extends Component {
 
     const { inAuction } = this.state
     const playerNames = this.getPlayerNameMap()
+    const sortedToasts = inAuction ? [...toasts].reverse() : toasts
 
     return (
-      <Flex className={styles.root}>
-        {toasts.map(({ _id, type, ...toast }) => {
+      <Flex className={cx('root', {
+          'position-top': inAuction
+        })}>
+        {sortedToasts.map(({ _id, type, ...toast }) => {
            toast.onDismiss = () => removeToast(_id)
            toast.players = playerNames
            toast.key = _id
