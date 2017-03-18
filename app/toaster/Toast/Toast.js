@@ -8,6 +8,7 @@ const messageReg = /(\{(?:t|p|\$):.*?\})/
 const playerReg = /^\{t:(.*?)\}$|.*/
 const propertyReg = /^\{p:(.*?)\}$|.*/
 const currencyReg = /^\{\$:(.*?)\}$|.*/
+const lastSpaceReg = /\s([\S]+)$/
 
 class Toast extends Component {
   static propTypes = {
@@ -38,8 +39,10 @@ class Toast extends Component {
       currency: parseInt(part.replace(currencyReg, '$1'), 10),
       property: part.replace(propertyReg, '$1'),
       player: part.replace(playerReg, '$1'),
-      content: part
+      content: part.replace(lastSpaceReg, '\u00A0$1')
     }))
+
+    console.dir(parts)
 
     return (
       <Text sm className={styles.message}>
