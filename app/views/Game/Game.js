@@ -24,10 +24,6 @@ class Game extends Component {
   static contextTypes = {
     router: PropTypes.shape({
       push: PropTypes.func.isRequired,
-      listen: PropTypes.func.isRequired,
-      location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
-      }).isRequired,
       match: PropTypes.shape({
         url: PropTypes.string.isRequired,
         path: PropTypes.string.isRequired,
@@ -38,44 +34,32 @@ class Game extends Component {
     }).isRequired
   }
 
-  state = {
-    inAuction: false
-  }
-
   componentWillMount() {
-    const { listen, match: { params } } = this.context.router
+    const { match: { params } } = this.context.router
     const { room, connectGame } = this.props
 
     if (!room) {
       connectGame(params.room)
     }
-
-    this.unlisten = listen(({ pathname }) => {
-      this.setState({
-        inAuction: pathname.match(/\/auction/)
-      })
-    })
-  }
-
-  componentWillUnmount() {
-    this.unlisten()
   }
 
   componentWillReceiveProps(props) {
-    const { push, match } = this.context.router
+    const {
+      push,
+      match: { params }
+    } = this.context.router
 
     const wasWaitingForAuction = this.props.isWaitingForAuction
     const notWaitingForAuction = !props.isWaitingForAuction
 
     if (notWaitingForAuction && wasWaitingForAuction) {
-      push(`/${match.params.room}/auction`)
+      push(`/${params.room}/auction`)
     }
   }
 
-  shouldComponentUpdate({ currentPlayer, hasError }, { inAuction }) {
+  shouldComponentUpdate({ currentPlayer, hasError }) {
     return this.props.currentPlayer !== currentPlayer ||
-           this.props.hasError !== hasError ||
-           this.state.inAuction !== inAuction
+           this.props.hasError !== hasError
   }
 
   render() {
@@ -83,10 +67,6 @@ class Game extends Component {
       hasError,
       currentPlayer,
     } = this.props
-
-    const {
-      inAuction
-    } = this.state
 
     const {
       match: { path, url }
@@ -110,9 +90,7 @@ class Game extends Component {
            </Switch>
          )}
 
-        {!inAuction && (
-           <Toaster/>
-         )}
+        <Toaster/>
       </Flex>
     )
   }
