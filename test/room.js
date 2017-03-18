@@ -123,7 +123,7 @@ describe('Room', () => {
 
     it('The new player should recieve a notice once they join', (done) => {
       client1.on('game:joined', ({ game: { notice: { message }}}) => {
-        assert.ok(message.includes(`{p:${p1.token}} joined`))
+        assert.ok(message.includes(`{t:${p1.token}} joined`))
         done()
       })
 
@@ -182,7 +182,7 @@ describe('Room', () => {
 
     it('The player should concede from an auction on disconnect', (done) => {
       client2.on('game:update', ({ game: { notice }}) => {
-        if (notice && notice.type === 'auction:concede') {
+        if (notice && notice.meta.action === 'auction:concede') {
           assert.ok(notice.message.includes(p1.token))
           done()
         }
@@ -257,7 +257,7 @@ describe('Room', () => {
 
     beforeEach((done) => {
       client1.on('game:update', ({ game: { entry, notice } }) => {
-        if (notice && notice.message === `{p:${p1.token}} purchased Oriental Avenue`) {
+        if (notice && notice.message === `{t:${p1.token}} purchased {p:Oriental Avenue}`) {
           entryID = entry
           done()
         }
@@ -284,7 +284,7 @@ describe('Room', () => {
 
     it('The room should poll other players to undo a specific action', (done) => {
       client1.on('poll:new', ({ poll, message }) => {
-        assert.ok(message.includes(`{p:${p2.token}} is contesting`))
+        assert.ok(message.includes(`{t:${p2.token}} is contesting`))
         done()
       })
 
@@ -314,7 +314,7 @@ describe('Room', () => {
       })
 
       client1.on('poll:new', ({ poll, message }) => {
-        if (message.includes(`{p:${p2.token}} is contesting`)) {
+        if (message.includes(`{t:${p2.token}} is contesting`)) {
           client1.emit('poll:vote', { poll, vote: false })
           pollID = poll
         }
@@ -334,7 +334,7 @@ describe('Room', () => {
       })
 
       client1.on('poll:new', ({ poll, message }) => {
-        if (message.includes(`{p:${p2.token}} is contesting`)) {
+        if (message.includes(`{t:${p2.token}} is contesting`)) {
           client1.emit('poll:vote', { poll, vote: true })
         }
       })
