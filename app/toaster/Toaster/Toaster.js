@@ -21,8 +21,28 @@ class Toaster extends Component {
     currentPlayer: PropTypes.string
   }
 
+  static contextTypes = {
+    router: PropTypes.shape({
+      listen: PropTypes.func.isRequired
+    }).isRequired
+  }
+
+  state = {
+    inAuction: false
+  }
+
+  componentDidMount() {
+    const { listen } = this.context.router
+
+    this.unlisten = listen(({ pathname }) => {
+      const inAuction = /\/auction\/?$/.test(pathname)
+      this.setState({ inAuction })
+    })
+  }
+
   componentWillUnmount() {
     this.props.clearTimedToasts()
+    this.unlisten()
   }
 
   getPlayerNameMap(
@@ -48,6 +68,7 @@ class Toaster extends Component {
       concedeAuction
     } = this.props
 
+    const { inAuction } = this.state
     const playerNames = this.getPlayerNameMap()
 
     return (
@@ -66,13 +87,15 @@ class Toaster extends Component {
                  {...toast}
              />
            ) : type === 'auction' ? (
-             <ToastAuction
-                 onConcede={(p) => {
-                     concedeAuction(p)
-                     removeToast(_id)
-                   }}
-                 {...toast}
-             />
+             (!inAuction && (
+               <ToastAuction
+                   onConcede={(p) => {
+                       concedeAuction(p)
+                       removeToast(_id)
+                     }}
+                   {...toast}
+               />
+             ))
            ) : type === 'error' ? (
              <ToastError {...toast}/>
            ) : (
