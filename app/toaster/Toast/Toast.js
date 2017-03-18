@@ -4,8 +4,9 @@ import styles from './Toast.css'
 import { Text } from '../../layout'
 import { Icon, Currency } from '../../common'
 
-const messageReg = /(\{(?:p|\$):.*?\})/
-const playerReg = /^\{p:(.*?)\}$|.*/
+const messageReg = /(\{(?:t|p|\$):.*?\})/
+const playerReg = /^\{t:(.*?)\}$|.*/
+const propertyReg = /^\{p:(.*?)\}$|.*/
 const currencyReg = /^\{\$:(.*?)\}$|.*/
 
 class Toast extends Component {
@@ -37,23 +38,23 @@ class Toast extends Component {
     const { players } = this.context
     const { message } = this.props
 
-    let parts = message.split(messageReg)
-    parts = parts.filter(Boolean).map((part) => ({
+    const parts = message.split(messageReg).filter(Boolean).map((part) => ({
       currency: parseInt(part.replace(currencyReg, '$1'), 10),
+      property: part.replace(propertyReg, '$1'),
       player: part.replace(playerReg, '$1'),
       content: part
     }))
 
     return (
       <Text sm className={styles.message}>
-        {parts.filter(Boolean).map((part, i) => (
-           (part.player ? (
-             <span key={i}>{players[part.player]}</span>
+        {parts.map((part) => (
+           (part.property ? (
+             part.property.toUpperCase()
+           ) : part.player ? (
+             players[part.player].toUpperCase()
            ) : part.currency ? (
-             <Currency key={i} amount={part.currency}/>
-           ) : (
-             <span key={i}>{part.content}</span>
-           ))
+             <Currency amount={part.currency}/>
+           ) : part.content)
          ))}
       </Text>
     )
