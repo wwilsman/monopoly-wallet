@@ -21,26 +21,23 @@ class Toaster extends Component {
     currentPlayer: PropTypes.string
   }
 
-  static childContextTypes = {
-    players: PropTypes.object.isRequired,
-  }
-
   componentWillUnmount() {
     this.props.clearTimedToasts()
   }
 
-  getChildContext() {
-    return {
-      players: this.props.players.reduce((names, player) => {
-        names[player.token] = player.name.toUpperCase()
+  getPlayerNameMap(
+    players = this.props.players,
+    currentPlayer = this.props.currentPlayer
+  ) {
+    return players.reduce((names, player) => {
+      names[player.token] = player.name
 
-        if (player.token === this.props.currentPlayer) {
-          names[player.token] = 'YOU'
-        }
+      if (player.token === currentPlayer) {
+        names[player.token] = 'You'
+      }
 
-        return names
-      }, {})
-    }
+      return names
+    }, {})
   }
 
   render() {
@@ -51,10 +48,13 @@ class Toaster extends Component {
       concedeAuction
     } = this.props
 
+    const playerNames = this.getPlayerNameMap()
+
     return (
       <Flex className={styles.root}>
         {toasts.map(({ _id, type, ...toast }) => {
            toast.onDismiss = () => removeToast(_id)
+           toast.players = playerNames
            toast.key = _id
 
            return (type === 'poll' ? (

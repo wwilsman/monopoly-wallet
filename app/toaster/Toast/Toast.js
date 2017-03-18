@@ -13,11 +13,8 @@ class Toast extends Component {
   static propTypes = {
     onDismiss: PropTypes.func.isRequired,
     message: PropTypes.string.isRequired,
+    players: PropTypes.object.isRequired,
     timeout: PropTypes.number
-  }
-
-  static contextTypes = {
-    players: PropTypes.object.isRequired
   }
 
   componentDidMount() {
@@ -35,8 +32,7 @@ class Toast extends Component {
   }
 
   renderMessage() {
-    const { players } = this.context
-    const { message } = this.props
+    const { message, players } = this.props
 
     const parts = message.split(messageReg).filter(Boolean).map((part) => ({
       currency: parseInt(part.replace(currencyReg, '$1'), 10),
