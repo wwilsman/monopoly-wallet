@@ -89,8 +89,8 @@ class Auction extends Component {
       return null
     }
 
-    const winning = bids[0]
-    const isWinning = winning.player === player.token && winning.amount > 0
+    const winning = bids[0] || { amount: 0 }
+    const isWinning = winning.amount > 0 && winning.player === player.token
     const canBid = !isWinning && winning.amount < player.balance
 
     return (

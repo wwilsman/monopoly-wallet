@@ -11,7 +11,10 @@ class Player extends Component {
     player: PropTypes.object.isRequired,
     payBank: PropTypes.func.isRequired,
     collectMoney: PropTypes.func.isRequired,
-    showProperty: PropTypes.string
+    showProperty: PropTypes.oneOfType([
+      PropTypes.string,
+      PropTypes.bool
+    ])
   }
 
   static contextTypes = {
