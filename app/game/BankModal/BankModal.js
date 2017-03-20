@@ -49,8 +49,8 @@ class BankModal extends Component {
     }
   }
 
-  _handleChangeAmount = (amount) => {
-    if (this.state.isInitial) {
+  _handleChangeAmount = (amount, e) => {
+    if (e.which !== 8 && this.state.isInitial) {
       amount = amount % 10
     }
 
