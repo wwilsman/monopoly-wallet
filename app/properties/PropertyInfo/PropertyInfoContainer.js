@@ -22,9 +22,7 @@ const PropertyInfoContainer = connect(
 
     return (state, props) => {
       const auction = props.auction && state.game.auction
-      const winning = auction && auction.bids[0] &&
-                      auction.bids[0].amount > 0 ?
-                      auction.bids[0] : false
+      const winning = auction && auction.bids[0].amount > 0 && auction.bids[0]
 
       return {
         currentPlayer: getCurrentPlayer(state),

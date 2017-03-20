@@ -28,8 +28,8 @@ class Auction extends Component {
     player: PropTypes.object.isRequired,
     concedeAuction: PropTypes.func.isRequired,
     placeAuctionBid: PropTypes.func.isRequired,
-    property: PropTypes.object,
-    bids: PropTypes.array
+    property: PropTypes.object.isRequired,
+    bids: PropTypes.array.isRequired,
   }
 
   static contextTypes = {
@@ -52,10 +52,7 @@ class Auction extends Component {
     const { params: { room } } = match
     const { bids, player } = props
 
-    const notInvited = !bids || !bids.find((b) =>
-      b.player === player.token)
-
-    if (notInvited) {
+    if (!bids.find((b) => b.player === player.token)) {
       push(`/${room}`)
     }
   }
@@ -85,13 +82,8 @@ class Auction extends Component {
       placeAuctionBid
     } = this.props
 
-    if (!bids) {
-      return null
-    }
-
-    const winning = bids[0] || { amount: 0 }
-    const isWinning = winning.amount > 0 && winning.player === player.token
-    const canBid = !isWinning && winning.amount < player.balance
+    const isWinning = bids[0].amount > 0 && bids[0].player === player.token
+    const canBid = !isWinning && bids[0].amount < player.balance
 
     return (
       <Flex container>
@@ -121,7 +113,7 @@ class Auction extends Component {
               <Stepper
                   input={bid}
                   max={player.balance}
-                  min={winning.amount}
+                  min={bids[0].amount}
                   disabled={!canBid}
                   onStep={this._handleChangeBid}>
                 <CurrencyField
