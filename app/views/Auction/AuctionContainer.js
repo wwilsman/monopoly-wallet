@@ -6,7 +6,7 @@ import { concedeAuction, placeAuctionBid } from '../../actions/game'
 import Auction from './Auction'
 
 const AuctionContainer = connect(
-  (props) => {
+  () => {
     const getProperty = createGetProperty()
 
     return (state) => ({

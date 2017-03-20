@@ -44,7 +44,8 @@ class Auction extends Component {
   }
 
   state = {
-    bid: 0
+    bid: this.props.bids[0].amount,
+    usingInput: false
   }
 
   componentWillReceiveProps(props) {
@@ -62,8 +63,22 @@ class Auction extends Component {
     concedeAuction(property.name)
   }
 
-  _handleChangeBid = (bid) => {
-    this.setState({ bid })
+  _handleStepBid = (bid) => {
+    this.setState({
+      usingInput: false,
+      bid
+    })
+  }
+
+  _handleChangeBid = (bid, e) => {
+    if (e.which !== 8 && !this.state.usingInput) {
+      bid = bid % 10
+    }
+
+    this.setState({
+      usingInput: true,
+      bid
+    })
   }
 
   _handlePlaceBid = () => {
@@ -72,7 +87,9 @@ class Auction extends Component {
   }
 
   render() {
-    const { bid } = this.state
+    const {
+      bid
+    } = this.state
 
     const {
       bids,
@@ -115,9 +132,10 @@ class Auction extends Component {
                   max={player.balance}
                   min={bids[0].amount}
                   disabled={!canBid}
-                  onStep={this._handleChangeBid}>
+                  onStep={this._handleStepBid}>
                 <CurrencyField
                     amount={bid}
+                    max={player.balance}
                     onChange={this._handleChangeBid}
                 />
               </Stepper>

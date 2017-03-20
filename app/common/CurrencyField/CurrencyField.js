@@ -44,7 +44,7 @@ class CurrencyField extends Component {
     }
 
     amount = parseInt(amount, 10) || 0
-    onChange(amount)
+    onChange(amount, e)
   }
 
   focus = () => {
