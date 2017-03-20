@@ -17,6 +17,7 @@ class Game extends Component {
     connectGame: PropTypes.func.isRequired,
     currentPlayer: PropTypes.object,
     isWaitingForAuction: PropTypes.bool,
+    hasAuction: PropTypes.bool,
     hasError: PropTypes.bool,
     room: PropTypes.string
   }
@@ -44,15 +45,11 @@ class Game extends Component {
   }
 
   componentWillReceiveProps(props) {
-    const {
-      push,
-      match: { params }
-    } = this.context.router
-
+    const { push, match: { params } } = this.context.router
     const wasWaitingForAuction = this.props.isWaitingForAuction
-    const notWaitingForAuction = !props.isWaitingForAuction
+    const { isWaitingForAuction } = props
 
-    if (notWaitingForAuction && wasWaitingForAuction) {
+    if (wasWaitingForAuction && !isWaitingForAuction) {
       push(`/${params.room}/auction`)
     }
   }
@@ -66,6 +63,7 @@ class Game extends Component {
     const {
       hasError,
       currentPlayer,
+      hasAuction
     } = this.props
 
     const {
@@ -80,7 +78,11 @@ class Game extends Component {
            <Switch>
              <Route path={path} exact render={() => <Player/>}/>
              <Route path={`${path}/search`} exact render={() => <Search/>}/>
-             <Route path={`${path}/auction`} exact render={() => <Auction/>}/>
+
+             {hasAuction && (
+                <Route path={`${path}/auction`} exact render={() => <Auction/>}/>
+              )}
+
              <Route render={() => <Redirect to={url}/>}/>
            </Switch>
          ) : (

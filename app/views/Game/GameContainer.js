@@ -10,6 +10,7 @@ const GameContainer = connect(
     room: state.game.room,
     currentPlayer: getCurrentPlayer(state),
     isWaitingForAuction: isWaitingForAuction(state),
+    hasAuction: !!state.game.auction,
     hasError: !!state.error
   }), {
     connectGame
