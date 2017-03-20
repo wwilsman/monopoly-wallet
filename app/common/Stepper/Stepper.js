@@ -4,6 +4,9 @@ import styles from './Stepper.css'
 
 const cx = className.bind(styles)
 
+import { Flex } from '../../layout'
+import { Button } from '../../common'
+
 class Stepper extends Component {
   static propTypes = {
     input: PropTypes.number.isRequired,
@@ -21,8 +24,8 @@ class Stepper extends Component {
   frequency = 0
 
   componentWillReceiveProps({ input, min, max, onStep }) {
-    if (input <= min) {
-      onStep(Math.max(input + this.getStep(), min))
+    if (input < min) {
+      onStep(min)
     }
   }
 
@@ -74,22 +77,42 @@ class Stepper extends Component {
   }
 
   render() {
-    const { className, disabled } = this.props
+    const {
+      min,
+      max,
+      input,
+      disabled,
+      className
+    } = this.props
 
     return (
-      <div className={cx('root', {
-          'is-disabled': disabled
-        }, className)}>
-        <div className={styles.decrement}
-             onClick={this._handleDecrement}/>
+      <Flex
+          row
+          align="center"
+          justify="stretch"
+          className={styles.root}>
+        <Button
+            className={styles.decrement}
+            onClick={this._handleDecrement}
+            disabled={disabled || input <= min}
+            tiny
+        />
 
-        <div className={styles.center}>
+        <Flex
+            justify="center"
+            className={cx('center', {
+                'is-disabled': disabled
+              }, className)}>
           {this.props.children}
-        </div>
+        </Flex>
 
-        <div className={styles.increment}
-             onClick={this._handleIncrement}/>
-      </div>
+        <Button
+            className={styles.increment}
+            onClick={this._handleIncrement}
+            disabled={disabled || input >= max}
+            tiny
+        />
+      </Flex>
     )
   }
 }

@@ -19,6 +19,7 @@ const Flex = ({
           'align-center': align === 'center',
           'align-end': align === 'end',
           'justify-center': justify === 'center',
+          'justify-stretch': justify === 'stretch',
           'justify-between': justify === 'space-between'
         }, className)}
       {...props}

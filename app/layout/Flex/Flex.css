@@ -31,6 +31,10 @@
   justify-content: center;
 }
 
+.justify-stretch {
+  justify-content: stretch;
+}
+
 .justify-between {
   justify-content: space-between;
 }

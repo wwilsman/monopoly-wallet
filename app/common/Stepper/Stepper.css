@@ -1,32 +1,17 @@
 @import '../../core/variables';
 
 .root {
-  display: flex;
-  flex-direction: row;
-  align-items: stretch;
-  justify-content: stretch;
 
-  &.is-disabled {
-    opacity: 0.6
+  .increment, .decremenet {
+    font-size: var(--size-lg);
   }
 }
 
 .center {
   flex: 1;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
 
-.decrement, .increment {
-  display: flex;
-  align-items: center;
-  padding: var(--pad-sm);
-  border-radius: var(--rad-sm);
-  line-height: 1;
-
-  &:active {
-    background-color: color(black a(10%));
+  &.is-disabled {
+    opacity: 0.4;
   }
 }
 
@@ -34,7 +19,7 @@
   color: var(--color-red);
 
   &:before {
-    content: '-';
+    content: '\2014';
   }
 }
 
