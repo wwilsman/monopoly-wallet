@@ -7,19 +7,18 @@ import { Button, Currency } from '../../common'
 const PropertyInfoAuction = ({
   property,
   winning,
-  winningAmount,
   children
 }) => (
   <Flex>
     <Flex row align="center" className={styles.top}>
       {winning ? (
-         <PlayerLabel token={winning.token} name={winning.name}/>
+         <PlayerLabel token={winning.player.token} name={winning.player.name}/>
        ) : (
          <PlayerLabel token="bank"/>
        )}
 
       <Flex className={styles['top-right']}>
-        <Currency amount={winningAmount || 0} className={styles.bid}/>
+        <Currency amount={winning.amount || 0} className={styles.bid}/>
       </Flex>
     </Flex>
 
