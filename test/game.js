@@ -639,11 +639,12 @@ describe('Game', () => {
       })
 
       it('The available houses should increase by 4 if a hotel is needed', () => {
-        const property = game.state.properties.find((p) => p.buildings === 4)
         const houses = game.state.houses
 
+        property = game.state.properties.find((p) => p.buildings === 4)
         game.improveProperty(p1.token, property.name)
 
+        assert.equal(property.buildings, 5)
         assert.equal(game.state.houses, houses + 4)
       })
 
