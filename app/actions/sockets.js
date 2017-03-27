@@ -5,7 +5,7 @@ const socketActions = {
   'room:connected': 'GAME_CONNECTED',
   'game:error': 'SHOW_ERROR_TOAST',
   'game:update': 'UPDATE_GAME',
-  'game:joined': 'SET_CURRENT_PLAYER',
+  'game:joined': 'GAME_JOINED',
   'poll:new': 'SHOW_POLL_TOAST',
   'poll:end': 'REMOVE_POLL_TOAST',
   'message:new': 'NEW_MESSAGE'

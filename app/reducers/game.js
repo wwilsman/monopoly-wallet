@@ -7,6 +7,7 @@ const initialState = {
 const gameReducer = (state = initialState, action) => {
   switch(action.type) {
     case 'GAME_CONNECTED':
+    case 'GAME_JOINED':
     case 'UPDATE_GAME':
       return { ...state, ...action.game }
 

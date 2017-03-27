@@ -1,6 +1,6 @@
 const triggerActions = [
   ['CONNECT_GAME', 'GAME_CONNECTED'],
-  ['JOIN_GAME', 'SET_CURRENT_PLAYER'],
+  ['JOIN_GAME', 'GAME_JOINED'],
   ['AUCTION_PROPERTY', 'UPDATE_GAME', ({ game }) =>
     game.notice && game.notice.meta.action === 'auction:new'],
 ]
