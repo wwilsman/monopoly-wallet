@@ -1,0 +1,9 @@
+{
+  "name": "monopoly-wallet",
+  "version": "0.1.0",
+  "description": "Easily manage your assets in a game of Monopoly",
+  "main": "server/index.js",
+  "repository": "wwilsman/monopoly-wallet.git",
+  "author": "Wil Wilsman <hello@wilwilsman.com>",
+  "license": "MIT"
+}
