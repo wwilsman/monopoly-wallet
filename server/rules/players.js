@@ -1,6 +1,6 @@
 import { throwError } from './error';
-import { JOIN_GAME } from '../actions';
 import { bankFunds } from './common';
+import { JOIN_GAME } from '../actions';
 
 /**
  * Validates a player's token is unique
@@ -13,7 +13,18 @@ export const uniqueToken = ({ player, state }) => {
     throwError('Token already in use');
 };
 
-// Rules for joining
+/**
+ * Validates a player has a sufficient balance
+ * @param {Number} player.balance - Player's balance
+ * @param {Number} needed.amount - Amount needed
+ * @throws {MonopolyError}
+ */
+export const sufficientBalance = ({ player, needed }) => {
+  player.balance < needed.amount &&
+    throwError('Insufficient balance');
+};
+
+// Rules for players
 export default {
   [JOIN_GAME]: [
     uniqueToken,

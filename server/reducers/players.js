@@ -1,5 +1,6 @@
 import {
-  JOIN_GAME
+  JOIN_GAME,
+  BUY_PROPERTY
 } from '../actions';
 
 /**
@@ -19,6 +20,11 @@ const player = (state, action, config) => {
         balance: config.playerStart
       };
 
+    case BUY_PROPERTY:
+      return { ...state,
+        balance: state.balance - action.amount
+      };
+
     default:
       return state;
   }
@@ -34,10 +40,15 @@ const player = (state, action, config) => {
 export default (state = [], action, config) => {
   switch (action.type) {
     case JOIN_GAME:
-      return [
-        ...state,
+      return [ ...state,
         player(undefined, action, config)
       ];
+
+    case BUY_PROPERTY:
+      return state.map((pl) => (
+        pl.id === action.player.id ?
+          player(pl, action, config) : pl
+      ));
 
     default:
       return state;

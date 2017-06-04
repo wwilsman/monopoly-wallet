@@ -7,6 +7,16 @@ import {
 import gameReducer from './reducers';
 import ruleMiddleware from './rules';
 
+export function createState(state, config) {
+  return state.id ? state : {
+    ...state,
+    properties: state.properties.map((property) => ({
+      ...property,
+      owner: 'bank'
+    }))
+  };
+}
+
 /**
  * Creates a new store instance for games
  * @param {Object} state - Initial game state
@@ -19,7 +29,7 @@ export default (initialState, config) => {
 
   const store = createStore(
     reducer,
-    initialState,
+    createState(initialState, config),
     applyMiddleware(
       ruleMiddleware(config)
     )

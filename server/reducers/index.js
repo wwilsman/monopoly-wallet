@@ -1,8 +1,10 @@
 import {
-  JOIN_GAME
+  JOIN_GAME,
+  BUY_PROPERTY
 } from '../actions';
 
 import players from './players';
+import properties from './properties';
 
 // Default game state
 export const defaultState = {
@@ -17,7 +19,7 @@ export const defaultState = {
 };
 
 /**
- * Game reducer
+ * Game reducer manually split to pass around game config
  * @param {Object} state - Current state to reduce
  * @param {Object} action - Redux action
  * @param {Object} config - Game config
@@ -29,6 +31,13 @@ export default (state = defaultState, action, config) => {
       return { ...state,
         bank: state.bank - config.playerStart,
         players: players(state.players, action, config)
+      };
+
+    case BUY_PROPERTY:
+      return { ...state,
+        bank: state.bank + action.amount,
+        players: players(state.players, action, config),
+        properties: properties(state.properties, action, config)
       };
 
     default:
