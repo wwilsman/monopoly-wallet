@@ -7,7 +7,7 @@
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
   "scripts": {
-    "test": "find . -path ./node_modules -prune -o -name '*-test.js' -print | xargs mocha --compilers js:babel-register"
+    "test:server": "mocha --compilers js:babel-register tests/server"
   },
   "dependencies": {
     "redux": "^3.6.0",
