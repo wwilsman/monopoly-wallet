@@ -1,6 +1,10 @@
 import { throwError } from './error';
 import { bankFunds } from './common';
-import { JOIN_GAME } from '../actions';
+import {
+  JOIN_GAME,
+  MAKE_TRANSFER_TO,
+  MAKE_TRANSFER_FROM
+} from '../actions';
 
 /**
  * Validates a player's token is unique
@@ -29,5 +33,11 @@ export default {
   [JOIN_GAME]: [
     uniqueToken,
     bankFunds
+  ],
+  [MAKE_TRANSFER_TO]: [
+    bankFunds
+  ],
+  [MAKE_TRANSFER_FROM]: [
+    sufficientBalance
   ]
 };

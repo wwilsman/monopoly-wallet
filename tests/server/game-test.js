@@ -8,7 +8,11 @@ import { expect } from 'chai';
 import { setupGame } from './helpers';
 
 import MonopolyError from '../../server/rules/error';
-import { join, buyProperty } from '../../server/actions';
+import {
+  join,
+  buyProperty,
+  makeTransfer
+} from '../../server/actions';
 
 describe('Game Actions', function() {
   describe('join()', function() {
@@ -108,6 +112,50 @@ describe('Game Actions', function() {
       expect(() => this.dispatch(buyProperty(player.id, property.id, player.balance + 1)))
         .to.throw(MonopolyError, /insufficient/i);
       expect(this.state.properties[0].owner).to.not.equal(player.id);
+    });
+  });
+
+  describe('makeTransfer()', function() {
+    setupGame({ state: {
+      bank: 100,
+      players: [{
+        id: 'player-1',
+        name: 'Player 1',
+        token: 'top-hat',
+        balance: 100
+      }]
+    }});
+
+    let player;
+
+    beforeEach(function() {
+      player = this.state.players[0];
+    });
+
+    it('should transfer money from the bank to the player', function() {
+      this.dispatch(makeTransfer(player.id, 100));
+
+      expect(this.state.players[0].balance).to.equal(player.balance + 100);
+      expect(this.state.bank).to.equal(this.last.bank - 100);
+    });
+
+    it('should transfer money from the player to the bank', function() {
+      this.dispatch(makeTransfer(player.id, -100));
+
+      expect(this.state.players[0].balance).to.equal(player.balance - 100);
+      expect(this.state.bank).to.equal(this.last.bank + 100);
+    });
+
+    it('should not transfer money from the bank with insufficient funds', function() {
+      expect(() => this.dispatch(makeTransfer(player.id, 200)))
+        .to.throw(MonopolyError, /insufficient/);
+      expect(this.state.players[0].balance).to.equal(player.balance);
+    });
+
+    it('should not transfer money from the player with insufficient funds', function() {
+      expect(() => this.dispatch(makeTransfer(player.id, -200)))
+        .to.throw(MonopolyError, /insufficient/i);
+      expect(this.state.players[0].balance).to.equal(player.balance);
     });
   });
 });
