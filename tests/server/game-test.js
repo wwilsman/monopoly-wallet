@@ -163,5 +163,49 @@ describe('Game Actions', function() {
         .to.throw(MonopolyError, /insufficient/i);
       expect(this.state.players[0].balance).to.equal(player.balance);
     });
+
+    describe('with another player', function() {
+      setupGame({ state: {
+        players: [{
+          id: 'player-1',
+          name: 'Player 1',
+          token: 'top-hat',
+          balance: 100
+        }, {
+          id: 'player-2',
+          name: 'Player 2',
+          token: 'automobile',
+          balance: 100
+        }]
+      }});
+
+      let player1, player2;
+
+      beforeEach(function() {
+        player1 = this.state.players[0];
+        player2 = this.state.players[1];
+      });
+
+      it('should transfer money to another player', function() {
+        this.dispatch(makeTransfer(player1.id, player2.id, 100));
+
+        expect(this.state.players[0].balance).to.equal(player1.balance - 100);
+        expect(this.state.players[1].balance).to.equal(player2.balance + 100);
+      });
+
+      it('should not transfer a negative amount', function() {
+        expect(() => this.dispatch(makeTransfer(player1.id, player2.id, -100)))
+          .to.throw(MonopolyError, /negative/);
+        expect(this.state.players[0].balance).to.equal(player1.balance);
+        expect(this.state.players[1].balance).to.equal(player2.balance);
+      });
+
+      it('should not transfer with insufficient funds', function() {
+        expect(() => this.dispatch(makeTransfer(player1.id, player2.id, 200)))
+          .to.throw(MonopolyError, /insufficient/i);
+        expect(this.state.players[0].balance).to.equal(player1.balance);
+        expect(this.state.players[1].balance).to.equal(player2.balance);
+      });
+    });
   });
 });

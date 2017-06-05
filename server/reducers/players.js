@@ -3,6 +3,7 @@ import {
   BUY_PROPERTY,
   MAKE_TRANSFER_TO,
   MAKE_TRANSFER_FROM,
+  MAKE_TRANSFER_WITH
 } from '../actions';
 
 /**
@@ -33,6 +34,13 @@ const player = (state, action, config) => {
         balance: state.balance - action.amount
       };
 
+    case MAKE_TRANSFER_WITH:
+      return { ...state,
+        balance: state.id === action.other.id ?
+          state.balance + action.amount :
+          state.balance - action.amount
+      };
+
     default:
       return state;
   }
@@ -57,6 +65,13 @@ export default (state = [], action, config) => {
     case MAKE_TRANSFER_FROM:
       return state.map((pl) => (
         pl.id === action.player.id ?
+          player(pl, action, config) : pl
+      ));
+
+    case MAKE_TRANSFER_WITH:
+      return state.map((pl) => (
+        (pl.id === action.player.id ||
+         pl.id === action.other.id) ?
           player(pl, action, config) : pl
       ));
 

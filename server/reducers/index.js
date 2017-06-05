@@ -2,7 +2,8 @@ import {
   JOIN_GAME,
   BUY_PROPERTY,
   MAKE_TRANSFER_TO,
-  MAKE_TRANSFER_FROM
+  MAKE_TRANSFER_FROM,
+  MAKE_TRANSFER_WITH
 } from '../actions';
 
 import players from './players';
@@ -51,6 +52,11 @@ export default (state = defaultState, action, config) => {
     case MAKE_TRANSFER_FROM:
       return { ...state,
         bank: state.bank + action.amount,
+        players: players(state.players, action, config)
+      };
+
+    case MAKE_TRANSFER_WITH:
+      return { ...state,
         players: players(state.players, action, config)
       };
 

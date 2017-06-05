@@ -4,6 +4,7 @@ export const JOIN_GAME = 'JOIN_GAME';
 export const BUY_PROPERTY = 'BUY_PROPERTY';
 export const MAKE_TRANSFER_TO = 'MAKE_TRANSFER_TO';
 export const MAKE_TRANSFER_FROM = 'MAKE_TRANSFER_FROM';
+export const MAKE_TRANSFER_WITH = 'MAKE_TRANSFER_WITH';
 
 /**
  * Action creator for joining a game
@@ -35,13 +36,27 @@ export const buyProperty = (playerId, propertyId, amount) => ({
 });
 
 /**
- * Action creator for bank transfers
+ * Action creator for transfers
+ * Omitting `otherId` will make a transfer to/from the bank
  * @param {String} playerId - Player ID
- * @param {Number} amount - Amount to transfer (+/-)
+ * @param {String} [otherId] - Other player's ID
+ * @param {Number} amount - Amount to transfer (+/- for bank transfers)
  * @returns {Object} Redux action
  */
-export const makeTransfer = (playerId, amount) => ({
-  type: amount > 0 ? MAKE_TRANSFER_TO : MAKE_TRANSFER_FROM,
-  player: { id: playerId },
-  amount: Math.abs(amount)
-});
+export const makeTransfer = (playerId, otherId, amount = otherId) => {
+  let actionType = MAKE_TRANSFER_WITH;
+
+  if (otherId === amount) {
+    actionType = amount > 0 ?
+      MAKE_TRANSFER_TO :
+      MAKE_TRANSFER_FROM;
+    amount = Math.abs(amount);
+  }
+
+  return {
+    type: actionType,
+    player: { id: playerId },
+    other: { id: otherId },
+    amount
+  };
+};

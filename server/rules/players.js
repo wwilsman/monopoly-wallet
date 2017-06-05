@@ -1,9 +1,15 @@
-import { throwError } from './error';
-import { bankFunds } from './common';
+import {
+  throwError
+} from './error';
+import {
+  bankFunds,
+  negativeAmount
+} from './common';
 import {
   JOIN_GAME,
   MAKE_TRANSFER_TO,
-  MAKE_TRANSFER_FROM
+  MAKE_TRANSFER_FROM,
+  MAKE_TRANSFER_WITH,
 } from '../actions';
 
 /**
@@ -38,6 +44,10 @@ export default {
     bankFunds
   ],
   [MAKE_TRANSFER_FROM]: [
+    sufficientBalance
+  ],
+  [MAKE_TRANSFER_WITH]: [
+    negativeAmount,
     sufficientBalance
   ]
 };
