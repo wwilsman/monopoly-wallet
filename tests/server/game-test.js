@@ -97,6 +97,12 @@ describe('Game Actions', function() {
       expect(this.state.bank).to.equal(this.last.bank + 10);
     });
 
+    it('should not buy the property for a negative price', function() {
+      expect(() => this.dispatch(buyProperty(player.id, property.id, -10)))
+        .to.throw(MonopolyError, /negative/);
+      expect(this.state.properties[0].owner).to.not.equal(player.id);
+    });
+
     it('should not buy the property when already owned', function() {
       this.dispatch(join('Player 2', 'automobile'));
       this.dispatch(buyProperty(player.id, property.id));

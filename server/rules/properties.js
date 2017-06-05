@@ -1,4 +1,5 @@
 import { throwError } from './error';
+import { negativeAmount } from './common';
 import { sufficientBalance } from './players';
 import {
   BUY_PROPERTY
@@ -17,6 +18,7 @@ export const propertyUnowned = ({ property }) => {
 // Rules for properties
 export default {
   [BUY_PROPERTY]: [
+    negativeAmount,
     propertyUnowned,
     sufficientBalance
   ]
