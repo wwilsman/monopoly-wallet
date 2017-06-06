@@ -1,27 +1,13 @@
-// TODO: Build this fixture from real defaults using the `createState` function
-// from `server/game`. Likewise use a real default configuration.
+import { createState } from '../server/game';
+import defaultConfig from '../server/themes/classic/config';
+import defaultProperties from '../server/themes/classic/properties';
 
-const GAME = {
-  id: 'T35TT',
-  bank: 10000,
-  players: [],
-  properties: [{
-    id: 'oriental-avenue',
-    name: 'Oriental Avenue',
-    group: 'light-blue',
-    rent: [6, 30, 90, 270, 400, 550],
-    buildings: 0,
-    price: 100,
-    cost: 50,
-    owner: 'bank'
-  }]
-};
+export const GAME_ID = 'T53TT';
 
-const CONFIG = {
-  playerStart: 1500
-};
+export const GAME_FIXTURE = createState(GAME_ID, {
+  properties: defaultProperties
+}, defaultConfig);
 
-export default {
-  GAME,
-  CONFIG
+export const CONFIG_FIXTURE = {
+  ...defaultConfig
 };

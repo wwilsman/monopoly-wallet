@@ -6,7 +6,11 @@ import {
 
 import createGame from '../../server/game';
 import { getPlayer } from '../../server/helpers';
-import FIXTURES from '../fixtures';
+import {
+  GAME_ID,
+  GAME_FIXTURE,
+  CONFIG_FIXTURE
+} from '../fixtures';
 
 /**
  * Sets up testing within our game and preserves previously setup instances
@@ -14,12 +18,12 @@ import FIXTURES from '../fixtures';
  * @param {Object} [config] - Game configuration to merge with fixture
  */
 export function setupGame({ state = {}, config = {} } = {}) {
-  const gameConfig = { ...FIXTURES.CONFIG, ...config };
+  const gameConfig = { ...CONFIG_FIXTURE, ...config };
   const initialState = buildInitialState(state, gameConfig);
   let store, unsubscribe, old = {};
 
   beforeEach(function() {
-    store = createGame(initialState, gameConfig);
+    store = createGame(GAME_ID, initialState, gameConfig);
 
     old.last = this.last;
     old.state = this.state;
@@ -65,7 +69,7 @@ function buildInitialState(
   config
 ) {
   return {
-    ...FIXTURES.GAME,
+    ...GAME_FIXTURE,
     ...state,
 
     // map over provided players and set defaults
@@ -80,6 +84,6 @@ function buildInitialState(
     properties: properties.reduce((mocks, override) => mocks.map((mock) => (
       (mock.id === override.id || mock.group === override.group) ?
         { ...mock, ...override } : mock
-    )), FIXTURES.GAME.properties)
+    )), GAME_FIXTURE.properties)
   };
 }
