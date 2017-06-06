@@ -5,7 +5,7 @@ import {
 } from 'mocha';
 
 import { expect } from 'chai';
-import { setupGame } from './helpers';
+import { setupGame } from './test-helpers';
 
 import MonopolyError from '../../server/rules/error';
 import {
@@ -69,10 +69,8 @@ describe('Game Actions', function() {
 
     setupGame({ state: {
       players: [{
-        id: 'player-1',
         name: 'Player 1',
-        token: 'top-hat',
-        balance: 1500
+        token: 'top-hat'
       }]
     }});
 
@@ -125,7 +123,6 @@ describe('Game Actions', function() {
     setupGame({ state: {
       bank: 100,
       players: [{
-        id: 'player-1',
         name: 'Player 1',
         token: 'top-hat',
         balance: 100
@@ -167,12 +164,10 @@ describe('Game Actions', function() {
     describe('with another player', function() {
       setupGame({ state: {
         players: [{
-          id: 'player-1',
           name: 'Player 1',
           token: 'top-hat',
           balance: 100
         }, {
-          id: 'player-2',
           name: 'Player 2',
           token: 'automobile',
           balance: 100

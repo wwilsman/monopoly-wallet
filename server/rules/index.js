@@ -1,4 +1,9 @@
 import {
+  getPlayer,
+  getProperty
+} from '../helpers';
+
+import {
   JOIN_GAME,
   BUY_PROPERTY
 } from '../actions';
@@ -9,26 +14,6 @@ import PROPERTY_RULES from './properties';
 const ALL_RULES = {
   ...PLAYER_RULES,
   ...PROPERTY_RULES
-};
-
-/**
- * Finds a player in the game state
- * @param {Object} state - Game state
- * @param {String} id - Player ID
- * @returns {Object} Player data
- */
-const getPlayer = (state, id) => {
-  return state.players.find((pl) => pl.id === id);
-};
-
-/**
- * Finds a property in the game state
- * @param {Object} state - Game state
- * @param {String} id - Property ID
- * @returns {Object} Property data
- */
-const getProperty = (state, id) => {
-  return state.properties.find((pr) => pr.id === id);
 };
 
 /**

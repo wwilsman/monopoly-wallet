@@ -1,4 +1,8 @@
+// TODO: Build this fixture from real defaults using the `createState` function
+// from `server/game`. Likewise use a real default configuration.
+
 const GAME = {
+  id: 'T35TT',
   bank: 10000,
   players: [],
   properties: [{
@@ -7,7 +11,9 @@ const GAME = {
     group: 'light-blue',
     rent: [6, 30, 90, 270, 400, 550],
     buildings: 0,
-    price: 100
+    price: 100,
+    cost: 50,
+    owner: 'bank'
   }]
 };
 
