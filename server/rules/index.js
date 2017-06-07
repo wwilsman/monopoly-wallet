@@ -27,36 +27,29 @@ export default (config) => {
   return (store) => (next) => (action) => {
     const state = store.getState();
 
-    // initial meta info
-    let meta = {
-      needed: {},
-      state
-    };
-
     // get player data
     if (action.player) {
-      meta.player = getPlayer(state, action.player.id) || action.player;
+      action.player = getPlayer(state, action.player.id) || action.player;
     }
 
     // get property data
     if (action.property) {
-      meta.property = getProperty(state, action.property.id);
+      action.property = getProperty(state, action.property.id);
     }
 
-    // need an amount
-    if (action.amount) {
-      meta.needed.amount = action.amount;
-    } else if (action.type === JOIN_GAME) {
-      meta.needed.amount = config.playerStart;
-    } else if (action.type === BUY_PROPERTY) {
-      meta.needed.amount = meta.property.price;
-      action.amount = meta.needed.amount;
+    // need amounts for these actions
+    if (!action.amount) {
+      if (action.type === JOIN_GAME) {
+        action.amount = config.playerStart;
+      } else if (action.type === BUY_PROPERTY) {
+        action.amount = action.property.price;
+      }
     }
 
     // check against rules for action
     if (ALL_RULES[action.type]) {
       for (let test of ALL_RULES[action.type]) {
-        test(meta);
+        test(state, action, config);
       }
     }
 

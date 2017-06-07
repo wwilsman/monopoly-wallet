@@ -10,7 +10,7 @@ import {
  * @param {String} property.owner - Property owner id
  * @throws {MonopolyError}
  */
-export const propertyUnowned = ({ property }) => {
+export const propertyUnowned = (state, { property }) => {
   property.owner !== 'bank' &&
     throwError(`${property.name} must be unowned`);
 };
