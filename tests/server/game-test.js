@@ -3,9 +3,13 @@ import {
   beforeEach,
   it
 } from 'mocha';
-
-import { expect } from 'chai';
-import { setupGame } from './test-helpers';
+import {
+  expect
+} from 'chai';
+import {
+  setupGameForTesting,
+  modifyGameForTesting
+} from './test-helpers';
 
 import MonopolyError from '../../server/rules/error';
 import {
@@ -16,7 +20,7 @@ import {
 
 describe('Game Actions', function() {
   describe('join()', function() {
-    setupGame({ state: { bank: 1500 }});
+    setupGameForTesting({ state: { bank: 1500 }});
 
     const player = {
       name: 'Name Namerson',
@@ -48,7 +52,7 @@ describe('Game Actions', function() {
     });
 
     describe('with a custom start balance', function() {
-      setupGame({ config: { playerStart: 10 }});
+      modifyGameForTesting({ config: { playerStart: 10 }});
 
       beforeEach(function() {
         this.dispatch(join(player.name, player.token));
@@ -67,7 +71,7 @@ describe('Game Actions', function() {
   describe('buyProperty()', function() {
     let player, property;
 
-    setupGame({ state: {
+    setupGameForTesting({ state: {
       players: [{
         name: 'Player 1',
         token: 'top-hat'
@@ -102,9 +106,8 @@ describe('Game Actions', function() {
     });
 
     it('should not buy the property when already owned', function() {
-      this.dispatch(join('Player 2', 'automobile'));
       this.dispatch(buyProperty(player.id, property.id));
-
+      this.dispatch(join('Player 2', 'automobile'));
       const player2 = this.state.players[1];
 
       expect(() => this.dispatch(buyProperty(player2.id, property.id)))
@@ -120,7 +123,9 @@ describe('Game Actions', function() {
   });
 
   describe('makeTransfer()', function() {
-    setupGame({ state: {
+    let player;
+
+    setupGameForTesting({ state: {
       bank: 100,
       players: [{
         name: 'Player 1',
@@ -128,8 +133,6 @@ describe('Game Actions', function() {
         balance: 100
       }]
     }});
-
-    let player;
 
     beforeEach(function() {
       player = this.state.players[0];
@@ -162,43 +165,38 @@ describe('Game Actions', function() {
     });
 
     describe('with another player', function() {
-      setupGame({ state: {
+      let player2;
+
+      modifyGameForTesting({ state: {
         players: [{
-          name: 'Player 1',
-          token: 'top-hat',
-          balance: 100
-        }, {
           name: 'Player 2',
           token: 'automobile',
           balance: 100
         }]
       }});
 
-      let player1, player2;
-
       beforeEach(function() {
-        player1 = this.state.players[0];
         player2 = this.state.players[1];
       });
 
       it('should transfer money to another player', function() {
-        this.dispatch(makeTransfer(player1.id, player2.id, 100));
+        this.dispatch(makeTransfer(player.id, player2.id, 100));
 
-        expect(this.state.players[0].balance).to.equal(player1.balance - 100);
+        expect(this.state.players[0].balance).to.equal(player.balance - 100);
         expect(this.state.players[1].balance).to.equal(player2.balance + 100);
       });
 
       it('should not transfer a negative amount', function() {
-        expect(() => this.dispatch(makeTransfer(player1.id, player2.id, -100)))
+        expect(() => this.dispatch(makeTransfer(player.id, player2.id, -100)))
           .to.throw(MonopolyError, /negative/);
-        expect(this.state.players[0].balance).to.equal(player1.balance);
+        expect(this.state.players[0].balance).to.equal(player.balance);
         expect(this.state.players[1].balance).to.equal(player2.balance);
       });
 
       it('should not transfer with insufficient funds', function() {
-        expect(() => this.dispatch(makeTransfer(player1.id, player2.id, 200)))
+        expect(() => this.dispatch(makeTransfer(player.id, player2.id, 200)))
           .to.throw(MonopolyError, /insufficient/i);
-        expect(this.state.players[0].balance).to.equal(player1.balance);
+        expect(this.state.players[0].balance).to.equal(player.balance);
         expect(this.state.players[1].balance).to.equal(player2.balance);
       });
     });

@@ -5,7 +5,7 @@
  * @returns {Object} Player data
  */
 export function getPlayer(state, id) {
-  return state.players.find((player) => {
+  return state && state.players.find((player) => {
     return player.id === id;
   });
 }
@@ -17,7 +17,7 @@ export function getPlayer(state, id) {
  * @returns {Object} Property data
  */
 export function getProperty(state, id) {
-  return state.properties.find((property) => {
+  return state && state.properties.find((property) => {
     return property.id === id;
   });
 }
