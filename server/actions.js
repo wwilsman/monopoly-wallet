@@ -15,7 +15,7 @@ export const MAKE_TRANSFER_WITH = 'MAKE_TRANSFER_WITH';
 export const join = (name, token) => ({
   type: JOIN_GAME,
   player: {
-    id: slug(`${name}_${token}`),
+    id: slug(`${name}_${token}`, { lower: true }),
     name,
     token
   }

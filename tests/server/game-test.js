@@ -31,8 +31,8 @@ describe('Game Actions', function() {
       expect(this.state.players).to.have.lengthOf(1);
       expect(this.state.players[0].name).to.equal(player.name);
       expect(this.state.players[0].token).to.equal(player.token);
-      expect(this.state.players[0].balance).to.be.ok;
-      expect(this.state.players[0].id).to.be.ok;
+      expect(this.state.players[0].balance).to.equal(this.config.playerStart);
+      expect(this.state.players[0].id).to.equal('name-namerson_top-hat');
     });
 
     it('should not add a player with the same token', function() {
