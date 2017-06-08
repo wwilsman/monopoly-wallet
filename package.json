@@ -7,17 +7,20 @@
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
   "scripts": {
-    "test:server": "mocha --compilers js:babel-register tests/server/**/*-test.js"
+    "test:server": "mocha --compilers js:babel-register tests/server/*-test.js tests/server/**/*-test.js"
   },
   "dependencies": {
     "redux": "^3.6.0",
     "slug": "^0.9.1"
   },
   "devDependencies": {
+    "babel-eslint": "^7.2.3",
     "babel-preset-env": "^1.4.0",
     "babel-preset-stage-3": "^6.24.1",
     "babel-register": "^6.24.1",
     "chai": "^3.5.0",
-    "mocha": "^3.3.0"
+    "eslint": "^3.19.0",
+    "mocha": "^3.3.0",
+    "mocha-eslint": "^3.0.1"
   }
 }
