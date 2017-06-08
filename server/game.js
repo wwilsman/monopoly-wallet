@@ -18,7 +18,7 @@ export function createState(state, config) {
   return {
     bank: config.bankStart < 0 ? Infinity : config.bankStart,
     houses: config.houseCount,
-    hotel: config.hotelCount,
+    hotels: config.hotelCount,
     players: [],
     ...state,
 
