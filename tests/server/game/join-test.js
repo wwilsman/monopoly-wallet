@@ -12,11 +12,6 @@ import { join } from '../../../server/actions';
 describe('Game: joining', function() {
   setupGameForTesting();
 
-  const player = {
-    name: 'Name Namerson',
-    token: 'top-hat'
-  };
-
   beforeEach(function() {
     this.dispatch(join('Player 1', 'top-hat'));
   });

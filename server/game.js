@@ -1,8 +1,7 @@
 import slug from 'slug';
 import {
   applyMiddleware,
-  createStore,
-  compose
+  createStore
 } from 'redux';
 
 import gameReducer from './reducers';
