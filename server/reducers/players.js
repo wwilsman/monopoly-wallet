@@ -21,7 +21,8 @@ const player = (state, action, config) => {
         id: action.player.id,
         name: action.player.name,
         token: action.player.token,
-        balance: config.playerStart
+        balance: config.playerStart,
+        bankrupt: false
       };
 
     case MAKE_TRANSFER_TO:
