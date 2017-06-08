@@ -24,12 +24,11 @@ describe('Game: improving properties', function() {
   }});
 
   it('should add a house to the property', function() {
-    const player = this.getPlayer('player-1');
     const property = this.getProperty('oriental-avenue');
 
-    this.dispatch(improveProperty(player.id, property.id));
+    this.dispatch(improveProperty('player-1', property.id));
 
-    expect(this.getPlayer(player.id).balance).to.equal(player.balance - property.cost);
+    expect(this.getPlayer('player-1').balance).to.equal(50 - property.cost);
     expect(this.state.bank).to.equal(this.last.bank + property.cost);
     expect(this.getProperty(property.id).buildings).to.equal(1);
     expect(this.state.houses).to.equal(this.last.houses - 1);
@@ -45,10 +44,26 @@ describe('Game: improving properties', function() {
     this.dispatch(improveProperty('player-1', 'oriental-avenue'));
 
     expect(this.getProperty('oriental-avenue').buildings).to.equal(1);
-
     expect(() => this.dispatch(improveProperty('player-1', 'connecticut-avenue')))
       .to.throw(MonopolyError, /insufficient/i);
     expect(this.getProperty('connecticut-avenue').buildings).to.equal(0);
+  });
+
+  describe('when the property needs a hotel', function() {
+    modifyGameInTesting({ state: {
+      properties: [{
+        group: 'lightblue',
+        buildings: 4
+      }]
+    }});
+
+    it('should remove 4 houses and add a hotel', function() {
+      this.dispatch(improveProperty('player-1', 'oriental-avenue'));
+
+      expect(this.getProperty('oriental-avenue').buildings).to.equal(5);
+      expect(this.state.houses).to.equal(this.last.houses + 4);
+      expect(this.state.hotels).to.equal(this.last.hotels - 1);
+    });
   });
 
   describe('when a property is a railroad or utility', function() {

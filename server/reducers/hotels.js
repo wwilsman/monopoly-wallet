@@ -11,7 +11,7 @@ import {
 export default (state = Infinity, action) => {
   switch (action.type) {
     case IMPROVE_PROPERTY:
-      return state - action.houses;
+      return state - action.hotels;
 
     default:
       return state;
