@@ -1,4 +1,3 @@
-import { getProperties } from '../helpers';
 import { throwError } from './error';
 import { negativeAmount } from './common';
 import { sufficientBalance } from './players';
@@ -12,7 +11,7 @@ import {
  * @param {String} property.owner - Property owner id
  * @throws {MonopolyError}
  */
-export const propertyUnowned = (state, { property }) => {
+export const propertyUnowned = ({ property }) => {
   property.owner !== 'bank' &&
     throwError(`${property.name} must be unowned`);
 };
@@ -23,7 +22,7 @@ export const propertyUnowned = (state, { property }) => {
  * @param {String} property.owner - Property owner id
  * @throws {MonopolyError}
  */
-export const propertyOwnedBy = (state, { player, property }) => {
+export const propertyOwnedBy = ({ player, property }) => {
   property.owner !== player.id &&
     throwError(`You do not own ${property.name}`);
 };
@@ -33,7 +32,7 @@ export const propertyOwnedBy = (state, { player, property }) => {
  * @param {String} property.group - Property group
  * @throws {MonopolyError}
  */
-export const notRailroadOrUtility = (state, { property }) => {
+export const notRailroadOrUtility = ({ property }) => {
   (property.group === 'railroad' || property.group === 'utility') &&
     throwError(`Cannot improve a ${property.group}`);
 };
@@ -41,23 +40,24 @@ export const notRailroadOrUtility = (state, { property }) => {
 /**
  * Validates a property is part of a monopoly
  * @param {String} player.id - Player id
- * @param {String} property.group - Property group
+ * @param {String} property.name - Property name
+ * @param {[Object]} group - Array of properties in the group
  * @throws {MonopolyError}
  */
-export const propertyIsMonopoly = (state, { player, property }) => {
-  getProperties(state, property.group).every((pr) => pr.owner === player.id) ||
+export const propertyIsMonopoly = ({ player, property, group }) => {
+  group.every((pr) => pr.owner === player.id) ||
     throwError(`${property.name} is not a monopoly`);
 };
 
 /**
  * Validates any property in a group is not mortgaged
- * @param {String} property.group - Property group
+  * @param {[Object]} group - Array of properties in the group
  * @param {Boolean} property.mortgaged - Property mortgage status
  * @throws {MonopolyError}
  */
-export const propertyIsMortgaged = (state, { property }) => {
-  const mprop = getProperties(state, property.group).find((pr) => pr.mortgaged);
-  mprop && throwError(`${mprop.name} is mortgaged`);
+export const propertyIsMortgaged = ({ group }) => {
+  const property = group.find((pr) => pr.mortgaged);
+  property && throwError(`${property.name} is mortgaged`);
 };
 
 /**
@@ -65,7 +65,7 @@ export const propertyIsMortgaged = (state, { property }) => {
  * @param {Number} property.buildings - Property improvements
  * @throws {MonopolyError}
  */
-export const notFullyImproved = (state, { property }) => {
+export const notFullyImproved = ({ property }) => {
   property.buildings === 5 &&
     throwError(`${property.name} is fully improved`);
 };
@@ -74,10 +74,11 @@ export const notFullyImproved = (state, { property }) => {
  * Validates a property is being improved evenly
  * @param {String} property.group - Property group
  * @param {Number} property.buildings - Property improvements
+ * @param {[Object]} group - Array of properties in the group
  * @throws {MonopolyError}
  */
-export const mustImproveEvenly = (state, { property }) => {
-  const lowest = getProperties(state, property.group).reduce(
+export const mustImproveEvenly = ({ property, group }) => {
+  const lowest = group.reduce(
     (low, pr) => Math.min(low, pr.buildings),
     property.buildings
   );
@@ -88,11 +89,12 @@ export const mustImproveEvenly = (state, { property }) => {
 
 /**
  * Validates that there are enough houses or hotels
+ * @param {Object} state - Current game state
  * @param {Number} houses - Houses needed
  * @param {Number} hotels - Hotels needed
  * @throws {MonopolyError}
  */
-export const enoughHousesOrHotels = (state, { houses, hotels }) => {
+export const enoughHousesOrHotels = ({ state, houses, hotels }) => {
   if (state.houses < houses) throwError('Not enough houses');
   else if (state.hotels < hotels) throwError('Not enough hotels');
 };

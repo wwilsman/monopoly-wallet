@@ -1,3 +1,5 @@
+import slug from 'slug';
+
 import {
   JOIN_GAME,
   BUY_PROPERTY,
@@ -11,17 +13,19 @@ import {
  * Reducer for a single player
  * @param {Object} state - Player state
  * @param {Object} action - Redux action
- * @param {Object} config - Game config
  * @returns {Object} Reduced state
  */
-const player = (state, action, config) => {
+const player = (state, action) => {
   switch (action.type) {
     case JOIN_GAME:
       return {
-        id: action.player.id,
+        id: slug(
+          `${action.player.name}_${action.player.token}`,
+          { lower: true }
+        ),
         name: action.player.name,
         token: action.player.token,
-        balance: config.playerStart,
+        balance: action.amount,
         bankrupt: false
       };
 
@@ -53,14 +57,13 @@ const player = (state, action, config) => {
  * Players reducer
  * @param {Array} state - Array of player states
  * @param {Object} action - Redux action
- * @param {Object} config - Game config
  * @returns {Array} Reduced state
  */
-export default (state = [], action, config) => {
+export default (state = [], action) => {
   switch (action.type) {
     case JOIN_GAME:
       return [ ...state,
-        player(undefined, action, config)
+        player(undefined, action)
       ];
 
     case BUY_PROPERTY:
@@ -69,14 +72,14 @@ export default (state = [], action, config) => {
     case IMPROVE_PROPERTY:
       return state.map((pl) => (
         pl.id === action.player.id ?
-          player(pl, action, config) : pl
+          player(pl, action) : pl
       ));
 
     case MAKE_TRANSFER_WITH:
       return state.map((pl) => (
         (pl.id === action.player.id ||
          pl.id === action.other.id) ?
-          player(pl, action, config) : pl
+          player(pl, action) : pl
       ));
 
     default:

@@ -15,9 +15,10 @@ import {
 /**
  * Validates a player's token is unique
  * @param {String} player.token - Player token
+ * @param {Object} state - Current game state
  * @throws {MonopolyError}
  */
-export const uniqueToken = (state, { player }) => {
+export const uniqueToken = ({ state, player }) => {
   state.players.some((pl) => pl.token === player.token) &&
     throwError('Token already in use');
 };
@@ -28,7 +29,7 @@ export const uniqueToken = (state, { player }) => {
  * @param {Number} amount - Amount needed
  * @throws {MonopolyError}
  */
-export const sufficientBalance = (state, { player, amount }) => {
+export const sufficientBalance = ({ player, amount }) => {
   player.balance < amount && throwError('Insufficient balance');
 };
 

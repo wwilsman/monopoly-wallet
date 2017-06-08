@@ -1,13 +1,9 @@
 import {
   getPlayer,
-  getProperty
+  getProperty,
+  getProperties
 } from '../helpers';
 
-import {
-  JOIN_GAME,
-  BUY_PROPERTY,
-  IMPROVE_PROPERTY
-} from '../actions';
 import PLAYER_RULES from './players';
 import PROPERTY_RULES from './properties';
 
@@ -28,37 +24,27 @@ export default (config) => {
   return (store) => (next) => (action) => {
     const state = store.getState();
 
-    // get player data
-    if (action.player) {
-      action.player = getPlayer(state, action.player.id) || action.player;
-    }
+    // create initial meta
+    let meta = { state, config };
 
-    // get property data
-    if (action.property) {
-      action.property = getProperty(state, action.property.id);
-    }
+    meta.player = action.player &&
+      getPlayer(state, action.player.id) || action.player;
+    meta.property = action.property &&
+      getProperty(state, action.property.id);
+    meta.group = action.property &&
+      getProperties(state, meta.property.group);
 
-    // need amounts for these actions
-    if (!action.amount) {
-      if (action.type === JOIN_GAME) {
-        action.amount = config.playerStart;
-      } else if (action.type === BUY_PROPERTY) {
-        action.amount = action.property.price;
-      } else if (action.type === IMPROVE_PROPERTY) {
-        action.amount = action.property.cost;
-      }
-    }
-
-    // calculate houses/hotels for improving properties
-    if (action.type === IMPROVE_PROPERTY) {
-      action.houses = action.property.buildings === 4 ? -4 : 1;
-      action.hotels = action.property.buildings === 4 ? 1 : 0;
-    }
+    // run action calculations and build remaining meta
+    action = Object.keys(action).reduce((a, k) => {
+      a[k] = a[k] && a[k].__calc ? a[k].get(meta) : a[k];
+      if (k !== 'type' && !meta[k]) meta[k] = a[k];
+      return a;
+    }, action);
 
     // check against rules for action
     if (ALL_RULES[action.type]) {
       for (let test of ALL_RULES[action.type]) {
-        test(state, action, config);
+        test(meta);
       }
     }
 

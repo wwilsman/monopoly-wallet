@@ -7,10 +7,9 @@ import {
  * Reducer for a single property
  * @param {Object} state - Property state
  * @param {Object} action - Redux action
- * @param {Object} config - Game config
  * @returns {Object} Reduced state
  */
-const property = (state, action, config) => {
+const property = (state, action) => {
   switch (action.type) {
     case BUY_PROPERTY:
       return { ...state,
@@ -31,16 +30,15 @@ const property = (state, action, config) => {
  * Properties reducer
  * @param {Array} state - Array of property states
  * @param {Object} action - Redux action
- * @param {Object} config - Game config
  * @returns {Array} Reduced state
  */
-export default (state = [], action, config) => {
+export default (state = [], action) => {
   switch (action.type) {
     case BUY_PROPERTY:
     case IMPROVE_PROPERTY:
       return state.map((pr) => (
         pr.id === action.property.id ?
-          property(pr, action, config) : pr
+          property(pr, action) : pr
       ));
 
     default:

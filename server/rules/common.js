@@ -2,10 +2,11 @@ import { throwError } from './error';
 
 /**
  * Validates the bank has sufficient funds
+ * @param {Object} state - Current game state
  * @param {Number} amount - Amount needed
  * @throws {MonopolyError}
  */
-export const bankFunds = (state, { amount }) => {
+export const bankFunds = ({ state, amount }) => {
   amount > state.bank && throwError('Bank funds are insufficient');
 };
 
@@ -14,6 +15,6 @@ export const bankFunds = (state, { amount }) => {
  * @param {Number} amount - Amount needed
  * @throws {MonopolyError}
  */
-export const negativeAmount = (state, { amount }) => {
+export const negativeAmount = ({ amount }) => {
   amount < 0 && throwError('Amount must not be negative');
 };
