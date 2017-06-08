@@ -5,7 +5,8 @@ import {
 
 import {
   JOIN_GAME,
-  BUY_PROPERTY
+  BUY_PROPERTY,
+  IMPROVE_PROPERTY
 } from '../actions';
 import PLAYER_RULES from './players';
 import PROPERTY_RULES from './properties';
@@ -43,7 +44,15 @@ export default (config) => {
         action.amount = config.playerStart;
       } else if (action.type === BUY_PROPERTY) {
         action.amount = action.property.price;
+      } else if (action.type === IMPROVE_PROPERTY) {
+        action.amount = action.property.cost;
       }
+    }
+
+    // calculate houses/hotels for improving properties
+    if (action.type === IMPROVE_PROPERTY) {
+      action.houses = action.property.buildings === 4 ? -4 : 1;
+      action.hotels = action.property.buildings === 4 ? 1 : 0;
     }
 
     // check against rules for action

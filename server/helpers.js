@@ -21,3 +21,15 @@ export function getProperty(state, id) {
     return property.id === id;
   });
 }
+
+/**
+ * Finds properties by group in the game state
+ * @param {Object} state - Game state
+ * @param {String} group - Property group
+ * @returns {[Object]} Array of property data
+ */
+export function getProperties(state, group) {
+  return state && state.properties.filter((property) => {
+    return property.group === group;
+  });
+}

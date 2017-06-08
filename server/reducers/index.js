@@ -3,7 +3,8 @@ import {
   BUY_PROPERTY,
   MAKE_TRANSFER_TO,
   MAKE_TRANSFER_FROM,
-  MAKE_TRANSFER_WITH
+  MAKE_TRANSFER_WITH,
+  IMPROVE_PROPERTY
 } from '../actions';
 
 import players from './players';
@@ -58,6 +59,16 @@ export default (state = defaultState, action, config) => {
     case MAKE_TRANSFER_WITH:
       return { ...state,
         players: players(state.players, action, config)
+      };
+
+    case IMPROVE_PROPERTY:
+      return {
+        ...state,
+        bank: state.bank + action.amount,
+        houses: state.houses - action.houses,
+        hotels: state.hotels - action.hotels,
+        players: players(state.players, action, config),
+        properties: properties(state.properties, action, config)
       };
 
     default:

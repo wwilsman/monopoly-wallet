@@ -1,5 +1,6 @@
 import {
-  BUY_PROPERTY
+  BUY_PROPERTY,
+  IMPROVE_PROPERTY
 } from '../actions';
 
 /**
@@ -12,9 +13,13 @@ import {
 const property = (state, action, config) => {
   switch (action.type) {
     case BUY_PROPERTY:
-      return {
-        ...state,
+      return { ...state,
         owner: action.player.id
+      };
+
+    case IMPROVE_PROPERTY:
+      return { ...state,
+        buildings: state.buildings + 1
       };
 
     default:
@@ -32,6 +37,7 @@ const property = (state, action, config) => {
 export default (state = [], action, config) => {
   switch (action.type) {
     case BUY_PROPERTY:
+    case IMPROVE_PROPERTY:
       return state.map((pr) => (
         pr.id === action.property.id ?
           property(pr, action, config) : pr

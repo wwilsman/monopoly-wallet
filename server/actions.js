@@ -5,6 +5,7 @@ export const BUY_PROPERTY = 'BUY_PROPERTY';
 export const MAKE_TRANSFER_TO = 'MAKE_TRANSFER_TO';
 export const MAKE_TRANSFER_FROM = 'MAKE_TRANSFER_FROM';
 export const MAKE_TRANSFER_WITH = 'MAKE_TRANSFER_WITH';
+export const IMPROVE_PROPERTY = 'IMPROVE_PROPERTY';
 
 /**
  * Action creator for joining a game
@@ -60,3 +61,9 @@ export const makeTransfer = (playerId, otherId, amount = otherId) => {
     amount
   };
 };
+
+export const improveProperty = (playerId, propertyId) => ({
+  type: IMPROVE_PROPERTY,
+  player: { id: playerId },
+  property: { id: propertyId }
+});
