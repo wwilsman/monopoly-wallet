@@ -44,7 +44,7 @@ export function setupGameForTesting({ state = {}, config = {} } = {}) {
  * @param {Object} [state] - Initial game state to merge with fixture
  * @param {Object} [config] - Game configuration to merge with fixture
  */
-export function modifyGameForTesting({ state = {}, config = {} } = {}) {
+export function modifyGameInTesting({ state = {}, config = {} } = {}) {
   let old = {};
 
   before(function() {

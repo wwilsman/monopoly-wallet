@@ -7,7 +7,7 @@
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
   "scripts": {
-    "test:server": "mocha --compilers js:babel-register tests/server"
+    "test:server": "mocha --compilers js:babel-register tests/server/**/*-test.js"
   },
   "dependencies": {
     "redux": "^3.6.0",
