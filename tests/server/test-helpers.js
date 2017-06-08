@@ -11,7 +11,8 @@ import {
 } from '../../server/game';
 import {
   getPlayer,
-  getProperty
+  getProperty,
+  getProperties
 } from '../../server/helpers';
 import {
   GAME_FIXTURE,
@@ -27,19 +28,9 @@ export function setupGameForTesting({ state = {}, config = {} } = {}) {
   before(function() {
     this.config = { ...CONFIG_FIXTURE, ...config };
     this.initial = extendGameState(GAME_FIXTURE, state, this.config);
-
-    this.getPlayer = this.getPlayer ||
-      ((id) => getPlayer(this.state, id));
-    this.getProperty = this.getProperty ||
-      ((id) => getProperty(this.state, id));
-    this.getProperties = this.getProperties ||
-      ((group) => getProperties(this.state, group));
   });
 
   after(function() {
-    this.getPlayer = null;
-    this.getProperty = null;
-    this.getProperties = null;
     this.initial = null;
     this.config = null;
   });
@@ -84,6 +75,9 @@ function setupGameStore() {
     old.last = this.last;
     old.state = this.state;
     old.dispatch = this.dispatch;
+    old.getPlayer = this.getPlayer;
+    old.getProperty = this.getProperty;
+    old.getProperties = this.getProperties;
 
     store = createGame(this.initial, this.config);
 
@@ -94,12 +88,19 @@ function setupGameStore() {
       this.last = this.state;
       this.state = store.getState();
     });
+
+    this.getPlayer = (id) => getPlayer(this.state, id);
+    this.getProperty = (id) => getProperty(this.state, id);
+    this.getProperties = (group) => getProperties(this.state, group);
   });
 
   afterEach(function() {
     this.last = old.last;
     this.state = old.state;
     this.dispatch = old.dispatch;
+    this.getPlayer = old.getPlayer;
+    this.getProperty = old.getProperty;
+    this.getProperties = old.getProperties;
 
     unsubscribe();
     unsubscribe = null;
