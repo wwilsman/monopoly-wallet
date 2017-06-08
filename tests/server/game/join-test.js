@@ -10,7 +10,7 @@ import MonopolyError from '../../../server/rules/error';
 import { join } from '../../../server/actions';
 
 describe('Game: joining', function() {
-  setupGameForTesting();
+  setupGameForTesting({ state: { bank: 3000 }});
 
   beforeEach(function() {
     this.dispatch(join('Player 1', 'top-hat'));
@@ -24,6 +24,10 @@ describe('Game: joining', function() {
       balance: 1500,
       bankrupt: false
     });
+  });
+
+  it('should subtract the starting balance from the bank', function() {
+    expect(this.state.bank).to.equal(this.last.bank - this.config.playerStart);
   });
 
   it('should not add a player with the same token', function() {
