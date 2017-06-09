@@ -1,3 +1,4 @@
+import { getPlayer } from '../helpers';
 import { throwError } from './error';
 
 import {
@@ -18,12 +19,13 @@ import {
 
 /**
  * Validates a property does not have an owner
+ * @param {Object} state - Current game state
  * @param {String} property.owner - Property owner id
  * @throws {MonopolyError}
  */
-export const propertyUnowned = ({ property }) => {
-  property.owner !== 'bank' &&
-    throwError(`${property.name} must be unowned`);
+export const propertyNotOwned = ({ state, property }) => {
+  const owner = getPlayer(state, property.owner);
+  owner && throwError(`${owner.name} owns ${property.name}`);
 };
 
 /**
@@ -167,7 +169,7 @@ export const enoughHousesOrHotels = ({ state, houses, hotels }) => {
 export default {
   [BUY_PROPERTY]: [
     negativeAmount,
-    propertyUnowned,
+    propertyNotOwned,
     sufficientBalance
   ],
   [IMPROVE_PROPERTY]: [
