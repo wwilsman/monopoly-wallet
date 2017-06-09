@@ -3,7 +3,8 @@ import {
   BUY_PROPERTY,
   MAKE_TRANSFER_TO,
   MAKE_TRANSFER_FROM,
-  IMPROVE_PROPERTY
+  IMPROVE_PROPERTY,
+  UNIMPROVE_PROPERTY
 } from '../actions';
 
 /**
@@ -16,6 +17,7 @@ export default (state = Infinity, action) => {
   switch (action.type) {
     case JOIN_GAME:
     case MAKE_TRANSFER_TO:
+    case UNIMPROVE_PROPERTY:
       return state - action.amount;
 
     case BUY_PROPERTY:

@@ -1,5 +1,6 @@
 import {
-  IMPROVE_PROPERTY
+  IMPROVE_PROPERTY,
+  UNIMPROVE_PROPERTY
 } from '../actions';
 
 /**
@@ -11,6 +12,7 @@ import {
 export default (state = Infinity, action) => {
   switch (action.type) {
     case IMPROVE_PROPERTY:
+    case UNIMPROVE_PROPERTY:
       return state - action.hotels;
 
     default:

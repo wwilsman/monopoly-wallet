@@ -6,7 +6,8 @@ import {
   MAKE_TRANSFER_TO,
   MAKE_TRANSFER_FROM,
   MAKE_TRANSFER_WITH,
-  IMPROVE_PROPERTY
+  IMPROVE_PROPERTY,
+  UNIMPROVE_PROPERTY
 } from '../actions';
 
 /**
@@ -30,6 +31,7 @@ const player = (state, action) => {
       };
 
     case MAKE_TRANSFER_TO:
+    case UNIMPROVE_PROPERTY:
       return { ...state,
         balance: state.balance + action.amount
       };
@@ -70,6 +72,7 @@ export default (state = [], action) => {
     case MAKE_TRANSFER_TO:
     case MAKE_TRANSFER_FROM:
     case IMPROVE_PROPERTY:
+    case UNIMPROVE_PROPERTY:
       return state.map((pl) => (
         pl.id === action.player.id ?
           player(pl, action) : pl

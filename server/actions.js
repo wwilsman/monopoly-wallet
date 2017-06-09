@@ -4,12 +4,13 @@ export const MAKE_TRANSFER_TO = 'MAKE_TRANSFER_TO';
 export const MAKE_TRANSFER_FROM = 'MAKE_TRANSFER_FROM';
 export const MAKE_TRANSFER_WITH = 'MAKE_TRANSFER_WITH';
 export const IMPROVE_PROPERTY = 'IMPROVE_PROPERTY';
+export const UNIMPROVE_PROPERTY = 'UNIMPROVE_PROPERTY';
 
 /**
  * Creates a property for actions to calculate a value within the rule middleware
  * @param {Function} get - Function to return a value from the rule meta
  */
-export const calc = (get) => ({ __calc: true, get });
+const calc = (get) => ({ __calc: true, get });
 
 /**
  * Action creator for joining a game
@@ -78,4 +79,19 @@ export const improveProperty = (playerId, propertyId) => ({
   houses: calc(({ property }) => property.buildings === 4 ? -4 : 1),
   hotels: calc(({ property }) => property.buildings === 4 ? 1 : 0),
   amount: calc(({ property }) => property.cost)
+});
+
+/**
+ * Action creator for unimproving a property
+ * @param {String} playerId - Player ID
+ * @param {String} propertyId - Property ID
+ * @returns {Object} Redux action
+ */
+export const unimproveProperty = (playerId, propertyId) => ({
+  type: UNIMPROVE_PROPERTY,
+  player: { id: playerId },
+  property: { id: propertyId },
+  houses: calc(({ property }) => property.buildings === 5 ? 4 : -1),
+  hotels: calc(({ property }) => property.buildings === 5 ? -1 : 0),
+  amount: calc(({ property, config }) => property.cost * config.buildingRate)
 });

@@ -1,6 +1,7 @@
 import {
   BUY_PROPERTY,
-  IMPROVE_PROPERTY
+  IMPROVE_PROPERTY,
+  UNIMPROVE_PROPERTY
 } from '../actions';
 
 /**
@@ -21,6 +22,11 @@ const property = (state, action) => {
         buildings: state.buildings + 1
       };
 
+    case UNIMPROVE_PROPERTY:
+      return { ...state,
+        buildings: state.buildings - 1
+      };
+
     default:
       return state;
   }
@@ -36,6 +42,7 @@ export default (state = [], action) => {
   switch (action.type) {
     case BUY_PROPERTY:
     case IMPROVE_PROPERTY:
+    case UNIMPROVE_PROPERTY:
       return state.map((pr) => (
         pr.id === action.property.id ?
           property(pr, action) : pr

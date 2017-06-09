@@ -2,7 +2,7 @@ import {
   throwError
 } from './error';
 import {
-  bankFunds,
+  bankHasFunds,
   negativeAmount
 } from './common';
 import {
@@ -37,10 +37,10 @@ export const sufficientBalance = ({ player, amount }) => {
 export default {
   [JOIN_GAME]: [
     uniqueToken,
-    bankFunds
+    bankHasFunds
   ],
   [MAKE_TRANSFER_TO]: [
-    bankFunds
+    bankHasFunds
   ],
   [MAKE_TRANSFER_FROM]: [
     sufficientBalance

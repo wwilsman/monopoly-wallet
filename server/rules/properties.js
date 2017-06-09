@@ -1,9 +1,17 @@
 import { throwError } from './error';
-import { negativeAmount } from './common';
-import { sufficientBalance } from './players';
+
+import {
+  negativeAmount,
+  bankHasFunds
+} from './common';
+import {
+  sufficientBalance
+} from './players';
+
 import {
   BUY_PROPERTY,
-  IMPROVE_PROPERTY
+  IMPROVE_PROPERTY,
+  UNIMPROVE_PROPERTY
 } from '../actions';
 
 /**
@@ -61,6 +69,16 @@ export const propertyIsMortgaged = ({ group }) => {
 };
 
 /**
+ * Validates a property has no improvements
+ * @param {Number} property.buildings - Property improvements
+ * @throws {MonopolyError}
+ */
+export const notImproved = ({ property }) => {
+  property.buildings === 0 &&
+    throwError(`${property.name} is not improved`);
+};
+
+/**
  * Validates a property is not fully improved
  * @param {Number} property.buildings - Property improvements
  * @throws {MonopolyError}
@@ -72,7 +90,6 @@ export const notFullyImproved = ({ property }) => {
 
 /**
  * Validates a property is being improved evenly
- * @param {String} property.group - Property group
  * @param {Number} property.buildings - Property improvements
  * @param {[Object]} group - Array of properties in the group
  * @throws {MonopolyError}
@@ -84,6 +101,22 @@ export const mustImproveEvenly = ({ property, group }) => {
   );
 
   property.buildings > lowest &&
+    throwError('Must build evenly');
+};
+
+/**
+ * Validates a property is being unimproved evenly
+ * @param {Number} property.buildings - Property improvements
+ * @param {[Object]} group - Array of properties in the group
+ * @throws {MonopolyError}
+ */
+export const mustUnimproveEvenly = ({ property, group }) => {
+  const highest = group.reduce(
+    (high, pr) => Math.max(high, pr.buildings),
+    property.buildings
+  );
+
+  property.buildings < highest &&
     throwError('Must build evenly');
 };
 
@@ -115,5 +148,13 @@ export default {
     mustImproveEvenly,
     enoughHousesOrHotels,
     sufficientBalance
+  ],
+  [UNIMPROVE_PROPERTY]: [
+    propertyOwnedBy,
+    notRailroadOrUtility,
+    notImproved,
+    mustUnimproveEvenly,
+    enoughHousesOrHotels,
+    bankHasFunds
   ]
 };

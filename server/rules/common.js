@@ -6,7 +6,7 @@ import { throwError } from './error';
  * @param {Number} amount - Amount needed
  * @throws {MonopolyError}
  */
-export const bankFunds = ({ state, amount }) => {
+export const bankHasFunds = ({ state, amount }) => {
   amount > state.bank && throwError('Bank funds are insufficient');
 };
 
