@@ -5,6 +5,7 @@ export const MAKE_TRANSFER_FROM = 'MAKE_TRANSFER_FROM';
 export const MAKE_TRANSFER_WITH = 'MAKE_TRANSFER_WITH';
 export const IMPROVE_PROPERTY = 'IMPROVE_PROPERTY';
 export const UNIMPROVE_PROPERTY = 'UNIMPROVE_PROPERTY';
+export const MORTGAGE_PROPERTY = 'MORTGAGE_PROPERTY';
 
 /**
  * Creates a property for actions to calculate a value within the rule middleware
@@ -94,4 +95,17 @@ export const unimproveProperty = (playerId, propertyId) => ({
   houses: calc(({ property }) => property.buildings === 5 ? 4 : -1),
   hotels: calc(({ property }) => property.buildings === 5 ? -1 : 0),
   amount: calc(({ property, config }) => property.cost * config.buildingRate)
+});
+
+/**
+ * Action creator for mortgaging a property
+ * @param {String} playerId - Player ID
+ * @param {String} propertyId - Property ID
+ * @returns {Object} Redux action
+ */
+export const mortgageProperty = (playerId, propertyId) => ({
+  type: MORTGAGE_PROPERTY,
+  player: { id: playerId },
+  property: { id: propertyId },
+  amount: calc(({ property, config }) => property.price * config.mortgageRate)
 });

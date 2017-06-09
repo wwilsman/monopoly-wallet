@@ -11,7 +11,8 @@ import {
 import {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
-  UNIMPROVE_PROPERTY
+  UNIMPROVE_PROPERTY,
+  MORTGAGE_PROPERTY
 } from '../actions';
 
 /**
@@ -73,6 +74,16 @@ export const propertyNotMortgaged = ({ property, group }) => {
  * @param {Number} property.buildings - Property improvements
  * @throws {MonopolyError}
  */
+export const propertyNotImproved = ({ property }) => {
+  property.buildings > 0 &&
+    throwError(`${property.name} is improved`);
+};
+
+/**
+ * Validates a property has improvements
+ * @param {Number} property.buildings - Property improvements
+ * @throws {MonopolyError}
+ */
 export const propertyIsImproved = ({ property }) => {
   property.buildings === 0 &&
     throwError(`${property.name} is not improved`);
@@ -86,6 +97,16 @@ export const propertyIsImproved = ({ property }) => {
 export const propertyNotFullyImproved = ({ property }) => {
   property.buildings === 5 &&
     throwError(`${property.name} is fully improved`);
+};
+
+/**
+ * Validates a property group has no improvements
+ * @param {[Object]} group - Array of properties in the group
+ * @throws {MonopolyError}
+ */
+export const groupNotImproved = ({ group }) => {
+  const property = group.find((pr) => pr.buildings > 0);
+  property && throwError(`${property.name} is improved`);
 };
 
 /**
@@ -155,6 +176,13 @@ export default {
     propertyIsImproved,
     mustUnimproveEvenly,
     enoughHousesOrHotels,
+    bankHasFunds
+  ],
+  [MORTGAGE_PROPERTY]: [
+    propertyOwnedBy,
+    propertyNotMortgaged,
+    propertyNotImproved,
+    groupNotImproved,
     bankHasFunds
   ]
 };
