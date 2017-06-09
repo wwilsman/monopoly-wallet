@@ -12,7 +12,8 @@ import {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
-  MORTGAGE_PROPERTY
+  MORTGAGE_PROPERTY,
+  UNMORTGAGE_PROPERTY
 } from '../actions';
 
 /**
@@ -56,6 +57,15 @@ export const notRailroadOrUtility = ({ property }) => {
 export const propertyIsMonopoly = ({ player, property, group }) => {
   group.every((pr) => pr.owner === player.id) ||
     throwError(`${property.name} is not a monopoly`);
+};
+
+/**
+ * Validates a property is mortgaged
+ * @param {Boolean} property.mortgaged - Property mortgage status
+ * @throws {MonopolyError}
+ */
+export const propertyIsMortgaged = ({ property }) => {
+  !property.mortgaged && throwError(`${property.name} is not mortgaged`);
 };
 
 /**
@@ -184,5 +194,10 @@ export default {
     propertyNotImproved,
     groupNotImproved,
     bankHasFunds
+  ],
+  [UNMORTGAGE_PROPERTY]: [
+    propertyOwnedBy,
+    propertyIsMortgaged,
+    sufficientBalance
   ]
 };

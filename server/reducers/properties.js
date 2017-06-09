@@ -2,7 +2,8 @@ import {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
-  MORTGAGE_PROPERTY
+  MORTGAGE_PROPERTY,
+  UNMORTGAGE_PROPERTY
 } from '../actions';
 
 /**
@@ -33,6 +34,11 @@ const property = (state, action) => {
         mortgaged: true
       };
 
+    case UNMORTGAGE_PROPERTY:
+      return { ...state,
+        mortgaged: false
+      };
+
     default:
       return state;
   }
@@ -50,6 +56,7 @@ export default (state = [], action) => {
     case IMPROVE_PROPERTY:
     case UNIMPROVE_PROPERTY:
     case MORTGAGE_PROPERTY:
+    case UNMORTGAGE_PROPERTY:
       return state.map((pr) => (
         pr.id === action.property.id ?
           property(pr, action) : pr

@@ -5,7 +5,8 @@ import {
   MAKE_TRANSFER_FROM,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
-  MORTGAGE_PROPERTY
+  MORTGAGE_PROPERTY,
+  UNMORTGAGE_PROPERTY
 } from '../actions';
 
 /**
@@ -25,6 +26,7 @@ export default (state = Infinity, action) => {
     case BUY_PROPERTY:
     case MAKE_TRANSFER_FROM:
     case IMPROVE_PROPERTY:
+    case UNMORTGAGE_PROPERTY:
       return state + action.amount;
 
     default:
