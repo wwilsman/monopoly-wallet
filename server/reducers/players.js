@@ -9,7 +9,8 @@ import {
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
   MORTGAGE_PROPERTY,
-  UNMORTGAGE_PROPERTY
+  UNMORTGAGE_PROPERTY,
+  PAY_RENT
 } from '../actions';
 
 /**
@@ -48,6 +49,7 @@ const player = (state, action) => {
       };
 
     case MAKE_TRANSFER_WITH:
+    case PAY_RENT:
       return { ...state,
         balance: state.id === action.other.id ?
           state.balance + action.amount :
@@ -85,6 +87,7 @@ export default (state = [], action) => {
       ));
 
     case MAKE_TRANSFER_WITH:
+    case PAY_RENT:
       return state.map((pl) => (
         (pl.id === action.player.id ||
          pl.id === action.other.id) ?

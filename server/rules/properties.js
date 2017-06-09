@@ -14,8 +14,20 @@ import {
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
   MORTGAGE_PROPERTY,
-  UNMORTGAGE_PROPERTY
+  UNMORTGAGE_PROPERTY,
+  PAY_RENT
 } from '../actions';
+
+
+/**
+ * Validates a property has an owner
+ * @param {String} property.owner - Property owner id
+ * @throws {MonopolyError}
+ */
+export const propertyIsOwned = ({ property }) => {
+  property.owner === 'bank' &&
+    throwError(`${property.name} is unowned`);
+};
 
 /**
  * Validates a property does not have an owner
@@ -200,6 +212,10 @@ export default {
   [UNMORTGAGE_PROPERTY]: [
     propertyOwnedBy,
     propertyIsMortgaged,
+    sufficientBalance
+  ],
+  [PAY_RENT]: [
+    propertyIsOwned,
     sufficientBalance
   ]
 };

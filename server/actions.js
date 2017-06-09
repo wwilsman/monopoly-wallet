@@ -7,6 +7,7 @@ export const IMPROVE_PROPERTY = 'IMPROVE_PROPERTY';
 export const UNIMPROVE_PROPERTY = 'UNIMPROVE_PROPERTY';
 export const MORTGAGE_PROPERTY = 'MORTGAGE_PROPERTY';
 export const UNMORTGAGE_PROPERTY = 'UNMORTGAGE_PROPERTY';
+export const PAY_RENT = 'PAY_RENT';
 
 /**
  * Creates a property for actions to calculate a value within the rule middleware
@@ -124,5 +125,32 @@ export const unmortgageProperty = (playerId, propertyId) => ({
   amount: calc(({ property, config }) => {
     const principle = property.price * config.mortgageRate;
     return principle + (principle * config.interestRate);
+  })
+});
+
+/**
+ * Action creator for paying rent on a property
+ * @param {String} playerId - Player ID
+ * @param {String} propertyId - Property ID
+ * @param {Number} [dice=2] - Dice roll amount
+ * @returns {Object} Redux action
+ */
+export const payRent = (playerId, propertyId, dice = 2) => ({
+  type: PAY_RENT,
+  player: { id: playerId },
+  property: { id: propertyId },
+  other: calc(({ property }) => ({ id: property.owner })),
+  amount: calc(({ property, group }) => {
+    const owned = group.filter((pr) => pr.owner === property.owner);
+
+    switch (property.group) {
+      case 'railroad':
+        return property.rent[owned.length - 1];
+      case 'utility':
+        return property.rent[owned.length - 1] * dice;
+      default:
+        return (owned.length === group.length && property.buildings === 0) ?
+          property.rent[0] * 2 : property.rent[property.buildings];
+    }
   })
 });
