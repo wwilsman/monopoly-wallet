@@ -58,22 +58,22 @@ export const propertyIsMonopoly = ({ player, property, group }) => {
 };
 
 /**
- * Validates any property in a group is not mortgaged
-  * @param {[Object]} group - Array of properties in the group
+ * Validates a property or any in the group is not mortgaged
  * @param {Boolean} property.mortgaged - Property mortgage status
+ * @param {[Object]} group - Array of properties in the group
  * @throws {MonopolyError}
  */
-export const propertyIsMortgaged = ({ group }) => {
-  const property = group.find((pr) => pr.mortgaged);
+export const propertyNotMortgaged = ({ property, group }) => {
+  property = property.mortgaged ? property : group.find((pr) => pr.mortgaged);
   property && throwError(`${property.name} is mortgaged`);
 };
 
 /**
- * Validates a property has no improvements
+ * Validates a property has improvements
  * @param {Number} property.buildings - Property improvements
  * @throws {MonopolyError}
  */
-export const notImproved = ({ property }) => {
+export const propertyIsImproved = ({ property }) => {
   property.buildings === 0 &&
     throwError(`${property.name} is not improved`);
 };
@@ -83,7 +83,7 @@ export const notImproved = ({ property }) => {
  * @param {Number} property.buildings - Property improvements
  * @throws {MonopolyError}
  */
-export const notFullyImproved = ({ property }) => {
+export const propertyNotFullyImproved = ({ property }) => {
   property.buildings === 5 &&
     throwError(`${property.name} is fully improved`);
 };
@@ -143,8 +143,8 @@ export default {
     propertyOwnedBy,
     notRailroadOrUtility,
     propertyIsMonopoly,
-    propertyIsMortgaged,
-    notFullyImproved,
+    propertyNotMortgaged,
+    propertyNotFullyImproved,
     mustImproveEvenly,
     enoughHousesOrHotels,
     sufficientBalance
@@ -152,7 +152,7 @@ export default {
   [UNIMPROVE_PROPERTY]: [
     propertyOwnedBy,
     notRailroadOrUtility,
-    notImproved,
+    propertyIsImproved,
     mustUnimproveEvenly,
     enoughHousesOrHotels,
     bankHasFunds
