@@ -7,7 +7,7 @@ import {
 } from '../test-helpers';
 
 import MonopolyError from '../../../server/rules/error';
-import { join } from '../../../server/actions';
+import { join } from '../../../server/actions/players';
 
 describe('Game: joining', function() {
   setupGameForTesting({ state: { bank: 3000 }});

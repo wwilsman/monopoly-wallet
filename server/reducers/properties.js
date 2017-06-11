@@ -4,7 +4,7 @@ import {
   UNIMPROVE_PROPERTY,
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY
-} from '../actions';
+} from '../actions/properties';
 
 /**
  * Reducer for a single property

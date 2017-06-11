@@ -7,7 +7,7 @@ import {
 } from '../test-helpers';
 
 import MonopolyError from '../../../server/rules/error';
-import { mortgageProperty } from '../../../server/actions';
+import { mortgageProperty } from '../../../server/actions/properties';
 
 describe('Game: mortgaging properties', function() {
   setupGameForTesting({ state: {

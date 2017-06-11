@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { setupGameForTesting } from '../test-helpers';
 
 import MonopolyError from '../../../server/rules/error';
-import { buyProperty } from '../../../server/actions';
+import { buyProperty } from '../../../server/actions/properties';
 
 describe('Game: buying properties', function() {
   setupGameForTesting({ state: {

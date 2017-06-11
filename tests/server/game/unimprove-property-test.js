@@ -7,7 +7,7 @@ import {
 } from '../test-helpers';
 
 import MonopolyError from '../../../server/rules/error';
-import { unimproveProperty } from '../../../server/actions';
+import { unimproveProperty } from '../../../server/actions/properties';
 
 describe('Game: unimproving properties', function() {
   setupGameForTesting({ state: {

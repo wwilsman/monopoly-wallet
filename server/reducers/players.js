@@ -2,16 +2,18 @@ import slug from 'slug';
 
 import {
   JOIN_GAME,
-  BUY_PROPERTY,
   MAKE_TRANSFER_TO,
   MAKE_TRANSFER_FROM,
   MAKE_TRANSFER_WITH,
+} from '../actions/players';
+import {
+  BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY,
   PAY_RENT
-} from '../actions';
+} from '../actions/properties';
 
 /**
  * Reducer for a single player

@@ -1,7 +1,7 @@
 import {
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY
-} from '../actions';
+} from '../actions/properties';
 
 /**
  * Reducer for available hotels

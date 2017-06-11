@@ -7,7 +7,7 @@ import {
 } from '../test-helpers';
 
 import MonopolyError from '../../../server/rules/error';
-import { payRent } from '../../../server/actions';
+import { payRent } from '../../../server/actions/properties';
 
 describe('Game: paying rent', function() {
   setupGameForTesting({ state: {

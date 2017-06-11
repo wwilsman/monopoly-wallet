@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { setupGameForTesting } from '../test-helpers';
 
 import MonopolyError from '../../../server/rules/error';
-import { makeTransfer } from '../../../server/actions';
+import { makeTransfer } from '../../../server/actions/players';
 
 describe('Game: making transfers', function() {
   setupGameForTesting({ state: {

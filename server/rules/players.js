@@ -1,16 +1,16 @@
-import {
-  throwError
-} from './error';
+import { throwError } from './error';
+
 import {
   bankHasFunds,
   negativeAmount
 } from './common';
+
 import {
   JOIN_GAME,
   MAKE_TRANSFER_TO,
   MAKE_TRANSFER_FROM,
   MAKE_TRANSFER_WITH,
-} from '../actions';
+} from '../actions/players';
 
 /**
  * Validates a player's token is unique

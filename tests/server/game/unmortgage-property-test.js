@@ -7,7 +7,7 @@ import {
 } from '../test-helpers';
 
 import MonopolyError from '../../../server/rules/error';
-import { unmortgageProperty } from '../../../server/actions';
+import { unmortgageProperty } from '../../../server/actions/properties';
 
 describe('Game: unmortgaging properties', function() {
   setupGameForTesting({ state: {

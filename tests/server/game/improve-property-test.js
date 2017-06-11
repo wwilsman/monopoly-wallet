@@ -7,7 +7,7 @@ import {
 } from '../test-helpers';
 
 import MonopolyError from '../../../server/rules/error';
-import { improveProperty } from '../../../server/actions';
+import { improveProperty } from '../../../server/actions/properties';
 
 describe('Game: improving properties', function() {
   setupGameForTesting({ state: {

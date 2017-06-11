@@ -16,8 +16,7 @@ import {
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY,
   PAY_RENT
-} from '../actions';
-
+} from '../actions/properties';
 
 /**
  * Validates a property has an owner
