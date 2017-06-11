@@ -1,23 +1,6 @@
 import { getPlayer } from '../helpers';
 import { throwError } from './error';
 
-import {
-  negativeAmount,
-  bankHasFunds
-} from './common';
-import {
-  sufficientBalance
-} from './players';
-
-import {
-  BUY_PROPERTY,
-  IMPROVE_PROPERTY,
-  UNIMPROVE_PROPERTY,
-  MORTGAGE_PROPERTY,
-  UNMORTGAGE_PROPERTY,
-  PAY_RENT
-} from '../actions/properties';
-
 /**
  * Validates a property has an owner
  * @param {String} property.owner - Property owner id
@@ -97,19 +80,19 @@ export const propertyNotMortgaged = ({ property, group }) => {
  * @param {Number} property.buildings - Property improvements
  * @throws {MonopolyError}
  */
-export const propertyNotImproved = ({ property }) => {
-  property.buildings > 0 &&
-    throwError(`${property.name} is improved`);
-};
-
-/**
- * Validates a property has improvements
- * @param {Number} property.buildings - Property improvements
- * @throws {MonopolyError}
- */
 export const propertyIsImproved = ({ property }) => {
   property.buildings === 0 &&
     throwError(`${property.name} is not improved`);
+};
+
+/**
+ * Validates a property has no improvements
+ * @param {Number} property.buildings - Property improvements
+ * @throws {MonopolyError}
+ */
+export const propertyNotImproved = ({ property }) => {
+  property.buildings > 0 &&
+    throwError(`${property.name} is improved`);
 };
 
 /**
@@ -127,7 +110,7 @@ export const propertyNotFullyImproved = ({ property }) => {
  * @param {[Object]} group - Array of properties in the group
  * @throws {MonopolyError}
  */
-export const groupNotImproved = ({ group }) => {
+export const monopolyNotImproved = ({ group }) => {
   const property = group.find((pr) => pr.buildings > 0);
   property && throwError(`${property.name} is improved`);
 };
@@ -174,47 +157,4 @@ export const mustUnimproveEvenly = ({ property, group }) => {
 export const enoughHousesOrHotels = ({ state, houses, hotels }) => {
   if (state.houses < houses) throwError('Not enough houses');
   else if (state.hotels < hotels) throwError('Not enough hotels');
-};
-
-// Rules for properties
-export default {
-  [BUY_PROPERTY]: [
-    negativeAmount,
-    propertyNotOwned,
-    sufficientBalance
-  ],
-  [IMPROVE_PROPERTY]: [
-    propertyOwnedBy,
-    notRailroadOrUtility,
-    propertyIsMonopoly,
-    propertyNotMortgaged,
-    propertyNotFullyImproved,
-    mustImproveEvenly,
-    enoughHousesOrHotels,
-    sufficientBalance
-  ],
-  [UNIMPROVE_PROPERTY]: [
-    propertyOwnedBy,
-    notRailroadOrUtility,
-    propertyIsImproved,
-    mustUnimproveEvenly,
-    enoughHousesOrHotels,
-    bankHasFunds
-  ],
-  [MORTGAGE_PROPERTY]: [
-    propertyOwnedBy,
-    propertyNotMortgaged,
-    propertyNotImproved,
-    groupNotImproved,
-    bankHasFunds
-  ],
-  [UNMORTGAGE_PROPERTY]: [
-    propertyOwnedBy,
-    propertyIsMortgaged,
-    sufficientBalance
-  ],
-  [PAY_RENT]: [
-    propertyIsOwned,
-    sufficientBalance
-  ]
 };

@@ -5,7 +5,7 @@ import {
 } from 'redux';
 
 import gameReducer from './reducers';
-import ruleMiddleware from './rules';
+import ruleMiddleware from './rules/middleware';
 
 /**
  * Creates a new game state from an initial state and config

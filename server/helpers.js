@@ -33,3 +33,11 @@ export function getProperties(state, group) {
     return property.group === group;
   });
 }
+
+/**
+ * Creates a property for actions to calculate a value within the rule middleware
+ * @param {Function} get - Function to return a value from the rule meta
+ */
+export function calc(get) {
+  return { __calc: true, get };
+}

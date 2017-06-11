@@ -1,4 +1,4 @@
-import { calc } from './helpers';
+import { calc } from '../helpers';
 
 export const JOIN_GAME = 'JOIN_GAME';
 export const MAKE_TRANSFER_TO = 'MAKE_TRANSFER_TO';

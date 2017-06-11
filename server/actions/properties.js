@@ -1,4 +1,4 @@
-import { calc } from './helpers';
+import { calc } from '../helpers';
 
 export const BUY_PROPERTY = 'BUY_PROPERTY';
 export const IMPROVE_PROPERTY = 'IMPROVE_PROPERTY';

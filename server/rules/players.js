@@ -1,17 +1,5 @@
 import { throwError } from './error';
 
-import {
-  bankHasFunds,
-  negativeAmount
-} from './common';
-
-import {
-  JOIN_GAME,
-  MAKE_TRANSFER_TO,
-  MAKE_TRANSFER_FROM,
-  MAKE_TRANSFER_WITH,
-} from '../actions/players';
-
 /**
  * Validates a player's token is unique
  * @param {String} player.token - Player token
@@ -31,22 +19,4 @@ export const uniqueToken = ({ state, player }) => {
  */
 export const sufficientBalance = ({ player, amount }) => {
   player.balance < amount && throwError('Insufficient balance');
-};
-
-// Rules for players
-export default {
-  [JOIN_GAME]: [
-    uniqueToken,
-    bankHasFunds
-  ],
-  [MAKE_TRANSFER_TO]: [
-    bankHasFunds
-  ],
-  [MAKE_TRANSFER_FROM]: [
-    sufficientBalance
-  ],
-  [MAKE_TRANSFER_WITH]: [
-    negativeAmount,
-    sufficientBalance
-  ]
 };

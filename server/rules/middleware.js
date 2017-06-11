@@ -4,14 +4,7 @@ import {
   getProperties
 } from '../helpers';
 
-import PLAYER_RULES from './players';
-import PROPERTY_RULES from './properties';
-
-// Rules for all game actions
-const ALL_RULES = {
-  ...PLAYER_RULES,
-  ...PROPERTY_RULES
-};
+import rules from './definitions';
 
 /**
  * Middleware to gather additional data for actions and run them against
@@ -42,8 +35,8 @@ export default (config) => {
     }, action);
 
     // check against rules for action
-    if (ALL_RULES[action.type]) {
-      for (let test of ALL_RULES[action.type]) {
+    if (rules[action.type]) {
+      for (let test of rules[action.type]) {
         test(meta);
       }
     }
