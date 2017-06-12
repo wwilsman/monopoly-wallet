@@ -5,6 +5,7 @@ import {
   MAKE_TRANSFER_TO,
   MAKE_TRANSFER_FROM,
   MAKE_TRANSFER_WITH,
+  CLAIM_BANKRUPTCY
 } from '../actions/players';
 import {
   BUY_PROPERTY,
@@ -58,6 +59,14 @@ const player = (state, action) => {
           state.balance - action.amount
       };
 
+    case CLAIM_BANKRUPTCY:
+      return { ...state,
+        balance: state.id === action.other.id ?
+          state.balance + action.amount :
+          state.balance - action.amount,
+        bankrupt: state.id === action.player.id
+      };
+
     default:
       return state;
   }
@@ -88,8 +97,9 @@ export default (state = [], action) => {
           player(pl, action) : pl
       ));
 
-    case MAKE_TRANSFER_WITH:
     case PAY_RENT:
+    case MAKE_TRANSFER_WITH:
+    case CLAIM_BANKRUPTCY:
       return state.map((pl) => (
         (pl.id === action.player.id ||
          pl.id === action.other.id) ?

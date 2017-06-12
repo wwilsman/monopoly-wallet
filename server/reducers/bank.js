@@ -1,7 +1,8 @@
 import {
   JOIN_GAME,
   MAKE_TRANSFER_TO,
-  MAKE_TRANSFER_FROM
+  MAKE_TRANSFER_FROM,
+  CLAIM_BANKRUPTCY
 } from '../actions/players';
 import {
   BUY_PROPERTY,
@@ -30,6 +31,10 @@ export default (state = Infinity, action) => {
     case IMPROVE_PROPERTY:
     case UNMORTGAGE_PROPERTY:
       return state + action.amount;
+
+    case CLAIM_BANKRUPTCY:
+      return action.other.id === 'bank' ?
+        state + action.amount : state;
 
     default:
       return state;

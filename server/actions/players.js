@@ -4,6 +4,7 @@ export const JOIN_GAME = 'JOIN_GAME';
 export const MAKE_TRANSFER_TO = 'MAKE_TRANSFER_TO';
 export const MAKE_TRANSFER_FROM = 'MAKE_TRANSFER_FROM';
 export const MAKE_TRANSFER_WITH = 'MAKE_TRANSFER_WITH';
+export const CLAIM_BANKRUPTCY = 'CLAIM_BANKRUPTCY';
 
 /**
  * Action creator for joining a game
@@ -43,3 +44,21 @@ export const makeTransfer = (playerId, otherId, amount = otherId) => {
     amount
   };
 };
+
+/**
+ * Action creator for claiming bankruptcy
+ * @param {String} playerId - Player ID
+ * @param {String} [beneficiaryId="bank"] - Beneficiary ID
+ * @returns {Object} Redux action
+ */
+export const bankrupt = (playerId, beneficiaryId = 'bank') => ({
+  type: CLAIM_BANKRUPTCY,
+  player: { id: playerId },
+  other: { id: beneficiaryId },
+  amount: calc(({ player }) => player.balance),
+  properties: calc(({ state, player }) => (
+    state.properties
+      .filter((pr) => pr.owner === player.id)
+      .map((pr) => pr.id)
+  ))
+});

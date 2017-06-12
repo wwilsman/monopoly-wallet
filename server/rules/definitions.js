@@ -2,7 +2,8 @@ import {
   JOIN_GAME,
   MAKE_TRANSFER_TO,
   MAKE_TRANSFER_FROM,
-  MAKE_TRANSFER_WITH
+  MAKE_TRANSFER_WITH,
+  CLAIM_BANKRUPTCY
 } from '../actions/players';
 import {
   BUY_PROPERTY,
@@ -28,9 +29,11 @@ import {
   notRailroadOrUtility,
   propertyIsMonopoly,
   propertyIsMortgaged,
+  propertiesAreMortgaged,
   propertyNotMortgaged,
   propertyIsImproved,
   propertyNotImproved,
+  propertiesNotImproved,
   propertyNotFullyImproved,
   monopolyNotImproved,
   mustImproveEvenly,
@@ -53,6 +56,10 @@ const PLAYERS = {
   [MAKE_TRANSFER_WITH]: [
     negativeAmount,
     sufficientBalance
+  ],
+  [CLAIM_BANKRUPTCY]: [
+    propertiesNotImproved,
+    propertiesAreMortgaged
   ]
 };
 

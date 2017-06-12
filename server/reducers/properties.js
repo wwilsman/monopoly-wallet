@@ -1,4 +1,7 @@
 import {
+  CLAIM_BANKRUPTCY
+} from '../actions/players';
+import {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
@@ -39,6 +42,11 @@ const property = (state, action) => {
         mortgaged: false
       };
 
+    case CLAIM_BANKRUPTCY:
+      return { ...state,
+        owner: action.other.id
+      };
+
     default:
       return state;
   }
@@ -59,6 +67,12 @@ export default (state = [], action) => {
     case UNMORTGAGE_PROPERTY:
       return state.map((pr) => (
         pr.id === action.property.id ?
+          property(pr, action) : pr
+      ));
+
+    case CLAIM_BANKRUPTCY:
+      return state.map((pr) => (
+        action.properties.indexOf(pr.id) > -1 ?
           property(pr, action) : pr
       ));
 

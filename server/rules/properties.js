@@ -65,6 +65,16 @@ export const propertyIsMortgaged = ({ property }) => {
 };
 
 /**
+ * Validates multiple properties are mortgaged
+ * @param {[Object]} properties - Properties to validate
+ * @throws {MonopolyError}
+ */
+export const propertiesAreMortgaged = ({ properties }) => {
+  properties.find((pr) => !pr.mortgaged) &&
+    throwError('You have unmortgaged properties');
+};
+
+/**
  * Validates a property or any in the group is not mortgaged
  * @param {Boolean} property.mortgaged - Property mortgage status
  * @param {[Object]} group - Array of properties in the group
@@ -93,6 +103,17 @@ export const propertyIsImproved = ({ property }) => {
 export const propertyNotImproved = ({ property }) => {
   property.buildings > 0 &&
     throwError(`${property.name} is improved`);
+};
+
+/**
+ * Validates multiple properties have no improvements
+ * @param {[Object]} properties - Properties to validate
+ * @param {Number} property.buildings - Property improvements
+ * @throws {MonopolyError}
+ */
+export const propertiesNotImproved = ({ properties }) => {
+  properties.find((pr) => pr.buildings > 0) &&
+    throwError('You have unimproved properties');
 };
 
 /**
