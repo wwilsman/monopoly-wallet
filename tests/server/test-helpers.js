@@ -12,7 +12,8 @@ import {
 import {
   getPlayer,
   getProperty,
-  getProperties
+  getProperties,
+  getTrade
 } from '../../server/helpers';
 import {
   GAME_FIXTURE,
@@ -78,6 +79,7 @@ function setupGameStore() {
     old.getPlayer = this.getPlayer;
     old.getProperty = this.getProperty;
     old.getProperties = this.getProperties;
+    old.getTrade = this.getTrade;
 
     store = createGame(this.initial, this.config);
 
@@ -92,6 +94,7 @@ function setupGameStore() {
     this.getPlayer = (id) => getPlayer(this.state, id);
     this.getProperty = (id) => getProperty(this.state, id);
     this.getProperties = (group) => getProperties(this.state, group);
+    this.getTrade = (players) => getTrade(this.state, players);
   });
 
   afterEach(function() {
@@ -101,6 +104,7 @@ function setupGameStore() {
     this.getPlayer = old.getPlayer;
     this.getProperty = old.getProperty;
     this.getProperties = old.getProperties;
+    this.getTrade = old.getTrade;
 
     unsubscribe();
     unsubscribe = null;
@@ -150,6 +154,23 @@ function extendGameState(state, overrides, config) {
           ...property, ...override
         } : property
       ));
-    }, state.properties)
+    }, state.properties),
+
+    // override exisiting trades or create new ones
+    trades: (overrides.trades||[]).reduce((trades, override) => {
+      const existing = getTrade(state, override.players);
+
+      if (existing) {
+        return trades.map((trade) => (trade === existing) ? {
+          ...trade, ...override
+        } : trade);
+      }
+
+      return [...trades, {
+        players: override.players,
+        properties: override.properties || [],
+        amount: override.amount || 0
+      }];
+    }, state.trades)
   };
 }

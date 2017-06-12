@@ -35,6 +35,19 @@ export function getProperties(state, group) {
 }
 
 /**
+ * Finds a trade by participating player IDs
+ * @param {Object} state - Game state
+ * @param {[String]} playerIds - Array of player IDs
+ * @returns {Object} Trade data
+ */
+export function getTrade(state, playerIds) {
+  return state && state.trades.find((trade) => {
+    return trade.players.indexOf(playerIds[0]) > -1 &&
+      trade.players.indexOf(playerIds[1]) > -1;
+  });
+}
+
+/**
  * Creates a property for actions to calculate a value within the rule middleware
  * @param {Function} get - Function to return a value from the rule meta
  */
