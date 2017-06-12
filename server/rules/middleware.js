@@ -20,16 +20,24 @@ export default (config) => {
     // create initial meta
     let meta = { state, config };
 
+    // used to calculate values from meta
+    const calc = (value) => (
+      value && value.__calc ? value.get(meta) : value
+    );
+
+    // optional meta
     meta.player = action.player &&
-      getPlayer(state, action.player.id) || action.player;
+      getPlayer(state, calc(action.player).id) || action.player;
     meta.property = action.property &&
-      getProperty(state, action.property.id);
+      getProperty(state, calc(action.property).id);
     meta.group = action.property &&
       getProperties(state, meta.property.group);
+    meta.properties = action.properties &&
+      calc(action.properties).map((id) => getProperty(state, id));
 
     // run action calculations and build remaining meta
     action = Object.keys(action).reduce((a, k) => {
-      a[k] = a[k] && a[k].__calc ? a[k].get(meta) : a[k];
+      a[k] = calc(a[k]);
       if (k !== 'type' && !meta[k]) meta[k] = a[k];
       return a;
     }, action);
