@@ -19,6 +19,7 @@ export function createState(state, config) {
     houses: config.houseCount,
     hotels: config.hotelCount,
     players: [],
+    trades: [],
     ...state,
 
     properties: state.properties.map((property) => ({

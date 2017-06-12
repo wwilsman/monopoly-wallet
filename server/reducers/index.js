@@ -5,6 +5,7 @@ import houses from './houses';
 import hotels from './hotels';
 import players from './players';
 import properties from './properties';
+import trades from './trades';
 
 /**
  * Main reducer for our game
@@ -14,5 +15,6 @@ export default combineReducers({
   houses,
   hotels,
   players,
-  properties
+  properties,
+  trades
 });

@@ -13,6 +13,9 @@ import {
   UNMORTGAGE_PROPERTY,
   PAY_RENT
 } from '../actions/properties';
+import {
+  MAKE_OFFER
+} from '../actions/trades';
 
 import {
   bankHasFunds,
@@ -26,6 +29,7 @@ import {
   propertyIsOwned,
   propertyNotOwned,
   propertyOwnedBy,
+  propertiesOwnedBy,
   notRailroadOrUtility,
   propertyIsMonopoly,
   propertyIsMortgaged,
@@ -106,8 +110,17 @@ const PROPERTIES = {
   ]
 };
 
+// Trade rule definitions
+const TRADES = {
+  [MAKE_OFFER]: [
+    propertiesOwnedBy,
+    sufficientBalance
+  ]
+};
+
 // All rule definitions
 export default {
   ...PLAYERS,
-  ...PROPERTIES
+  ...PROPERTIES,
+  ...TRADES
 };

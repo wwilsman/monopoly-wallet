@@ -34,6 +34,27 @@ export const propertyOwnedBy = ({ player, property }) => {
 };
 
 /**
+ * Validates multiple properties owners are accurate
+ * @param {Object} state - Current game state
+ * @param {String} player.id - Player id
+ * @param {String} other.id - Another player's id
+ * @param {[Object]} properties - Array of properties to validate
+ * @param {String} property.owner - Property owner id
+ * @throws {MonopolyError}
+ */
+export const propertiesOwnedBy = ({ state, player, other, properties }) => {
+  const property = properties.find((pr) => (
+    pr.owner !== player.id && pr.owner !== other.id
+  ));
+
+  if (property) {
+    const owner = getPlayer(state, property.owner);
+    const ownedBy = owner ? `owned by ${owner.name}` : 'unowned';
+    throwError(`${property.name} is ${ownedBy}`);
+  }
+};
+
+/**
  * Validates a property isn't a railroad or utilty
  * @param {String} property.group - Property group
  * @throws {MonopolyError}
