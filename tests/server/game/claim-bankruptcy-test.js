@@ -11,15 +11,10 @@ import { bankrupt } from '../../../server/actions/players';
 
 describe('Game: claiming bankruptcy', function() {
   setupGameForTesting({ state: {
-    players: [{
-      id: 'player-1',
-      name: 'Player 1',
-      token: 'top-hat'
-    }, {
-      id: 'player-2',
-      name: 'Player 2',
-      token: 'automobile'
-    }],
+    players: [
+      { id: 'player-1' },
+      { id: 'player-2' }
+    ],
     properties: [{
       id: 'oriental-avenue',
       owner: 'player-1',

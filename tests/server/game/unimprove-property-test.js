@@ -11,11 +11,7 @@ import { unimproveProperty } from '../../../server/actions/properties';
 
 describe('Game: unimproving properties', function() {
   setupGameForTesting({ state: {
-    players: [{
-      id: 'player-1',
-      name: 'Player 1',
-      token: 'top-hat'
-    }],
+    players: [{ id: 'player-1' }],
     properties: [{
       group: 'lightblue',
       owner: 'player-1',

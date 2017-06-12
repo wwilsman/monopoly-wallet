@@ -12,11 +12,7 @@ import { unmortgageProperty } from '../../../server/actions/properties';
 describe('Game: unmortgaging properties', function() {
   setupGameForTesting({ state: {
     bank: 100,
-    players: [{
-      id: 'player-1',
-      name: 'Player 1',
-      token: 'top-hat'
-    }],
+    players: [{ id: 'player-1' }],
     properties: [{
       id: 'oriental-avenue',
       owner: 'player-1',

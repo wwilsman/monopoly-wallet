@@ -13,8 +13,6 @@ describe('Game: improving properties', function() {
   setupGameForTesting({ state: {
     players: [{
       id: 'player-1',
-      name: 'Player 1',
-      token: 'top-hat',
       balance: 50
     }],
     properties: [{

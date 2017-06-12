@@ -11,15 +11,10 @@ import { payRent } from '../../../server/actions/properties';
 
 describe('Game: paying rent', function() {
   setupGameForTesting({ state: {
-    players: [{
-      id: 'player-1',
-      name: 'Player 1',
-      token: 'top-hat'
-    }, {
-      id: 'player-2',
-      name: 'Player 2',
-      token: 'automobile'
-    }],
+    players: [
+      { id: 'player-1' },
+      { id: 'player-2' }
+    ],
     properties: [{
       id: 'baltic-avenue',
       owner: 'player-2'

@@ -130,11 +130,16 @@ function extendGameState(state, overrides, config) {
         } : player));
       }
 
+      const name = override.name || `Player ${players.length + 1}`;
+      const token = override.token || config.playerTokens.find((t) => (
+        !players.find((pl) => pl.token === t)
+      ));
+
       return [...players, {
-        id: slug(`${override.name}_${override.token}`),
-        balance: config.playerStart,
-        bankrupt: false,
-        ...override
+        id: override.id || slug(`${name}_${token}`),
+        balance: override.balance || config.playerStart,
+        bankrupt: override.bankrupt || false,
+        name, token
       }];
     }, state.players),
 
