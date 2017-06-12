@@ -1,7 +1,10 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
-import { setupGameForTesting } from '../test-helpers';
+import {
+  setupGameForTesting,
+  modifyGameInTesting
+} from '../test-helpers';
 
 import MonopolyError from '../../../server/rules/error';
 import { makeOffer } from '../../../server/actions/trades';
@@ -41,5 +44,26 @@ describe('Game: making a trade offer', function() {
     expect(() => this.dispatch(makeOffer('player-1', 'player-2', trade)))
       .to.throw(MonopolyError, /insufficient/i);
     expect(this.state.trades).to.have.lengthOf(0);
+  });
+
+  describe('with an existing offer', function() {
+    modifyGameInTesting({ state: {
+      trades: [{
+        players: ['player-1', 'player-2'],
+        properties: ['oriental-avenue']
+      }]
+    }});
+
+    it('should modify the current offer', function() {
+      const trade = { amount: 500, properties: ['oriental-avenue'] };
+      this.dispatch(makeOffer('player-2', 'player-1', trade));
+
+      expect(this.state.trades).to.have.lengthOf(1);
+      expect(this.state.trades[0]).to.deep.equal({
+        players: ['player-2', 'player-1'],
+        properties: ['oriental-avenue'],
+        amount: 500
+      });
+    });
   });
 });
