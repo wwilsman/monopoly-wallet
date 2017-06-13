@@ -9,14 +9,14 @@ export const PAY_RENT = 'PAY_RENT';
 
 /**
  * Action creator for buying property
- * @param {String} playerId - Player ID
+ * @param {String} playerToken - Player token
  * @param {String} propertyId - Property ID
  * @param {Number} [amount] - Optional amount defaults to property price
  * @returns {Object} Redux action
  */
-export const buyProperty = (playerId, propertyId, amount) => ({
+export const buyProperty = (playerToken, propertyId, amount) => ({
   type: BUY_PROPERTY,
-  player: { id: playerId },
+  player: { token: playerToken },
   property: { id: propertyId },
   amount: typeof amount !== 'undefined' ? amount :
     calc(({ property }) => property.price)
@@ -24,13 +24,13 @@ export const buyProperty = (playerId, propertyId, amount) => ({
 
 /**
  * Action creator for improving a property
- * @param {String} playerId - Player ID
+ * @param {String} playerToken - Player token
  * @param {String} propertyId - Property ID
  * @returns {Object} Redux action
  */
-export const improveProperty = (playerId, propertyId) => ({
+export const improveProperty = (playerToken, propertyId) => ({
   type: IMPROVE_PROPERTY,
-  player: { id: playerId },
+  player: { token: playerToken },
   property: { id: propertyId },
   houses: calc(({ property }) => property.buildings === 4 ? -4 : 1),
   hotels: calc(({ property }) => property.buildings === 4 ? 1 : 0),
@@ -39,13 +39,13 @@ export const improveProperty = (playerId, propertyId) => ({
 
 /**
  * Action creator for unimproving a property
- * @param {String} playerId - Player ID
+ * @param {String} playerToken - Player token
  * @param {String} propertyId - Property ID
  * @returns {Object} Redux action
  */
-export const unimproveProperty = (playerId, propertyId) => ({
+export const unimproveProperty = (playerToken, propertyId) => ({
   type: UNIMPROVE_PROPERTY,
-  player: { id: playerId },
+  player: { token: playerToken },
   property: { id: propertyId },
   houses: calc(({ property }) => property.buildings === 5 ? 4 : -1),
   hotels: calc(({ property }) => property.buildings === 5 ? -1 : 0),
@@ -54,26 +54,26 @@ export const unimproveProperty = (playerId, propertyId) => ({
 
 /**
  * Action creator for mortgaging a property
- * @param {String} playerId - Player ID
+ * @param {String} playerToken - Player token
  * @param {String} propertyId - Property ID
  * @returns {Object} Redux action
  */
-export const mortgageProperty = (playerId, propertyId) => ({
+export const mortgageProperty = (playerToken, propertyId) => ({
   type: MORTGAGE_PROPERTY,
-  player: { id: playerId },
+  player: { token: playerToken },
   property: { id: propertyId },
   amount: calc(({ property, config }) => property.price * config.mortgageRate)
 });
 
 /**
  * Action creator for unmortgaging a property
- * @param {String} playerId - Player ID
+ * @param {String} playerToken - Player token
  * @param {String} propertyId - Property ID
  * @returns {Object} Redux action
  */
-export const unmortgageProperty = (playerId, propertyId) => ({
+export const unmortgageProperty = (playerToken, propertyId) => ({
   type: UNMORTGAGE_PROPERTY,
-  player: { id: playerId },
+  player: { token: playerToken },
   property: { id: propertyId },
   amount: calc(({ property, config }) => {
     const principle = property.price * config.mortgageRate;
@@ -83,16 +83,16 @@ export const unmortgageProperty = (playerId, propertyId) => ({
 
 /**
  * Action creator for paying rent on a property
- * @param {String} playerId - Player ID
+ * @param {String} playerToken - Player token
  * @param {String} propertyId - Property ID
  * @param {Number} [dice=2] - Dice roll amount
  * @returns {Object} Redux action
  */
-export const payRent = (playerId, propertyId, dice = 2) => ({
+export const payRent = (playerToken, propertyId, dice = 2) => ({
   type: PAY_RENT,
-  player: { id: playerId },
+  player: { token: playerToken },
   property: { id: propertyId },
-  other: calc(({ property }) => ({ id: property.owner })),
+  other: calc(({ property }) => ({ token: property.owner })),
   amount: calc(({ property, group }) => {
     const owned = group.filter((pr) => pr.owner === property.owner);
 

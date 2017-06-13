@@ -1,13 +1,11 @@
 /**
  * Finds a player in the game state
  * @param {Object} state - Game state
- * @param {String} id - Player ID
+ * @param {String} token - Player token
  * @returns {Object} Player data
  */
-export function getPlayer(state, id) {
-  return state && state.players.find((player) => {
-    return player.id === id;
-  });
+export function getPlayer(state, token) {
+  return state && state.players[token];
 }
 
 /**
@@ -37,13 +35,13 @@ export function getProperties(state, group) {
 /**
  * Finds a trade by participating player IDs
  * @param {Object} state - Game state
- * @param {[String]} playerIds - Array of player IDs
+ * @param {[String]} playerTokens - Array of player tokens
  * @returns {Object} Trade data
  */
-export function getTrade(state, playerIds) {
+export function getTrade(state, playerTokens) {
   return state && state.trades.find((trade) => {
-    return trade.players.indexOf(playerIds[0]) > -1 &&
-      trade.players.indexOf(playerIds[1]) > -1;
+    return trade.players.indexOf(playerTokens[0]) > -1 &&
+      trade.players.indexOf(playerTokens[1]) > -1;
   });
 }
 

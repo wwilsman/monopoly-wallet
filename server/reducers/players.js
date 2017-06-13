@@ -1,5 +1,3 @@
-import slug from 'slug';
-
 import {
   JOIN_GAME,
   MAKE_TRANSFER_TO,
@@ -26,10 +24,6 @@ const player = (state, action) => {
   switch (action.type) {
     case JOIN_GAME:
       return {
-        id: slug(
-          `${action.player.name}_${action.player.token}`,
-          { lower: true }
-        ),
         name: action.player.name,
         token: action.player.token,
         balance: action.amount,
@@ -51,20 +45,20 @@ const player = (state, action) => {
         balance: state.balance - action.amount
       };
 
-    case MAKE_TRANSFER_WITH:
     case PAY_RENT:
+    case MAKE_TRANSFER_WITH:
       return { ...state,
-        balance: state.id === action.other.id ?
+        balance: state.token === action.other.token ?
           state.balance + action.amount :
           state.balance - action.amount
       };
 
     case CLAIM_BANKRUPTCY:
       return { ...state,
-        balance: state.id === action.other.id ?
+        balance: state.token === action.other.token ?
           state.balance + action.amount :
           state.balance - action.amount,
-        bankrupt: state.id === action.player.id
+        bankrupt: state.token === action.player.token
       };
 
     default:
@@ -74,16 +68,16 @@ const player = (state, action) => {
 
 /**
  * Players reducer
- * @param {Array} state - Array of player states
+ * @param {Object} state - Map of players keyed by token
  * @param {Object} action - Redux action
- * @returns {Array} Reduced state
+ * @returns {Object} Reduced state
  */
-export default (state = [], action) => {
+export default (state = {}, action) => {
   switch (action.type) {
     case JOIN_GAME:
-      return [ ...state,
-        player(undefined, action)
-      ];
+      return { ...state,
+        [action.player.token]: player(undefined, action)
+      };
 
     case BUY_PROPERTY:
     case MAKE_TRANSFER_TO:
@@ -92,19 +86,25 @@ export default (state = [], action) => {
     case UNIMPROVE_PROPERTY:
     case MORTGAGE_PROPERTY:
     case UNMORTGAGE_PROPERTY:
-      return state.map((pl) => (
-        pl.id === action.player.id ?
-          player(pl, action) : pl
-      ));
+      return { ...state,
+        [action.player.token]: player(state[action.player.token], action)
+      };
 
     case PAY_RENT:
     case MAKE_TRANSFER_WITH:
+      return { ...state,
+        [action.player.token]: player(state[action.player.token], action),
+        [action.other.token]: player(state[action.other.token], action)
+      };
+
     case CLAIM_BANKRUPTCY:
-      return state.map((pl) => (
-        (pl.id === action.player.id ||
-         pl.id === action.other.id) ?
-          player(pl, action) : pl
-      ));
+      state = { ...state,
+        [action.player.token]: player(state[action.player.token], action)
+      };
+
+      return action.other.token === 'bank' ? state : { ...state,
+        [action.other.token]: player(state[action.other.token], action)
+      };
 
     default:
       return state;

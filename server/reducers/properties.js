@@ -19,7 +19,7 @@ const property = (state, action) => {
   switch (action.type) {
     case BUY_PROPERTY:
       return { ...state,
-        owner: action.player.id
+        owner: action.player.token
       };
 
     case IMPROVE_PROPERTY:
@@ -44,7 +44,7 @@ const property = (state, action) => {
 
     case CLAIM_BANKRUPTCY:
       return { ...state,
-        owner: action.other.id
+        owner: action.other.token
       };
 
     default:

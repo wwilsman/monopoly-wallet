@@ -12,21 +12,21 @@ import { makeOffer } from '../../../server/actions/trades';
 describe('Game: making a trade offer', function() {
   setupGameForTesting({ state: {
     players: [
-      { id: 'player-1' },
-      { id: 'player-2' }
+      { token: 'top-hat' },
+      { token: 'automobile' }
     ],
     properties: [{
       id: 'oriental-avenue',
-      owner: 'player-1'
+      owner: 'top-hat'
     }]
   }});
 
   it('should initiate a new trade with another player', function() {
     const trade = { amount: 500, properties: ['oriental-avenue'] };
-    this.dispatch(makeOffer('player-1', 'player-2', trade));
+    this.dispatch(makeOffer('top-hat', 'automobile', trade));
 
     expect(this.state.trades[0]).to.deep.equal({
-      players: ['player-1', 'player-2'],
+      players: ['top-hat', 'automobile'],
       properties: ['oriental-avenue'],
       amount: 500
     });
@@ -34,14 +34,14 @@ describe('Game: making a trade offer', function() {
 
   it('should not allow properties not owned by either player', function() {
     const trade = { properties: ['st-james-place'] };
-    expect(() => this.dispatch(makeOffer('player-1', 'player-2', trade)))
+    expect(() => this.dispatch(makeOffer('top-hat', 'automobile', trade)))
       .to.throw(MonopolyError, /unowned/);
     expect(this.state.trades).to.have.lengthOf(0);
   });
 
   it('should not allow amounts the player cannot afford', function() {
     const trade = { amount: 2000 };
-    expect(() => this.dispatch(makeOffer('player-1', 'player-2', trade)))
+    expect(() => this.dispatch(makeOffer('top-hat', 'automobile', trade)))
       .to.throw(MonopolyError, /insufficient/i);
     expect(this.state.trades).to.have.lengthOf(0);
   });
@@ -49,18 +49,18 @@ describe('Game: making a trade offer', function() {
   describe('with an existing offer', function() {
     modifyGameInTesting({ state: {
       trades: [{
-        players: ['player-1', 'player-2'],
+        players: ['top-hat', 'automobile'],
         properties: ['oriental-avenue']
       }]
     }});
 
     it('should modify the current offer', function() {
       const trade = { amount: 500, properties: ['oriental-avenue'] };
-      this.dispatch(makeOffer('player-2', 'player-1', trade));
+      this.dispatch(makeOffer('automobile', 'top-hat', trade));
 
       expect(this.state.trades).to.have.lengthOf(1);
       expect(this.state.trades[0]).to.deep.equal({
-        players: ['player-2', 'player-1'],
+        players: ['automobile', 'top-hat'],
         properties: ['oriental-avenue'],
         amount: 500
       });

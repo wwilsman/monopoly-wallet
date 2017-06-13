@@ -27,7 +27,7 @@ export default (config) => {
 
     // optional meta
     meta.player = action.player &&
-      getPlayer(state, calc(action.player).id) || action.player;
+      getPlayer(state, calc(action.player).token) || action.player;
     meta.property = action.property &&
       getProperty(state, calc(action.property).id);
     meta.group = action.property &&

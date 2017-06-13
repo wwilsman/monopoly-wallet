@@ -17,8 +17,8 @@ const trade = (state, action) => {
         amount: action.amount,
         properties: action.properties,
         players: [
-          action.player.id,
-          action.other.id
+          action.player.token,
+          action.other.token
         ]
       };
 
@@ -38,8 +38,8 @@ export default (state = [], action) => {
 
   const getExisting = () => {
     return existing = getTrade({ trades: state }, [
-      action.player && action.player.id,
-      action.other && action.other.id
+      action.player && action.player.token,
+      action.other && action.other.token
     ]);
   };
 

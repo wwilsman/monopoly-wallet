@@ -11,10 +11,10 @@ import { unimproveProperty } from '../../../server/actions/properties';
 
 describe('Game: unimproving properties', function() {
   setupGameForTesting({ state: {
-    players: [{ id: 'player-1' }],
+    players: [{ token: 'top-hat' }],
     properties: [{
       group: 'lightblue',
-      owner: 'player-1',
+      owner: 'top-hat',
       buildings: 4
     }]
   }});
@@ -23,16 +23,16 @@ describe('Game: unimproving properties', function() {
     const property = this.getProperty('oriental-avenue');
     const value = property.cost * this.config.buildingRate;
 
-    this.dispatch(unimproveProperty('player-1', property.id));
+    this.dispatch(unimproveProperty('top-hat', property.id));
 
-    expect(this.getPlayer('player-1').balance).to.equal(1500 + value);
+    expect(this.getPlayer('top-hat').balance).to.equal(1500 + value);
     expect(this.state.bank).to.equal(this.last.bank - value);
     expect(this.getProperty(property.id).buildings).to.equal(3);
     expect(this.state.houses).to.equal(this.last.houses + 1);
   });
 
   it('should not unimprove an unowned property', function() {
-    expect(() => this.dispatch(unimproveProperty('player-1', 'baltic-avenue')))
+    expect(() => this.dispatch(unimproveProperty('top-hat', 'baltic-avenue')))
       .to.throw(MonopolyError, /not own/i);
   });
 
@@ -45,7 +45,7 @@ describe('Game: unimproving properties', function() {
     }});
 
     it('should remove a hotel and add 4 houses', function() {
-      this.dispatch(unimproveProperty('player-1', 'oriental-avenue'));
+      this.dispatch(unimproveProperty('top-hat', 'oriental-avenue'));
 
       expect(this.getProperty('oriental-avenue').buildings).to.equal(4);
       expect(this.state.houses).to.equal(this.last.houses - 4);
@@ -57,7 +57,7 @@ describe('Game: unimproving properties', function() {
     modifyGameInTesting({ state: { bank: 0 }});
 
     it('should not unimprove the property', function() {
-      expect(() => this.dispatch(unimproveProperty('player-1', 'oriental-avenue')))
+      expect(() => this.dispatch(unimproveProperty('top-hat', 'oriental-avenue')))
         .to.throw(MonopolyError, /insufficient/i);
       expect(this.getProperty('oriental-avenue').buildings).to.equal(4);
     });
@@ -67,20 +67,20 @@ describe('Game: unimproving properties', function() {
     modifyGameInTesting({ state: {
       properties: [{
         id: 'reading-railroad',
-        owner: 'player-1'
+        owner: 'top-hat'
       }, {
         id: 'electric-company',
-        owner: 'player-1'
+        owner: 'top-hat'
       }]
     }});
 
     it('should not unimprove a railroad', function() {
-      expect(() => this.dispatch(unimproveProperty('player-1', 'reading-railroad')))
+      expect(() => this.dispatch(unimproveProperty('top-hat', 'reading-railroad')))
         .to.throw(MonopolyError, /improve a railroad/i);
     });
 
     it('should not unimprove a utility', function() {
-      expect(() => this.dispatch(unimproveProperty('player-1', 'electric-company')))
+      expect(() => this.dispatch(unimproveProperty('top-hat', 'electric-company')))
         .to.throw(MonopolyError, /improve a utility/i);
     });
   });
@@ -94,13 +94,13 @@ describe('Game: unimproving properties', function() {
     }});
 
     it('should not unimprove unevenly', function() {
-      expect(() => this.dispatch(unimproveProperty('player-1', 'oriental-avenue')))
+      expect(() => this.dispatch(unimproveProperty('top-hat', 'oriental-avenue')))
         .to.throw(MonopolyError, /evenly/i);
       expect(this.getProperty('oriental-avenue').buildings).to.equal(3);
     });
 
     it('should still unimprove other improved properties', function() {
-      this.dispatch(unimproveProperty('player-1', 'connecticut-avenue'));
+      this.dispatch(unimproveProperty('top-hat', 'connecticut-avenue'));
       expect(this.getProperty('connecticut-avenue').buildings).to.equal(3);
     });
   });
@@ -114,7 +114,7 @@ describe('Game: unimproving properties', function() {
     }});
 
     it('should not unimprove the property', function() {
-      expect(() => this.dispatch(unimproveProperty('player-1', 'oriental-avenue')))
+      expect(() => this.dispatch(unimproveProperty('top-hat', 'oriental-avenue')))
         .to.throw(MonopolyError, /not improved/i);
       expect(this.getProperty('oriental-avenue').buildings).to.equal(0);
     });
@@ -125,19 +125,19 @@ describe('Game: unimproving properties', function() {
       houses: 0,
       properties: [{
         group: 'brown',
-        owner: 'player-1',
+        owner: 'top-hat',
         buildings: 5
       }]
     }});
 
     it('should not unimprove the property when houses are needed', function() {
-      expect(() => this.dispatch(unimproveProperty('player-1', 'baltic-avenue')))
+      expect(() => this.dispatch(unimproveProperty('top-hat', 'baltic-avenue')))
         .to.throw(MonopolyError, /houses/i);
       expect(this.getProperty('baltic-avenue').buildings).to.equal(5);
     });
 
     it('should still unimprove the property when no houses are needed', function() {
-      this.dispatch(unimproveProperty('player-1', 'oriental-avenue'));
+      this.dispatch(unimproveProperty('top-hat', 'oriental-avenue'));
       expect(this.getProperty('oriental-avenue').buildings).to.equal(3);
     });
   });

@@ -1,4 +1,3 @@
-import slug from 'slug';
 import {
   before,
   after,
@@ -127,25 +126,19 @@ function extendGameState(state, overrides, config) {
     ...overrides,
 
     // override existing players by id or create new ones
-    players: (overrides.players||[]).reduce((players, override) => {
-      if (override.id && players.find((pl) => pl.id === override.id)) {
-        return players.map((player) => (player.id === override.id ? {
-          ...player, ...override
-        } : player));
-      }
+    players: (overrides.players||[]).reduce((players, override) => ({
+      ...players,
 
-      const name = override.name || `Player ${players.length + 1}`;
-      const token = override.token || config.playerTokens.find((t) => (
-        !players.find((pl) => pl.token === t)
-      ));
-
-      return [...players, {
-        id: override.id || slug(`${name}_${token}`),
+      [override.token]: players[override.token] ? {
+        ...players[override.token],
+        ...override
+      } : {
+        name: override.name || `Player ${Object.keys(players).length + 1}`,
         balance: override.balance || config.playerStart,
         bankrupt: override.bankrupt || false,
-        name, token
-      }];
-    }, state.players),
+        ...override
+      }
+    }), JSON.parse(JSON.stringify(state.players))),
 
     // override existing properties by id or group
     properties: (overrides.properties||[]).reduce((properties, override) => {

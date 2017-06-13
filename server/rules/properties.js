@@ -3,7 +3,7 @@ import { throwError } from './error';
 
 /**
  * Validates a property has an owner
- * @param {String} property.owner - Property owner id
+ * @param {String} property.owner - Property owner token
  * @throws {MonopolyError}
  */
 export const propertyIsOwned = ({ property }) => {
@@ -14,7 +14,7 @@ export const propertyIsOwned = ({ property }) => {
 /**
  * Validates a property does not have an owner
  * @param {Object} state - Current game state
- * @param {String} property.owner - Property owner id
+ * @param {String} property.owner - Property owner token
  * @throws {MonopolyError}
  */
 export const propertyNotOwned = ({ state, property }) => {
@@ -24,27 +24,27 @@ export const propertyNotOwned = ({ state, property }) => {
 
 /**
  * Validates a property owner is accurate
- * @param {String} player.id - Player id
- * @param {String} property.owner - Property owner id
+ * @param {String} player.token - Player token
+ * @param {String} property.owner - Property owner token
  * @throws {MonopolyError}
  */
 export const propertyOwnedBy = ({ player, property }) => {
-  property.owner !== player.id &&
+  property.owner !== player.token &&
     throwError(`You do not own ${property.name}`);
 };
 
 /**
  * Validates multiple properties owners are accurate
  * @param {Object} state - Current game state
- * @param {String} player.id - Player id
- * @param {String} other.id - Another player's id
+ * @param {String} player.token - Player token
+ * @param {String} other.token - Another player's token
  * @param {[Object]} properties - Array of properties to validate
- * @param {String} property.owner - Property owner id
+ * @param {String} property.owner - Property owner token
  * @throws {MonopolyError}
  */
 export const propertiesOwnedBy = ({ state, player, other, properties }) => {
   const property = properties.find((pr) => (
-    pr.owner !== player.id && pr.owner !== other.id
+    pr.owner !== player.token && pr.owner !== other.token
   ));
 
   if (property) {
@@ -66,13 +66,13 @@ export const notRailroadOrUtility = ({ property }) => {
 
 /**
  * Validates a property is part of a monopoly
- * @param {String} player.id - Player id
+ * @param {String} player.token - Player token
  * @param {String} property.name - Property name
  * @param {[Object]} group - Array of properties in the group
  * @throws {MonopolyError}
  */
 export const propertyIsMonopoly = ({ player, property, group }) => {
-  group.every((pr) => pr.owner === player.id) ||
+  group.every((pr) => pr.owner === player.token) ||
     throwError(`${property.name} is not a monopoly`);
 };
 

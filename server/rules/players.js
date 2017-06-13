@@ -7,8 +7,7 @@ import { throwError } from './error';
  * @throws {MonopolyError}
  */
 export const uniqueToken = ({ state, player }) => {
-  state.players.some((pl) => pl.token === player.token) &&
-    throwError('Token already in use');
+  state.players[player.token] && throwError('Token already in use');
 };
 
 /**

@@ -21,44 +21,44 @@ export const join = (name, token) => ({
 /**
  * Action creator for transfers
  * Omitting `otherId` will make a transfer to/from the bank
- * @param {String} playerId - Player ID
- * @param {String} [otherId] - Other player's ID
+ * @param {String} playerToken - Player token
+ * @param {String} [otherToken] - Other player's token
  * @param {Number} amount - Amount to transfer (+/- for bank transfers)
  * @returns {Object} Redux action
  */
-export const makeTransfer = (playerId, otherId, amount = otherId) => {
+export const makeTransfer = (playerToken, otherToken, amount = otherToken) => {
   let actionType = MAKE_TRANSFER_WITH;
 
-  if (otherId === amount) {
+  if (otherToken === amount) {
     actionType = amount > 0 ?
       MAKE_TRANSFER_TO :
       MAKE_TRANSFER_FROM;
     amount = Math.abs(amount);
-    otherId = null;
+    otherToken = null;
   }
 
   return {
     type: actionType,
-    player: { id: playerId },
-    other: { id: otherId },
+    player: { token: playerToken },
+    other: { token: otherToken },
     amount
   };
 };
 
 /**
  * Action creator for claiming bankruptcy
- * @param {String} playerId - Player ID
- * @param {String} [beneficiaryId="bank"] - Beneficiary ID
+ * @param {String} playerToken - Player token
+ * @param {String} [beneficiaryToken="bank"] - Beneficiary token
  * @returns {Object} Redux action
  */
-export const bankrupt = (playerId, beneficiaryId = 'bank') => ({
+export const bankrupt = (playerToken, beneficiaryToken = 'bank') => ({
   type: CLAIM_BANKRUPTCY,
-  player: { id: playerId },
-  other: { id: beneficiaryId },
+  player: { token: playerToken },
+  other: { token: beneficiaryToken },
   amount: calc(({ player }) => player.balance),
   properties: calc(({ state, player }) => (
     state.properties
-      .filter((pr) => pr.owner === player.id)
+      .filter((pr) => pr.owner === player.token)
       .map((pr) => pr.id)
   ))
 });
