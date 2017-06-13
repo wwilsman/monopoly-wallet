@@ -1,28 +1,24 @@
 import slug from 'slug';
-import {
-  applyMiddleware,
-  createStore
-} from 'redux';
+import { applyMiddleware, createStore } from 'redux';
 
 import gameReducer from './reducers';
 import ruleMiddleware from './rules/middleware';
 
 /**
  * Creates a new game state from an initial state and config
- * @param {Object} state - Initial game state
+ * @param {[Object]} properties - Array of initial property data
  * @param {Object} config - Game config options
  * @returns {Object} Newly created game state
  */
-export function createState(state, config) {
+export function createState(properties, config) {
   return {
     bank: config.bankStart < 0 ? Infinity : config.bankStart,
     houses: config.houseCount,
     hotels: config.hotelCount,
     players: [],
     trades: [],
-    ...state,
 
-    properties: state.properties.map((property) => ({
+    properties: properties.map((property) => ({
       id: slug(property.name, { lower: true }),
       buildings: 0,
       owner: 'bank',
