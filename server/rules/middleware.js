@@ -1,7 +1,8 @@
 import {
   getPlayer,
   getProperty,
-  getProperties
+  getProperties,
+  getTrade
 } from '../helpers';
 
 import rules from './definitions';
@@ -36,6 +37,8 @@ export default (config) => {
       calc(action.properties).map((id) => getProperty(state, id));
     meta.other = action.other &&
       getPlayer(state, calc(action.other).token);
+    meta.trade = action.trade &&
+      getTrade(state, meta.player.token, meta.other.token);
 
     // run action calculations and build remaining meta
     action = Object.keys(action).reduce((a, k) => {

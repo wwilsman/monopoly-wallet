@@ -1,5 +1,6 @@
 import {
-  MAKE_OFFER
+  MAKE_OFFER,
+  DECLINE_OFFER
 } from '../actions/trades';
 
 /**
@@ -36,6 +37,11 @@ export default (state = {}, action) => {
       return { ...state,
         [action.trade.id]: trade(state[action.trade.id], action)
       };
+
+    case DECLINE_OFFER:
+      state = { ...state };
+      delete state[action.trade.id];
+      return state;
 
     default:
       return state;

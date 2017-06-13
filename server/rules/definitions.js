@@ -14,7 +14,8 @@ import {
   PAY_RENT
 } from '../actions/properties';
 import {
-  MAKE_OFFER
+  MAKE_OFFER,
+  DECLINE_OFFER
 } from '../actions/trades';
 
 import {
@@ -44,6 +45,9 @@ import {
   mustUnimproveEvenly,
   enoughHousesOrHotels
 } from './properties';
+import {
+  tradeExists
+} from './trades';
 
 // Player rule definitions
 const PLAYERS = {
@@ -115,6 +119,9 @@ const TRADES = {
   [MAKE_OFFER]: [
     propertiesOwnedBy,
     sufficientBalance
+  ],
+  [DECLINE_OFFER]: [
+    tradeExists
   ]
 };
 
