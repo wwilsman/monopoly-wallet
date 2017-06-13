@@ -57,8 +57,8 @@ export const bankrupt = (playerToken, beneficiaryToken = 'bank') => ({
   other: { token: beneficiaryToken },
   amount: calc(({ player }) => player.balance),
   properties: calc(({ state, player }) => (
-    state.properties
-      .filter((pr) => pr.owner === player.token)
-      .map((pr) => pr.id)
+    state.properties._all.filter((id) => (
+      state.properties[id].owner === player.token
+    ))
   ))
 });

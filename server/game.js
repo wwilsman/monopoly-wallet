@@ -18,13 +18,20 @@ export function createState(properties, config) {
     players: {},
     trades: [],
 
-    properties: properties.map((property) => ({
-      id: slug(property.name, { lower: true }),
-      buildings: 0,
-      owner: 'bank',
-      mortgaged: false,
-      ...property
-    }))
+    properties: properties.reduce((map, property) => {
+      const id = slug(property.name, { lower: true });
+
+      map[id] = {
+        ...property,
+        mortgaged: false,
+        buildings: 0,
+        owner: 'bank',
+        id
+      };
+
+      map._all.push(id);
+      return map;
+    }, { _all: [] })
   };
 }
 

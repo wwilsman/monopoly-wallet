@@ -15,9 +15,7 @@ export function getPlayer(state, token) {
  * @returns {Object} Property data
  */
 export function getProperty(state, id) {
-  return state && state.properties.find((property) => {
-    return property.id === id;
-  });
+  return state && state.properties[id];
 }
 
 /**
@@ -27,9 +25,9 @@ export function getProperty(state, id) {
  * @returns {[Object]} Array of property data
  */
 export function getProperties(state, group) {
-  return state && state.properties.filter((property) => {
-    return property.group === group;
-  });
+  return state && state.properties._all
+    .filter((id) => state.properties[id].group === group)
+    .map((id) => state.properties[id]);
 }
 
 /**

@@ -65,16 +65,15 @@ export default (state = [], action) => {
     case UNIMPROVE_PROPERTY:
     case MORTGAGE_PROPERTY:
     case UNMORTGAGE_PROPERTY:
-      return state.map((pr) => (
-        pr.id === action.property.id ?
-          property(pr, action) : pr
-      ));
+      return { ...state,
+        [action.property.id]: property(state[action.property.id], action)
+      };
 
     case CLAIM_BANKRUPTCY:
-      return state.map((pr) => (
-        action.properties.indexOf(pr.id) > -1 ?
-          property(pr, action) : pr
-      ));
+      return action.properties.reduce((state, id) => {
+        state[id] = property(state[id], action);
+        return state;
+      }, { ...state });
 
     default:
       return state;

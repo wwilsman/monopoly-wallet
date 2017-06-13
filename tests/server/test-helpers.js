@@ -142,12 +142,24 @@ function extendGameState(state, overrides, config) {
 
     // override existing properties by id or group
     properties: (overrides.properties||[]).reduce((properties, override) => {
-      return properties.map((property) => (
-        (property.id === override.id || property.group === override.group) ? {
-          ...property, ...override
-        } : property
-      ));
-    }, state.properties),
+      if (override.group) {
+        properties._all.forEach((propertyId) => {
+          if (properties[propertyId].group === override.group) {
+            properties[propertyId] = {
+              ...properties[propertyId],
+              ...override
+            };
+          }
+        });
+      } else if (override.id) {
+        properties[override.id] = {
+          ...properties[override.id],
+          ...override
+        };
+      }
+
+      return properties;
+    }, JSON.parse(JSON.stringify(state.properties))),
 
     // override exisiting trades or create new ones
     trades: (overrides.trades||[]).reduce((trades, override) => {
