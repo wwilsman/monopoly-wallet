@@ -34,11 +34,14 @@ export default (config) => {
       getProperties(state, meta.property.group);
     meta.properties = action.properties &&
       calc(action.properties).map((id) => getProperty(state, id));
+    meta.other = action.other &&
+      getPlayer(state, calc(action.other).token);
 
     // run action calculations and build remaining meta
     action = Object.keys(action).reduce((a, k) => {
       a[k] = calc(a[k]);
-      if (k !== 'type' && !meta[k]) meta[k] = a[k];
+      if (k !== 'type' && !meta.hasOwnProperty(k))
+        meta[k] = a[k];
       return a;
     }, action);
 
