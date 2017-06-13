@@ -1,3 +1,5 @@
+import { getTradeId } from '../helpers';
+
 export const MAKE_OFFER = 'MAKE_OFFER';
 
 /**
@@ -14,6 +16,7 @@ export const makeOffer = (playerToken, otherToken, {
   type: MAKE_OFFER,
   player: { token: playerToken },
   other: { token: otherToken },
+  trade: { id: getTradeId(playerToken, otherToken) },
   properties,
   amount
 });

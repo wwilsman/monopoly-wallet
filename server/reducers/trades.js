@@ -1,5 +1,3 @@
-import { getTrade } from '../helpers';
-
 import {
   MAKE_OFFER
 } from '../actions/trades';
@@ -14,12 +12,11 @@ const trade = (state, action) => {
   switch (action.type) {
     case MAKE_OFFER:
       return {
-        amount: action.amount,
+        id: action.trade.id,
+        from: action.player.token,
+        with: action.other.token,
         properties: action.properties,
-        players: [
-          action.player.token,
-          action.other.token
-        ]
+        amount: action.amount
       };
 
     default:
@@ -33,27 +30,12 @@ const trade = (state, action) => {
  * @param {Object} action - Redux action
  * @returns {Object} Reduced state
  */
-export default (state = [], action) => {
-  let existing;
-
-  const getExisting = () => {
-    return existing = getTrade({ trades: state }, [
-      action.player && action.player.token,
-      action.other && action.other.token
-    ]);
-  };
-
+export default (state = {}, action) => {
   switch (action.type) {
     case MAKE_OFFER:
-      if (getExisting()) {
-        return state.map((tr) => (
-          tr === existing ? trade(tr, action) : tr
-        ));
-      }
-
-      return [...state,
-        trade(undefined, action)
-      ];
+      return { ...state,
+        [action.trade.id]: trade(state[action.trade.id], action)
+      };
 
     default:
       return state;

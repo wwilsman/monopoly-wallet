@@ -12,6 +12,7 @@ import {
   getPlayer,
   getProperty,
   getProperties,
+  getTradeId,
   getTrade
 } from '../../server/helpers';
 import {
@@ -163,19 +164,21 @@ function extendGameState(state, overrides, config) {
 
     // override exisiting trades or create new ones
     trades: (overrides.trades||[]).reduce((trades, override) => {
-      const existing = getTrade(state, override.players);
+      const id = getTradeId(override.from, override.with);
 
-      if (existing) {
-        return trades.map((trade) => (trade === existing) ? {
-          ...trade, ...override
-        } : trade);
-      }
+      return {
+        ...trades,
 
-      return [...trades, {
-        players: override.players,
-        properties: override.properties || [],
-        amount: override.amount || 0
-      }];
-    }, state.trades)
+        [id]: trades[id] ? {
+          ...trades[id],
+          ...override
+        } : {
+          from: override.from,
+          with: override.with,
+          properties: override.properties || [],
+          amount: override.amount || 0
+        }
+      };
+    }, JSON.parse(JSON.stringify(state.trades)))
   };
 }

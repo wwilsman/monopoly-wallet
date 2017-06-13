@@ -16,7 +16,7 @@ export function createState(properties, config) {
     houses: config.houseCount,
     hotels: config.hotelCount,
     players: {},
-    trades: [],
+    trades: {},
 
     properties: properties.reduce((map, property) => {
       const id = slug(property.name, { lower: true });

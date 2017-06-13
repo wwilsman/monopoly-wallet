@@ -31,16 +31,24 @@ export function getProperties(state, group) {
 }
 
 /**
+ * Generates a trade ID from player tokens
+ * @param {String} playerToken - Player token
+ * @param {String} otherToken - Other player's token
+ * @returns {String} Trade ID
+ */
+export function getTradeId(playerToken, otherToken) {
+  return [playerToken, otherToken].sort().join('--');
+}
+
+/**
  * Finds a trade by participating player IDs
  * @param {Object} state - Game state
- * @param {[String]} playerTokens - Array of player tokens
+ * @param {String} playerToken - Player token
+ * @param {String} otherToken - Other player's token
  * @returns {Object} Trade data
  */
-export function getTrade(state, playerTokens) {
-  return state && state.trades.find((trade) => {
-    return trade.players.indexOf(playerTokens[0]) > -1 &&
-      trade.players.indexOf(playerTokens[1]) > -1;
-  });
+export function getTrade(state, playerToken, otherToken) {
+  return state && state.trades[getTradeId(playerToken, otherToken)];
 }
 
 /**
