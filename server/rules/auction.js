@@ -30,6 +30,17 @@ export const notWinningAuction = ({ auction, player }) => {
 };
 
 /**
+ * Validates a property is not up for auction
+ * @param {Object} auction - Current active auction
+ * @param {String} property.id - Property ID
+ * @throws {MonopolyError}
+ */
+export const propertyNotForAuction = ({ auction, property }) => {
+  auction && auction.property === property.id &&
+    throwError(`${property.name} is up for auction`);
+};
+
+/**
  * Validates a player is involved in the auction
  * @param {Object} auction - Current active auction
  * @param {String} player.token - Player token

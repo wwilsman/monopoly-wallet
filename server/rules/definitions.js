@@ -57,6 +57,7 @@ import {
   noCurrentAuction,
   auctionInProgress,
   notWinningAuction,
+  propertyNotForAuction,
   playerInAuction,
   bidHigherThan
 } from './auction';
@@ -97,6 +98,7 @@ const PROPERTIES = {
     playerExists,
     negativeAmount,
     propertyNotOwned,
+    propertyNotForAuction,
     sufficientBalance
   ],
   [IMPROVE_PROPERTY]: [

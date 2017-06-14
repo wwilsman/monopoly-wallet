@@ -15,7 +15,10 @@ describe('Game: buying properties', function() {
     properties: [{
       id: 'oriental-avenue',
       owner: 'automobile'
-    }]
+    }],
+    auction: {
+      property: 'connecticut-avenue'
+    }
   }});
 
   it('should buy the property for the player', function() {
@@ -52,6 +55,12 @@ describe('Game: buying properties', function() {
     expect(() => this.dispatch(buyProperty('top-hat', 'oriental-avenue')))
       .to.throw(MonopolyError, /owned/);
     expect(this.getProperty('oriental-avenue').owner).to.equal('automobile');
+  });
+
+  it('should not buy the property when it is up for auction', function() {
+    expect(() => this.dispatch(buyProperty('top-hat', 'connecticut-avenue')))
+      .to.throw(MonopolyError, /auction/);
+    expect(this.getProperty('connecticut-avenue').owner).to.not.equal('top-hat');
   });
 
   it('should not buy the property with insufficient funds', function() {
