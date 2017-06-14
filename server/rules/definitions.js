@@ -14,7 +14,8 @@ import {
   PAY_RENT
 } from '../actions/properties';
 import {
-  AUCTION_PROPERTY
+  AUCTION_PROPERTY,
+  PLACE_BID
 } from '../actions/auction';
 import {
   MAKE_OFFER,
@@ -51,7 +52,11 @@ import {
   enoughHousesOrHotels
 } from './properties';
 import {
-  noCurrentAuction
+  noCurrentAuction,
+  auctionInProgress,
+  notWinningAuction,
+  playerInAuction,
+  bidHigherThan
 } from './auction';
 import {
   tradeExists,
@@ -138,6 +143,13 @@ const AUCTIONS = {
   [AUCTION_PROPERTY]: [
     noCurrentAuction,
     propertyNotOwned
+  ],
+  [PLACE_BID]: [
+    auctionInProgress,
+    playerInAuction,
+    notWinningAuction,
+    bidHigherThan,
+    sufficientBalance
   ]
 };
 

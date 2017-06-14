@@ -175,6 +175,22 @@ function extendGameState(state, overrides, config) {
           amount: override.amount || 0
         }
       };
-    }, JSON.parse(JSON.stringify(state.trades)))
+    }, JSON.parse(JSON.stringify(state.trades))),
+
+    // override existing auction or create a new one
+    auction: overrides.auction ?
+      state.auction ? {
+        ...JSON.parse(JSON.stringify(state.auction)),
+        ...overrides.auction
+      } : {
+        players: Object.keys(state.players)
+          .concat((overrides.players||[]).map((pl) => pl.token))
+          .filter((token, i, players) => players.indexOf(token) === i),
+        winning: false,
+        amount: 0,
+        ...overrides.auction
+      } :
+    typeof overrides.auction === 'undefined' ?
+      state.auction : false
   };
 }

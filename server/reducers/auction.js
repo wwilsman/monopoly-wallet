@@ -1,5 +1,6 @@
 import {
-  AUCTION_PROPERTY
+  AUCTION_PROPERTY,
+  PLACE_BID
 } from '../actions/auction';
 
 /**
@@ -16,6 +17,12 @@ export default (state = false, action) => {
         players: action.players,
         winning: false,
         amount: 0
+      };
+
+    case PLACE_BID:
+      return { ...state,
+        winning: action.player.token,
+        amount: action.amount
       };
 
     default:
