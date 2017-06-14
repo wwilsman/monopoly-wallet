@@ -18,25 +18,23 @@ export default (config) => {
   return (store) => (next) => (action) => {
     const state = store.getState();
 
-    // create initial meta
+    // create meta
     let meta = { state, config };
 
     // initial meta
+    meta.auction = state.auction;
     meta.player = action.player &&
+      (action.player = calc(action.player, meta)) &&
       getPlayer(state, action.player.token) || action.player;
     meta.property = action.property &&
+      (action.property = calc(action.property, meta)) &&
       getProperty(state, action.property.id);
-    meta.group = action.property &&
-      getProperties(state, meta.property.group);
-    meta.trade = action.trade &&
-      getTrade(state, action.trade.id);
-    meta.auction = state.auction;
-
-    // calculated meta
-    meta.properties = action.properties &&
-      calc(action.properties, meta, []).map((id) => getProperty(state, id));
+    meta.group = action.property && getProperties(state, meta.property.group);
+    meta.trade = action.trade && getTrade(state, action.trade.id);
     meta.other = action.other && (action.other = calc(action.other, meta)) &&
       getPlayer(state, action.other.token) || action.other;
+    meta.properties = action.properties &&
+      calc(action.properties, meta, []).map((id) => getProperty(state, id));
 
     // run action calculations and build remaining meta
     action = Object.keys(action).reduce((a, k) => {
@@ -62,14 +60,14 @@ export default (config) => {
  * Calculates certain values from meta; returns a default value on error
  * @param {Mixed} value - The value to calculate
  * @param {Object} meta - Meta to make the calculation with
- * @param {Mixed} [def=false] - Default value to return on error
+ * @param {Mixed} [defValue=false] - Default value to return on error
  * @returns {Mixed} The calculated value
  */
-function calc(value, meta, def = false) {
+function calc(value, meta, defValue = false) {
   try {
     return value && value.__calc ?
       value.get(meta) : value;
   } catch (e) {
-    return def;
+    return defValue;
   }
 }
