@@ -19,7 +19,7 @@ export const propertyIsOwned = ({ property }) => {
  */
 export const propertyNotOwned = ({ state, property }) => {
   const owner = getPlayer(state, property.owner);
-  owner && throwError(`${owner.name} owns ${property.name}`);
+  !!owner && throwError(`${property.name} is owned by ${owner.name}`);
 };
 
 /**

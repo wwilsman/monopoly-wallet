@@ -44,7 +44,7 @@ describe('Game: buying properties', function() {
 
   it('should not buy the property when already owned', function() {
     expect(() => this.dispatch(buyProperty('top-hat', 'oriental-avenue')))
-      .to.throw(MonopolyError, /owns/);
+      .to.throw(MonopolyError, /owned/);
     expect(this.getProperty('oriental-avenue').owner).to.equal('automobile');
   });
 
