@@ -14,6 +14,9 @@ import {
   PAY_RENT
 } from '../actions/properties';
 import {
+  AUCTION_PROPERTY
+} from '../actions/auction';
+import {
   MAKE_OFFER,
   DECLINE_OFFER,
   ACCEPT_OFFER
@@ -47,6 +50,9 @@ import {
   mustUnimproveEvenly,
   enoughHousesOrHotels
 } from './properties';
+import {
+  noCurrentAuction
+} from './auction';
 import {
   tradeExists,
   tradeIsWith
@@ -127,6 +133,14 @@ const PROPERTIES = {
   ]
 };
 
+// Auction rule definitions
+const AUCTIONS = {
+  [AUCTION_PROPERTY]: [
+    noCurrentAuction,
+    propertyNotOwned
+  ]
+};
+
 // Trade rule definitions
 const TRADES = {
   [MAKE_OFFER]: [
@@ -151,5 +165,6 @@ const TRADES = {
 export default {
   ...PLAYERS,
   ...PROPERTIES,
+  ...AUCTIONS,
   ...TRADES
 };

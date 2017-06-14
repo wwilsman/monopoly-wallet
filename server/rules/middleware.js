@@ -21,7 +21,6 @@ export default (config) => {
     // create initial meta
     let meta = { state, config };
 
-
     // initial meta
     meta.player = action.player &&
       getPlayer(state, action.player.token) || action.player;
@@ -31,6 +30,7 @@ export default (config) => {
       getProperties(state, meta.property.group);
     meta.trade = action.trade &&
       getTrade(state, action.trade.id);
+    meta.auction = state.auction;
 
     // calculated meta
     meta.properties = action.properties &&
