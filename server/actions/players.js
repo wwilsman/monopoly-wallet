@@ -22,7 +22,7 @@ export const join = (name, token) => ({
  * Action creator for transfers
  * Omitting `otherId` will make a transfer to/from the bank
  * @param {String} playerToken - Player token
- * @param {String} [otherToken] - Other player's token
+ * @param {String} [otherToken=bank] - Other player's token
  * @param {Number} amount - Amount to transfer (+/- for bank transfers)
  * @returns {Object} Redux action
  */
@@ -34,7 +34,7 @@ export const makeTransfer = (playerToken, otherToken, amount = otherToken) => {
       MAKE_TRANSFER_TO :
       MAKE_TRANSFER_FROM;
     amount = Math.abs(amount);
-    otherToken = null;
+    otherToken = 'bank';
   }
 
   return {

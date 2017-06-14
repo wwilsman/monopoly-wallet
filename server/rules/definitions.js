@@ -24,6 +24,7 @@ import {
 } from './common';
 import {
   uniqueToken,
+  playerExists,
   sufficientBalance
 } from './players';
 import {
@@ -56,16 +57,20 @@ const PLAYERS = {
     bankHasFunds
   ],
   [MAKE_TRANSFER_TO]: [
+    playerExists,
     bankHasFunds
   ],
   [MAKE_TRANSFER_FROM]: [
+    playerExists,
     sufficientBalance
   ],
   [MAKE_TRANSFER_WITH]: [
+    playerExists,
     negativeAmount,
     sufficientBalance
   ],
   [CLAIM_BANKRUPTCY]: [
+    playerExists,
     propertiesNotImproved,
     propertiesAreMortgaged
   ]
@@ -74,11 +79,13 @@ const PLAYERS = {
 // Property rule definitions
 const PROPERTIES = {
   [BUY_PROPERTY]: [
+    playerExists,
     negativeAmount,
     propertyNotOwned,
     sufficientBalance
   ],
   [IMPROVE_PROPERTY]: [
+    playerExists,
     propertyOwnedBy,
     notRailroadOrUtility,
     propertyIsMonopoly,
@@ -89,6 +96,7 @@ const PROPERTIES = {
     sufficientBalance
   ],
   [UNIMPROVE_PROPERTY]: [
+    playerExists,
     propertyOwnedBy,
     notRailroadOrUtility,
     propertyIsImproved,
@@ -97,6 +105,7 @@ const PROPERTIES = {
     bankHasFunds
   ],
   [MORTGAGE_PROPERTY]: [
+    playerExists,
     propertyOwnedBy,
     propertyNotMortgaged,
     propertyNotImproved,
@@ -104,11 +113,13 @@ const PROPERTIES = {
     bankHasFunds
   ],
   [UNMORTGAGE_PROPERTY]: [
+    playerExists,
     propertyOwnedBy,
     propertyIsMortgaged,
     sufficientBalance
   ],
   [PAY_RENT]: [
+    playerExists,
     propertyIsOwned,
     sufficientBalance
   ]
@@ -117,10 +128,12 @@ const PROPERTIES = {
 // Trade rule definitions
 const TRADES = {
   [MAKE_OFFER]: [
+    playerExists,
     propertiesOwnedBy,
     sufficientBalance
   ],
   [DECLINE_OFFER]: [
+    playerExists,
     tradeExists
   ]
 };

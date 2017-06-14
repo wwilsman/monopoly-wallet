@@ -32,6 +32,12 @@ describe('Game: making transfers', function() {
     expect(this.state.bank).to.equal(200);
   });
 
+  it('should not transfer money from a non-existent player', function() {
+    expect(() => this.dispatch(makeTransfer('thimble')))
+      .to.throw(MonopolyError, /player/);
+    expect(this.state.bank).to.equal(100);
+  });
+
   it('should not transfer money from the bank with insufficient funds', function() {
     expect(() => this.dispatch(makeTransfer('top-hat', 200)))
       .to.throw(MonopolyError, /insufficient/);
@@ -51,6 +57,12 @@ describe('Game: making transfers', function() {
 
     expect(this.getPlayer('top-hat').balance).to.equal(0);
     expect(this.getPlayer('automobile').balance).to.equal(200);
+  });
+
+  it('should not transfer money to a non-existent player', function() {
+    expect(() => this.dispatch(makeTransfer('top-hat', 'thimble', 100)))
+      .to.throw(MonopolyError, /player/);
+    expect(this.getPlayer('top-hat').balance).to.equal(100);
   });
 
   it('should not transfer money from another player', function() {

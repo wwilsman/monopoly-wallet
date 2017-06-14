@@ -39,8 +39,8 @@ export default (config) => {
     // calculated meta
     meta.properties = action.properties &&
       calc(action.properties).map((id) => getProperty(state, id));
-    meta.other = action.other &&
-      getPlayer(state, calc(action.other).token);
+    meta.other = action.other && (action.other = calc(action.other)) &&
+      getPlayer(state, action.other.token) || action.other;
 
     // run action calculations and build remaining meta
     action = Object.keys(action).reduce((a, k) => {

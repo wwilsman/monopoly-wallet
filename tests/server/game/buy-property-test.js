@@ -36,6 +36,12 @@ describe('Game: buying properties', function() {
     expect(this.state.bank).to.equal(this.last.bank + 10);
   });
 
+  it('should not buy the property for a non-existent player', function() {
+    expect(() => this.dispatch(buyProperty('thimble', 'baltic-avenue', -10)))
+      .to.throw(MonopolyError, /player/);
+    expect(this.getProperty('baltic-avenue').owner).to.not.equal('thimble');
+  });
+
   it('should not buy the property for a negative price', function() {
     expect(() => this.dispatch(buyProperty('top-hat', 'baltic-avenue', -10)))
       .to.throw(MonopolyError, /negative/);
