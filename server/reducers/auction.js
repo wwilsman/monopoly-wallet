@@ -1,6 +1,8 @@
 import {
   AUCTION_PROPERTY,
-  PLACE_BID
+  PLACE_BID,
+  CONCEDE_AUCTION,
+  CANCEL_AUCTION
 } from '../actions/auction';
 
 /**
@@ -24,6 +26,16 @@ export default (state = false, action) => {
         winning: action.player.token,
         amount: action.amount
       };
+
+    case CONCEDE_AUCTION:
+      return { ...state,
+        players: state.players.filter((token) => (
+          token !== action.player.token
+        ))
+      };
+
+    case CANCEL_AUCTION:
+      return false;
 
     default:
       return state;
