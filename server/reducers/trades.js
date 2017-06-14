@@ -1,6 +1,7 @@
 import {
   MAKE_OFFER,
-  DECLINE_OFFER
+  DECLINE_OFFER,
+  ACCEPT_OFFER
 } from '../actions/trades';
 
 /**
@@ -39,6 +40,7 @@ export default (state = {}, action) => {
       };
 
     case DECLINE_OFFER:
+    case ACCEPT_OFFER:
       state = { ...state };
       delete state[action.trade.id];
       return state;

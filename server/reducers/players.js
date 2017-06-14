@@ -13,6 +13,9 @@ import {
   UNMORTGAGE_PROPERTY,
   PAY_RENT
 } from '../actions/properties';
+import {
+  ACCEPT_OFFER
+} from '../actions/trades';
 
 /**
  * Reducer for a single player
@@ -47,6 +50,7 @@ const player = (state, action) => {
 
     case PAY_RENT:
     case MAKE_TRANSFER_WITH:
+    case ACCEPT_OFFER:
       return { ...state,
         balance: state.token === action.other.token ?
           state.balance + action.amount :
@@ -92,6 +96,7 @@ export default (state = {}, action) => {
 
     case PAY_RENT:
     case MAKE_TRANSFER_WITH:
+    case ACCEPT_OFFER:
       return { ...state,
         [action.player.token]: player(state[action.player.token], action),
         [action.other.token]: player(state[action.other.token], action)

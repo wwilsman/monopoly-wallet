@@ -15,7 +15,8 @@ import {
 } from '../actions/properties';
 import {
   MAKE_OFFER,
-  DECLINE_OFFER
+  DECLINE_OFFER,
+  ACCEPT_OFFER
 } from '../actions/trades';
 
 import {
@@ -47,7 +48,8 @@ import {
   enoughHousesOrHotels
 } from './properties';
 import {
-  tradeExists
+  tradeExists,
+  tradeIsWith
 } from './trades';
 
 // Player rule definitions
@@ -135,6 +137,13 @@ const TRADES = {
   [DECLINE_OFFER]: [
     playerExists,
     tradeExists
+  ],
+  [ACCEPT_OFFER]: [
+    playerExists,
+    tradeExists,
+    tradeIsWith,
+    propertiesOwnedBy,
+    sufficientBalance
   ]
 };
 

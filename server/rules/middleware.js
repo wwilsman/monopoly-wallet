@@ -21,10 +21,6 @@ export default (config) => {
     // create initial meta
     let meta = { state, config };
 
-    // used to calculate values from meta
-    const calc = (value) => (
-      value && value.__calc ? value.get(meta) : value
-    );
 
     // initial meta
     meta.player = action.player &&
@@ -38,13 +34,13 @@ export default (config) => {
 
     // calculated meta
     meta.properties = action.properties &&
-      calc(action.properties).map((id) => getProperty(state, id));
-    meta.other = action.other && (action.other = calc(action.other)) &&
+      calc(action.properties, meta, []).map((id) => getProperty(state, id));
+    meta.other = action.other && (action.other = calc(action.other, meta)) &&
       getPlayer(state, action.other.token) || action.other;
 
     // run action calculations and build remaining meta
     action = Object.keys(action).reduce((a, k) => {
-      a[k] = calc(a[k]);
+      a[k] = calc(a[k], meta);
       if (!meta.hasOwnProperty(k))
         meta[k] = a[k];
       return a;
@@ -61,3 +57,19 @@ export default (config) => {
     return next(action);
   };
 };
+
+/**
+ * Calculates certain values from meta; returns a default value on error
+ * @param {Mixed} value - The value to calculate
+ * @param {Object} meta - Meta to make the calculation with
+ * @param {Mixed} [def=false] - Default value to return on error
+ * @returns {Mixed} The calculated value
+ */
+function calc(value, meta, def = false) {
+  try {
+    return value && value.__calc ?
+      value.get(meta) : value;
+  } catch (e) {
+    return def;
+  }
+}

@@ -26,10 +26,13 @@ export const playerExists = ({ state, player, other }) => {
 
 /**
  * Validates a player has a sufficient balance
- * @param {Number} player.balance - Player's balance
  * @param {Number} amount - Amount needed
+ * @param {Number} player.balance - Player's balance
+ * @param {Number} [other.balance] - Other player's balance
  * @throws {MonopolyError}
  */
-export const sufficientBalance = ({ player, amount }) => {
+export const sufficientBalance = ({ amount, player, other }) => {
   player.balance < amount && throwError('Insufficient balance');
+  (other && other.balance < Math.abs(amount)) &&
+    throwError(`${other.name} has an insufficient balance`);
 };

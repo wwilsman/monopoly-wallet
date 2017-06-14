@@ -8,6 +8,9 @@ import {
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY
 } from '../actions/properties';
+import {
+  ACCEPT_OFFER
+} from '../actions/trades';
 
 /**
  * Reducer for a single property
@@ -43,6 +46,7 @@ const property = (state, action) => {
       };
 
     case CLAIM_BANKRUPTCY:
+    case ACCEPT_OFFER:
       return { ...state,
         owner: action.other.token
       };
@@ -70,6 +74,7 @@ export default (state = [], action) => {
       };
 
     case CLAIM_BANKRUPTCY:
+    case ACCEPT_OFFER:
       return action.properties.reduce((state, id) => {
         state[id] = property(state[id], action);
         return state;
