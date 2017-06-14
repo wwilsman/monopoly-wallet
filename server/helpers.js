@@ -41,14 +41,13 @@ export function getTradeId(playerToken, otherToken) {
 }
 
 /**
- * Finds a trade by participating player IDs
+ * Finds a trade in the game state
  * @param {Object} state - Game state
- * @param {String} playerToken - Player token
- * @param {String} otherToken - Other player's token
+ * @param {String} tradeId - Trade ID
  * @returns {Object} Trade data
  */
-export function getTrade(state, playerToken, otherToken) {
-  return state && state.trades[getTradeId(playerToken, otherToken)];
+export function getTrade(state, tradeId) {
+  return state && state.trades[tradeId];
 }
 
 /**

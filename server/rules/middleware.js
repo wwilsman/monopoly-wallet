@@ -1,7 +1,8 @@
 import {
   getPlayer,
   getProperty,
-  getProperties
+  getProperties,
+  getTrade
 } from '../helpers';
 
 import rules from './definitions';
@@ -33,7 +34,7 @@ export default (config) => {
     meta.group = action.property &&
       getProperties(state, meta.property.group);
     meta.trade = action.trade &&
-      state.trades[action.trade.id];
+      getTrade(state, action.trade.id);
 
     // calculated meta
     meta.properties = action.properties &&

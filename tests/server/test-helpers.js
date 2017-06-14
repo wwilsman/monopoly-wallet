@@ -12,8 +12,7 @@ import {
   getPlayer,
   getProperty,
   getProperties,
-  getTradeId,
-  getTrade
+  getTradeId
 } from '../../server/helpers';
 import {
   GAME_FIXTURE,
@@ -79,7 +78,6 @@ function setupGameStore() {
     old.getPlayer = this.getPlayer;
     old.getProperty = this.getProperty;
     old.getProperties = this.getProperties;
-    old.getTrade = this.getTrade;
 
     store = createGame(this.initial, this.config);
 
@@ -94,7 +92,6 @@ function setupGameStore() {
     this.getPlayer = (id) => getPlayer(this.state, id);
     this.getProperty = (id) => getProperty(this.state, id);
     this.getProperties = (group) => getProperties(this.state, group);
-    this.getTrade = (players) => getTrade(this.state, players);
   });
 
   afterEach(function() {
@@ -104,7 +101,6 @@ function setupGameStore() {
     this.getPlayer = old.getPlayer;
     this.getProperty = old.getProperty;
     this.getProperties = old.getProperties;
-    this.getTrade = old.getTrade;
 
     unsubscribe();
     unsubscribe = null;
