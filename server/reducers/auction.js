@@ -2,7 +2,8 @@ import {
   AUCTION_PROPERTY,
   PLACE_BID,
   CONCEDE_AUCTION,
-  CANCEL_AUCTION
+  CANCEL_AUCTION,
+  CLOSE_AUCTION
 } from '../actions/auction';
 
 /**
@@ -35,6 +36,7 @@ export default (state = false, action) => {
       };
 
     case CANCEL_AUCTION:
+    case CLOSE_AUCTION:
       return false;
 
     default:

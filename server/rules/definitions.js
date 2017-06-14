@@ -16,7 +16,8 @@ import {
 import {
   AUCTION_PROPERTY,
   PLACE_BID,
-  CONCEDE_AUCTION
+  CONCEDE_AUCTION,
+  CLOSE_AUCTION
 } from '../actions/auction';
 import {
   MAKE_OFFER,
@@ -155,6 +156,10 @@ const AUCTIONS = {
   [CONCEDE_AUCTION]: [
     auctionInProgress,
     notWinningAuction
+  ],
+  [CLOSE_AUCTION]: [
+    auctionInProgress,
+    sufficientBalance
   ]
 };
 

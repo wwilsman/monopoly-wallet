@@ -11,6 +11,9 @@ import {
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY
 } from '../actions/properties';
+import {
+  CLOSE_AUCTION
+} from '../actions/auction';
 
 /**
  * Reducer for the bank
@@ -30,6 +33,7 @@ export default (state = Infinity, action) => {
     case MAKE_TRANSFER_FROM:
     case IMPROVE_PROPERTY:
     case UNMORTGAGE_PROPERTY:
+    case CLOSE_AUCTION:
       return state + action.amount;
 
     case CLAIM_BANKRUPTCY:

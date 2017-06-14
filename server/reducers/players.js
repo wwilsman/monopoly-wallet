@@ -14,6 +14,9 @@ import {
   PAY_RENT
 } from '../actions/properties';
 import {
+  CLOSE_AUCTION
+} from '../actions/auction';
+import {
   ACCEPT_OFFER
 } from '../actions/trades';
 
@@ -44,6 +47,7 @@ const player = (state, action) => {
     case MAKE_TRANSFER_FROM:
     case IMPROVE_PROPERTY:
     case UNMORTGAGE_PROPERTY:
+    case CLOSE_AUCTION:
       return { ...state,
         balance: state.balance - action.amount
       };
@@ -90,6 +94,7 @@ export default (state = {}, action) => {
     case UNIMPROVE_PROPERTY:
     case MORTGAGE_PROPERTY:
     case UNMORTGAGE_PROPERTY:
+    case CLOSE_AUCTION:
       return { ...state,
         [action.player.token]: player(state[action.player.token], action)
       };

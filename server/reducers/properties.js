@@ -9,6 +9,9 @@ import {
   UNMORTGAGE_PROPERTY
 } from '../actions/properties';
 import {
+  CLOSE_AUCTION
+} from '../actions/auction';
+import {
   ACCEPT_OFFER
 } from '../actions/trades';
 
@@ -21,6 +24,7 @@ import {
 const property = (state, action) => {
   switch (action.type) {
     case BUY_PROPERTY:
+    case CLOSE_AUCTION:
       return { ...state,
         owner: action.player.token
       };
@@ -69,6 +73,7 @@ export default (state = [], action) => {
     case UNIMPROVE_PROPERTY:
     case MORTGAGE_PROPERTY:
     case UNMORTGAGE_PROPERTY:
+    case CLOSE_AUCTION:
       return { ...state,
         [action.property.id]: property(state[action.property.id], action)
       };

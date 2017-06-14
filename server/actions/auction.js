@@ -4,6 +4,7 @@ export const AUCTION_PROPERTY = 'AUCTION_PROPERTY';
 export const PLACE_BID = 'PLACE_BID';
 export const CONCEDE_AUCTION = 'CONCEDE_AUCTION';
 export const CANCEL_AUCTION = 'CANCEL_AUCTION';
+export const CLOSE_AUCTION = 'CLOSE_AUCTION';
 
 /**
  * Action creator for auctioning properties
@@ -42,4 +43,15 @@ export const concedeAuction = (playerToken) => ({
       CANCEL_AUCTION : CONCEDE_AUCTION
   )),
   player: { token: playerToken }
+});
+
+/**
+ * Action creator for closing an auction
+ * @returns {Object} Redux action
+ */
+export const closeAuction = () => ({
+  type: calc(({ auction }) => auction.winning ? CLOSE_AUCTION : CANCEL_AUCTION),
+  player: calc(({ auction }) => ({ token: auction.winning })),
+  property: calc(({ auction }) => ({ id: auction.property })),
+  amount: calc(({ auction }) => auction.amount)
 });
