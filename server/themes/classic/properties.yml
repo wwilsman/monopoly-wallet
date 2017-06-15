@@ -1,0 +1,167 @@
+  - name: Mediterranean Avenue
+    group: brown
+    price: 60
+    cost: 50
+    rent: [2, 10, 30, 90, 160, 250]
+
+  - name: Baltic Avenue
+    group: brown
+    price: 60
+    cost: 50
+    rent: [4, 20, 60, 180, 320, 450]
+
+  - name: Oriental Avenue
+    group: lightblue
+    price: 100
+    cost: 50
+    rent: [6, 30, 90, 270, 400, 550]
+
+  - name: Vermont Avenue
+    group: lightblue
+    price: 100
+    cost: 50
+    rent: [6, 30, 90, 270, 400, 550]
+
+  - name: Connecticut Avenue
+    group: lightblue
+    price: 120
+    cost: 50
+    rent: [8, 40, 100, 300, 450, 600]
+
+  - name: St. Charles Place
+    group: magenta
+    price: 140
+    cost: 100
+    rent: [10, 50, 150, 450, 625, 750]
+
+  - name: States Avenue
+    group: magenta
+    price: 140
+    cost: 100
+    rent: [10, 50, 150, 450, 625, 750]
+
+  - name: Virginia Avenue
+    group: magenta
+    price: 160
+    cost: 100
+    rent: [12, 60, 180, 500, 700, 900]
+
+  - name: St. James Place
+    group: orange
+    price: 180
+    cost: 100
+    rent: [14, 70, 200, 550, 750, 950]
+
+  - name: Tennessee Avenue
+    group: orange
+    price: 180
+    cost: 100
+    rent: [14, 70, 200, 550, 750, 950]
+
+  - name: New York Avenue
+    group: orange
+    price: 200
+    cost: 100
+    rent: [16, 80, 220, 600, 800, 1000]
+
+  - name: Kentucky Avenue
+    group: red
+    price: 220
+    cost: 150
+    rent: [18, 90, 250, 700, 875, 1050]
+
+  - name: Indiana Avenue
+    group: red
+    price: 220
+    cost: 150
+    rent: [18, 90, 250, 700, 875, 1050]
+
+  - name: Illinois
+    group: red
+    price: 240
+    cost: 150
+    rent: [20, 100, 300, 750, 925, 1100]
+
+  - name: Atlantic Avenue
+    group: yellow
+    price: 260
+    cost: 150
+    rent: [22, 110, 330, 800, 975, 1150]
+
+  - name: Ventnor Avenue
+    group: yellow
+    price: 260
+    cost: 150
+    rent: [22, 110, 330, 800, 975, 1150]
+
+  - name: Marvin Gardens
+    group: yellow
+    price: 280
+    cost: 150
+    rent: [24, 120, 360, 850, 1025, 1200]
+
+  - name: Pacific Avenue
+    group: green
+    price: 300
+    cost: 200
+    rent: [26, 130, 390, 900, 1100, 1275]
+
+  - name: North Carolina Avenue
+    group: green
+    price: 300
+    cost: 200
+    rent: [26, 130, 390, 900, 1100, 1275]
+
+  - name: Pennsylvania Avenue
+    group: green
+    price: 320
+    cost: 200
+    rent: [28, 150, 450, 1000, 1200, 1400]
+
+  - name: Park Place
+    group: blue
+    price: 350
+    cost: 200
+    rent: [35, 175, 500, 1100, 1300, 1500]
+
+  - name: Boardwalk
+    group: blue
+    price: 400
+    cost: 200
+    rent: [50, 200, 600, 1400, 1700, 2000]
+
+  - name: Reading Railroad
+    group: railroad
+    price: 200
+    cost: 0
+    rent: [25, 50, 100, 200]
+
+  - name: Pennsylvania Railroad
+    group: railroad
+    price: 200
+    cost: 0
+    rent: [25, 50, 100, 200]
+
+  - name: B. & O. Railroad
+    group: railroad
+    price: 200
+    cost: 0
+    rent: [25, 50, 100, 200]
+
+  - name: Short Line
+    group: railroad
+    price: 200
+    cost: 0
+    rent: [25, 50, 100, 200]
+
+  - name: Water Works
+    group: utility
+    price: 150
+    cost: 0
+    rent: [4, 10]
+
+  - name: Electric Company
+    group: utility
+    price: 150
+    cost: 0
+    rent: [4, 10]

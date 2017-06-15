@@ -1,0 +1,30 @@
+themeName: Classic
+themeDescr: The classic Monopoly board game
+bankStart: .inf
+playerStart: 1500
+passGoAmount: 200
+payJailAmount: 50
+houseCount: 32
+hotelCount: 12
+mortgageRate: 0.5
+interestRate: 0.1
+buildingRate: 0.5
+pollTimeout: 10000
+playerTokens:
+  - automobile
+  - battleship
+  - boot
+  - iron
+  - scottish-terrier
+  - thimble
+  - top-hat
+  - wheelbarrow
+groupColors:
+    brown: '#963232'
+    lightblue: '#80CCFF'
+    magenta: '#FF69B4'
+    orange: '#FF8000'
+    red: '#FF0000'
+    yellow: '#FFFF00'
+    green: '#32963C'
+    blue: '#2858C8'

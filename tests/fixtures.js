@@ -1,6 +1,9 @@
+import YAML from 'yamljs';
+
 import { createState } from '../server/game';
-import defaultConfig from '../server/themes/classic/config';
-import defaultProperties from '../server/themes/classic/properties';
+
+const defaultConfig = YAML.load('./server/themes/classic/config.yml');
+const defaultProperties = YAML.load('./server/themes/classic/properties.yml');
 
 export const GAME_FIXTURE = createState(
   defaultProperties,
