@@ -57,3 +57,31 @@ export function getTrade(state, tradeId) {
 export function calc(get) {
   return { __calc: true, get };
 }
+
+/**
+ * Generates a notice by id from passed data
+ * @param {String} id - Notice path from notices.yml
+ * @param {Object} data - Data used in the notice
+ * @param {Object} notices - Notices from notices.yml
+ * @returns {String} A generated notice
+ */
+export function generateNotice(id, data, notices) {
+  const message = get(id, notices);
+
+  return message ? message.replace(
+      /{{([\w\.]+?)}}/g,
+    (_, key) => get(key, data)
+  ) : id;
+}
+
+/**
+ * Gets a nested value from nested objects
+ * @param {String} path - Nested key to get
+ * @param {Object} object - Object to traverse
+ * @returns {Mixed} Value of path in object
+ */
+function get(path, object) {
+  return path.split('.').reduce((parent, key) => {
+    return parent ? parent[key] : undefined;
+  }, object);
+}

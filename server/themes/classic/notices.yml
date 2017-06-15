@@ -1,0 +1,68 @@
+errors:
+  common:
+    bank-low:
+      'Bank funds are insufficient'
+    negative-amount:
+      'Amount must not be negative'
+
+  player:
+    used-token:
+      'Token already in use'
+    not-found:
+      'Cannot find player with token {{player.token}}'
+    balance:
+      'Insufficient balance'
+    other-balance:
+      '{{other.name}} has an insufficient balance'
+
+  property:
+    unowned:
+      '{{property.name}} is unowned'
+    not-own:
+      'You do not own {{property.name}}'
+    owned:
+      '{{property.name}} is owned by {{owner.name}}'
+    no-monopoly:
+      '{{property.name}} is not a monopoly'
+    mortgaged:
+      '{{property.name}} is mortgaged'
+    unmortgaged:
+      '{{property.name}} is not mortgaged'
+    multi-unmortgaged:
+      'You have unmortgaged properties'
+    improved:
+      '{{property.name}} is improved'
+    fully-improved:
+      '{{property.name}} is fully improved'
+    unimproved:
+      '{{property.name}} is unimproved'
+    multi-unimproved:
+      'You have unimproved properties'
+    cannot-improve:
+      'Cannot improve a {{property.group}}'
+    build-evenly:
+      'You must build evenly'
+    no-houses:
+      'Not enough houses'
+    no-hotels:
+      'Not enough hotels'
+
+  auction:
+    in-progress:
+      'An auction is in progress'
+    not-in-progress:
+      'No current auction in progress'
+    winning:
+      'You are already winning the auction'
+    property:
+      '{{property.name}} is up for auction'
+    not-involved:
+      'You are not involved in the auction'
+    bid-higher:
+      'You must bid higher than the current bid'
+
+  trade:
+    not-found:
+      'Cannot find offer with {{other.name}}'
+    other-trade:
+      'Cannot accept other offers'

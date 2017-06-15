@@ -39,9 +39,10 @@ export function createState(properties, config) {
  * Creates a new store instance for games
  * @param {Object} initialState - Initial game state
  * @param {Object} config - Game config options
+ * @param {Object} notices - Map of game notices
  * @returns {Object} Redux Store object
  */
-export function createGame(initialState, config) {
+export function createGame(initialState, config, notices) {
   const reducer = (state, action) =>
     gameReducer(state, action, config);
 
@@ -49,7 +50,7 @@ export function createGame(initialState, config) {
     reducer,
     initialState,
     applyMiddleware(
-      ruleMiddleware(config)
+      ruleMiddleware(config, notices)
     )
   );
 

@@ -1,21 +1,20 @@
-import { throwError } from './error';
-
 /**
  * Validates a trade exists
  * @param {String} trade - Trade data
- * @param {String} other.name - Other player's name
+ * @param {Function} throwError - Throws a monopoly error
  * @throws {MonopolyError}
  */
-export const tradeExists = ({ trade, other }) => {
-  !trade && throwError(`Cannot find offer with ${other.name}`);
+export const tradeExists = ({ trade }, throwError) => {
+  !trade && throwError('trade.not-found');
 };
 
 /**
  * Validates a trade is with the player
  * @param {String} trade - Trade data
  * @param {String} player.token - Player token
+ * @param {Function} throwError - Throws a monopoly error
  * @throws {MonopolyError}
  */
-export const tradeIsWith = ({ trade, player }) => {
-  trade.with !== player.token && throwError('Cannot accept other offers');
+export const tradeIsWith = ({ trade, player }, throwError) => {
+  trade.with !== player.token && throwError('trade.other-trade');
 };

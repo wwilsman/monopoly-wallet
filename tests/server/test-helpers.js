@@ -16,7 +16,8 @@ import {
 } from '../../server/helpers';
 import {
   GAME_FIXTURE,
-  CONFIG_FIXTURE
+  CONFIG_FIXTURE,
+  NOTICES_FIXTURE
 } from '../fixtures';
 
 /**
@@ -79,7 +80,11 @@ function setupGameStore() {
     old.getProperty = this.getProperty;
     old.getProperties = this.getProperties;
 
-    store = createGame(this.initial, this.config);
+    store = createGame(
+      this.initial,
+      this.config,
+      NOTICES_FIXTURE
+    );
 
     this.state = store.getState();
     this.dispatch = store.dispatch;

@@ -2,19 +2,21 @@ import {
   getPlayer,
   getProperty,
   getProperties,
-  getTrade
+  getTrade,
+  generateNotice
 } from '../helpers';
 
+import MonopolyError from './error';
 import rules from './definitions';
 
 /**
  * Middleware to gather additional data for actions and run them against
  * sets of rules before dispatching
  * @param {Object} config - Game config
- * @param {Function} callback - Callback called on error
+ * @param {Object} notices - Map of game notices
  * @returns {Function} Middleware to be used with `applyMiddleware`
  */
-export default (config) => {
+export default (config, notices) => {
   return (store) => (next) => (action) => {
     const state = store.getState();
 
@@ -44,10 +46,19 @@ export default (config) => {
       return a;
     }, action);
 
+    // helper for throwing errors in rules
+    let throwError = (key, data) => {
+      throw new MonopolyError(
+        generateNotice(`errors.${key}`, {
+          ...meta, ...data
+        }, notices)
+      );
+    };
+
     // check against rules for action
     if (rules[action.type]) {
       for (let test of rules[action.type]) {
-        test(meta);
+        test(meta, throwError);
       }
     }
 
