@@ -115,7 +115,7 @@ describe('Game: unimproving properties', function() {
 
     it('should not unimprove the property', function() {
       expect(() => this.dispatch(unimproveProperty('top-hat', 'oriental-avenue')))
-        .to.throw(MonopolyError, /not improved/i);
+        .to.throw(MonopolyError, /unimproved/i);
       expect(this.getProperty('oriental-avenue').buildings).to.equal(0);
     });
   });
