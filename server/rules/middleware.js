@@ -31,7 +31,7 @@ export default (config, notices) => {
     meta.property = action.property &&
       (action.property = calc(action.property, meta)) &&
       getProperty(state, action.property.id);
-    meta.group = action.property && getProperties(state, meta.property.group);
+    meta.group = meta.property && getProperties(state, meta.property.group);
     meta.trade = action.trade && getTrade(state, action.trade.id);
     meta.other = action.other && (action.other = calc(action.other, meta)) &&
       getPlayer(state, action.other.token) || action.other;
