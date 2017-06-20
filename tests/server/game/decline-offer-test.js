@@ -41,4 +41,15 @@ describe('Game: declining a trade offer', function() {
     expect(this.state.trades).to.have.property(getTradeId('top-hat', 'automobile'));
     expect(this.state.trades).to.not.have.property(getTradeId('top-hat', 'thimble'));
   });
+
+  it('should create a notice', function() {
+    this.dispatch(declineOffer('automobile', 'top-hat'));
+
+    expect(this.state.notice.id).to.equal('trade.declined');
+    expect(this.state.notice.message).to.match(/declined/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'automobile');
+    expect(this.state.notice.meta).to.have.property('other')
+      .that.has.property('token', 'top-hat');
+  });
 });

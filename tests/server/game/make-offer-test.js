@@ -61,6 +61,20 @@ describe('Game: making a trade offer', function() {
     );
   });
 
+  it('should create a notice', function() {
+    this.dispatch(makeOffer('top-hat', 'automobile', {
+      properties: ['oriental-avenue']
+    }));
+
+    expect(this.state.notice.id).to.equal('trade.new');
+    expect(this.state.notice.message).to.match(/offered/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('other')
+      .that.has.property('token', 'automobile');
+    expect(this.state.notice.meta).to.have.property('amount', 0);
+  });
+
   describe('with an existing offer', function() {
     modifyGameInTesting({ state: {
       trades: [{
@@ -87,6 +101,21 @@ describe('Game: making a trade offer', function() {
           amount: 500
         }
       });
+    });
+
+    it('should create a different notice', function() {
+      this.dispatch(makeOffer('automobile', 'top-hat', {
+        properties: ['oriental-avenue'],
+        amount: 500
+      }));
+
+      expect(this.state.notice.id).to.equal('trade.modified');
+      expect(this.state.notice.message).to.match(/counter/);
+      expect(this.state.notice.meta).to.have.property('player')
+        .that.has.property('token', 'automobile');
+      expect(this.state.notice.meta).to.have.property('other')
+        .that.has.property('token', 'top-hat');
+      expect(this.state.notice.meta).to.have.property('amount', 500);
     });
   });
 });

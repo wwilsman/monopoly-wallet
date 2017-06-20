@@ -20,6 +20,7 @@ export const makeOffer = (playerToken, otherToken, {
   player: { token: playerToken },
   other: { token: otherToken },
   trade: { id: getTradeId(playerToken, otherToken) },
+  notice: calc(({ trade }) => ({ id: trade ? 'trade.modified' : 'trade.new' })),
   properties,
   amount
 });
@@ -34,7 +35,8 @@ export const declineOffer = (playerToken, otherToken) => ({
   type: DECLINE_OFFER,
   player: { token: playerToken },
   other: { token: otherToken },
-  trade: { id: getTradeId(playerToken, otherToken) }
+  trade: { id: getTradeId(playerToken, otherToken) },
+  notice: { id: 'trade.declined' }
 });
 
 /**
@@ -49,5 +51,6 @@ export const acceptOffer = (playerToken, otherToken) => ({
   other: { token: otherToken },
   trade: { id: getTradeId(playerToken, otherToken) },
   properties: calc(({ trade }) => trade.properties),
-  amount: calc(({ trade }) => -trade.amount)
+  amount: calc(({ trade }) => -trade.amount),
+  notice: { id: 'trade.accepted'}
 });

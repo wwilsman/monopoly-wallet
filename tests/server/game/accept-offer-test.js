@@ -66,6 +66,17 @@ describe('Game: accepting a trade offer', function() {
     expect(this.state.trades).to.have.property(getTradeId('top-hat', 'thimble'));
   });
 
+  it('should create a notice', function() {
+    this.dispatch(acceptOffer('automobile', 'top-hat'));
+
+    expect(this.state.notice.id).to.equal('trade.accepted');
+    expect(this.state.notice.message).to.match(/accepted/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'automobile');
+    expect(this.state.notice.meta).to.have.property('other')
+      .that.has.property('token', 'top-hat');
+  });
+
   describe('when a player has a low balance', function() {
     modifyGameInTesting({ state: {
       players: [{
