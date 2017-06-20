@@ -1,3 +1,33 @@
+notices:
+  player:
+    joined: '{{player.name}} joined the game'
+    paid-amount: '{{player.name}} paid the bank {{amount}}'
+    received-amount: '{{player.name}} received {{amount}}'
+    paid-other: '{{player.name}} paid {{other.name}} {{amount}}'
+    bankrupt: '{{player.name}} went bankrupt'
+    other-bankrupt: '{{other.name}} bankrupt {{player.name}}'
+
+  property:
+    bought: '{{player.name}} purchased {{property.name}}'
+    improved: '{{player.name}} improved {{property.name}}'
+    unimproved: '{{player.name}} unimproved {{property.name}}'
+    mortgaged: '{{player.name}} mortgaged {{property.name}}'
+    unmortgaged: '{{player.name}} unmortgaged {{property.name}}'
+    paid-rent: '{{player.name}} paid {{other.name}} rent for {{property.name}}'
+
+  auction:
+    start: '{{property.name}} is up for auction'
+    bid: '{{player.name}} bid {{amount}}'
+    conceded: '{{player.name}} conceded from the auction'
+    cancelled: '{{property.name}} auction cancelled'
+    won: '{{player.name}} won {{property.name}} at auction'
+
+  trade:
+    new: '{{player.name}} offered to trade'
+    modified: '{{player.name}} made a counter offer'
+    declined: '{{player.name}} declined to trade'
+    accepted: '{{player.name}} accepted a trade with {{other.name}}'
+
 errors:
   common:
     bank-low: 'Bank funds are insufficient'

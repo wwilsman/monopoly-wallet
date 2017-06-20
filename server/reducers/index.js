@@ -7,6 +7,7 @@ import players from './players';
 import properties from './properties';
 import auction from './auction';
 import trades from './trades';
+import notice from './notice';
 
 /**
  * Main reducer for our game
@@ -18,5 +19,6 @@ export default combineReducers({
   players,
   properties,
   auction,
-  trades
+  trades,
+  notice
 });

@@ -62,6 +62,12 @@ export default (config, notices) => {
       }
     }
 
+    // generate a notice message
+    action.notice = action.notice && {
+      message: generateNotice(`notices.${action.notice.id}`, meta, notices),
+      ...action.notice
+    };
+
     // continue to dispatch
     return next(action);
   };
