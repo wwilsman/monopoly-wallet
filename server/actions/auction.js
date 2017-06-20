@@ -16,7 +16,8 @@ export const auctionProperty = (playerToken, propertyId) => ({
   type: AUCTION_PROPERTY,
   player: { token: playerToken },
   property: { id: propertyId },
-  players: calc(({ state }) => Object.keys(state.players))
+  players: calc(({ state }) => Object.keys(state.players)),
+  notice: { id: 'auction.start' }
 });
 
 /**
@@ -28,6 +29,8 @@ export const auctionProperty = (playerToken, propertyId) => ({
 export const placeBid = (playerToken, amount) => ({
   type: PLACE_BID,
   player: { token: playerToken },
+  property: calc(({ auction }) => ({ id: auction.property })),
+  notice: { id: 'auction.bid' },
   amount
 });
 
@@ -42,7 +45,13 @@ export const concedeAuction = (playerToken) => ({
      auction.players.indexOf(playerToken) === 0) ?
       CANCEL_AUCTION : CONCEDE_AUCTION
   )),
-  player: { token: playerToken }
+  player: { token: playerToken },
+  property: calc(({ auction }) => ({ id: auction.property })),
+  notice: calc(({ auction }) => ({
+    id: (auction.players.length === 1 &&
+         auction.players.indexOf(playerToken) === 0) ?
+      'auction.cancelled' : 'auction.conceded'
+  }))
 });
 
 /**
@@ -53,5 +62,8 @@ export const closeAuction = () => ({
   type: calc(({ auction }) => auction.winning ? CLOSE_AUCTION : CANCEL_AUCTION),
   player: calc(({ auction }) => ({ token: auction.winning })),
   property: calc(({ auction }) => ({ id: auction.property })),
-  amount: calc(({ auction }) => auction.amount)
+  amount: calc(({ auction }) => auction.amount),
+  notice: calc(({ auction }) => ({
+    id: auction.winning ? 'auction.won' : 'auction.cancelled'
+  }))
 });

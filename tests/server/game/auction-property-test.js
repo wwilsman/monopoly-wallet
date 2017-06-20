@@ -42,4 +42,15 @@ describe('Game: auctioning properties', function() {
       .to.throw(MonopolyError, /auction/i);
     expect(this.state.auction.property).to.equal('oriental-avenue');
   });
+
+  it('should create a notice', function() {
+    this.dispatch(auctionProperty('top-hat', 'oriental-avenue'));
+
+    expect(this.state.notice.id).to.equal('auction.start');
+    expect(this.state.notice.message).to.match(/auction/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', 'oriental-avenue');
+  });
 });

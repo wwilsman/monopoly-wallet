@@ -29,6 +29,15 @@ describe('Game: closing auctions', function() {
     expect(this.getProperty('oriental-avenue').owner).to.equal('bank');
   });
 
+  it('should create a notice', function() {
+    this.dispatch(closeAuction());
+
+    expect(this.state.notice.id).to.equal('auction.cancelled');
+    expect(this.state.notice.message).to.match(/cancelled/);
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', 'oriental-avenue');
+  });
+
   describe('when winning the auction', function() {
     modifyGameInTesting({ state: {
       auction: {
@@ -44,6 +53,18 @@ describe('Game: closing auctions', function() {
       expect(this.getPlayer('top-hat').balance).to.equal(1400);
       expect(this.getProperty('oriental-avenue').owner).to.equal('top-hat');
       expect(this.state.bank).to.equal(200);
+    });
+
+    it('should create a different notice', function() {
+      this.dispatch(closeAuction());
+
+      expect(this.state.notice.id).to.equal('auction.won');
+      expect(this.state.notice.message).to.match(/won .* at auction/);
+      expect(this.state.notice.meta).to.have.property('player')
+        .that.has.property('token', 'top-hat');
+      expect(this.state.notice.meta).to.have.property('property')
+        .that.has.property('id', 'oriental-avenue');
+      expect(this.state.notice.meta).to.have.property('amount', 100);
     });
   });
 
@@ -63,6 +84,15 @@ describe('Game: closing auctions', function() {
       expect(() => this.dispatch(closeAuction()))
         .to.throw(MonopolyError, /insufficient/i);
       expect(this.state.auction).to.be.ok;
+    });
+  });
+
+  describe('when there is no auction', function() {
+    modifyGameInTesting({ state: { auction: false }});
+
+    it('should do nothing', function() {
+      expect(() => this.dispatch(closeAuction()))
+        .to.not.throw(MonopolyError);
     });
   });
 });

@@ -1,4 +1,4 @@
-import { describe, it } from 'mocha';
+import { describe, beforeEach, it } from 'mocha';
 import { expect } from 'chai';
 
 import {
@@ -21,16 +21,33 @@ describe('Game: conceding from auctions', function() {
     }
   }});
 
-  it('should remove the player from the auction', function() {
+  beforeEach(function() {
     this.dispatch(concedeAuction('top-hat'));
+  });
+
+  it('should remove the player from the auction', function() {
     expect(this.state.auction.players).to.not.include('top-hat');
     expect(this.state.auction.players).to.include('automobile');
   });
 
   it('should cancel the auction when all players concede', function() {
-    this.dispatch(concedeAuction('top-hat'));
     this.dispatch(concedeAuction('automobile'));
     expect(this.state.auction).to.be.false;
+  });
+
+  it('should create a notice', function() {
+    expect(this.state.notice.id).to.equal('auction.conceded');
+    expect(this.state.notice.message).to.match(/conceded/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+  });
+
+  it('should create a different notice when the auction is cancelled', function() {
+    this.dispatch(concedeAuction('automobile'));
+    expect(this.state.notice.id).to.equal('auction.cancelled');
+    expect(this.state.notice.message).to.match(/cancelled/);
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', 'oriental-avenue');
   });
 
   describe('when winning', function() {

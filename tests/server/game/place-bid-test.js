@@ -60,6 +60,16 @@ describe('Game: bidding in auctions', function() {
     expect(this.state.auction).to.deep.include({ winning: 'top-hat', amount: 100 });
   });
 
+  it('should create a notice', function() {
+    expect(this.state.notice.id).to.equal('auction.bid');
+    expect(this.state.notice.message).to.match(/bid/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', 'oriental-avenue');
+    expect(this.state.notice.meta).to.have.property('amount', 100);
+  });
+
   describe('with no current auction', function() {
     modifyGameInTesting({ state: { auction: false }});
 
