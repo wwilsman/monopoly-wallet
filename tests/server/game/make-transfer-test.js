@@ -78,4 +78,36 @@ describe('Game: making transfers', function() {
     expect(this.getPlayer('top-hat').balance).to.equal(100);
     expect(this.getPlayer('automobile').balance).to.equal(100);
   });
+
+  it('should create a notice about paying the bank', function() {
+    this.dispatch(makeTransfer('top-hat', 100));
+
+    expect(this.state.notice.id).to.equal('player.paid-amount');
+    expect(this.state.notice.message).to.match(/paid the bank/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('amount', 100);
+  });
+
+  it('should create a notice about receiving money', function() {
+    this.dispatch(makeTransfer('top-hat', -100));
+
+    expect(this.state.notice.id).to.equal('player.received-amount');
+    expect(this.state.notice.message).to.match(/received/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('amount', 100);
+  });
+
+  it('should create a notice about paying another player', function() {
+    this.dispatch(makeTransfer('top-hat', 'automobile', 100));
+
+    expect(this.state.notice.id).to.equal('player.paid-other');
+    expect(this.state.notice.message).to.match(/paid/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('other')
+      .that.has.property('token', 'automobile');
+    expect(this.state.notice.meta).to.have.property('amount', 100);
+  });
 });

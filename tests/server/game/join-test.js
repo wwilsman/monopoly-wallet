@@ -35,6 +35,12 @@ describe('Game: joining', function() {
     expect(this.state.players['top-hat'].name).to.equal('Player 1');
   });
 
+  it('should create a notice', function() {
+    expect(this.state.notice.id).to.equal('player.joined');
+    expect(this.state.notice.message).to.match(/joined/);
+    expect(this.state.notice.meta.player).to.have.property('token', 'top-hat');
+  });
+
   describe('when the bank has low funds', function() {
     modifyGameInTesting({ state: { bank: 0 }});
 

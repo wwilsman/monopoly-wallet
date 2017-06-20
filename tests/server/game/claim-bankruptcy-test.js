@@ -37,6 +37,26 @@ describe('Game: claiming bankruptcy', function() {
     expect(this.getPlayer('automobile').balance).to.equal(3000);
   });
 
+  it('should create a notice', function() {
+    this.dispatch(bankrupt('top-hat'));
+
+    expect(this.state.notice.id).to.equal('player.bankrupt');
+    expect(this.state.notice.message).to.match(/went bankrupt/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+  });
+
+  it('should create a different notice when bankrupt by another player', function() {
+    this.dispatch(bankrupt('top-hat', 'automobile'));
+
+    expect(this.state.notice.id).to.equal('player.other-bankrupt');
+    expect(this.state.notice.message).to.match(/bankrupt/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('other')
+      .that.has.property('token', 'automobile');
+  });
+
   describe('with improved properties', function() {
     modifyGameInTesting({ state: {
       properties: [{

@@ -15,7 +15,8 @@ export const CLAIM_BANKRUPTCY = 'CLAIM_BANKRUPTCY';
 export const join = (name, token) => ({
   type: JOIN_GAME,
   player: { name, token },
-  amount: calc(({ config }) => config.playerStart)
+  amount: calc(({ config }) => config.playerStart),
+  notice: { id: 'player.joined' }
 });
 
 /**
@@ -28,11 +29,11 @@ export const join = (name, token) => ({
  */
 export const makeTransfer = (playerToken, otherToken, amount = otherToken) => {
   let actionType = MAKE_TRANSFER_WITH;
+  let notice = { id: 'player.paid-other' };
 
   if (otherToken === amount) {
-    actionType = amount > 0 ?
-      MAKE_TRANSFER_TO :
-      MAKE_TRANSFER_FROM;
+    actionType = amount > 0 ? MAKE_TRANSFER_TO : MAKE_TRANSFER_FROM;
+    notice.id = amount > 0 ? 'player.paid-amount' : 'player.received-amount';
     amount = Math.abs(amount);
     otherToken = 'bank';
   }
@@ -41,7 +42,8 @@ export const makeTransfer = (playerToken, otherToken, amount = otherToken) => {
     type: actionType,
     player: { token: playerToken },
     other: { token: otherToken },
-    amount
+    amount,
+    notice
   };
 };
 
@@ -60,5 +62,9 @@ export const bankrupt = (playerToken, beneficiaryToken = 'bank') => ({
     state.properties._all.filter((id) => (
       state.properties[id].owner === player.token
     ))
-  ))
+  )),
+  notice: {
+    id: beneficiaryToken === 'bank' ?
+      'player.bankrupt' : 'player.other-bankrupt'
+  }
 });
