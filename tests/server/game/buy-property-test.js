@@ -68,4 +68,15 @@ describe('Game: buying properties', function() {
       .to.throw(MonopolyError, /insufficient/i);
     expect(this.getProperty('baltic-avenue').owner).to.not.equal('top-hat');
   });
+
+  it('should create a notice', function() {
+    this.dispatch(buyProperty('top-hat', 'baltic-avenue'));
+
+    expect(this.state.notice.id).to.equal('property.bought');
+    expect(this.state.notice.message).to.match(/purchased/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', 'baltic-avenue');
+  });
 });

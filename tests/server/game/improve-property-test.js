@@ -47,6 +47,17 @@ describe('Game: improving properties', function() {
     expect(this.getProperty('connecticut-avenue').buildings).to.equal(0);
   });
 
+  it('should create a notice', function() {
+    this.dispatch(improveProperty('top-hat', 'oriental-avenue'));
+
+    expect(this.state.notice.id).to.equal('property.improved');
+    expect(this.state.notice.message).to.match(/improved/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', 'oriental-avenue');
+  });
+
   describe('when the property needs a hotel', function() {
     modifyGameInTesting({ state: {
       properties: [{

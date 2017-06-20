@@ -19,7 +19,8 @@ export const buyProperty = (playerToken, propertyId, amount) => ({
   player: { token: playerToken },
   property: { id: propertyId },
   amount: typeof amount !== 'undefined' ? amount :
-    calc(({ property }) => property.price)
+    calc(({ property }) => property.price),
+  notice: { id: 'property.bought' }
 });
 
 /**
@@ -34,7 +35,8 @@ export const improveProperty = (playerToken, propertyId) => ({
   property: { id: propertyId },
   houses: calc(({ property }) => property.buildings === 4 ? -4 : 1),
   hotels: calc(({ property }) => property.buildings === 4 ? 1 : 0),
-  amount: calc(({ property }) => property.cost)
+  amount: calc(({ property }) => property.cost),
+  notice: { id: 'property.improved' }
 });
 
 /**
@@ -49,7 +51,8 @@ export const unimproveProperty = (playerToken, propertyId) => ({
   property: { id: propertyId },
   houses: calc(({ property }) => property.buildings === 5 ? 4 : -1),
   hotels: calc(({ property }) => property.buildings === 5 ? -1 : 0),
-  amount: calc(({ property, config }) => property.cost * config.buildingRate)
+  amount: calc(({ property, config }) => property.cost * config.buildingRate),
+  notice: { id: 'property.unimproved' }
 });
 
 /**
@@ -62,7 +65,8 @@ export const mortgageProperty = (playerToken, propertyId) => ({
   type: MORTGAGE_PROPERTY,
   player: { token: playerToken },
   property: { id: propertyId },
-  amount: calc(({ property, config }) => property.price * config.mortgageRate)
+  amount: calc(({ property, config }) => property.price * config.mortgageRate),
+  notice: { id: 'property.mortgaged' }
 });
 
 /**
@@ -78,7 +82,8 @@ export const unmortgageProperty = (playerToken, propertyId) => ({
   amount: calc(({ property, config }) => {
     const principle = property.price * config.mortgageRate;
     return principle + (principle * config.interestRate);
-  })
+  }),
+  notice: { id: 'property.unmortgaged' }
 });
 
 /**
@@ -105,5 +110,6 @@ export const payRent = (playerToken, propertyId, dice = 2) => ({
         return (owned.length === group.length && property.buildings === 0) ?
           property.rent[0] * 2 : property.rent[property.buildings];
     }
-  })
+  }),
+  notice: { id: 'property.paid-rent' }
 });

@@ -75,6 +75,22 @@ describe('Game: paying rent', function() {
     expect(this.getPlayer('automobile').balance).to.equal(1500);
   });
 
+  it('should create a notice', function() {
+    const property = this.getProperty('baltic-avenue');
+
+    this.dispatch(payRent('top-hat', property.id));
+
+    expect(this.state.notice.id).to.equal('property.paid-rent');
+    expect(this.state.notice.message).to.match(/paid .* rent/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('other')
+      .that.has.property('token', property.owner);
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', property.id);
+    expect(this.state.notice.meta).to.have.property('amount', property.rent[0]);
+  });
+
   describe('when the player has a low balance', function() {
     modifyGameInTesting({ state: {
       players: [{

@@ -36,6 +36,21 @@ describe('Game: unimproving properties', function() {
       .to.throw(MonopolyError, /not own/i);
   });
 
+  it('should create a notice', function() {
+    const property = this.getProperty('oriental-avenue');
+    const value = property.cost * this.config.buildingRate;
+
+    this.dispatch(unimproveProperty('top-hat', property.id));
+
+    expect(this.state.notice.id).to.equal('property.unimproved');
+    expect(this.state.notice.message).to.match(/unimproved/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', property.id);
+    expect(this.state.notice.meta).to.have.property('amount', value);
+  });
+
   describe('when a property is fully improved', function() {
     modifyGameInTesting({ state: {
       properties: [{

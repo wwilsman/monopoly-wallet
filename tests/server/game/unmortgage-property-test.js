@@ -58,6 +58,22 @@ describe('Game: unmortgaging properties', function() {
     expect(this.state.bank).to.equal(this.last.bank + (principle + interest));
   });
 
+  it('should create a notice', function() {
+    const property = this.getProperty('oriental-avenue');
+    const principle = property.price * this.config.mortgageRate;
+    const interest = principle * this.config.interestRate;
+
+    this.dispatch(unmortgageProperty('top-hat', property.id));
+
+    expect(this.state.notice.id).to.equal('property.unmortgaged');
+    expect(this.state.notice.message).to.match(/unmortgaged/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', property.id);
+    expect(this.state.notice.meta).to.have.property('amount', principle + interest);
+  });
+
   describe('when the player has a low balance', function() {
     modifyGameInTesting({ state: {
       players: [{

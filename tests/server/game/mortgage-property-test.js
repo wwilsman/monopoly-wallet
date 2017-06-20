@@ -52,6 +52,17 @@ describe('Game: mortgaging properties', function() {
     expect(this.state.bank).to.equal(this.last.bank - value);
   });
 
+  it('should create a notice', function() {
+    this.dispatch(mortgageProperty('top-hat', 'oriental-avenue'));
+
+    expect(this.state.notice.id).to.equal('property.mortgaged');
+    expect(this.state.notice.message).to.match(/mortgaged/);
+    expect(this.state.notice.meta).to.have.property('player')
+      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.meta).to.have.property('property')
+      .that.has.property('id', 'oriental-avenue');
+  });
+
   describe('when the bank is low', function() {
     modifyGameInTesting({ state: { bank: 0 }});
 
