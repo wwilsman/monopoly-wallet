@@ -7,14 +7,18 @@
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
   "scripts": {
+    "start:server": "babel-node server/index.js",
     "test:server": "mocha --compilers js:babel-register tests/server/*-test.js tests/server/**/*-test.js"
   },
   "dependencies": {
+    "express": "^4.15.3",
     "redux": "^3.6.0",
     "slug": "^0.9.1",
+    "socket.io": "^2.0.3",
     "yamljs": "^0.2.10"
   },
   "devDependencies": {
+    "babel-cli": "^6.24.1",
     "babel-eslint": "^7.2.3",
     "babel-preset-env": "^1.4.0",
     "babel-preset-stage-3": "^6.24.1",
