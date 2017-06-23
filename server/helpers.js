@@ -1,4 +1,22 @@
 /**
+ * Generates a random string of characters
+ * @param {Number} length - Length of string
+ * @returns {String} Random string
+ */
+export function randomString(length = 5) {
+  const possible = 'ABCDEFHIGKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+  let result = '';
+
+
+  for (let i = 0; i < length; i++) {
+    const rand = Math.floor(Math.random() * possible.length);
+    result += possible.charAt(rand);
+  }
+
+  return result;
+}
+
+/**
  * Finds a player in the game state
  * @param {Object} state - Game state
  * @param {String} token - Player token
