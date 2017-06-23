@@ -1,7 +1,7 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
-import { setupGameForTesting } from '../test-helpers';
+import { setupGameForTesting } from '../game-helpers';
 
 import MonopolyError from '../../../server/rules/error';
 import { auctionProperty } from '../../../server/actions/auction';

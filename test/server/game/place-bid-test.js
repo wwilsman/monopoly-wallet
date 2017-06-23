@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import {
   setupGameForTesting,
   modifyGameInTesting
-} from '../test-helpers';
+} from '../game-helpers';
 
 import MonopolyError from '../../../server/rules/error';
 import { placeBid } from '../../../server/actions/auction';

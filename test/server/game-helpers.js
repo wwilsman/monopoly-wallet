@@ -23,8 +23,8 @@ import {
 
 /**
  * Sets up testing context for a new game store instance each test
- * @param {Object} [state] - Initial game state to merge with fixture
- * @param {Object} [config] - Game configuration to merge with fixture
+ * @param {Object} [state={}] - Initial game state to merge with fixture
+ * @param {Object} [config={}] - Game configuration to merge with fixture
  */
 export function setupGameForTesting({ state = {}, config = {} } = {}) {
   before(function() {
@@ -123,7 +123,7 @@ function setupGameStore() {
  * @param {Object} config - configuration needed during game creation
  * @returns {Object} A new initial state for testing
  */
-function extendGameState(state, overrides, config) {
+export function extendGameState(state, overrides, config) {
   return {
     ...state,
     ...overrides,
