@@ -8,7 +8,7 @@
   "license": "MIT",
   "scripts": {
     "start:server": "babel-node server/index.js",
-    "test:server": "NODE_ENV=testing mocha --compilers js:babel-register tests/server/*-test.js tests/server/**/*-test.js"
+    "test:server": "NODE_ENV=testing mocha --recursive test/server"
   },
   "dependencies": {
     "express": "^4.15.3",

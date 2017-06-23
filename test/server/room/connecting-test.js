@@ -2,7 +2,7 @@ import { describe, beforeEach, afterEach, it } from 'mocha';
 import { expect } from 'chai';
 
 import io from 'socket.io-client';
-import '../../server';
+import '../../../server';
 
 describe('Room: connecting', function() {
 

@@ -6,6 +6,12 @@ import {
 } from 'mocha';
 
 import {
+  GAME_FIXTURE,
+  CONFIG_FIXTURE,
+  NOTICES_FIXTURE
+} from './fixtures';
+
+import {
   createGame
 } from '../../server/game';
 import {
@@ -14,11 +20,6 @@ import {
   getProperties,
   getTradeId
 } from '../../server/helpers';
-import {
-  GAME_FIXTURE,
-  CONFIG_FIXTURE,
-  NOTICES_FIXTURE
-} from '../fixtures';
 
 /**
  * Sets up testing context for a new game store instance each test
