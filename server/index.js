@@ -4,6 +4,7 @@ import io from 'socket.io';
 import { MongoClient } from 'mongodb';
 
 import GameRoom from './room';
+import connectSocket from './socket';
 
 // environment specific variables
 const ENV = {
@@ -58,33 +59,5 @@ const server = app.listen(ENV.port, () => {
   }
 });
 
-// websocket setup
-io(server).on('connection', (socket) => {
-  const errorHandler = (message) => {
-    socket.emit('room:error', message);
-  };
-
-  /**
-   * Creates a new game and emits it's initial state
-   * @param {Object} config - Custom game configuration
-   */
-  socket.on('game:new', (config) => {
-    GameRoom.new(config).then((game) => {
-      socket.emit('game:created', game);
-    }).catch(errorHandler);
-  });
-
-  /**
-   * Connects to a game room and emits it's state
-   * @param {String} gameID - Game room ID
-   */
-  socket.on('room:connect', (gameID) => {
-    GameRoom.connect(gameID).then((room) => {
-      socket.emit('room:connected', {
-        id: room.id,
-        state: room.state,
-        config: room.config
-      });
-    }).catch(errorHandler);
-  });
-});
+// listen for socket connections
+io(server).on('connection', connectSocket);
