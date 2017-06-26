@@ -4,7 +4,7 @@ import { expect } from 'chai';
 import { setupGameForTesting } from '../game-helpers';
 import { getTradeId } from '../../../server/helpers';
 
-import MonopolyError from '../../../server/rules/error';
+import MonopolyError from '../../../server/error';
 import { declineOffer } from '../../../server/actions/trades';
 
 describe('Game: declining a trade offer', function() {

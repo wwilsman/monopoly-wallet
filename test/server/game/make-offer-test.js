@@ -9,7 +9,7 @@ import {
   getTradeId
 } from '../../../server/helpers';
 
-import MonopolyError from '../../../server/rules/error';
+import MonopolyError from '../../../server/error';
 import { makeOffer } from '../../../server/actions/trades';
 
 describe('Game: making a trade offer', function() {

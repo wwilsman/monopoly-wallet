@@ -6,7 +6,7 @@ import {
   generateNotice
 } from '../helpers';
 
-import MonopolyError from './error';
+import MonopolyError from '../error';
 import rules from './definitions';
 
 /**

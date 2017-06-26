@@ -6,7 +6,7 @@ import {
   modifyGameInTesting
 } from '../game-helpers';
 
-import MonopolyError from '../../../server/rules/error';
+import MonopolyError from '../../../server/error';
 import { placeBid } from '../../../server/actions/auction';
 
 describe('Game: bidding in auctions', function() {

@@ -3,7 +3,7 @@ import { expect } from 'chai';
 
 import { setupGameForTesting } from '../game-helpers';
 
-import MonopolyError from '../../../server/rules/error';
+import MonopolyError from '../../../server/error';
 import { buyProperty } from '../../../server/actions/properties';
 
 describe('Game: buying properties', function() {

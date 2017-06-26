@@ -6,7 +6,7 @@ import {
   modifyGameInTesting
 } from '../game-helpers';
 
-import MonopolyError from '../../../server/rules/error';
+import MonopolyError from '../../../server/error';
 import { concedeAuction } from '../../../server/actions/auction';
 
 describe('Game: conceding from auctions', function() {

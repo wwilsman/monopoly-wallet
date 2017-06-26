@@ -3,7 +3,7 @@ import { expect } from 'chai';
 
 import { setupGameForTesting } from '../game-helpers';
 
-import MonopolyError from '../../../server/rules/error';
+import MonopolyError from '../../../server/error';
 import { makeTransfer } from '../../../server/actions/players';
 
 describe('Game: making transfers', function() {
