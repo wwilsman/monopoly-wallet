@@ -79,17 +79,14 @@ export function calc(get) {
 /**
  * Generates a notice by id from passed data
  * @param {String} id - Notice path from notices.yml
- * @param {Object} data - Data used in the notice
+ * @param {Object} [data] - Data used in the notice
  * @param {Object} notices - Notices from notices.yml
  * @returns {String} A generated notice
  */
-export function generateNotice(id, data, notices) {
+export function generateNotice(id, data, notices = data) {
   const message = get(id, notices);
-
-  return message ? message.replace(
-      /{{([\w\.]+?)}}/g,
-    (_, key) => get(key, data)
-  ) : id;
+  return !message ? id : !data ? message : message
+    .replace(/{{([\w\.]+?)}}/g, (_, key) => get(key, data));
 }
 
 /**
