@@ -1,65 +1,43 @@
 import {
-  JOIN_GAME,
-  MAKE_TRANSFER_TO,
-  MAKE_TRANSFER_FROM,
-  MAKE_TRANSFER_WITH,
-  CLAIM_BANKRUPTCY
+  join,
+  makeTransfer,
+  bankrupt
 } from './players';
 import {
-  BUY_PROPERTY,
-  IMPROVE_PROPERTY,
-  UNIMPROVE_PROPERTY,
-  MORTGAGE_PROPERTY,
-  UNMORTGAGE_PROPERTY,
-  PAY_RENT
+  buyProperty,
+  improveProperty,
+  unimproveProperty,
+  mortgageProperty,
+  unmortgageProperty,
+  payRent
 } from './properties';
 import {
-  AUCTION_PROPERTY,
-  PLACE_BID,
-  CONCEDE_AUCTION,
-  CANCEL_AUCTION,
-  CLOSE_AUCTION
+  auctionProperty,
+  placeBid,
+  concedeAuction,
+  closeAuction
 } from './auction';
 import {
-  MAKE_OFFER,
-  DECLINE_OFFER,
-  ACCEPT_OFFER
+  makeOffer,
+  declineOffer,
+  acceptOffer
 } from './trades';
 
-export const PLAYER_ACTIONS = {
-  JOIN_GAME,
-  MAKE_TRANSFER_TO,
-  MAKE_TRANSFER_FROM,
-  MAKE_TRANSFER_WITH,
-  CLAIM_BANKRUPTCY
-};
-
-export const PROPERTY_ACTIONS = {
-  BUY_PROPERTY,
-  IMPROVE_PROPERTY,
-  UNIMPROVE_PROPERTY,
-  MORTGAGE_PROPERTY,
-  UNMORTGAGE_PROPERTY,
-  PAY_RENT
-};
-
-export const AUCTION_ACTIONS = {
-  AUCTION_PROPERTY,
-  PLACE_BID,
-  CONCEDE_AUCTION,
-  CANCEL_AUCTION,
-  CLOSE_AUCTION
-};
-
-export const TRADE_ACTIONS = {
-  MAKE_OFFER,
-  DECLINE_OFFER,
-  ACCEPT_OFFER
-};
-
 export default {
-  ...PLAYER_ACTIONS,
-  ...PROPERTY_ACTIONS,
-  ...AUCTION_ACTIONS,
-  ...TRADE_ACTIONS
+  join,
+  makeTransfer,
+  bankrupt,
+  buyProperty,
+  improveProperty,
+  unimproveProperty,
+  mortgageProperty,
+  unmortgageProperty,
+  payRent,
+  auctionProperty,
+  placeBid,
+  concedeAuction,
+  closeAuction,
+  makeOffer,
+  declineOffer,
+  acceptOffer
 };
