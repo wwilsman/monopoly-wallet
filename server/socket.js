@@ -8,10 +8,13 @@ export default (socket) => {
 
   /**
    * Emits a room error
-   * @param {String} message - Error message
+   * @param {Error} error - Error instance
    */
-  const errorHandler = (message) => {
-    socket.emit('room:error', message);
+  const emitError = (error) => {
+    socket.emit('room:error', {
+      name: error.name,
+      message: error.message
+    });
   };
 
   /**
@@ -21,7 +24,7 @@ export default (socket) => {
   socket.on('game:new', (config) => {
     GameRoom.new(config).then((game) => {
       socket.emit('game:created', game);
-    }).catch(errorHandler);
+    }).catch(emitError);
   });
 
   /**
@@ -29,12 +32,8 @@ export default (socket) => {
    * @param {String} gameID - Game room ID
    */
   socket.on('room:connect', (gameID) => {
-    GameRoom.connect(gameID).then((room) => {
-      socket.emit('room:connected', {
-        id: room.id,
-        state: room.state,
-        config: room.config
-      });
-    }).catch(errorHandler);
+    GameRoom.connect(socket, gameID).then((room) => {
+      socket.emit('room:connected', room.state);
+    }).catch(emitError);
   });
 };

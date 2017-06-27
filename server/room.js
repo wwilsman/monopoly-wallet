@@ -1,7 +1,9 @@
 import YAML from 'yamljs';
 
 import { randomString } from './helpers';
-import { createState } from './game';
+import { createState, createGame } from './game';
+
+const { from:toArray } = Array;
 
 // theme cache so we don't have to read from the filesystem every time
 let THEME_CACHE = {};
@@ -51,7 +53,7 @@ export default class GameRoom {
    * @param {String} id - Game room ID
    * @returns {Promise} Resolves to the game room instance
    */
-  static connect(id) {
+  static connect(socket, id) {
     if (!this.db) {
       return Promise.reject('No persistence layer found');
     }
@@ -59,7 +61,19 @@ export default class GameRoom {
     id = id.toLowerCase();
 
     return this.db.find(id).then((game) => {
-      return ROOM_CACHE[id] = ROOM_CACHE[id] || new GameRoom(game);
+      const room = ROOM_CACHE[id] || new GameRoom(game);
+      room.sockets.set(socket.id, socket);
+
+      socket.once('disconnect', () => {
+        room.sockets.delete(socket.id);
+
+        if (room.sockets.size === 0) {
+          delete ROOM_CACHE[id];
+        }
+      });
+
+      ROOM_CACHE[id] = room;
+      return room;
     });
   }
 
@@ -70,9 +84,40 @@ export default class GameRoom {
    * @param {Object} config - Game config
    */
   constructor({ id, state, config }) {
+    this.db = this.constructor.db;
+
     this.id = id;
-    this.state = state;
     this.config = config;
+    this.sockets = new Map();
+    this.players = new Map();
+    this.polls = {};
+
+    this.messages = loadMessages();
+    this.store = createGame(state, config, this.messages);
+    this.game = this.store.getState();
+
+    this.store.subscribe(() => this.sync());
+  }
+
+  get state() {
+    return {
+      id: this.id,
+      state: this.game,
+      config: this.config,
+      players: toArray(this.players.keys())
+    };
+  }
+
+  sync() {
+    this.game = this.store.getState();
+
+    this.db.save({
+      id: this.id,
+      state: this.game,
+      config: this.config
+    }).then(() => {
+      this.emit('game:sync', this.game);
+    });
   }
 }
 
@@ -86,7 +131,19 @@ function loadTheme(name = 'classic') {
 
   return THEME_CACHE[name] = THEME_CACHE[name] || {
     config: YAML.load(`${root}/config.yml`),
-    properties: YAML.load(`${root}/properties.yml`),
-    messages: YAML.load(`${root}/messages.yml`)
+    properties: YAML.load(`${root}/properties.yml`)
   };
+}
+
+/**
+ * Loads game message for a specific theme and caches them
+ * @param {String} [name='classic'] Theme name
+ * @returns {Object} Theme messages
+ */
+function loadMessages(themeName = 'classic') {
+  const path = `./server/themes/${themeName}/messages.yml`;
+  THEME_CACHE[themeName] = THEME_CACHE[themeName] || {};
+
+  return THEME_CACHE[themeName].messages =
+    THEME_CACHE[themeName].messages || YAML.load(path);
 }
