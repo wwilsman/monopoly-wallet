@@ -104,7 +104,7 @@ export default class GameRoom {
       id: this.id,
       state: this.game,
       config: this.config,
-      players: toArray(this.players.keys())
+      players: toArray(this.players.values())
     };
   }
 
@@ -117,6 +117,47 @@ export default class GameRoom {
       config: this.config
     }).then(() => {
       this.emit('game:sync', this.game);
+    });
+  }
+
+  poll(message) {
+    return new Promise((resolve) => {
+      const pollID = randomString();
+
+      this.polls[pollID] = {
+        votes: toArray(this.players.keys()).reduce(
+          (map, token) => map.set(token, 0),
+          new Map()
+        ),
+
+        done: (res) => {
+          delete this.polls[pollID];
+          resolve(res);
+        }
+      };
+
+      this.emit('poll:new', pollID, message);
+    });
+  }
+
+  vote(socket, pollID, vote) {
+    const poll = this.polls[pollID];
+
+    if (poll && poll.votes.has(socket)) {
+      poll.votes.set(socket, vote ? 1 : -1);
+      const votes = toArray(poll.votes.values());
+      const total = votes.reduce((t, v) => t += v ? 1 : 0, 0);
+      const tally = votes.reduce((t, v) => t += v, 0);
+
+      if (total === votes.length) {
+        poll.done(tally > 0);
+      }
+    }
+  }
+
+  emit(event, ...payload) {
+    this.players.forEach((_, player) => {
+      player.emit(event, ...payload);
     });
   }
 }

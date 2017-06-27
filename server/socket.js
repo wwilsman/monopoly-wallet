@@ -34,6 +34,10 @@ export default (socket) => {
   socket.on('room:connect', (gameID) => {
     GameRoom.connect(socket, gameID).then((room) => {
       socket.emit('room:connected', room.state);
+
+      socket.on('poll:vote', (pollID, vote) => {
+        room.vote(socket, pollID, vote);
+      });
     }).catch(emitError);
   });
 };
