@@ -1,5 +1,6 @@
 notices:
   player:
+    ask-to-join: '{{player.name}} would like to join'
     joined: '{{player.name}} joined the game'
     paid-amount: '{{player.name}} paid the bank {{amount}}'
     received-amount: '{{player.name}} received {{amount}}'
@@ -34,8 +35,10 @@ errors:
     negative-amount: 'Amount must not be negative'
 
   player:
+    playing: 'Player already joined'
     used-token: 'Token already in use'
     not-found: 'Cannot find player with token {{player.token}}'
+    denied: 'Sorry, your friends hate you'
     balance: 'Insufficient balance'
     other-balance: '{{other.name}} has an insufficient balance'
 

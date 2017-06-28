@@ -1,7 +1,9 @@
 import YAML from 'yamljs';
 
-import { randomString } from './helpers';
+import { randomString, generateNotice } from './helpers';
 import { createState, createGame } from './game';
+import MonopolyError from './error';
+import actions from './actions';
 
 const { from:toArray } = Array;
 
@@ -120,6 +122,25 @@ export default class GameRoom {
     });
   }
 
+  join(socket, name, token) {
+    return new Promise((resolve, reject) => {
+      const player = this.game.players[token];
+
+      if (player) {
+        if (player.name !== name) {
+          return reject(this.error('player.used-token'));
+        } else if (toArray(this.players.values()).indexOf(token) > -1) {
+          return reject(this.error('player.playing'));
+        }
+      } else {
+        this.store.dispatch(actions.join(name, token));
+      }
+
+      this.players.set(socket, token);
+      return resolve();
+    });
+  }
+
   poll(message) {
     return new Promise((resolve) => {
       const pollID = randomString();
@@ -153,6 +174,16 @@ export default class GameRoom {
         poll.done(tally > 0);
       }
     }
+  }
+
+  notice(id, meta) {
+    return generateNotice(`notices.${id}`, meta, this.messages);
+  }
+
+  error(id, meta) {
+    return new MonopolyError(
+      generateNotice(`errors.${id}`, meta, this.messages)
+    );
   }
 
   emit(event, ...payload) {

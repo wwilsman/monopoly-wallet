@@ -113,6 +113,60 @@ export function connectToGameRoom(socket, gameID) {
 }
 
 /**
+ * Connects a socket to a game room
+ * @param {Socket} socket - Socket.io socket instance
+ * @param {String} name - Player name
+ * @param {String} token - Player token
+ * @returns {Promise} Resolves once player has joined
+ */
+export function joinGameRoom(socket, name, token) {
+  return promisifySocketEvent(socket, {
+    emit: 'game:join',
+    resolve: 'game:joined',
+    reject: 'room:error'
+  })(name, token);
+}
+
+/**
+ * Creats a socket and connects it to a game room
+ * @param {gameID} gameID - Game room ID
+ * @returns {Promise} Resolves once connected
+ */
+export async function createSocketAndConnect(gameID) {
+  const socket = createSocket();
+  await connectToGameRoom(socket, gameID);
+  return socket;
+}
+
+/**
+ * Creates a socket and joins the game room
+ * @param {Socket} socket - Socket.io socket instance
+ * @param {String} name - Player name
+ * @param {String} token - Player token
+ * @returns {Promise} Resolves once the player has joined
+ */
+export async function createSocketAndJoinGame(gameID, token) {
+  const socket = await createSocketAndConnect(gameID);
+  const game = GameRoom.db._store[gameID.toLowerCase()];
+
+  const name = `Player ${Object.keys(game.state.players).length + 1}`;
+
+  if (game.state.players[token]) {
+    throw new Error(`Player "${token}" already exists in game "${gameID}"`);
+  } else {
+    game.state.players[token] = {
+      name,
+      token,
+      balance: game.config.playerStart,
+      bankrupt: false
+    };
+  }
+
+  await joinGameRoom(socket, name, token);
+  return socket;
+}
+
+/**
  * Promisifies a socket emit event that resolves or rejects on other events
  * @param {Socket} socket - Socket.io socket instance
  * @param {String} emitEvent - Event name to emit when the return function is called

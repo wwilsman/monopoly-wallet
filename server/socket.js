@@ -35,6 +35,28 @@ export default (socket) => {
     GameRoom.connect(socket, gameID).then((room) => {
       socket.emit('room:connected', room.state);
 
+      socket.on('game:join', (name, token) => {
+        if (room.players.has(socket)) {
+          emitError(room.error('player.playing'));
+          return;
+        }
+
+        if (!room.players.size || room.game.players[token]) {
+          room.join(socket, name, token)
+            .then(() => socket.emit('game:joined', room.state))
+            .catch(emitError);
+
+        } else {
+          room.poll(room.notice('player.ask-to-join', { player: { name }}))
+            .then((result) => {
+              if (!result) throw room.error('player.denied');
+              return room.join(socket, name, token);
+            })
+            .then(() => socket.emit('game:joined', room.state))
+            .catch(emitError);
+        }
+      });
+
       socket.on('poll:vote', (pollID, vote) => {
         room.vote(socket, pollID, vote);
       });
