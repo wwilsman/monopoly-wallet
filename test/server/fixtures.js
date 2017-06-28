@@ -12,7 +12,8 @@ export const GAME_FIXTURE = createState(
 );
 
 export const CONFIG_FIXTURE = {
-  ...defaultConfig
+  ...defaultConfig,
+  pollTimeout: 10
 };
 
 export const NOTICES_FIXTURE = {

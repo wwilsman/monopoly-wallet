@@ -65,6 +65,11 @@ describe('Room: joining', function() {
         .to.be.rejectedWith(MonopolyError, /sorry/i);
     });
 
+    it('should not join after the poll times out', async function() {
+      await expect(joinGameRoom(socket2, 'Player 2', 'automobile'))
+        .to.be.rejectedWith(MonopolyError, /sorry/i);
+    });
+
     it('should not attempt to join as an existing player', async function() {
       await expect(joinGameRoom(socket2, 'Player 1', 'top-hat'))
         .to.be.rejectedWith(MonopolyError, /already joined/);

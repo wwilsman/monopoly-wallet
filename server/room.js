@@ -145,18 +145,28 @@ export default class GameRoom {
     return new Promise((resolve) => {
       const pollID = randomString();
 
-      this.polls[pollID] = {
+      const poll = this.polls[pollID] = {
         votes: toArray(this.players.keys()).reduce(
           (map, token) => map.set(token, 0),
           new Map()
         ),
 
+        resetTimeout: () => {
+          clearTimeout(poll._timeout);
+
+          poll._timeout = setTimeout(() => {
+            poll.done(false);
+          }, this.config.pollTimeout);
+        },
+
         done: (res) => {
+          clearTimeout(poll._timeout);
           delete this.polls[pollID];
           resolve(res);
         }
       };
 
+      poll.resetTimeout();
       this.emit('poll:new', pollID, message);
     });
   }
@@ -172,6 +182,8 @@ export default class GameRoom {
 
       if (total === votes.length) {
         poll.done(tally > 0);
+      } else {
+        poll.resetTimeout();
       }
     }
   }
