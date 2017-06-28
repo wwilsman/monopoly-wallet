@@ -1,4 +1,16 @@
 /**
+ * Validates a player's token is valid
+ * @param {Object} config - Game configuration
+ * @param {String} player.token - Player token
+ * @param {Function} throwError - Throws a monopoly error
+ * @throws {MonopolyError}
+ */
+export const allowedToken = ({ config, player }, throwError) => {
+  config.playerTokens.indexOf(player.token) === -1 &&
+    throwError('player.missing-token');
+};
+
+/**
  * Validates a player's token is unique
  * @param {Object} state - Current game state
  * @param {String} player.token - Player token

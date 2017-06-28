@@ -35,6 +35,12 @@ describe('Game: joining', function() {
     expect(this.state.players['top-hat'].name).to.equal('Player 1');
   });
 
+  it('should not add a player with an invalid token', function() {
+    expect(() => this.dispatch(join('Player 2', 'fake-token')))
+      .to.throw(MonopolyError, /invalid/i);
+    expect(this.state.players['fake-token']).to.not.be.ok;
+  });
+
   it('should create a notice', function() {
     expect(this.state.notice.id).to.equal('player.joined');
     expect(this.state.notice.message).to.match(/joined/);

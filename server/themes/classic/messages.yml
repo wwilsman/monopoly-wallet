@@ -36,6 +36,7 @@ errors:
 
   player:
     playing: 'Player already joined'
+    missing-token: 'Invalid token'
     used-token: 'Token already in use'
     not-found: 'Cannot find player with token {{player.token}}'
     denied: 'Sorry, your friends hate you'

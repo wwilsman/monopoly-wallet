@@ -30,6 +30,7 @@ import {
   negativeAmount
 } from './common';
 import {
+  allowedToken,
   uniqueToken,
   playerExists,
   sufficientBalance
@@ -69,6 +70,7 @@ import {
 // Player rule definitions
 const PLAYERS = {
   [JOIN_GAME]: [
+    allowedToken,
     uniqueToken,
     bankHasFunds
   ],
