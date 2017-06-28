@@ -7,7 +7,7 @@ import {
 } from '../game-helpers';
 
 import MonopolyError from '../../../server/error';
-import { bankrupt } from '../../../server/actions/players';
+import { claimBankruptcy } from '../../../server/actions/players';
 
 describe('Game: claiming bankruptcy', function() {
   setupGameForTesting({ state: {
@@ -23,14 +23,14 @@ describe('Game: claiming bankruptcy', function() {
   }});
 
   it('should bankrupt the player', function() {
-    this.dispatch(bankrupt('top-hat'));
+    this.dispatch(claimBankruptcy('top-hat'));
 
     expect(this.getPlayer('top-hat')).to.deep.include({ bankrupt: true, balance: 0 });
     expect(this.getProperty('oriental-avenue').owner).to.equal('bank');
   });
 
   it('should transfer properties and remaining balance to another player', function() {
-    this.dispatch(bankrupt('top-hat', 'automobile'));
+    this.dispatch(claimBankruptcy('top-hat', 'automobile'));
 
     expect(this.getPlayer('top-hat')).to.deep.include({ bankrupt: true, balance: 0 });
     expect(this.getProperty('oriental-avenue').owner).to.equal('automobile');
@@ -38,7 +38,7 @@ describe('Game: claiming bankruptcy', function() {
   });
 
   it('should create a notice', function() {
-    this.dispatch(bankrupt('top-hat'));
+    this.dispatch(claimBankruptcy('top-hat'));
 
     expect(this.state.notice.id).to.equal('player.bankrupt');
     expect(this.state.notice.message).to.match(/went bankrupt/);
@@ -47,7 +47,7 @@ describe('Game: claiming bankruptcy', function() {
   });
 
   it('should create a different notice when bankrupt by another player', function() {
-    this.dispatch(bankrupt('top-hat', 'automobile'));
+    this.dispatch(claimBankruptcy('top-hat', 'automobile'));
 
     expect(this.state.notice.id).to.equal('player.other-bankrupt');
     expect(this.state.notice.message).to.match(/bankrupt/);
@@ -67,7 +67,7 @@ describe('Game: claiming bankruptcy', function() {
     }});
 
     it('should not bankrupt the player', function() {
-      expect(() => this.dispatch(bankrupt('top-hat')))
+      expect(() => this.dispatch(claimBankruptcy('top-hat')))
         .to.throw(MonopolyError, /improved/);
       expect(this.getPlayer('top-hat').bankrupt).to.be.false;
       expect(this.getProperty('st-james-place').owner).to.equal('top-hat');
@@ -83,7 +83,7 @@ describe('Game: claiming bankruptcy', function() {
     }});
 
     it('should not bankrupt the player', function() {
-      expect(() => this.dispatch(bankrupt('top-hat')))
+      expect(() => this.dispatch(claimBankruptcy('top-hat')))
         .to.throw(MonopolyError, /unmortgaged/);
       expect(this.getPlayer('top-hat').bankrupt).to.be.false;
       expect(this.getProperty('st-james-place').owner).to.equal('top-hat');

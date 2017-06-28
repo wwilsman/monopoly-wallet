@@ -1,7 +1,7 @@
 import {
   join,
   makeTransfer,
-  bankrupt
+  claimBankruptcy
 } from './players';
 import {
   buyProperty,
@@ -26,7 +26,7 @@ import {
 export default {
   join,
   makeTransfer,
-  bankrupt,
+  claimBankruptcy,
   buyProperty,
   improveProperty,
   unimproveProperty,

@@ -53,7 +53,7 @@ export const makeTransfer = (playerToken, otherToken, amount = otherToken) => {
  * @param {String} [beneficiaryToken="bank"] - Beneficiary token
  * @returns {Object} Redux action
  */
-export const bankrupt = (playerToken, beneficiaryToken = 'bank') => ({
+export const claimBankruptcy = (playerToken, beneficiaryToken = 'bank') => ({
   type: CLAIM_BANKRUPTCY,
   player: { token: playerToken },
   other: { token: beneficiaryToken },
