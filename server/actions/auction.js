@@ -41,7 +41,7 @@ export const placeBid = (playerToken, amount) => ({
  */
 export const concedeAuction = (playerToken) => ({
   type: calc(({ auction }) => (
-    (auction.players.length === 1 &&
+    (auction && auction.players.length === 1 &&
      auction.players.indexOf(playerToken) === 0) ?
       CANCEL_AUCTION : CONCEDE_AUCTION
   )),

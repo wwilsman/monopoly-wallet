@@ -65,4 +65,13 @@ describe('Game: conceding from auctions', function() {
       expect(this.state.auction.players).to.include('automobile');
     });
   });
+
+  describe('with no auction', function() {
+    modifyGameInTesting({ state: { auction: false }});
+
+    it('should throw an error', function() {
+      expect(() => this.dispatch(concedeAuction('top-hat')))
+        .to.throw(MonopolyError, /no/);
+    });
+  });
 });
