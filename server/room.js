@@ -100,6 +100,17 @@ export default class GameRoom {
     this.game = this.store.getState();
 
     this.store.subscribe(() => this.sync());
+
+    Object.keys(actions).forEach((name) => {
+      if (!this[name]) {
+        this[name] = (socket, ...args) => new Promise((resolve) => {
+          const token = this.players.get(socket);
+          if (!token) throw this.error('player.not-playing');
+          this.store.dispatch(actions[name](token, ...args));
+          resolve();
+        });
+      }
+    });
   }
 
   get state() {

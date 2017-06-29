@@ -35,6 +35,11 @@ export default (socket) => {
     GameRoom.connect(socket, gameID).then((room) => {
       socket.emit('room:connected', room.state);
 
+      /**
+       * Joins or asks to join the current game
+       * @param {String} name - Player name
+       * @param {String} token - Player token
+       */
       socket.on('game:join', (name, token) => {
         if (room.players.has(socket)) {
           emitError(room.error('player.playing'));
@@ -57,9 +62,42 @@ export default (socket) => {
         }
       });
 
+      /**
+       * Places a vote in an ongoing poll
+       * @param {String} pollID - Poll ID
+       * @param {Boolean} vote - Whether to vote yes or no
+       */
       socket.on('poll:vote', (pollID, vote) => {
         room.vote(socket, pollID, vote);
       });
+
+      /**
+       * Wraps methods that return a promise with the socket as the first
+       * argument and a catch fallback
+       * @param {Function} promised - Function that will return a promise
+       */
+      const withSocket = (promised) => (...args) => {
+        promised(socket, ...args).catch((error) => {
+          socket.emit('game:error', error);
+        });
+      };
+
+      socket.on('game:make-transfer', withSocket(room.makeTransfer));
+      socket.on('game:claim-bankruptcy', withSocket(room.claimBankruptcy));
+      socket.on('game:buy-property', withSocket(room.buyProperty));
+      socket.on('game:improve-property', withSocket(room.improveProperty));
+      socket.on('game:unimprove-property', withSocket(room.unimproveProperty));
+      socket.on('game:mortgage-property', withSocket(room.mortgageProperty));
+      socket.on('game:unmortgage-property', withSocket(room.unmortgageProperty));
+      socket.on('game:pay-rent', withSocket(room.payRent));
+
+      socket.on('auction:new', withSocket(room.auctionProperty));
+      socket.on('auction:bid', withSocket(room.placeBid));
+      socket.on('auction:concede', withSocket(room.concedeAuction));
+
+      socket.on('trade:new', withSocket(room.makeOffer));
+      socket.on('trade:decline', withSocket(room.declineOffer));
+      socket.on('trade:accept', withSocket(room.acceptOffer));
     }).catch(emitError);
   });
 };

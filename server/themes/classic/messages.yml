@@ -36,6 +36,7 @@ errors:
 
   player:
     playing: 'Player already joined'
+    not-playing: 'You have not joined the game'
     missing-token: 'Invalid token'
     used-token: 'Token already in use'
     not-found: 'Cannot find player with token {{player.token}}'
