@@ -212,11 +212,12 @@ export default class GameRoom {
  */
 function loadTheme(name = 'classic') {
   const root = `./server/themes/${name}`;
+  const theme = THEME_CACHE[name] = THEME_CACHE[name] || {};
 
-  return THEME_CACHE[name] = THEME_CACHE[name] || {
-    config: YAML.load(`${root}/config.yml`),
-    properties: YAML.load(`${root}/properties.yml`)
-  };
+  theme.config = theme.config || YAML.load(`${root}/config.yml`);
+  theme.properties = theme.properties || YAML.load(`${root}/properties.yml`);
+
+  return theme;
 }
 
 /**
@@ -226,8 +227,7 @@ function loadTheme(name = 'classic') {
  */
 function loadMessages(themeName = 'classic') {
   const path = `./server/themes/${themeName}/messages.yml`;
-  THEME_CACHE[themeName] = THEME_CACHE[themeName] || {};
+  const theme = THEME_CACHE[themeName] = THEME_CACHE[themeName] || {};
 
-  return THEME_CACHE[themeName].messages =
-    THEME_CACHE[themeName].messages || YAML.load(path);
+  return theme.messages = theme.messages || YAML.load(path);
 }
