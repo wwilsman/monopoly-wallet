@@ -148,12 +148,13 @@ export async function createSocketAndConnect(gameID) {
 export async function createSocketAndJoinGame(gameID, token) {
   const socket = await createSocketAndConnect(gameID);
   const game = GameRoom.db._store[gameID.toLowerCase()];
-
-  const name = `Player ${Object.keys(game.state.players).length + 1}`;
+  let name;
 
   if (game.state.players[token]) {
-    throw new Error(`Player "${token}" already exists in game "${gameID}"`);
+    name = game.state.players[token].name;
   } else {
+    name = `Player ${Object.keys(game.state.players).length + 1}`;
+
     game.state.players[token] = {
       name,
       token,

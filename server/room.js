@@ -68,6 +68,7 @@ export default class GameRoom {
 
       socket.once('disconnect', () => {
         room.sockets.delete(socket.id);
+        room.players.delete(socket);
 
         if (room.sockets.size === 0) {
           delete ROOM_CACHE[id];

@@ -3,8 +3,9 @@ import { expect } from 'chai';
 
 import {
   setupRoomForTesting,
-  createSocketAndConnect,
+  connectToGameRoom,
   joinGameRoom,
+  createSocketAndConnect,
   createSocketAndJoinGame
 } from '../room-helpers';
 
@@ -27,6 +28,16 @@ describe('Room: joining', function() {
       .that.has.property('top-hat')
       .that.has.property('name')
       .that.equals('Player 1');
+  });
+
+  it('should let the player disconnect and rejoin', async function() {
+    await joinGameRoom(socket1, 'Player 1', 'top-hat');
+
+    socket1.disconnect();
+    socket1.connect();
+
+    await connectToGameRoom(socket1, this.room);
+    await expect(joinGameRoom(socket1, 'Player 1', 'top-hat')).to.be.fulfilled;
   });
 
   it('should not let a player join more than once', async function() {
