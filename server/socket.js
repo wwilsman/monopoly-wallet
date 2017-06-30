@@ -72,32 +72,36 @@ export default (socket) => {
       });
 
       /**
-       * Wraps methods that return a promise with the socket as the first
-       * argument and a catch fallback
-       * @param {Function} promised - Function that will return a promise
+       * Wrap game actions to pass the socket as the first argument
+       * and emit any errors as game errors
        */
-      const withSocket = (promised) => (...args) => {
-        promised(socket, ...args).catch((error) => {
-          socket.emit('game:error', error);
+      const gameActions = [
+        ['player:transfer', room.makeTransfer],
+        ['player:claim-bankruptcy', room.claimBankruptcy],
+
+        ['property:buy', room.buyProperty],
+        ['property:improve', room.improveProperty],
+        ['property:unimprove', room.unimproveProperty],
+        ['property:mortgage', room.mortgageProperty],
+        ['property:unmortgage', room.unmortgageProperty],
+        ['property:pay-rent', room.payRent],
+
+        ['auction:new', room.auctionProperty],
+        ['auction:bid', room.placeBid],
+        ['auction:concede', room.concedeAuction],
+
+        ['trade:new', room.makeOffer],
+        ['trade:decline', room.declineOffer],
+        ['trade:accept', room.acceptOffer]
+      ];
+
+      gameActions.forEach(([eventName, promised]) => {
+        socket.on(eventName, (...args) => {
+          promised(socket, ...args).catch((error) => {
+            socket.emit('game:error', error);
+          });
         });
-      };
-
-      socket.on('game:make-transfer', withSocket(room.makeTransfer));
-      socket.on('game:claim-bankruptcy', withSocket(room.claimBankruptcy));
-      socket.on('game:buy-property', withSocket(room.buyProperty));
-      socket.on('game:improve-property', withSocket(room.improveProperty));
-      socket.on('game:unimprove-property', withSocket(room.unimproveProperty));
-      socket.on('game:mortgage-property', withSocket(room.mortgageProperty));
-      socket.on('game:unmortgage-property', withSocket(room.unmortgageProperty));
-      socket.on('game:pay-rent', withSocket(room.payRent));
-
-      socket.on('auction:new', withSocket(room.auctionProperty));
-      socket.on('auction:bid', withSocket(room.placeBid));
-      socket.on('auction:concede', withSocket(room.concedeAuction));
-
-      socket.on('trade:new', withSocket(room.makeOffer));
-      socket.on('trade:decline', withSocket(room.declineOffer));
-      socket.on('trade:accept', withSocket(room.acceptOffer));
+      });
     }).catch(emitError);
   });
 };

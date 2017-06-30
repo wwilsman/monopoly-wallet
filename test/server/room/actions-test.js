@@ -19,14 +19,14 @@ describe('Room: actions', function() {
   });
 
   const actionTests = [
-    { emit: 'game:make-transfer', args: [100] },
-    { emit: 'game:claim-bankruptcy', args: [] },
-    { emit: 'game:buy-property', args: ['oriental-avenue'] },
-    { emit: 'game:improve-property', args: ['oriental-avenue'] },
-    { emit: 'game:unimprove-property', args: ['oriental-avenue'] },
-    { emit: 'game:mortgage-property', args: ['oriental-avenue'] },
-    { emit: 'game:unmortgage-property', args: ['oriental-avenue'] },
-    { emit: 'game:pay-rent', args: ['oriental-avenue'] },
+    { emit: 'player:transfer', args: [100] },
+    { emit: 'player:claim-bankruptcy', args: [] },
+    { emit: 'property:buy', args: ['oriental-avenue'] },
+    { emit: 'property:improve', args: ['oriental-avenue'] },
+    { emit: 'property:unimprove', args: ['oriental-avenue'] },
+    { emit: 'property:mortgage', args: ['oriental-avenue'] },
+    { emit: 'property:unmortgage', args: ['oriental-avenue'] },
+    { emit: 'property:pay-rent', args: ['oriental-avenue'] },
     { emit: 'auction:new', args: ['oriental-avenue'] },
     { emit: 'auction:bid', args: [100] },
     { emit: 'auction:concede', args: [] },
