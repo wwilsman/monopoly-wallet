@@ -70,6 +70,10 @@ export default class GameRoom {
         room.sockets.delete(socket.id);
         room.players.delete(socket);
 
+        room.sockets.forEach((socket) => {
+          socket.emit('room:sync', room.state);
+        });
+
         if (room.sockets.size === 0) {
           delete ROOM_CACHE[id];
         }
@@ -163,6 +167,11 @@ export default class GameRoom {
       }
 
       this.players.set(socket, token);
+
+      this.sockets.forEach((socket) => {
+        socket.emit('room:sync', this.state);
+      });
+
       return resolve();
     });
   }
