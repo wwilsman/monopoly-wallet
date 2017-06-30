@@ -71,6 +71,15 @@ export default (socket) => {
         room.vote(socket, pollID, vote);
       });
 
+      /*
+       * Sends a message to another player
+       * @param {String} token - Player token to send the message to
+       * @param {String} message - The message to send
+       */
+      socket.on('message:send', (token, message) => {
+        room.message(socket, token, message);
+      });
+
       /**
        * Wrap game actions to pass the socket as the first argument
        * and emit any errors as game errors

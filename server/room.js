@@ -226,6 +226,22 @@ export default class GameRoom {
   }
 
   /**
+   * Sends a message to another player
+   * @param {Socket} socket - Socket.io Socket instance
+   * @param {String} token - Player token to send the message to
+   * @param {String} message - The message to send
+   */
+  message(socket, toToken, message) {
+    const fromToken = this.players.get(socket);
+    const toPlayer = toArray(this.players.entries())
+      .find((entry) => entry[1] === toToken)[0];
+
+    if (fromToken && toPlayer) {
+      toPlayer.emit('message:recieved', fromToken, message);
+    }
+  }
+
+  /**
    * Generates a notice
    * @param {String} id - The notice ID
    * @param {Object} [meta] - Meta used to generate the message
