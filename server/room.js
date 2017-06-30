@@ -113,6 +113,10 @@ export default class GameRoom {
     });
   }
 
+  /**
+   * Game id, state, config, and active players
+   * @returns {Object} - Overrall room state
+   */
   get state() {
     return {
       id: this.id,
@@ -122,6 +126,9 @@ export default class GameRoom {
     };
   }
 
+  /**
+   * Syncs the game state with the store and emits a sync event to all players
+   */
   sync() {
     this.game = this.store.getState();
 
@@ -134,6 +141,13 @@ export default class GameRoom {
     });
   }
 
+  /**
+   * Joins the game and adds the socket to the room
+   * @param {Socket} socket - Socket.io socket instance
+   * @param {String} name - Player name
+   * @param {String} token - Player token
+   * @returns {Promsie} Resolves after adding the player
+   */
   join(socket, name, token) {
     return new Promise((resolve, reject) => {
       const player = this.game.players[token];
@@ -153,6 +167,11 @@ export default class GameRoom {
     });
   }
 
+  /**
+   * Polls current active players
+   * @param {String} message - Message to send to players about the poll
+   * @returns {Promise} Resolves once all active players have votes or after timing out
+   */
   poll(message) {
     return new Promise((resolve) => {
       const pollID = randomString();
@@ -183,6 +202,12 @@ export default class GameRoom {
     });
   }
 
+  /**
+   * Places a vote in an ongoing poll
+   * @param {Socket} socket - Socket.io Socket instance
+   * @param {String} pollID - Poll ID
+   * @param {Boolean} vote - Whether to vote yes or no
+   */
   vote(socket, pollID, vote) {
     const poll = this.polls[pollID];
 
@@ -200,16 +225,33 @@ export default class GameRoom {
     }
   }
 
+  /**
+   * Generates a notice
+   * @param {String} id - The notice ID
+   * @param {Object} [meta] - Meta used to generate the message
+   * @returns {String} The generated notice
+   */
   notice(id, meta) {
     return generateNotice(`notices.${id}`, meta, this.messages);
   }
 
+  /**
+   * Generates a monopoly error
+   * @param {String} id - The error message ID
+   * @param {Object} [meta] - Meta used to generate the error message
+   * @returns {MonopolyError} A new monopoly error with the generated message
+   */
   error(id, meta) {
     return new MonopolyError(
       generateNotice(`errors.${id}`, meta, this.messages)
     );
   }
 
+  /**
+   * Emits an event to all active players in the room
+   * @param {String} event - Event name to emit
+   * @param {Mixed} payload - Arguments to emit
+   */
   emit(event, ...payload) {
     this.players.forEach((_, player) => {
       player.emit(event, ...payload);
