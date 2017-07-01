@@ -8,6 +8,8 @@ import connectSocket from './socket';
 
 // environment specific variables
 const ENV = {
+  environment: process.env.NODE_ENV || 'development',
+
   port: process.env.PORT || 3000,
   host: process.env.HOST || 'localhost',
 
@@ -18,6 +20,8 @@ const ENV = {
 
 // setup express
 const app = express();
+
+app.use(express.static('public'));
 
 // mongodb persistence
 MongoClient.connect(ENV.mongodb.uri)
@@ -39,6 +43,18 @@ MongoClient.connect(ENV.mongodb.uri)
         return resolve(game);
       }))
   }));
+
+// setup webpack middleware
+if (ENV.environment === 'development') {
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  const webpackConfig = require('../webpack.config');
+  const compiler = webpack(webpackConfig);
+
+  app.use(webpackDevMiddleware(compiler, webpackConfig.devServer));
+  app.use(webpackHotMiddleware(compiler));
+}
 
 // start the server
 const server = app.listen(ENV.port, () => {
