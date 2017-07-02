@@ -41,26 +41,14 @@ export function setupGameForTesting({ state = {}, config = {} } = {}) {
 }
 
 /**
- * Modifies the current game state before the store is instantiated.
- * Retains and restores the previous game state
+ * Modifies the current game state before the store is instantiated
  * @param {Object} [state] - Initial game state to merge with fixture
  * @param {Object} [config] - Game configuration to merge with fixture
  */
 export function modifyGameInTesting({ state = {}, config = {} } = {}) {
-  let old = {};
-
   before(function() {
-    old.initial = this.initial;
-    old.config = this.config;
-
-    this.config = { ...old.config, ...config };
+    this.config = { ...this.config, ...config };
     this.initial = extendGameState(this.initial, state, this.config);
-  });
-
-  after(function() {
-    this.initial = old.initial;
-    this.config = old.config;
-    old = null;
   });
 
   setupGameStore();
@@ -71,16 +59,9 @@ export function modifyGameInTesting({ state = {}, config = {} } = {}) {
  * any previous instances.
  */
 function setupGameStore() {
-  let store, unsubscribe, old = {};
+  let store, unsubscribe;
 
   beforeEach(function() {
-    old.last = this.last;
-    old.state = this.state;
-    old.dispatch = this.dispatch;
-    old.getPlayer = this.getPlayer;
-    old.getProperty = this.getProperty;
-    old.getProperties = this.getProperties;
-
     store = createGame(
       this.initial,
       this.config,
@@ -101,13 +82,6 @@ function setupGameStore() {
   });
 
   afterEach(function() {
-    this.last = old.last;
-    this.state = old.state;
-    this.dispatch = old.dispatch;
-    this.getPlayer = old.getPlayer;
-    this.getProperty = old.getProperty;
-    this.getProperties = old.getProperties;
-
     unsubscribe();
     unsubscribe = null;
     store = null;
