@@ -1,5 +1,3 @@
-import YAML from 'yamljs';
-
 import { randomString, generateNotice } from './helpers';
 import { createState, createGame } from './game';
 import MonopolyError from './error';
@@ -7,24 +5,21 @@ import actions from './actions';
 
 const { from:toArray } = Array;
 
-// theme cache so we don't have to read from the filesystem every time
-let THEME_CACHE = {};
-
-// room cache so multiple players can use same room instance
-let ROOM_CACHE = {};
-
 /**
  * The game room class
  */
 export default class GameRoom {
+  static _cache = {};
+  static loader;
   static db;
 
   /**
-   * Sets up a persistence layer for rooms to use
-   * @param {Object} db - The persistence layer
+   * Sets properties for the game room to use
+   * @param {String} prop - The property name
+   * @param {Mixed} value - The property value
    */
-  static persist(db) {
-    this.db = db;
+  static set(prop, value) {
+    this[prop] = value;
   }
 
   /**
@@ -33,13 +28,11 @@ export default class GameRoom {
    * @returns {Promise} A promise that resolves to the new game state
    */
   static new(options = {}) {
-    if (!this.db) {
-      return Promise.reject('No persistence layer found');
-    }
+    if (!this.db) return Promise.reject('No persistence layer found');
+    if (!this.loader) return Promise.reject('No theme loader found');
 
-    const theme = loadTheme();
-    const config = { ...theme.config, ...options };
-    const state = createState(theme.properties, config);
+    const config = { ...this.loader('config'), ...options };
+    const state = createState(this.loader('properties'), config);
 
     const createGame = () => {
       const id = randomString().toLowerCase();
@@ -56,14 +49,13 @@ export default class GameRoom {
    * @returns {Promise} Resolves to the game room instance
    */
   static connect(socket, id) {
-    if (!this.db) {
-      return Promise.reject('No persistence layer found');
-    }
+    if (!this.db) return Promise.reject('No persistence layer found');
+    if (!this.loader) return Promise.reject('No theme loader found');
 
     id = id.toLowerCase();
 
     return this.db.find(id).then((game) => {
-      const room = ROOM_CACHE[id] || new GameRoom(game);
+      const room = this._cache[id] || new GameRoom(game);
       room.sockets.set(socket.id, socket);
 
       socket.once('disconnect', () => {
@@ -75,11 +67,11 @@ export default class GameRoom {
         });
 
         if (room.sockets.size === 0) {
-          delete ROOM_CACHE[id];
+          delete this._cache[id];
         }
       });
 
-      ROOM_CACHE[id] = room;
+      this._cache[id] = room;
       return room;
     });
   }
@@ -99,7 +91,7 @@ export default class GameRoom {
     this.players = new Map();
     this.polls = {};
 
-    this.messages = loadMessages();
+    this.messages = this.constructor.loader('messages');
     this.store = createGame(state, config, this.messages);
     this.game = this.store.getState();
 
@@ -282,31 +274,4 @@ export default class GameRoom {
       player.emit(event, ...payload);
     });
   }
-}
-
-/**
- * Loads game files for a specific theme and caches them
- * @param {String} [name='classic'] Theme name
- * @returns {Object} All necessary theme data
- */
-function loadTheme(name = 'classic') {
-  const root = `./server/themes/${name}`;
-  const theme = THEME_CACHE[name] = THEME_CACHE[name] || {};
-
-  theme.config = theme.config || YAML.load(`${root}/config.yml`);
-  theme.properties = theme.properties || YAML.load(`${root}/properties.yml`);
-
-  return theme;
-}
-
-/**
- * Loads game message for a specific theme and caches them
- * @param {String} [name='classic'] Theme name
- * @returns {Object} Theme messages
- */
-function loadMessages(themeName = 'classic') {
-  const path = `./server/themes/${themeName}/messages.yml`;
-  const theme = THEME_CACHE[themeName] = THEME_CACHE[themeName] || {};
-
-  return theme.messages = theme.messages || YAML.load(path);
 }

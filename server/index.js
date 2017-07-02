@@ -1,4 +1,5 @@
 /* eslint no-console: "off" */
+import YAML from 'yamljs';
 import express from 'express';
 import io from 'socket.io';
 import { MongoClient } from 'mongodb';
@@ -23,9 +24,19 @@ const app = express();
 
 app.use(express.static('public'));
 
+// theme loader
+const themeCache = {};
+GameRoom.set('loader', (theme, file = theme) => {
+  if (file === theme) theme = 'classic';
+  themeCache[theme] = themeCache[theme] || {};
+  themeCache[theme][file] = themeCache[theme][file] ||
+    YAML.load(`./server/themes/${theme}/${file}.yml`);
+  return themeCache[theme][file];
+});
+
 // mongodb persistence
 MongoClient.connect(ENV.mongodb.uri)
-  .then((db) => GameRoom.persist({
+  .then((db) => GameRoom.set('db', {
     find: (id) => db.collection('games')
       .findOne({ _id: id }).then((game) => (
         new Promise((resolve, reject) => (

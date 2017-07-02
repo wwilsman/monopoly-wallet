@@ -17,25 +17,31 @@ import { extendGameState } from './game-helpers';
 
 import {
   GAME_FIXTURE,
-  CONFIG_FIXTURE
+  CONFIG_FIXTURE,
+  MESSAGES_FIXTURE
 } from './fixtures';
 
 // use chai as promised
 chai.use(chaiAsPromised);
 
 // mock database layer for our game room
-GameRoom.persist({
-  _store: {},
+const mocks = {};
+GameRoom.set('db', {
+  find: (id) => mocks[id] ? Promise.resolve(mocks[id]) :
+    Promise.reject(new MonopolyError('Game not found')),
+  save: (game) => Promise.resolve(mocks[game.id] = game)
+});
 
-  find(id) {
-    return this._store[id] ?
-      Promise.resolve(this._store[id]) :
-      Promise.reject(new MonopolyError('Game not found'));
-  },
-
-  save(doc) {
-    this._store[doc.id] = doc;
-    return Promise.resolve(doc);
+// use fixtures for any theme
+GameRoom.set('loader', (theme, file = theme) => {
+  switch(file) {
+    case 'config':
+      return CONFIG_FIXTURE;
+    case 'properties':
+      return GAME_FIXTURE.properties._all
+        .map((id) => GAME_FIXTURE.properties[id]);
+    case 'messages':
+      return MESSAGES_FIXTURE;
   }
 });
 
@@ -52,10 +58,9 @@ export function setupRoomForTesting({
   afterEach:afterEachCB
 } = {}) {
   let server = null;
-  let gameID = 't35tt';
 
   before(function() {
-    this.room = gameID.toUpperCase();
+    this.room = 't35tt';
     this.config = { ...CONFIG_FIXTURE, ...config };
     this.game = extendGameState(GAME_FIXTURE, game, this.config);
   });
@@ -64,8 +69,8 @@ export function setupRoomForTesting({
     server = ioServer(8080);
     server.on('connection', connectSocket);
 
-    GameRoom.db._store[gameID] = {
-      id: gameID,
+    mocks[this.room] = {
+      id: this.room,
       state: this.game,
       config: this.config
     };
@@ -81,7 +86,7 @@ export function setupRoomForTesting({
     }
 
     return new Promise((resolve) => {
-      delete GameRoom.db._store[gameID];
+      delete mocks[this.room];
       server.close(resolve);
     });
   });
@@ -147,17 +152,16 @@ export async function createSocketAndConnect(gameID) {
  */
 export async function createSocketAndJoinGame(gameID, token) {
   const socket = await createSocketAndConnect(gameID);
-  const game = GameRoom.db._store[gameID.toLowerCase()];
-  let name;
+  const game = await GameRoom.db.find(gameID);
 
+  let name;
   if (game.state.players[token]) {
     name = game.state.players[token].name;
   } else {
     name = `Player ${Object.keys(game.state.players).length + 1}`;
 
     game.state.players[token] = {
-      name,
-      token,
+      name, token,
       balance: game.config.playerStart,
       bankrupt: false
     };
