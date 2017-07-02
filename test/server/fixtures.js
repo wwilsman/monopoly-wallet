@@ -4,7 +4,7 @@ import { createState } from '../../server/game';
 
 const defaultConfig = YAML.load('./server/themes/classic/config.yml');
 const defaultProperties = YAML.load('./server/themes/classic/properties.yml');
-const defaultNotices = YAML.load('./server/themes/classic/messages.yml');
+const defaultMessages = YAML.load('./server/themes/classic/messages.yml');
 
 export const GAME_FIXTURE = createState(
   defaultProperties,
@@ -16,6 +16,6 @@ export const CONFIG_FIXTURE = {
   pollTimeout: 10
 };
 
-export const NOTICES_FIXTURE = {
-  ...defaultNotices
+export const MESSAGES_FIXTURE = {
+  ...defaultMessages
 };

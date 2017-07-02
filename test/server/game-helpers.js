@@ -8,7 +8,7 @@ import {
 import {
   GAME_FIXTURE,
   CONFIG_FIXTURE,
-  NOTICES_FIXTURE
+  MESSAGES_FIXTURE
 } from './fixtures';
 
 import {
@@ -84,7 +84,7 @@ function setupGameStore() {
     store = createGame(
       this.initial,
       this.config,
-      NOTICES_FIXTURE
+      MESSAGES_FIXTURE
     );
 
     this.state = store.getState();
