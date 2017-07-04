@@ -1,10 +1,9 @@
-import GameRoom from './room';
-
 /**
- * Sets up a socket for interacting with a game room
+ * Returns a function to set up a socket for interacting with a game room
+ * @param {GameRoom} GameRoom - GameRoom class
  * @param {Socket} socket - Socket.io socket instance
  */
-export default (socket) => {
+export default (GameRoom) => (socket) => {
 
   /**
    * Emits a room error

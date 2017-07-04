@@ -1,6 +1,7 @@
 import { randomString, generateNotice } from './helpers';
 import { createState, createGame } from './game';
 import MonopolyError from './error';
+import setupSocket from './socket';
 import actions from './actions';
 
 const { from:toArray } = Array;
@@ -10,8 +11,41 @@ const { from:toArray } = Array;
  */
 export default class GameRoom {
   static _cache = {};
-  static loader;
-  static db;
+  static _themes = {};
+
+  /**
+   * Default to in-memory persistance
+   */
+  static db = {
+    store: {},
+
+    find(id) {
+      return this.store[id] ? Promise.resolve(this.store[id]) :
+        Promise.reject(new MonopolyError('Game not found'));
+    },
+
+    save(game) {
+      this.store[game.id] = game;
+      return Promise.resolve(game);
+    }
+  };
+
+  /**
+   * Loads and caches a theme
+   * @param {String} [theme="classic"] - Theme name
+   * @param {String} name - Data name
+   * @returns {Object} Theme data
+   */
+  static load(theme, name = theme) {
+    if (theme === name) theme = 'classic';
+    this._themes[theme] = this._themes[theme] || {};
+
+    if (this.loader && !this._themes[theme][name]) {
+      this._themes[theme][name] = this.loader(theme, name);
+    }
+
+    return this._themes[theme][name];
+  }
 
   /**
    * Sets properties for the game room to use
@@ -23,16 +57,20 @@ export default class GameRoom {
   }
 
   /**
+   * Sets up socket for interacting with this class
+   */
+  static setup = setupSocket(GameRoom);
+
+  /**
    * Creates a new game state based on a theme
    * @param {Object} [options={}] - Optional custom game options
    * @returns {Promise} A promise that resolves to the new game state
    */
   static new(options = {}) {
     if (!this.db) return Promise.reject('No persistence layer found');
-    if (!this.loader) return Promise.reject('No theme loader found');
 
-    const config = { ...this.loader('config'), ...options };
-    const state = createState(this.loader('properties'), config);
+    const config = { ...this.load('config'), ...options };
+    const state = createState(this.load('properties'), config);
 
     const createGame = () => {
       const id = randomString().toLowerCase();
@@ -50,7 +88,6 @@ export default class GameRoom {
    */
   static connect(socket, id) {
     if (!this.db) return Promise.reject('No persistence layer found');
-    if (!this.loader) return Promise.reject('No theme loader found');
 
     id = id.toLowerCase();
 
@@ -83,15 +120,13 @@ export default class GameRoom {
    * @param {Object} config - Game config
    */
   constructor({ id, state, config }) {
-    this.db = this.constructor.db;
-
     this.id = id;
     this.config = config;
     this.sockets = new Map();
     this.players = new Map();
     this.polls = {};
 
-    this.messages = this.constructor.loader('messages');
+    this.messages = this.constructor.load('messages');
     this.store = createGame(state, config, this.messages);
     this.game = this.store.getState();
 
@@ -128,7 +163,7 @@ export default class GameRoom {
   sync() {
     this.game = this.store.getState();
 
-    this.db.save({
+    this.constructor.db.save({
       id: this.id,
       state: this.game,
       config: this.config

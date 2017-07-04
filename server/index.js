@@ -5,7 +5,6 @@ import io from 'socket.io';
 import { MongoClient } from 'mongodb';
 
 import GameRoom from './room';
-import connectSocket from './socket';
 
 // environment specific variables
 const ENV = {
@@ -73,4 +72,4 @@ const server = app.listen(ENV.port, () => {
 });
 
 // listen for socket connections
-io(server).on('connection', connectSocket);
+io(server).on('connection', GameRoom.setup);

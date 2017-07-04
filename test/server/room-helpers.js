@@ -11,7 +11,6 @@ import ioServer from 'socket.io';
 import ioClient from 'socket.io-client';
 
 import GameRoom from '../../server/room';
-import connectSocket from '../../server/socket';
 import MonopolyError from '../../server/error';
 import { extendGameState } from './game-helpers';
 
@@ -24,17 +23,9 @@ import {
 // use chai as promised
 chai.use(chaiAsPromised);
 
-// mock database layer for our game room
-const mocks = {};
-GameRoom.set('db', {
-  find: (id) => mocks[id] ? Promise.resolve(mocks[id]) :
-    Promise.reject(new MonopolyError('Game not found')),
-  save: (game) => Promise.resolve(mocks[game.id] = game)
-});
-
-// use fixtures for any theme
-GameRoom.set('loader', (theme, file = theme) => {
-  switch(file) {
+// always use fixtures for themes
+GameRoom.load = (theme, name = theme) => {
+  switch (name) {
     case 'config':
       return CONFIG_FIXTURE;
     case 'properties':
@@ -43,7 +34,7 @@ GameRoom.set('loader', (theme, file = theme) => {
     case 'messages':
       return MESSAGES_FIXTURE;
   }
-});
+};
 
 /**
  * Starts the server, adds mock data, and sets up a number of sockets
@@ -67,9 +58,9 @@ export function setupRoomForTesting({
 
   beforeEach(async function() {
     server = ioServer(8080);
-    server.on('connection', connectSocket);
+    server.on('connection', GameRoom.setup);
 
-    mocks[this.room] = {
+    GameRoom.db.store[this.room] = {
       id: this.room,
       state: this.game,
       config: this.config
@@ -86,7 +77,7 @@ export function setupRoomForTesting({
     }
 
     return new Promise((resolve) => {
-      delete mocks[this.room];
+      delete GameRoom.db.store[this.room];
       server.close(resolve);
     });
   });
@@ -159,7 +150,6 @@ export async function createSocketAndJoinGame(gameID, token) {
     name = game.state.players[token].name;
   } else {
     name = `Player ${Object.keys(game.state.players).length + 1}`;
-
     game.state.players[token] = {
       name, token,
       balance: game.config.playerStart,
