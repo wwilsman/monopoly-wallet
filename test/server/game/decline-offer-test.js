@@ -1,8 +1,8 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
+import { getTradeId } from '../../helpers';
 import { setupGameForTesting } from '../game-helpers';
-import { getTradeId } from '../../../server/helpers';
 
 import MonopolyError from '../../../server/error';
 import { declineOffer } from '../../../server/actions/trades';

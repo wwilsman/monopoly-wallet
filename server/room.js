@@ -1,7 +1,11 @@
-import { randomString, generateNotice } from './helpers';
-import { createState, createGame } from './game';
+import {
+  randomString,
+  createGameState,
+  generateNotice
+} from './helpers';
 import MonopolyError from './error';
 import setupSocket from './socket';
+import createGame from './game';
 import actions from './actions';
 
 const { from:toArray } = Array;
@@ -70,7 +74,7 @@ export default class GameRoom {
     if (!this.db) return Promise.reject('No persistence layer found');
 
     const config = { ...this.load('config'), ...options };
-    const state = createState(this.load('properties'), config);
+    const state = createGameState(this.load('properties'), config);
 
     const createGame = () => {
       const id = randomString().toLowerCase();

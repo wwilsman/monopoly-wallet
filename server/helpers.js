@@ -1,3 +1,5 @@
+import slug from 'slug';
+
 /**
  * Generates a random string of characters
  * @param {Number} length - Length of string
@@ -15,6 +17,38 @@ export function randomString(length = 5) {
 
   return result;
 }
+
+/**
+ * Creates a new game state from property data and game config
+ * @param {[Object]} properties - Array of initial property data
+ * @param {Object} config - Game config options
+ * @returns {Object} Newly created game state
+ */
+export function createGameState(properties, config) {
+  return {
+    bank: config.bankStart < 0 ? Infinity : config.bankStart,
+    houses: config.houseCount,
+    hotels: config.hotelCount,
+    players: {},
+    trades: {},
+
+    properties: properties.reduce((map, property) => {
+      const id = slug(property.name, { lower: true });
+
+      map[id] = {
+        ...property,
+        mortgaged: false,
+        buildings: 0,
+        owner: 'bank',
+        id
+      };
+
+      map._all.push(id);
+      return map;
+    }, { _all: [] })
+  };
+}
+
 
 /**
  * Finds a player in the game state

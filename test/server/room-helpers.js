@@ -11,9 +11,12 @@ import chaiAsPromised from 'chai-as-promised';
 import ioServer from 'socket.io';
 import ioClient from 'socket.io-client';
 
+import {
+  createGameState,
+  transformGameState
+} from '../helpers';
 import GameRoom from '../../server/room';
 import MonopolyError from '../../server/error';
-import { extendGameState } from './game-helpers';
 
 // use chai as promised
 chai.use(chaiAsPromised);
@@ -57,7 +60,8 @@ export function setupRoomForTesting({
       pollTimeout: 10
     };
 
-    this.game = extendGameState(null, game, this.config);
+    this.game = createGameState(PROPERTY_FIXTURES, this.config);
+    this.game = transformGameState(this.game, game, this.config);
   });
 
   beforeEach(async function() {
