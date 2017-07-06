@@ -93,10 +93,10 @@ export default class GameRoom {
 
     return this.db.find(id).then((game) => {
       const room = this._cache[id] || new GameRoom(game);
-      room.sockets.set(socket.id, socket);
+      room.sockets.add(socket);
 
       socket.once('disconnect', () => {
-        room.sockets.delete(socket.id);
+        room.sockets.delete(socket);
         room.players.delete(socket);
 
         room.sockets.forEach((socket) => {
@@ -122,7 +122,7 @@ export default class GameRoom {
   constructor({ id, state, config }) {
     this.id = id;
     this.config = config;
-    this.sockets = new Map();
+    this.sockets = new Set();
     this.players = new Map();
     this.polls = {};
 
