@@ -8,6 +8,7 @@ module.exports = {
   devtool: 'inline-source-map',
 
   entry: [
+    'babel-polyfill',
     'react-hot-loader/patch',
     'webpack-hot-middleware/client',
     'webpack/hot/only-dev-server',
