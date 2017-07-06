@@ -1,17 +1,12 @@
+import YAML from 'yamljs';
 import {
   before,
-  after,
   beforeEach,
   afterEach
 } from 'mocha';
 
 import {
-  GAME_FIXTURE,
-  CONFIG_FIXTURE,
-  MESSAGES_FIXTURE
-} from './fixtures';
-
-import {
+  createState,
   createGame
 } from '../../server/game';
 import {
@@ -21,29 +16,29 @@ import {
   getTradeId
 } from '../../server/helpers';
 
+// fixtures
+const CONFIG_FIXTURE = YAML.load('./server/themes/classic/config.yml');
+const PROPERTY_FIXTURES = YAML.load('./server/themes/classic/properties.yml');
+const MESSAGES_FIXTURE = YAML.load('./server/themes/classic/messages.yml');
+
 /**
  * Sets up testing context for a new game store instance each test
- * @param {Object} [state={}] - Initial game state to merge with fixture
- * @param {Object} [config={}] - Game configuration to merge with fixture
+ * @param {Object} [state={}] - Game state transforms
+ * @param {Object} [config={}] - Custom game configuration
  */
 export function setupGameForTesting({ state = {}, config = {} } = {}) {
   before(function() {
     this.config = { ...CONFIG_FIXTURE, ...config };
-    this.initial = extendGameState(GAME_FIXTURE, state, this.config);
-  });
-
-  after(function() {
-    this.initial = null;
-    this.config = null;
+    this.initial = extendGameState(null, state, this.config);
   });
 
   setupGameStore();
 }
 
 /**
- * Modifies the current game state before the store is instantiated
- * @param {Object} [state] - Initial game state to merge with fixture
- * @param {Object} [config] - Game configuration to merge with fixture
+ * Modifies the current game state and a new store is instantiated
+ * @param {Object} [state={}] - Game state transforms
+ * @param {Object} [config={}] - Custom game configuration
  */
 export function modifyGameInTesting({ state = {}, config = {} } = {}) {
   before(function() {
@@ -89,88 +84,89 @@ function setupGameStore() {
 }
 
 /**
- * Builds the initial state for testing by overriding state and property
- * defaults from fixtures and creating new players
- * @param {Object} state - The state overrides
- * @param {[Object]} state.players - Array of players to create
- * @param {[Object]} state.properties - Array of properties or groups to override
+ * Extends a game state with transforms
+ * @param {Object} [state] - The state to extend or create a new state
+ * @param {[Object]} transforms.players - Array of players to create
+ * @param {[Object]} transforms.properties - Array of properties or groups to override
  * @param {Object} config - configuration needed during game creation
  * @returns {Object} A new initial state for testing
  */
-export function extendGameState(state, overrides, config) {
+export function extendGameState(state, transforms, config) {
+  if (!state) state = createState(PROPERTY_FIXTURES, config);
+
   return {
     ...state,
-    ...overrides,
+    ...transforms,
 
-    // override existing players by id or create new ones
-    players: (overrides.players||[]).reduce((players, override) => ({
+    // transform existing players by id or create new ones
+    players: (transforms.players||[]).reduce((players, transform) => ({
       ...players,
 
-      [override.token]: players[override.token] ? {
-        ...players[override.token],
-        ...override
+      [transform.token]: players[transform.token] ? {
+        ...players[transform.token],
+        ...transform
       } : {
-        name: override.name || `Player ${Object.keys(players).length + 1}`,
-        balance: override.balance || config.playerStart,
-        bankrupt: override.bankrupt || false,
-        ...override
+        name: transform.name || `Player ${Object.keys(players).length + 1}`,
+        balance: transform.balance || config.playerStart,
+        bankrupt: transform.bankrupt || false,
+        ...transform
       }
     }), JSON.parse(JSON.stringify(state.players))),
 
-    // override existing properties by id or group
-    properties: (overrides.properties||[]).reduce((properties, override) => {
-      if (override.group) {
+    // transform existing properties by id or group
+    properties: (transforms.properties||[]).reduce((properties, transform) => {
+      if (transform.group) {
         properties._all.forEach((propertyId) => {
-          if (properties[propertyId].group === override.group) {
+          if (properties[propertyId].group === transform.group) {
             properties[propertyId] = {
               ...properties[propertyId],
-              ...override
+              ...transform
             };
           }
         });
-      } else if (override.id) {
-        properties[override.id] = {
-          ...properties[override.id],
-          ...override
+      } else if (transform.id) {
+        properties[transform.id] = {
+          ...properties[transform.id],
+          ...transform
         };
       }
 
       return properties;
     }, JSON.parse(JSON.stringify(state.properties))),
 
-    // override exisiting trades or create new ones
-    trades: (overrides.trades||[]).reduce((trades, override) => {
-      const id = getTradeId(override.from, override.with);
+    // transform exisiting trades or create new ones
+    trades: (transforms.trades||[]).reduce((trades, transform) => {
+      const id = getTradeId(transform.from, transform.with);
 
       return {
         ...trades,
 
         [id]: trades[id] ? {
           ...trades[id],
-          ...override
+          ...transform
         } : {
-          from: override.from,
-          with: override.with,
-          properties: override.properties || [],
-          amount: override.amount || 0
+          from: transform.from,
+          with: transform.with,
+          properties: transform.properties || [],
+          amount: transform.amount || 0
         }
       };
     }, JSON.parse(JSON.stringify(state.trades))),
 
-    // override existing auction or create a new one
-    auction: overrides.auction ?
+    // transform existing auction or create a new one
+    auction: transforms.auction ?
       state.auction ? {
         ...JSON.parse(JSON.stringify(state.auction)),
-        ...overrides.auction
+        ...transforms.auction
       } : {
         players: Object.keys(state.players)
-          .concat((overrides.players||[]).map((pl) => pl.token))
+          .concat((transforms.players||[]).map((pl) => pl.token))
           .filter((token, i, players) => players.indexOf(token) === i),
         winning: false,
         amount: 0,
-        ...overrides.auction
+        ...transforms.auction
       } :
-    typeof overrides.auction === 'undefined' ?
+    typeof transforms.auction === 'undefined' ?
       state.auction : false
   };
 }

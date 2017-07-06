@@ -1,3 +1,4 @@
+import YAML from 'yamljs';
 import {
   before,
   beforeEach,
@@ -14,33 +15,29 @@ import GameRoom from '../../server/room';
 import MonopolyError from '../../server/error';
 import { extendGameState } from './game-helpers';
 
-import {
-  GAME_FIXTURE,
-  CONFIG_FIXTURE,
-  MESSAGES_FIXTURE
-} from './fixtures';
-
 // use chai as promised
 chai.use(chaiAsPromised);
+
+// fixtures
+const CONFIG_FIXTURE = YAML.load('./server/themes/classic/config.yml');
+const PROPERTY_FIXTURES = YAML.load('./server/themes/classic/properties.yml');
+const MESSAGES_FIXTURE = YAML.load('./server/themes/classic/messages.yml');
 
 // always use fixtures for themes
 GameRoom.load = (theme, name = theme) => {
   switch (name) {
-    case 'config':
-      return CONFIG_FIXTURE;
-    case 'properties':
-      return GAME_FIXTURE.properties._all
-        .map((id) => GAME_FIXTURE.properties[id]);
-    case 'messages':
-      return MESSAGES_FIXTURE;
+    case 'config': return CONFIG_FIXTURE;
+    case 'properties': return PROPERTY_FIXTURES;
+    case 'messages': return MESSAGES_FIXTURE;
   }
 };
 
 /**
- * Starts the server, adds mock data, and sets up a number of sockets
- * @param {Object} [game={}] - Initial game state to merge with fixture
- * @param {Object} [config={}] - Game configuration to merge with fixture
+ * Starts the server and adds mock data
+ * @param {Object} [game={}] - Game state transforms
+ * @param {Object} [config={}] - Custom game configuration
  * @param {Function} [beforeEach] - Before each callback
+ * @param {Function} [afterEach] - After each callback
  */
 export function setupRoomForTesting({
   game = {},
@@ -52,8 +49,15 @@ export function setupRoomForTesting({
 
   before(function() {
     this.room = 't35tt';
-    this.config = { ...CONFIG_FIXTURE, ...config };
-    this.game = extendGameState(GAME_FIXTURE, game, this.config);
+
+    this.config = {
+      ...CONFIG_FIXTURE,
+      ...config,
+      // always use low timeouts in tests
+      pollTimeout: 10
+    };
+
+    this.game = extendGameState(null, game, this.config);
   });
 
   beforeEach(async function() {
