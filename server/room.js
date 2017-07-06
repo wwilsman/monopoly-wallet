@@ -99,7 +99,9 @@ export default class GameRoom {
       const room = this._cache[id] || new GameRoom(game);
       room.sockets.add(socket);
 
-      socket.once('disconnect', () => {
+      socket.on('disconnect', () => {
+        socket.removeAllListeners();
+
         room.sockets.delete(socket);
         room.players.delete(socket);
 
