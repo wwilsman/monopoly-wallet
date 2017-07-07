@@ -12,7 +12,7 @@ import {
 } from '../helpers';
 import GameRoom from '../../server/room';
 import MonopolyError from '../../server/error';
-import App from '../../app/components/app';
+import App from '../../app/app';
 
 import CONFIG_FIXTURE from '../../server/themes/classic/config.yml';
 import PROPERTY_FIXTURES from '../../server/themes/classic/properties.yml';
