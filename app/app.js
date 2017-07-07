@@ -1,8 +1,10 @@
 import React from 'react';
+
 import './app.css';
+import Welcome from './screens/welcome';
 
 const App = () => (
-  <h1>Hello Monopoly</h1>
+  <Welcome/>
 );
 
 export default App;

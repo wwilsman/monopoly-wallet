@@ -1,4 +1,4 @@
-/* global describe, it */
+/* global describe, beforeEach, it */
 import { expect } from 'chai';
 
 import {
@@ -8,7 +8,7 @@ import {
 describe('App: welcome screen', function() {
   setupAppForAcceptanceTesting();
 
-  it('shows a welcome message', function() {
-    expect(this.app.find('h1')).to.have.text('Hello Monopoly');
+  it('should display the app name', function() {
+    expect(this.$.find('h1')).to.have.text('MonopolyWallet');
   });
 });
