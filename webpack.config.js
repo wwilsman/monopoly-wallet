@@ -1,9 +1,6 @@
 const webpack = require('webpack');
 const path = require('path');
 
-const autoprefixer = require('autoprefixer');
-const precss = require('precss');
-
 module.exports = {
   devtool: 'inline-source-map',
 
@@ -54,14 +51,19 @@ module.exports = {
       }, {
         loader: 'css-loader',
         options: {
+          modules: true,
           sourceMap: true,
-          importLoaders: 1
+          importLoaders: 2,
+          localIdentName: '[name]__[local]--[hash:base64:5]'
         }
       }, {
         loader: 'postcss-loader',
         options: {
           plugins() {
-            return [precss, autoprefixer];
+            return [
+              require('precss'),
+              require('autoprefixer')
+            ];
           }
         }
       }]
