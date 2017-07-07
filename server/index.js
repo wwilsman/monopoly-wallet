@@ -1,4 +1,5 @@
 /* eslint no-console: "off" */
+import path from 'path';
 import YAML from 'yamljs';
 import express from 'express';
 import io from 'socket.io';
@@ -21,7 +22,25 @@ const ENV = {
 // setup express
 const app = express();
 
+// static assets
 app.use(express.static('public'));
+
+// setup webpack dev middleware
+if (ENV.environment === 'development') {
+  const webpack = require('webpack');
+  const webpackDevMiddleware = require('webpack-dev-middleware');
+  const webpackHotMiddleware = require('webpack-hot-middleware');
+  const webpackConfig = require('../webpack.config');
+  const compiler = webpack(webpackConfig);
+
+  app.use(webpackDevMiddleware(compiler, webpackConfig.devServer));
+  app.use(webpackHotMiddleware(compiler));
+}
+
+// all other endpoints render the app
+app.use('*', (req, res) => {
+  res.sendFile(path.join(__dirname, '../public/index.html'));
+});
 
 // theme loader
 const themeCache = {};
@@ -53,18 +72,6 @@ MongoClient.connect(ENV.mongodb.uri)
         return resolve(game);
       }))
   }));
-
-// setup webpack middleware
-if (ENV.environment === 'development') {
-  const webpack = require('webpack');
-  const webpackDevMiddleware = require('webpack-dev-middleware');
-  const webpackHotMiddleware = require('webpack-hot-middleware');
-  const webpackConfig = require('../webpack.config');
-  const compiler = webpack(webpackConfig);
-
-  app.use(webpackDevMiddleware(compiler, webpackConfig.devServer));
-  app.use(webpackHotMiddleware(compiler));
-}
 
 // start the server
 const server = app.listen(ENV.port, () => {

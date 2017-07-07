@@ -30,6 +30,9 @@ GameRoom.load = (theme, name = theme) => {
   }
 };
 
+// used to store the current running test's context
+let testContext = null;
+
 /**
  * Starts a mock websocket server, mocks data, and mounts our app
  * @param {Object} [game={}] - Game state transforms
@@ -52,6 +55,8 @@ export function setupAppForAcceptanceTesting({
   });
 
   beforeEach(async function() {
+    testContext = this;
+
     this.rootElement = document.createElement('div');
     this.rootElement.id = 'testing-root';
 
@@ -66,12 +71,13 @@ export function setupAppForAcceptanceTesting({
       config: this.config
     };
 
-    this.$ = mount(<App/>, {
+    this.$ = mount(<App test/>, {
       context: { test: true },
       attachTo: this.rootElement
     });
 
     this.app = this.$.instance();
+    this.location = this.app.history.location;
 
     if (beforeEachCB) {
       await beforeEachCB.call(this);
@@ -86,7 +92,20 @@ export function setupAppForAcceptanceTesting({
     this.$ && this.$.detach();
     document.body.removeChild(this.rootElement);
 
+    testContext = null;
+
     delete GameRoom.db.store[this.room];
     this.io.stop(done);
   });
+}
+
+/**
+ * Uses the app's history object to go to the specified location
+ * @param {String|Object} location - URL or location object
+ */
+export function visit(location) {
+  if (testContext) {
+    testContext.app.history.push(location);
+    testContext.location = testContext.app.history.location;
+  }
 }
