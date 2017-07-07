@@ -1,0 +1,19 @@
+@import '../../variables';
+
+.container {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.section {
+  @extend .container;
+  padding: var(--pad-lg);
+}
+
+.align-center { align-items: center; }
+.align-start { align-items: flex-start; }
+.justify-center { justify-content: center; }
+.justify-start { justify-content: flex-start; }
+.justify-between { justify-content: between; }
+.justify-stretch { justify-content: stretch; }

@@ -1,0 +1,19 @@
+:root {
+  /* background */
+  --color-bg: #333343;
+
+  /* text colors */
+  --color-text: #AAAABA;
+  --color-text-light: #FFFFFF;
+
+  /* font sizes */
+  --size-xl: 2rem;
+
+  /* spacing */
+  --pad-sm: 1rem;
+  --pad-med: 1.5rem;
+  --pad-lg: 2rem;
+
+  /* shadows */
+  --shadow-sm: 0.1rem 0.1rem 0.2rem color(black a(40%));
+}
