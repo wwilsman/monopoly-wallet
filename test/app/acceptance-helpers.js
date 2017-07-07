@@ -66,10 +66,12 @@ export function setupAppForAcceptanceTesting({
       config: this.config
     };
 
-    this.app = mount(<App/>, {
+    this.$ = mount(<App/>, {
       context: { test: true },
       attachTo: this.rootElement
     });
+
+    this.app = this.$.instance();
 
     if (beforeEachCB) {
       await beforeEachCB.call(this);
@@ -81,7 +83,7 @@ export function setupAppForAcceptanceTesting({
       await afterEachCB.call(this);
     }
 
-    this.app && this.app.detach();
+    this.$ && this.$.detach();
     document.body.removeChild(this.rootElement);
 
     delete GameRoom.db.store[this.room];
