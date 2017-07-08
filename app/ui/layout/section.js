@@ -6,12 +6,14 @@ import styles from './layout.css';
 const cx = classNames.bind(styles);
 
 const Section = ({
+  row,
   flex,
   align,
   justify,
   ...props
 }) => {
   const className = cx('section', {
+    'row': !!row,
     [`align-${align}`]: !!align,
     [`justify-${justify}`]: !!justify
   });
@@ -25,6 +27,7 @@ const Section = ({
 };
 
 Section.propTypes = {
+  row: PropTypes.bool,
   flex: PropTypes.number,
   align: PropTypes.oneOf(['center', 'start']),
   justify: PropTypes.oneOf(['center', 'start', 'between', 'stretch'])

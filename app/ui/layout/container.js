@@ -12,6 +12,7 @@ const Container = ({
   ...props
 }) => {
   const className = cx('container', {
+    'row': !!row,
     [`align-${align}`]: !!align,
     [`justify-${justify}`]: !!justify
   });

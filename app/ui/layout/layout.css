@@ -4,6 +4,10 @@
   display: flex;
   flex-direction: column;
   flex: 1;
+
+  &.row {
+    flex-direction: row;
+  }
 }
 
 .section {
@@ -15,5 +19,5 @@
 .align-start { align-items: flex-start; }
 .justify-center { justify-content: center; }
 .justify-start { justify-content: flex-start; }
-.justify-between { justify-content: between; }
+.justify-between { justify-content: space-between; }
 .justify-stretch { justify-content: stretch; }
