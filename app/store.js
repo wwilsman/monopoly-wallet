@@ -3,7 +3,7 @@ import { routerMiddleware } from 'react-router-redux';
 
 import rootReducer from './reducers';
 
-const composeEnhancers = __REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
 export default ({ initialState = {}, history }) => {
   const store = createStore(
