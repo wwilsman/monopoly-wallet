@@ -1,19 +1,29 @@
 :root {
+  /* primary colors */
+  --color-red: #FF0000;
+  --color-green: #32C864;
+  --color-blue: #3264C8;
+
   /* background */
   --color-bg: #333343;
+  --color-bg-light: #444454;
 
   /* text colors */
   --color-text: #AAAABA;
   --color-text-light: #FFFFFF;
 
   /* font sizes */
+  --size-sm: 0.8rem;
+  --size-med: 1rem;
   --size-xl: 2rem;
 
   /* spacing */
   --pad-sm: 1rem;
   --pad-med: 1.5rem;
   --pad-lg: 2rem;
+  --pad-xl: 2.8rem;
 
   /* shadows */
   --shadow-sm: 0.1rem 0.1rem 0.2rem color(black a(40%));
+  --shadow-med: 0.2rem 0.2rem 0.4rem color(black a(30%));
 }

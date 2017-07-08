@@ -2,6 +2,7 @@ import React from 'react';
 
 import { Container, Section } from '../ui/layout';
 import Text from '../ui/text';
+import Button from '../ui/button';
 
 const Welcome = () => (
   <Container>
@@ -10,8 +11,15 @@ const Welcome = () => (
         Monopoly<br/>Wallet
       </Text>
     </Section>
-    <Section>
-      {/* buttons */}
+
+    <Section align="center">
+      <Button color="green">
+        New Game
+      </Button>
+
+      <Button linkTo="/join" color="blue">
+        Join Game
+      </Button>
     </Section>
   </Container>
 );
