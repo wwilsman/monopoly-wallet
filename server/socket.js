@@ -1,9 +1,9 @@
 /**
- * Returns a function to set up a socket for interacting with a game room
- * @param {GameRoom} GameRoom - GameRoom class
+ * Sets up a socket for interacting with a game room
  * @param {Socket} socket - Socket.io socket instance
+ * @param {Class} GameRoom - The game room class
  */
-export default (GameRoom) => (socket) => {
+export default function setup(socket, GameRoom) {
 
   /**
    * Emits a room error

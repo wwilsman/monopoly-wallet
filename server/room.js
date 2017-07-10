@@ -62,8 +62,11 @@ export default class GameRoom {
 
   /**
    * Sets up socket for interacting with this class
+   * @param {Socket} socket - Socket.io socket instance
    */
-  static setup = setupSocket(GameRoom);
+  static setup(socket) {
+    setupSocket(socket, GameRoom);
+  }
 
   /**
    * Creates a new game state based on a theme
