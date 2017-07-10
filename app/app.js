@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import io from 'socket.io-client';
 import { Provider } from 'react-redux';
 import {
   createBrowserHistory,
@@ -22,8 +23,13 @@ class App extends Component {
     createBrowserHistory() :
     createMemoryHistory();
 
+  socket = io('/', {
+    forceNew: true
+  });
+
   store = createStore({
-    history: this.history
+    history: this.history,
+    socket: this.socket
   });
 
   render() {
