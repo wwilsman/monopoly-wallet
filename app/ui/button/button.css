@@ -42,3 +42,12 @@
 .red { background: var(--color-red); }
 .green { background: var(--color-green); }
 .blue { background: var(--color-blue); }
+
+.is-disabled, .is-loading {
+  opacity: 0.7;
+  box-shadow: none;
+
+  &:active::before {
+    visibility: hidden;
+  }
+}

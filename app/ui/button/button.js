@@ -9,26 +9,41 @@ const cx = classNames.bind(styles);
 const Button = ({
   color,
   disabled,
+  loading,
   onClick,
   linkTo,
+  children,
   ...props
 }) => {
   const className = cx('button', {
     'is-disabled': disabled,
+    'is-loading': loading,
     [color]: !!color
   });
 
-  return linkTo ? (
+  return linkTo && !(disabled || loading) ? (
     <Link
         to={linkTo}
         className={className}
+        children={children}
         {...props}/>
   ) : (
     <button
         className={className}
-        onClick={!disabled && onClick}
-        {...props}/>
+        onClick={!(disabled || loading) && onClick}
+        disabled={disabled}
+        {...props}>
+      {loading ? '...' : children}
+    </button>
   );
+};
+
+Button.propTypes = {
+  color: PropTypes.oneOf(['red', 'green', 'blue']),
+  disabled: PropTypes.bool,
+  loading: PropTypes.bool,
+  onClick: PropTypes.func,
+  linkTo: PropTypes.string
 };
 
 export default Button;
