@@ -83,33 +83,34 @@ export default function setup(socket, GameRoom) {
        * Wrap game actions to pass the socket as the first argument
        * and emit any errors as game errors
        */
-      const gameActions = [
-        ['player:transfer', room.makeTransfer],
-        ['player:claim-bankruptcy', room.claimBankruptcy],
+      const gameActions = {
+        'player:transfer': room.makeTransfer,
+        'player:claim-bankruptcy': room.claimBankruptcy,
 
-        ['property:buy', room.buyProperty],
-        ['property:improve', room.improveProperty],
-        ['property:unimprove', room.unimproveProperty],
-        ['property:mortgage', room.mortgageProperty],
-        ['property:unmortgage', room.unmortgageProperty],
-        ['property:pay-rent', room.payRent],
+        'property:buy': room.buyProperty,
+        'property:improve': room.improveProperty,
+        'property:unimprove': room.unimproveProperty,
+        'property:mortgage': room.mortgageProperty,
+        'property:unmortgage': room.unmortgageProperty,
+        'property:pay-rent': room.payRent,
 
-        ['auction:new', room.auctionProperty],
-        ['auction:bid', room.placeBid],
-        ['auction:concede', room.concedeAuction],
+        'auction:new': room.auctionProperty,
+        'auction:bid': room.placeBid,
+        'auction:concede': room.concedeAuction,
 
-        ['trade:new', room.makeOffer],
-        ['trade:decline', room.declineOffer],
-        ['trade:accept', room.acceptOffer]
-      ];
+        'trade:new': room.makeOffer,
+        'trade:decline': room.declineOffer,
+        'trade:accept': room.acceptOffer
+      };
 
-      gameActions.forEach(([eventName, promised]) => {
-        socket.on(eventName, (...args) => {
+      for (let event in gameActions) {
+        socket.on(event, (...args) => {
+          const promised = gameActions[event];
           promised(socket, ...args).catch((error) => {
             socket.emit('game:error', error);
           });
         });
-      });
+      }
     }).catch(emitError);
   });
 };
