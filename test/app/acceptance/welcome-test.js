@@ -51,7 +51,7 @@ describe('App: welcome screen', function() {
       expect(this.location.pathname).to.equal(`/${this.state.game.id}/join`);
     });
 
-    it('should show the join game screen', function() {
+    it('should render the join game screen', function() {
       expect(this.$.find('JoinGame')).to.exist;
     });
   });
@@ -65,7 +65,7 @@ describe('App: welcome screen', function() {
       expect(this.location.pathname).to.equal('/join');
     });
 
-    it('should show the join game screen', function() {
+    it('should render join game screen', function() {
       expect(this.$.find('JoinGame')).to.exist;
     });
   });
