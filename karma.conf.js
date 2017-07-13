@@ -19,6 +19,8 @@ module.exports = function(config) {
     },
 
     webpack: Object.assign({}, webpackConfig, {
+      entry: null,
+
       // help loading our "fixtures"
       module: {
         rules: webpackConfig.module.rules.concat([{
@@ -41,7 +43,9 @@ module.exports = function(config) {
       }
     }),
 
-    webpackMiddleware: webpackConfig.devServer,
+    webpackMiddleware: Object.assign({}, webpackConfig.devServer, {
+      hot: false
+    }),
 
     mochaReporter: {
       showDiff: true
