@@ -113,4 +113,4 @@ export default function setup(socket, GameRoom) {
       }
     }).catch(emitError);
   });
-};
+}
