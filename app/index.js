@@ -2,17 +2,17 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import { AppContainer } from 'react-hot-loader';
 
-import App from './app';
+import AppRoot from './root';
 
 const render = () => {
   ReactDOM.render(
-    <AppContainer><App/></AppContainer>,
+    <AppContainer><AppRoot/></AppContainer>,
     document.getElementById('react-root')
   );
 };
 
 if (module.hot) {
-  module.hot.accept('./app', render);
+  module.hot.accept('./root', render);
 }
 
 render();
