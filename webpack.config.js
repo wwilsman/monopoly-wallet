@@ -21,7 +21,7 @@ module.exports = {
     hot: true,
     contentBase: path.join(__dirname, 'public'),
     publicPath: '/',
-    noInfo: true
+    stats: 'errors-only'
   },
 
   plugins: [
