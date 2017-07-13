@@ -1,6 +1,9 @@
 const path = require('path');
 const webpackConfig = require('./webpack.config');
 
+delete webpackConfig.entry;
+delete webpackConfig.devServer.hot;
+
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha'],
@@ -19,8 +22,6 @@ module.exports = function(config) {
     },
 
     webpack: Object.assign({}, webpackConfig, {
-      entry: null,
-
       // help loading our "fixtures"
       module: {
         rules: webpackConfig.module.rules.concat([{
@@ -43,9 +44,7 @@ module.exports = function(config) {
       }
     }),
 
-    webpackMiddleware: Object.assign({}, webpackConfig.devServer, {
-      hot: false
-    }),
+    webpackMiddleware: webpackConfig.devServer,
 
     mochaReporter: {
       showDiff: true
