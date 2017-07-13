@@ -13,6 +13,7 @@ import createStore from './store';
 
 import App from './screens/app';
 import Welcome from './screens/welcome';
+import JoinGame from './screens/join-game';
 
 class AppRoot extends Component {
   history = !this.props.test ?
@@ -33,6 +34,8 @@ class AppRoot extends Component {
           <Route path="/" render={(props) => (
             <App {...props}>
               <Route path="/" exact component={Welcome}/>
+              <Route path="/join" exact component={JoinGame}/>
+              <Route path="/:room/join" exact component={JoinGame}/>
               <Route render={() => <Redirect to="/"/>}/>
             </App>
           )}/>
