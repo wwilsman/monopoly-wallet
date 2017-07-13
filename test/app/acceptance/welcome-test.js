@@ -3,7 +3,9 @@ import { expect } from 'chai';
 
 import {
   setupAppForAcceptanceTesting,
-  visit
+  visit,
+  click,
+  waitUntil
 } from '../acceptance-helpers';
 
 describe('App: welcome screen', function() {
@@ -25,34 +27,45 @@ describe('App: welcome screen', function() {
     expect(this.$.find('Button').at(1)).to.have.text('Join Game');
   });
 
-  it('should redirect back to welcome on 404', function() {
-    visit('/404-not-found');
-    expect(this.location.pathname).to.equal('/');
+  describe('visiting a non-existent route', function() {
+    beforeEach(async function() {
+      await visit('/404-not-found');
+    });
+
+    it('should redirect back to welcome', async function() {
+      expect(this.location.pathname).to.equal('/');
+    });
   });
 
   describe('clicking the new game button', function() {
-    beforeEach(function() {
-      this.$.find('Button').at(0).simulate('click');
+    beforeEach(async function() {
+      await click(this.$.find('Button').at(0));
+      await waitUntil(() => !this.state.game.loading);
     });
 
     it('should create a new game', function() {
-      expect(this.app.store.getState()).to.have.deep.property('game.id');
+      expect(this.state).to.have.deep.property('game.id');
     });
 
-    it('should go to the join game screen for the new game', function() {
-      const { game: { id } } = this.app.store.getState();
-      expect(this.location.pathname).to.equal(`/${id}/join`);
+    it('should go to the join game route for a room', function() {
+      expect(this.location.pathname).to.equal(`/${this.state.game.id}/join`);
+    });
+
+    it('should show the join game screen', function() {
       expect(this.$.find('JoinGame')).to.exist;
     });
   });
 
   describe('clicking the join game button', function() {
-    beforeEach(function() {
-      this.$.find('Button').at(1).simulate('click');
+    beforeEach(async function() {
+      await click(this.$.find('Button').at(1));
     });
 
-    it('should go to the join game screen', function() {
+    it('should go to the join game route', function() {
       expect(this.location.pathname).to.equal('/join');
+    });
+
+    it('should show the join game screen', function() {
       expect(this.$.find('JoinGame')).to.exist;
     });
   });
