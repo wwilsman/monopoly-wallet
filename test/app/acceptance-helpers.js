@@ -34,85 +34,105 @@ GameRoom.load = (theme, name = theme) => {
 let testContext = null;
 
 /**
- * Starts a mock websocket server, mocks data, and mounts our app
- * @param {Object} [game={}] - Game state transforms
- * @param {Object} [config={}] - Custom game configuration
+ * Starts a mock websocket server and mounts our app
  * @param {Function} [beforeEach] - Before each callback
  * @param {Function} [afterEach] - After each callback
  */
 export function setupAppForAcceptanceTesting({
-  game = {},
-  config = {},
   beforeEach:beforeEachCB,
   afterEach:afterEachCB
 } = {}) {
   let rootElement, unsubscribeFromStore;
 
-  before(function() {
-    this.room = 't35tt';
-    this.rootElement = null;
-    this.config = { ...CONFIG_FIXTURE, ...config };
-    this.game = createGameState(PROPERTY_FIXTURES, this.config);
-    this.game = transformGameState(this.game, game, this.config);
-  });
-
   beforeEach(async function() {
+    // store our current testing context for other helpers
     testContext = this;
 
-    GameRoom.db.store[this.room] = {
-      id: this.room,
-      state: this.game,
-      config: this.config
-    };
+    // create the app root DOM node
+    rootElement = document.createElement('div');
+    rootElement.id = 'testing-root';
+    document.body.appendChild(rootElement);
 
+    // setup a mock websocket server
     this.io = new ioServer('/');
     this.io.on('connection', GameRoom.setup);
 
-    rootElement = document.createElement('div');
-    rootElement.id = 'testing-root';
-
-    document.body.appendChild(rootElement);
-
+    // mount our app
     this.$ = mount(<AppRoot test/>, {
       attachTo: rootElement
     });
 
+    // useful things to assert against
     this.app = this.$.instance();
     this.state = this.app.store.getState();
     this.location = this.state.router.location;
 
+    // keep local contexts up to date with the app
     unsubscribeFromStore = this.app.store.subscribe(() => {
       this.state = this.app.store.getState();
       this.location = this.state.router.location;
     });
 
-    if (beforeEachCB) {
-      await beforeEachCB.call(this);
-    }
-
+    // wait until the app is has loaded before continuing
     await waitUntil(() => (
       !this.state.app.loading
     ));
+
+    // convinience hook
+    if (beforeEachCB) {
+      await beforeEachCB.call(this);
+    }
   });
 
   afterEach(async function() {
+    // convinience hook
     if (afterEachCB) {
       await afterEachCB.call(this);
     }
 
+    // wait until all cleanup has finished
     await new Promise((resolve) => {
       unsubscribeFromStore();
-      unsubscribeFromStore = null;
-
       this.$.detach();
-      document.body.removeChild(rootElement);
-      rootElement = null;
 
-      delete GameRoom.db.store[this.room];
+      document.body.removeChild(rootElement);
+
+      unsubscribeFromStore = null;
+      rootElement = null;
       testContext = null;
 
       this.io.stop(resolve);
     });
+  });
+}
+
+/**
+ * Creates a mock game to test against
+ * @param {Object} [game={}] - Game state transforms
+ * @param {Object} [config={}] - Custom game configuration
+ */
+export function mockGame({
+  id = 't35tt',
+  game = {},
+  config = {}
+} = {}) {
+  before(function() {
+    this.room = id;
+    this.config = { ...CONFIG_FIXTURE, ...config };
+    this.game = createGameState(PROPERTY_FIXTURES, this.config);
+    this.game = transformGameState(this.game, game, this.config);
+  });
+
+  beforeEach(function() {
+    GameRoom.db.store[id] = {
+      state: this.game,
+      config: this.config,
+      id
+    };
+  });
+
+  afterEach(function() {
+    delete GameRoom.db.store[id];
   });
 }
 
@@ -163,13 +183,11 @@ export function waitUntil(fn) {
       const ellapsed = Date.now() - start;
       const result = fn.call(testContext);
 
-      if (ellapsed < 2000 && !result) {
-        requestAnimationFrame(loop);
-      } else {
+      if (result || ellapsed >= 2000) {
         if (ellapsed >= 2000) {
           reject(new Error('Timeout exceeded'));
         } else resolve();
-      }
+      } else requestAnimationFrame(loop);
     };
 
     loop();
