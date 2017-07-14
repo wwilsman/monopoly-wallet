@@ -1,32 +1,47 @@
 const webpack = require('webpack');
 const path = require('path');
 
-module.exports = {
-  devtool: 'inline-source-map',
+const environment = process.env.NODE_ENV || 'development';
+const env = (conf) => conf[environment];
 
-  entry: [
-    'babel-polyfill',
-    'react-hot-loader/patch',
-    'webpack-hot-middleware/client',
-    'webpack/hot/only-dev-server',
-    './app/index.js'
-  ],
+module.exports = {
+  devtool: env({
+    development: 'inline-source-map'
+  }),
+
+  entry: env({
+    development: [
+      'babel-polyfill',
+      'react-hot-loader/patch',
+      'webpack-hot-middleware/client',
+      './app/index.js'
+    ],
+    production: [
+      'babel-polyfill',
+      './app/index.js'
+    ]
+  }),
 
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'public')
+    path: path.resolve(__dirname, 'public'),
+    publicPath: '/'
   },
 
-  devServer: {
-    hot: true,
-    contentBase: path.join(__dirname, 'public'),
-    publicPath: '/',
-    stats: 'errors-only'
-  },
+  devServer: env({
+    development: {
+      hot: true,
+      contentBase: path.join(__dirname, 'public'),
+      publicPath: '/',
+      stats: 'minimal'
+    }
+  }),
 
-  plugins: [
-    new webpack.HotModuleReplacementPlugin()
-  ],
+  plugins: env({
+    development: [
+      new webpack.HotModuleReplacementPlugin()
+    ]
+  }),
 
   module: {
     rules: [{
@@ -40,10 +55,15 @@ module.exports = {
           'stage-2',
           'react'
         ],
-        plugins: [
-          'react-hot-loader/babel',
-          'transform-decorators-legacy'
-        ]
+        plugins: env({
+          development: [
+            'react-hot-loader/babel',
+            'transform-decorators-legacy'
+          ],
+          production: [
+            'transform-decorators-legacy'
+          ]
+        })
       }
     }, {
       test: /\.css$/,
