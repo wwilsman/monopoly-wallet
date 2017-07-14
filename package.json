@@ -7,7 +7,8 @@
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
   "scripts": {
-    "start": "babel-node server/index.js",
+    "build": "babel server -d dist && webpack",
+    "start": "if [ -d './dist' ]; then node dist; else babel-node server; fi",
     "test": "yarn test:server; yarn test:app",
     "test:app": "karma start",
     "test:server": "mocha --recursive test/server",
