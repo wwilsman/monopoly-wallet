@@ -9,3 +9,10 @@ before_script:
   - sh -e /etc/init.d/xvfb start
 script:
   - yarn test
+before_deploy:
+  - yarn build
+deploy:
+  provider: heroku
+  api_key:
+    secure: LknKCBprgPSBc3AkfeJf2XthOkqSxyK2VJ7qRyJ3JG2O9a04PVzDjIPkf539WTMCDPCjRmSfYE0RLshw9L8wcoddzKXVH57xf3G2XSrVf9TVApzK+nuM93y6yTNoKy6tY4rAJ5tt9nmdEt/zJDN8o++HSVpnQppN7YhUU944r04=
+  skip_cleanup: true
