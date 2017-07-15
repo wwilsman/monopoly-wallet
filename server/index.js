@@ -57,19 +57,20 @@ MongoClient.connect(ENV.mongodb.uri)
   .then((db) => GameRoom.set('db', {
     find: (id) => db.collection('games')
       .findOne({ _id: id }).then((game) => (
-        new Promise((resolve, reject) => (
-          game ? resolve(game) : reject('Game not found')
-        ))
+        new Promise((resolve, reject) => {
+          if (!game) return reject('Game not found');
+          const { state, config } = game;
+          return resolve({ id, state, config });
+        })
       )),
-    save: (game) => db.collection('games')
-      .findOneAndUpdate({ _id: game.id }, { $set: game }, {
+    save: ({ id, ...game }) => db.collection('games')
+      .findOneAndUpdate({ _id: id }, { $set: game }, {
         returnOriginal: false,
         upsert: true
       }).then((doc) => new Promise((resolve, reject) => {
         if (!doc.ok) return reject('Game not found');
-        // eslint-disable-next-line no-unused-vars
-        const { _id, ...game } = doc.value;
-        return resolve(game);
+        const { state, config } = doc.value;
+        return resolve({ id, state, config });
       }))
   }));
 
