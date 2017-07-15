@@ -38,7 +38,7 @@ if (ENV.environment === 'development') {
 }
 
 // all other endpoints render the app
-app.use('*', (req, res) => {
+app.use(/\/[^.]*$/, (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
 });
 
