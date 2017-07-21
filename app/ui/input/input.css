@@ -1,0 +1,29 @@
+@import '../../variables';
+
+.root {
+  display: flex;
+  flex-direction: column;
+
+  &:not(:last-child) {
+    margin-bottom: var(--pad-sm);
+  }
+}
+
+.is-center {
+  text-align: center;
+}
+
+.label {
+  font-size: var(--size-xs);
+  text-transform: uppercase;
+  margin-bottom: var(--pad-xs);
+  margin-left: var(--pad-xs);
+}
+
+.input {
+  background: var(--color-bg-dark);
+  border-radius: var(--radius-med);
+  height: var(--pad-xl);
+  padding: var(--pad-xs) var(--pad-sm);
+  color: var(--color-text-light);
+}
