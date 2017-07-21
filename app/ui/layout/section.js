@@ -21,14 +21,17 @@ const Section = ({
   return (
     <div
         className={className}
-        style={flex !== undefined ? { flex } : null}
+        style={!!flex ? { flex } : null}
         {...props}/>
   );
 };
 
 Section.propTypes = {
   row: PropTypes.bool,
-  flex: PropTypes.number,
+  flex: PropTypes.oneOfType([
+    PropTypes.number,
+    PropTypes.oneOf(['none'])
+  ]),
   align: PropTypes.oneOf(['center', 'start']),
   justify: PropTypes.oneOf(['center', 'start', 'between', 'stretch'])
 };

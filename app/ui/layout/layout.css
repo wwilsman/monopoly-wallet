@@ -13,6 +13,10 @@
 .section {
   @extend .container;
   padding: var(--pad-lg);
+
+  &.no-flex {
+    flex: none;
+  }
 }
 
 .align-center { align-items: center; }
