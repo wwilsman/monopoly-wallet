@@ -35,14 +35,19 @@ let testContext = null;
 
 /**
  * Starts a mock websocket server and mounts our app
+ * @param {Object} [game={}] - Game state transforms
+ * @param {Object} [config={}] - Custom game configuration
  * @param {Function} [beforeEach] - Before each callback
  * @param {Function} [afterEach] - After each callback
  */
 export function setupAppForAcceptanceTesting({
+  game, config,
   beforeEach:beforeEachCB,
   afterEach:afterEachCB
 } = {}) {
   let rootElement, unsubscribeFromStore;
+
+  mockGame({ state: game, config });
 
   beforeEach(async function() {
     // store our current testing context for other helpers
@@ -107,32 +112,38 @@ export function setupAppForAcceptanceTesting({
 }
 
 /**
- * Creates a mock game to test against
- * @param {Object} [game={}] - Game state transforms
+ * Creates a mock game to test against.
+ * Preserves any previous existing game.
+ * @param {String} [id="t35tt"] - Game ID
+ * @param {Object} [state={}] - Game state transforms
  * @param {Object} [config={}] - Custom game configuration
  */
 export function mockGame({
   id = 't35tt',
-  game = {},
+  state = {},
   config = {}
 } = {}) {
-  before(function() {
-    this.room = id;
-    this.config = { ...CONFIG_FIXTURE, ...config };
-    this.game = createGameState(PROPERTY_FIXTURES, this.config);
-    this.game = transformGameState(this.game, game, this.config);
-  });
+  let old;
+
+  config = { ...CONFIG_FIXTURE, ...config };
+  state = transformGameState(
+    createGameState(PROPERTY_FIXTURES, config),
+    state, config
+  );
 
   beforeEach(function() {
-    GameRoom.db.store[id] = {
-      state: this.game,
-      config: this.config,
-      id
-    };
+    old = GameRoom.db.store[id];
+    GameRoom.db.store[id] = { id, state, config };
+    this.room = id;
   });
 
   afterEach(function() {
-    delete GameRoom.db.store[id];
+    if (old) {
+      GameRoom.db.store[id] = old;
+      old = null;
+    } else {
+      delete GameRoom.db.store[id];
+    }
   });
 }
 
@@ -151,21 +162,25 @@ export function visit(location) {
 
 /**
  * Clicks the rendered DOM element using the native method
- * @param {Object} [wrapper] - Enzyme wrapper instance
- * @param {String} selector - Enzyme selector to click
+ * @param {Object} wrapper - Enzyme wrapper instance
  * @returns {Promise} A promise that resolves after the next tick
  */
-export function click(wrapper, selector = wrapper) {
-  let node;
+export function click(wrapper) {
+  wrapper.getDOMNode().click();
+  return nextTick();
+}
 
-  if (typeof selector === 'string') {
-    if (wrapper === selector) wrapper = testContext.$;
-    node = wrapper.find(selector).getDOMNode();
-  } else {
-    node = wrapper.getDOMNode();
-  }
+/**
+ * Set's the value of the rendered DOM element and triggers a native change event
+ * @param {Object} wrapper - Enzyme wrapper instance
+ * @param {String} value - String to set the value as
+ * @returns {Promise} A promise that resolves after the next tick
+ */
+export function fill(wrapper, value) {
+  const node = wrapper.getDOMNode();
 
-  node.click();
+  node.value = value;
+  node.dispatchEvent(new Event('change'));
 
   return nextTick();
 }

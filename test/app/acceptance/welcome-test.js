@@ -6,7 +6,7 @@ import {
   visit,
   click,
   waitUntil
-} from '../acceptance-helpers';
+} from '../helpers';
 
 describe('App: welcome screen', function() {
   setupAppForAcceptanceTesting();
