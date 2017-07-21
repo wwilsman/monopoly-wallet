@@ -6,8 +6,12 @@ import {
 } from '../actions/game';
 
 const initialState = {
+  room: '',
+  loading: false,
   error: false,
-  loading: false
+  theme: '',
+  state: {},
+  config: {}
 };
 
 export default (state = initialState, action) => {
@@ -19,7 +23,9 @@ export default (state = initialState, action) => {
 
     case GAME_SYNC:
       return { ...state,
-        ...action.game
+        room: action.game.id,
+        state: action.game.state,
+        config: action.game.config
       };
 
     case GAME_ERROR:
