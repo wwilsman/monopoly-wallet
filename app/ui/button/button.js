@@ -10,12 +10,16 @@ const Button = ({
   color,
   disabled,
   loading,
+  small,
+  block,
   onClick,
   linkTo,
   children,
   ...props
 }) => {
   const className = cx('button', {
+    'block': block,
+    'small': small,
     'is-disabled': disabled,
     'is-loading': loading,
     [color]: !!color
@@ -42,6 +46,8 @@ Button.propTypes = {
   color: PropTypes.oneOf(['red', 'green', 'blue']),
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
+  small: PropTypes.bool,
+  block: PropTypes.bool,
   onClick: PropTypes.func,
   linkTo: PropTypes.string
 };
