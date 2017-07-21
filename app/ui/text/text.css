@@ -12,6 +12,11 @@
     letter-spacing: 0.05em;
     text-shadow: var(--shadow-sm);
   }
+
+  & h2 {
+    @extend :global h1;
+    font-size: var(--size-lg);
+  }
 }
 
 .center {

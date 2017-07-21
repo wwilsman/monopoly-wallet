@@ -7,10 +7,11 @@ const cx = classNames.bind(styles);
 
 const Text = ({
   h1,
+  h2,
   center,
   ...props
 }) => {
-  const Tag = h1 ? 'h1' : 'span';
+  const Tag = h1 ? 'h1' : h2 ? 'h2' : 'span';
   const className = cx({ center });
 
   return (
@@ -20,6 +21,7 @@ const Text = ({
 
 Text.propTypes = {
   h1: PropTypes.bool,
+  h2: PropTypes.bool,
   center: PropTypes.bool
 };
 
