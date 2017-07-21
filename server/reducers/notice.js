@@ -78,7 +78,9 @@ const initialState = {
  */
 export default (state = initialState, action) => {
   if (action.type in ACTIONS && action.notice) {
-    return { ...action.notice,
+    return {
+      id: action.notice.id,
+      message: action.notice.message,
       type: (action.type in PLAYER_ACTIONS) ? 'player' :
         (action.type in PROPERTY_ACTIONS) ? 'property' :
         (action.type in AUCTION_ACTIONS) ? 'auction' :
