@@ -35,14 +35,16 @@ class Welcome extends Component {
           <Button
               color="green"
               loading={loading}
-              onClick={this.newGame}>
+              onClick={this.newGame}
+              data-test-welcome-new-game-btn>
             New Game
           </Button>
 
           <Button
               color="blue"
               disabled={loading}
-              linkTo="/join">
+              linkTo="/join"
+              data-test-welcome-join-game-btn>
             Join Game
           </Button>
         </Section>
