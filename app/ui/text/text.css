@@ -22,3 +22,7 @@
 .center {
   text-align: center;
 }
+
+.error {
+  color: var(--color-red);
+}

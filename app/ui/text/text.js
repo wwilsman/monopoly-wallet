@@ -9,10 +9,11 @@ const Text = ({
   h1,
   h2,
   center,
+  error,
   ...props
 }) => {
   const Tag = h1 ? 'h1' : h2 ? 'h2' : 'span';
-  const className = cx({ center });
+  const className = cx({ center, error });
 
   return (
     <Tag className={className} {...props}/>
@@ -22,7 +23,8 @@ const Text = ({
 Text.propTypes = {
   h1: PropTypes.bool,
   h2: PropTypes.bool,
-  center: PropTypes.bool
+  center: PropTypes.bool,
+  error: PropTypes.bool
 };
 
 export default Text;
