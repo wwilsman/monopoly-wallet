@@ -112,7 +112,7 @@ export function connectToGameRoom(socket, gameID) {
   return promisifySocketEvent(socket, {
     emit: 'room:connect',
     resolve: 'room:connected',
-    reject: 'room:error'
+    reject: 'game:error'
   })(gameID);
 }
 
@@ -127,7 +127,7 @@ export function joinGameRoom(socket, name, token) {
   return promisifySocketEvent(socket, {
     emit: 'game:join',
     resolve: 'game:joined',
-    reject: 'room:error'
+    reject: 'game:error'
   })(name, token);
 }
 

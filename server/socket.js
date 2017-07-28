@@ -7,13 +7,12 @@ export default function setup(socket, GameRoom) {
 
   /**
    * Emits a room error
-   * @param {Error} error - Error instance
+   * @param {Error|Object} error - Error or Error-like object
    */
   const emitError = (error) => {
-    socket.emit('room:error', {
-      name: error.name,
-      message: error.message
-    });
+    const { name, message } = error;
+    const type = name === 'MonopolyError' ? 'game' : 'room';
+    socket.emit(`${type}:error`, { name, message });
   };
 
   /**
@@ -106,9 +105,7 @@ export default function setup(socket, GameRoom) {
       for (let event in gameActions) {
         socket.on(event, (...args) => {
           const promised = gameActions[event];
-          promised(socket, ...args).catch((error) => {
-            socket.emit('game:error', error);
-          });
+          promised(socket, ...args).catch(emitError);
         });
       }
     }).catch(emitError);
