@@ -21,33 +21,25 @@ module.exports = function(config) {
       'test/app/**/*-test.js': ['webpack']
     },
 
-    webpack: Object.assign({}, webpackConfig, {
-      // help loading our "fixtures"
+    webpack: Object.assign(webpackConfig, {
       module: {
-        rules: webpackConfig.module.rules.concat([{
-          test: /\.yml/,
-          use: ['json-loader', 'yaml-loader']
-        }])
+        rules: webpackConfig.module.rules.concat([
+          {
+            test: /\.yml/,
+            use: ['json-loader', 'yaml-loader']
+          }
+        ])
       },
-      // mock socket.io via aliasing
       resolve: {
         alias: {
           'mock-socket': 'mock-socket/src',
           'socket.io-client': 'mock-socket/socket-io'
         }
-      },
-      // enzyme externals
-      externals: {
-        'react/addons': true,
-        'react/lib/ExecutionEnvironment': true,
-        'react/lib/ReactContext': true
       }
     }),
 
-    webpackMiddleware: webpackConfig.devServer,
-
-    mochaReporter: {
-      showDiff: true
+    webpackMiddleware: {
+      stats: 'errors-only'
     },
 
     plugins: [

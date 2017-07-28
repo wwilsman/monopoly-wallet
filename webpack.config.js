@@ -44,50 +44,57 @@ module.exports = {
   }),
 
   module: {
-    rules: [{
-      test: /\.js$/,
-      exclude: /node_modules/,
-      loader: 'babel-loader',
-      options: {
-        babelrc: false,
-        presets: [
-          ['env', { modules: false }],
-          'stage-2',
-          'react'
-        ],
-        plugins: env({
-          development: [
-            'react-hot-loader/babel',
-            'transform-decorators-legacy'
+    rules: [
+      {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          babelrc: false,
+          presets: [
+            ['env', { modules: false }],
+            'stage-2',
+            'react'
           ],
-          production: [
-            'transform-decorators-legacy'
-          ]
-        })
-      }
-    }, {
-      test: /\.css$/,
-      use: [{
-        loader: 'style-loader'
-      }, {
-        loader: 'css-loader',
-        options: {
-          modules: true,
-          sourceMap: true,
-          importLoaders: 2,
-          localIdentName: '[name]__[local]--[hash:base64:5]'
+          plugins: env({
+            development: [
+              'react-hot-loader/babel',
+              'transform-decorators-legacy'
+            ],
+            production: [
+              'transform-decorators-legacy'
+            ]
+          })
         }
-      }, {
-        loader: 'postcss-loader',
-        options: {
-          plugins() {
-            return [
-              require('precss'),
-              require('autoprefixer')
-            ];
+      },
+      {
+        test: /\.css$/,
+        use: [
+          {
+            loader: 'style-loader'
+          },
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              sourceMap: true,
+              importLoaders: 2,
+              localIdentName: '[name]__[local]--[hash:base64:5]'
+            }
+          },
+          {
+            loader: 'postcss-loader',
+            options: {
+              plugins() {
+                return [
+                  require('precss'),
+                  require('autoprefixer')
+                ];
+              }
+            }
           }
-        }
-      }]
-    }]
+        ]
+      }
+    ]
   }
 };

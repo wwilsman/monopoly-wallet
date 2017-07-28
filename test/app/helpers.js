@@ -1,10 +1,14 @@
-/* global before, beforeEach, afterEach  */
+/* global describe, beforeEach, afterEach, it  */
 import React from 'react';
-import { mount } from 'enzyme';
+import {
+  render,
+  unmountComponentAtNode
+} from 'react-dom';
 import ioServer from 'mock-socket/server';
 
 import chai from 'chai';
-import chaiEnzyme from 'chai-enzyme';
+import chaiJQuery from 'chai-jquery';
+import $ from 'jquery';
 
 import {
   createGameState,
@@ -18,8 +22,8 @@ import CONFIG_FIXTURE from '../../server/themes/classic/config.yml';
 import PROPERTY_FIXTURES from '../../server/themes/classic/properties.yml';
 import MESSAGES_FIXTURE from '../../server/themes/classic/messages.yml';
 
-// use chai enzyme matchers
-chai.use(chaiEnzyme());
+// use chai jquery matchers
+chai.use((chai, utils) => chaiJQuery(chai, utils, $));
 
 // always use fixtures for themes
 GameRoom.load = (theme, name = theme) => {
@@ -33,81 +37,76 @@ GameRoom.load = (theme, name = theme) => {
 // used to store the current running test's context
 let testContext = null;
 
+// handy exports
+export {
+  describe,
+  beforeEach,
+  afterEach
+};
+
 /**
  * Starts a mock websocket server and mounts our app
- * @param {Object} [game={}] - Game state transforms
- * @param {Object} [config={}] - Custom game configuration
- * @param {Function} [beforeEach] - Before each callback
- * @param {Function} [afterEach] - After each callback
+ * @param {String} name - Name of the test suite
+ * @param {Function} setup - suite definition
  */
-export function setupAppForAcceptanceTesting({
-  game, config,
-  beforeEach:beforeEachCB,
-  afterEach:afterEachCB
-} = {}) {
-  let rootElement, unsubscribeFromStore;
+export function describeApplication(name, setup) {
+  describe(name, function() {
+    let rootElement, unsubscribeFromStore;
 
-  mockGame({ state: game, config });
+    // mock a basic game
+    mockGame();
 
-  beforeEach(async function() {
-    // store our current testing context for other helpers
-    testContext = this;
+    // app setup
+    beforeEach(async function() {
+      testContext = this;
 
-    // create the app root DOM node
-    rootElement = document.createElement('div');
-    rootElement.id = 'testing-root';
-    document.body.appendChild(rootElement);
+      // create the app root DOM node
+      rootElement = document.createElement('div');
+      rootElement.id = 'testing-root';
+      document.body.appendChild(rootElement);
 
-    // setup a mock websocket server
-    this.io = new ioServer('/');
-    this.io.on('connection', GameRoom.setup);
+      // setup a mock websocket server
+      this.io = new ioServer('/');
+      this.io.on('connection', GameRoom.setup);
 
-    // mount our app
-    this.$ = mount(<AppRoot test/>, {
-      attachTo: rootElement
-    });
+      // mount our app
+      this.app = render(<AppRoot test/>, rootElement);
 
-    // useful things to assert against
-    this.app = this.$.instance();
-    this.state = this.app.store.getState();
-    this.location = this.state.router.location;
-
-    // keep local contexts up to date with the app
-    unsubscribeFromStore = this.app.store.subscribe(() => {
+      // useful things to assert against
       this.state = this.app.store.getState();
       this.location = this.state.router.location;
+
+      // keep local contexts up to date with the app
+      unsubscribeFromStore = this.app.store.subscribe(() => {
+        this.state = this.app.store.getState();
+        this.location = this.state.router.location;
+      });
+
+      // helper to change routes
+      this.visit = (...args) => this.app.history.push(...args);
+
+      // wait until the app has loaded before continuing
+      await waitUntil(() => !this.state.app.loading);
     });
 
-    // wait until the app is has loaded before continuing
-    await waitUntil(() => (
-      !this.state.app.loading
-    ));
+    afterEach(async function() {
+      // wait until all cleanup has finished
+      await new Promise((resolve) => {
+        unsubscribeFromStore();
+        unsubscribeFromStore = null;
 
-    // convinience hook
-    if (beforeEachCB) {
-      await beforeEachCB.call(this);
-    }
-  });
+        unmountComponentAtNode(rootElement);
+        document.body.removeChild(rootElement);
+        rootElement = null;
 
-  afterEach(async function() {
-    // convinience hook
-    if (afterEachCB) {
-      await afterEachCB.call(this);
-    }
+        testContext = null;
 
-    // wait until all cleanup has finished
-    await new Promise((resolve) => {
-      unsubscribeFromStore();
-      this.$.detach();
-
-      document.body.removeChild(rootElement);
-
-      unsubscribeFromStore = null;
-      rootElement = null;
-      testContext = null;
-
-      this.io.stop(resolve);
+        this.io.stop(resolve);
+      });
     });
+
+    // passthrough to our tests
+    setup.call(this);
   });
 }
 
@@ -148,75 +147,93 @@ export function mockGame({
 }
 
 /**
- * Uses the app's history object to go to the specified location
- * @param {String|Object} location - URL or location object
- * @returns {Promise} A promise that resolves after the next tick
- */
-export function visit(location) {
-  if (testContext) {
-    testContext.app.history.push(location);
-  }
-
-  return nextTick();
-}
-
-/**
- * Clicks the rendered DOM element using the native method
- * @param {Object} wrapper - Enzyme wrapper instance
- * @returns {Promise} A promise that resolves after the next tick
- */
-export function click(wrapper) {
-  wrapper.getDOMNode().click();
-  return nextTick();
-}
-
-/**
- * Set's the value of the rendered DOM element and triggers a native change event
- * @param {Object} wrapper - Enzyme wrapper instance
- * @param {String} value - String to set the value as
- * @returns {Promise} A promise that resolves after the next tick
- */
-export function fill(wrapper, value) {
-  const node = wrapper.getDOMNode();
-
-  node.value = value;
-  node.dispatchEvent(new Event('change'));
-
-  return nextTick();
-}
-
-/**
- * Creates a loop that resolves after `fn` returns true or rejects after a timeout
+ * Loops over an assertion that `fn` returns true and resolves once it passes
  * @param {Function} fn - Function that returns true to resolve the promise
  * @returns {Promise} Resolves when `fn` is true or rejects after a timeout
  */
 export function waitUntil(fn) {
-  return new Promise((resolve, reject) => {
-    const start = Date.now();
-
-    const loop = () => {
-      const ellapsed = Date.now() - start;
-      const result = fn.call(testContext);
-
-      if (result || ellapsed >= 2000) {
-        if (ellapsed >= 2000) {
-          reject(new Error('Timeout exceeded'));
-        } else resolve();
-      } else requestAnimationFrame(loop);
-    };
-
-    loop();
-  });
+  return loopedAssert(() => {
+    chai.expect(fn()).to.be.true;
+  }).call(testContext);
 }
 
 /**
- * Return a promise that resolves after the next rendering tick
- * @returns {Promise}
+ * This turns every call of `it` into a "convergent assertion." The
+ * assertion is run every 10ms until it is either true, or it times
+ * out. This makes it incredibly robust in the face of asynchronous
+ * operations which could happen instantly, or they could happen after
+ * 1.5 seconds. The assertion doesn't care unless until it's reflected
+ * in the UI.
+ *
+ * The only caveat is that all assertions should be "pure" that is to
+ * say, completely without side-effects.
+ *
+ * good:
+ *   it('has some state', function() {
+ *     expect(thing).to.be('awesome');
+ *   });
+ *
+ * bad:
+ *   it('twiddles when clicked', function() {
+ *     click('.a-button');
+ *     expect(thing).to.be('set');
+ *   });
+ *
+ * @param {String} name - Name of the test
+ * @param {Function} [assertion] - The function to assert
  */
-function nextTick() {
-  return new Promise((resolve) => {
-    requestAnimationFrame(() => {
-      setTimeout(resolve, 0);
+const ogIt = window.it;
+it.immediately = ogIt;
+it.skip = ogIt.skip;
+it.only = itOnly;
+it.still = itStill;
+export { it };
+
+function it(name, assertion) {
+  return !assertion ? ogIt(name) :
+    ogIt(name, loopedAssert(assertion));
+}
+
+function itOnly(name, assertion) {
+  return !assertion ? ogIt.only(name) :
+    ogIt.only(name, loopedAssert(assertion));
+}
+
+function itStill(name, assertion, time) {
+  return !assertion ? ogIt(name) :
+    ogIt(name, loopedAssert(assertion, true, time));
+}
+
+function loopedAssert(assertion, invert, time) {
+  return function() {
+    const test = this;
+    const start = Date.now();
+    const timeout = time || test.timeout();
+    const interval = 10;
+
+    return new Promise((resolve, reject) => {
+      (function loop() {
+        const ellapsed = Date.now() - start;
+        const doLoop = ellapsed + interval < timeout;
+
+        try {
+          const ret = assertion.call(test);
+
+          if (invert && doLoop) {
+            window.setTimeout(loop, interval);
+          } else if (ret && typeof ret.then === 'function') {
+            ret.then(resolve);
+          } else {
+            resolve();
+          }
+        } catch(error) {
+          if (!invert && doLoop) {
+            window.setTimeout(loop, interval);
+          } else if (invert || !doLoop) {
+            reject(error);
+          }
+        }
+      })();
     });
-  });
+  };
 }
