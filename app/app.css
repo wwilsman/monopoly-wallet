@@ -34,7 +34,7 @@
     }
   }
 
-  #react-root, #react-testing {
+  #react-root, #testing-root {
     width: 100%;
     height: 100%;
     display: flex;
