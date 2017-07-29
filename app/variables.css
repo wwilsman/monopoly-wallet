@@ -19,6 +19,7 @@
   --color-text: #777787;
   --color-text-light: #9999A9;
   --color-text-lighter: #FFFFFF;
+  --color-text-dark: #666676;
 
   /* font sizes */
   --size-sm: 0.8125rem;
@@ -38,6 +39,7 @@
   --radius-lg: 0.375rem;
 
   /* shadows */
+  --shadow-xs: 0 0.0625rem 0.125rem color(black a(20%));
   --shadow-sm: 0 0.125rem 0.25rem color(black a(50%));
   --shadow-med: 0 0.25rem 0.625rem color(black a(40%));
   --shadow-lg: 0 0.375rem 1rem color(black a(30%));

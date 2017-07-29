@@ -7,10 +7,9 @@ import styles from './button.css';
 const cx = classNames.bind(styles);
 
 const Button = ({
-  color,
+  type,
   disabled,
   loading,
-  small,
   block,
   onClick,
   linkTo,
@@ -18,11 +17,10 @@ const Button = ({
   ...props
 }) => {
   const className = cx('button', {
-    'block': block,
-    'small': small,
+    [type]: !!type,
     'is-disabled': disabled,
     'is-loading': loading,
-    [color]: !!color
+    'is-block': block
   });
 
   return linkTo && !(disabled || loading) ? (
@@ -43,10 +41,13 @@ const Button = ({
 };
 
 Button.propTypes = {
-  color: PropTypes.oneOf(['red', 'green', 'blue']),
+  type: PropTypes.oneOf([
+    'primary',
+    'secondary',
+    'alert'
+  ]).isRequired,
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
-  small: PropTypes.bool,
   block: PropTypes.bool,
   onClick: PropTypes.func,
   linkTo: PropTypes.string

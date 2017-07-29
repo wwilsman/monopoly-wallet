@@ -33,7 +33,7 @@ class Welcome extends Component {
 
         <Section align="center">
           <Button
-              color="green"
+              type="secondary"
               loading={loading}
               onClick={this.newGame}
               data-test-welcome-new-game-btn>
@@ -41,7 +41,7 @@ class Welcome extends Component {
           </Button>
 
           <Button
-              color="blue"
+              type="primary"
               disabled={loading}
               linkTo="/join"
               data-test-welcome-join-game-btn>
