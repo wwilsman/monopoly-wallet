@@ -1,0 +1,22 @@
+@import '../../variables';
+
+.title {
+  color: var(--color-text-lighter);
+  font-size: var(--size-xl);
+  text-align: center;
+  text-shadow: var(--shadow-sm);
+  text-transform: uppercase;
+}
+
+.heading {
+  @extend .title;
+  font-size: var(--size-lg);
+}
+
+.is-center {
+  text-align: center;
+}
+
+.is-error {
+  color: var(--color-alert);
+}

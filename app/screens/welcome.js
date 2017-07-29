@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { newGame } from '../actions/game';
 
 import { Container, Section } from '../ui/layout';
-import Text from '../ui/text';
+import Title from '../ui/typography/title';
 import Button from '../ui/button';
 
 @connect(({ game }) => ({
@@ -26,9 +26,9 @@ class Welcome extends Component {
     return (
       <Container>
         <Section justify="center">
-          <Text h1 center>
+          <Title>
             Monopoly<br/>Wallet
-          </Text>
+          </Title>
         </Section>
 
         <Section align="center">

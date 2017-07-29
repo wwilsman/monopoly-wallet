@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Switch } from 'react-router-dom';
 
 import { Container, Section } from '../ui/layout';
-import Text from '../ui/text';
+import Text from '../ui/typography/text';
 
 @connect(({ app }) => ({
   loading: app.loading
