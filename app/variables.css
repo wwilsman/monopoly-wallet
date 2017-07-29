@@ -1,36 +1,44 @@
 :root {
-  /* primary colors */
-  --color-red: #FF0000;
-  --color-green: #32C864;
-  --color-blue: #3264C8;
+  /* colors */
+  --color-primary: #2196F3;          /* blue 500 */
+  --color-primary-focus: #1E88E5;    /* blue 600 */
+  --color-primary-active: #1976D2;   /* blue 700 */
+  --color-secondary: #4CAF50;        /* green 500 */
+  --color-secondary-focus: #43A047;  /* green 600 */
+  --color-secondary-active: #388E3C; /* green 700 */
+  --color-alert: #F44336;            /* red 500 */
+  --color-alert-focus: #E53935;      /* red 600 */
+  --color-alert-active: #D32F2F;     /* red 700 */
 
   /* background */
   --color-bg: #333343;
   --color-bg-light: #444454;
-  --color-bg-dark: #222232;
+  --color-bg-lighter: #555565;
 
   /* text colors */
-  --color-text: #AAAABA;
-  --color-text-light: #FFFFFF;
+  --color-text: #777787;
+  --color-text-light: #9999A9;
+  --color-text-lighter: #FFFFFF;
 
   /* font sizes */
-  --size-xs: 0.6rem;
-  --size-sm: 0.8rem;
-  --size-med: 1rem;
-  --size-lg: 1.5rem;
-  --size-xl: 2rem;
+  --size-sm: 0.8125rem;
+  --size-med: 0.9375rem;
+  --size-lg: 1.75rem;
+  --size-xl: 2.25rem;
 
   /* spacing */
-  --pad-xs: 0.5rem;
-  --pad-sm: 1rem;
-  --pad-med: 1.5rem;
-  --pad-lg: 2rem;
+  --pad-xs: 0.4375rem;
+  --pad-sm: 0.625rem;
+  --pad-med: 1.25rem;
+  --pad-lg: 1.875rem;
   --pad-xl: 2.5rem;
 
   /* radius */
-  --radius-med: 0.3rem;
+  --radius-med: 0.25rem;
+  --radius-lg: 0.375rem;
 
   /* shadows */
-  --shadow-sm: 0.1rem 0.1rem 0.2rem color(black a(40%));
-  --shadow-med: 0.2rem 0.2rem 0.4rem color(black a(30%));
+  --shadow-sm: 0 0.125rem 0.25rem color(black a(50%));
+  --shadow-med: 0 0.25rem 0.625rem color(black a(40%));
+  --shadow-lg: 0 0.375rem 1rem color(black a(30%));
 }
