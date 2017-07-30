@@ -147,6 +147,17 @@ export function mockGame({
 }
 
 /**
+ * Pauses a test by removing the context timeout and returning a promise
+ * that never resolves
+ */
+window.pauseTest = () => {
+  if (testContext) {
+    testContext.timeout(0);
+    return new Promise(() => {});
+  }
+};
+
+/**
  * Loops over an assertion that `fn` returns true and resolves once it passes
  * @param {Function} fn - Function that returns true to resolve the promise
  * @returns {Promise} Resolves when `fn` is true or rejects after a timeout
