@@ -24,7 +24,6 @@
     "yamljs": "^0.2.10"
   },
   "devDependencies": {
-    "classnames": "^2.2.5",
     "autoprefixer": "^7.1.1",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",
@@ -38,6 +37,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^7.0.0",
     "chai-jquery": "^2.0.0",
+    "classnames": "^2.2.5",
     "css-loader": "^0.28.4",
     "eslint": "^3.19.0",
     "history": "^4.6.3",
@@ -62,7 +62,6 @@
     "react-router-dom": "^4.1.1",
     "react-router-redux": "next",
     "react-test-renderer": "^15.6.1",
-    "react-trigger-change": "^1.0.2",
     "style-loader": "^0.18.2",
     "webpack": "^3.0.0",
     "webpack-dev-middleware": "^1.11.0",
