@@ -27,11 +27,9 @@ const socketActions = {
     dispatch(gameDoneLoading());
   },
   'game:error': (dispatch) => (error) => {
-    console.error(`${error.name}: ${error.message}`);
     dispatch(gameError(error.message));
   },
   'room:error': (dispatch) => (error) => {
-    console.error(`${error.name}: ${error.message}`);
     dispatch(appError(error.message));
   }
 };
