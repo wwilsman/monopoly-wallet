@@ -17,6 +17,11 @@
   &.no-flex {
     flex: none;
   }
+
+  &.is-collapsed {
+    padding-top: 0;
+    padding-bottom: 0;
+  }
 }
 
 .align-center { align-items: center; }

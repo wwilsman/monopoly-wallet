@@ -10,12 +10,14 @@ const Section = ({
   flex,
   align,
   justify,
+  collapse,
   ...props
 }) => {
   const className = cx('section', {
-    'row': !!row,
     [`align-${align}`]: !!align,
-    [`justify-${justify}`]: !!justify
+    [`justify-${justify}`]: !!justify,
+    'is-collapsed': collapse,
+    row
   });
 
   return (
@@ -28,6 +30,7 @@ const Section = ({
 
 Section.propTypes = {
   row: PropTypes.bool,
+  collapse: PropTypes.bool,
   flex: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.oneOf(['none'])
