@@ -1,5 +1,6 @@
 export const GAME_NEW = 'GAME_NEW';
 export const GAME_SYNC = 'GAME_SYNC';
+export const GAME_CONNECT = 'GAME_CONNECT';
 export const GAME_ERROR = 'GAME_ERROR';
 export const GAME_LOADING_DONE = 'GAME_LOADING_DONE';
 
@@ -11,6 +12,14 @@ export const newGame = () => ({
 export const syncGame = (game) => ({
   type: GAME_SYNC,
   game
+});
+
+export const connectToGame = (room) => ({
+  type: GAME_CONNECT,
+  socket: {
+    emit: 'room:connect',
+    args: [room]
+  }
 });
 
 export const gameError = (message) => ({

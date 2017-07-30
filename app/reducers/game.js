@@ -1,6 +1,7 @@
 import {
   GAME_NEW,
   GAME_SYNC,
+  GAME_CONNECT,
   GAME_ERROR,
   GAME_LOADING_DONE
 } from '../actions/game';
@@ -8,7 +9,7 @@ import {
 const initialState = {
   room: '',
   loading: false,
-  error: false,
+  error: '',
   theme: '',
   state: {},
   config: {}
@@ -17,6 +18,7 @@ const initialState = {
 export default (state = initialState, action) => {
   switch (action.type) {
     case GAME_NEW:
+    case GAME_CONNECT:
       return { ...state,
         loading: true
       };

@@ -3,7 +3,8 @@ import {
 } from 'react-router-redux';
 import {
   appError,
-  appDoneLoading
+  appDoneLoading,
+  syncPlayers
 } from './actions/app';
 import {
   syncGame,
@@ -18,6 +19,11 @@ const socketActions = {
   'game:created': (dispatch) => (game) => {
     dispatch(syncGame(game));
     dispatch(push(`/${game.id}/join`));
+    dispatch(gameDoneLoading());
+  },
+  'room:connected': (dispatch) => ({ players, ...game }) => {
+    dispatch(syncGame(game));
+    dispatch(syncPlayers(players));
     dispatch(gameDoneLoading());
   },
   'game:error': (dispatch) => (error) => {
