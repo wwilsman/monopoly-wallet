@@ -11,7 +11,7 @@ const uid = () => `Input-${nextId++}`;
 class Input extends Component {
   static propTypes = {
     id: PropTypes.string,
-    center: PropTypes.bool,
+    alt: PropTypes.bool,
     length: PropTypes.number,
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
@@ -64,9 +64,10 @@ class Input extends Component {
 
   render() {
     const {
+      alt,
       label,
       value,
-      center,
+      error,
       placeholder
     } = this.props;
 
@@ -77,7 +78,7 @@ class Input extends Component {
     } = this.state;
 
     const rootClassName = cx('root', {
-      'is-center': center
+      'is-error': !!error
     });
 
     const labelClassName = cx('label', {
@@ -88,7 +89,8 @@ class Input extends Component {
     const inputId = `${id}-input`;
     const inputClassName = cx('input', {
       'has-focus': focused,
-      'is-empty': empty
+      'is-empty': empty,
+      alt
     });
 
     return (
@@ -98,7 +100,13 @@ class Input extends Component {
         <label
             className={labelClassName}
             htmlFor={inputId}>
-          {label}
+          <span>{label}</span>
+
+          {!!error && (
+            <span className={styles.error}>
+              {error}
+            </span>
+          )}
         </label>
         <input
             id={inputId}
