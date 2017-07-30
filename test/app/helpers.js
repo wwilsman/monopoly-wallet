@@ -210,7 +210,7 @@ function itOnly(name, assertion) {
     ogIt.only(name, loopedAssert(assertion));
 }
 
-function itStill(name, assertion, time) {
+function itStill(name, assertion, time = 200) {
   return !assertion ? ogIt(name) :
     ogIt(name, loopedAssert(assertion, true, time));
 }
