@@ -3,10 +3,9 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './input.css';
 
-const cx = classNames.bind(styles);
+import { uuid, dataAttrs } from '../../utils';
 
-let nextId = 0;
-const uid = () => `Input-${nextId++}`;
+const cx = classNames.bind(styles);
 
 class Input extends Component {
   static propTypes = {
@@ -20,19 +19,11 @@ class Input extends Component {
   };
 
   state = {
-    id: this.props.id || uid(),
     focused: false,
     empty: false
   };
 
-  componentDidReceiveProps(nextProps) {
-    const { id } = this.state;
-    const { id:nextId } = nextProps;
-
-    if (nextId && nextId !== id) {
-      this.setState({ id: nextId });
-    }
-  }
+  elementId = uuid(Input);
 
   handleChange = (e) => {
     const { length, onChangeText } = this.props;
@@ -68,11 +59,11 @@ class Input extends Component {
       label,
       value,
       error,
-      placeholder
+      placeholder,
+      ...props
     } = this.props;
 
     const {
-      id,
       focused,
       empty
     } = this.state;
@@ -86,7 +77,7 @@ class Input extends Component {
       'is-empty': empty
     });
 
-    const inputId = `${id}-input`;
+    const inputId = `${this.elementId}-input`;
     const inputClassName = cx('input', {
       'has-focus': focused,
       'is-empty': empty,
@@ -95,15 +86,19 @@ class Input extends Component {
 
     return (
       <div
-          id={id}
-          className={rootClassName}>
+          id={this.elementId}
+          className={rootClassName}
+          {...dataAttrs(props)}>
         <label
             className={labelClassName}
-            htmlFor={inputId}>
+            htmlFor={inputId}
+            data-test-label>
           <span>{label}</span>
 
           {!!error && (
-            <span className={styles.error}>
+            <span
+                className={styles.error}
+                data-test-error>
               {error}
             </span>
           )}
@@ -115,7 +110,8 @@ class Input extends Component {
             placeholder={placeholder}
             onChange={this.handleChange}
             onFocus={this.handleFocus}
-            onBlur={this.handleBlur}/>
+            onBlur={this.handleBlur}
+            data-test-input/>
       </div>
     );
   }
