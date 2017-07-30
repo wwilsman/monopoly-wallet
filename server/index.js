@@ -6,6 +6,7 @@ import io from 'socket.io';
 import { MongoClient } from 'mongodb';
 
 import GameRoom from './room';
+import MonopolyError from './error';
 
 // environment specific variables
 const ENV = {
@@ -53,26 +54,28 @@ GameRoom.set('loader', (theme, file = theme) => {
 });
 
 // mongodb persistence
-MongoClient.connect(ENV.mongodb.uri)
-  .then((db) => GameRoom.set('db', {
+MongoClient.connect(ENV.mongodb.uri).then((db) => {
+  const resolveGame = (game) => new Promise((resolve, reject) => {
+    if (!game) {
+      reject(new MonopolyError('Game not found'));
+    } else {
+      const { _id:id, state, config } = game;
+      resolve({ id, state, config });
+    }
+  });
+
+  GameRoom.set('db', {
     find: (id) => db.collection('games')
-      .findOne({ _id: id }).then((game) => (
-        new Promise((resolve, reject) => {
-          if (!game) return reject('Game not found');
-          const { state, config } = game;
-          return resolve({ id, state, config });
-        })
-      )),
+      .findOne({ _id: id }).then(resolveGame),
     save: ({ id, ...game }) => db.collection('games')
       .findOneAndUpdate({ _id: id }, { $set: game }, {
         returnOriginal: false,
         upsert: true
-      }).then((doc) => new Promise((resolve, reject) => {
-        if (!doc.ok) return reject('Game not found');
-        const { state, config } = doc.value;
-        return resolve({ id, state, config });
-      }))
-  }));
+      }).then((doc) => (
+        resolveGame(doc.ok && doc.value)
+      ))
+  });
+});
 
 // start the server
 const server = app.listen(ENV.port, () => {
