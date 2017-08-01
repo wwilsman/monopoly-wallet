@@ -1,11 +1,13 @@
 module.exports = {
   env: {
     es6: true,
-    node: true
+    node: true,
+    browser: true
   },
 
   extends: [
-    'eslint:recommended'
+    'eslint:recommended',
+    'plugin:react/recommended'
   ],
 
   parser: 'babel-eslint',
@@ -15,12 +17,19 @@ module.exports = {
     sourceType: 'module',
     ecmaFeatures: {
       modules: true,
-      experimentalObjectRestSpread: true
+      experimentalObjectRestSpread: true,
+      jsx: true
     }
   },
 
+  plugins: [
+    'react'
+  ],
+
   rules: {
     'indent': ['error', 2, { SwitchCase: 1 }],
+    'no-console': 'warn',
+    'no-extra-boolean-cast': 'off',
     'semi': ['error', 'always']
   }
 };
