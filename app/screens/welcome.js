@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
 import { newGame } from '../actions/game';
@@ -14,6 +15,11 @@ import Button from '../ui/button';
 })
 
 class Welcome extends Component {
+  static propTypes = {
+    loading: PropTypes.bool,
+    newGame: PropTypes.func.isRequired
+  };
+
   newGame = () => {
     this.props.newGame();
   };

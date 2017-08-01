@@ -12,6 +12,7 @@ class Input extends Component {
     id: PropTypes.string,
     alt: PropTypes.bool,
     length: PropTypes.number,
+    error: PropTypes.string,
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
     placeholder: PropTypes.string,

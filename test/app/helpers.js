@@ -1,4 +1,4 @@
-/* global describe, beforeEach, afterEach, it  */
+/* global describe, beforeEach, afterEach  */
 import React from 'react';
 import {
   render,
@@ -15,7 +15,6 @@ import {
   transformGameState
 } from '../helpers';
 import GameRoom from '../../server/room';
-import MonopolyError from '../../server/error';
 import AppRoot from '../../app/root';
 
 import CONFIG_FIXTURE from '../../server/themes/classic/config.yml';

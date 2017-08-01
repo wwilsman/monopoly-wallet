@@ -1,5 +1,4 @@
 import { expect } from 'chai';
-import $ from 'jquery';
 
 import {
   describe,

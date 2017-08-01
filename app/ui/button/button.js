@@ -27,8 +27,9 @@ const Button = ({
     <Link
         to={linkTo}
         className={className}
-        children={children}
-        {...props}/>
+        {...props}>
+      {children}
+    </Link>
   ) : (
     <button
         className={className}
@@ -50,7 +51,8 @@ Button.propTypes = {
   loading: PropTypes.bool,
   block: PropTypes.bool,
   onClick: PropTypes.func,
-  linkTo: PropTypes.string
+  linkTo: PropTypes.string,
+  children: PropTypes.any
 };
 
 export default Button;

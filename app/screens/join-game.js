@@ -7,8 +7,6 @@ import { connectToGame } from '../actions/game';
 
 import { Container, Section } from '../ui/layout';
 import Heading from '../ui/typography/heading';
-import Input from '../ui/input';
-import Button from '../ui/button';
 
 import FindGameModal from '../game/find-game-modal';
 
@@ -39,8 +37,7 @@ class JoinGame extends Component {
     const {
       room,
       match: { params },
-      connectToGame,
-      push
+      connectToGame
     } = this.props;
 
     if (params.room && params.room !== room) {
@@ -78,6 +75,7 @@ class JoinGame extends Component {
         {!room ? (
           <FindGameModal
               error={error}
+              loading={loading}
               onFindGame={connectToGame}/>
         ) : [
         ]}

@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { click, clickable, fill } from './helpers';
+import { click, fill } from './helpers';
 
 const SELECTORS = {
   FIND_GAME_MODAL: '[data-test-find-game-modal]',

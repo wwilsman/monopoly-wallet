@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import PropTypes from 'prop-types';
 import io from 'socket.io-client';
 import { Provider } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
@@ -16,6 +17,10 @@ import Welcome from './screens/welcome';
 import JoinGame from './screens/join-game';
 
 class AppRoot extends Component {
+  static propTypes = {
+    test: PropTypes.bool
+  };
+
   history = !this.props.test ?
     createBrowserHistory() :
     createMemoryHistory();

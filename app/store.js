@@ -37,4 +37,4 @@ export default ({
   }
 
   return store;
-}
+};

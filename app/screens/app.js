@@ -12,7 +12,8 @@ import Text from '../ui/typography/text';
 
 class App extends Component {
   static propTypes = {
-    loading: PropTypes.bool.isRequired
+    loading: PropTypes.bool.isRequired,
+    children: PropTypes.any
   };
 
   render() {
@@ -28,7 +29,9 @@ class App extends Component {
         </Section>
       </Container>
     ) : (
-      <Switch children={children}/>
+      <Switch>
+        {children}
+      </Switch>
     );
   }
 }
