@@ -9,8 +9,10 @@ const Container = ({
   row,
   align,
   justify,
+  tagName,
   ...props
 }) => {
+  const Component = tagName || 'div';
   const className = cx('container', {
     'row': !!row,
     [`align-${align}`]: !!align,
@@ -18,14 +20,15 @@ const Container = ({
   });
 
   return (
-    <div className={className} {...props}/>
+    <Component className={className} {...props}/>
   );
 };
 
 Container.propTypes = {
   row: PropTypes.bool,
   align: PropTypes.oneOf(['center', 'start']),
-  justify: PropTypes.oneOf(['center', 'start', 'between', 'stretch'])
+  justify: PropTypes.oneOf(['center', 'start', 'between', 'stretch']),
+  tagName: PropTypes.string
 };
 
 export default Container;
