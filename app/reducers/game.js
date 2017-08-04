@@ -26,6 +26,7 @@ export default (state = initialState, action) => {
     case GAME_SYNC:
       return { ...state,
         room: action.game.id,
+        theme: action.game.theme,
         state: action.game.state,
         config: action.game.config
       };

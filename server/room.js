@@ -70,19 +70,20 @@ export default class GameRoom {
 
   /**
    * Creates a new game state based on a theme
-   * @param {Object} [options={}] - Optional custom game options
+   * @param {String} [theme="classic"] - Theme name
+   * @param {Object} [options={}] - Custom game options
    * @returns {Promise} A promise that resolves to the new game state
    */
-  static new(options = {}) {
+  static new({ theme = 'classic', ...options } = {}) {
     if (!this.db) return Promise.reject('No persistence layer found');
 
-    const config = { ...this.load('config'), ...options };
-    const state = createGameState(this.load('properties'), config);
+    const config = { ...this.load(theme, 'config'), ...options };
+    const state = createGameState(this.load(theme, 'properties'), config);
 
     const createGame = () => {
       const id = randomString().toLowerCase();
       return this.db.find(id).then(createGame)
-        .catch(() => this.db.save({ id, state, config }));
+        .catch(() => this.db.save({ id, theme, state, config }));
     };
 
     return createGame();
@@ -125,17 +126,19 @@ export default class GameRoom {
   /**
    * Game room constructor
    * @param {String} id - Game room ID
+   * @param {Object} theme - Game theme
    * @param {Object} state - Game state
    * @param {Object} config - Game config
    */
-  constructor({ id, state, config }) {
+  constructor({ id, theme, state, config }) {
     this.id = id;
+    this.theme = theme;
     this.config = config;
     this.sockets = new Set();
     this.players = new Map();
     this.polls = {};
 
-    this.messages = this.constructor.load('messages');
+    this.messages = this.constructor.load(theme, 'messages');
     this.store = createGame(state, config, this.messages);
     this.game = this.store.getState();
 
@@ -160,6 +163,7 @@ export default class GameRoom {
   get state() {
     return {
       id: this.id,
+      theme: this.theme,
       state: this.game,
       config: this.config,
       players: toArray(this.players.values())

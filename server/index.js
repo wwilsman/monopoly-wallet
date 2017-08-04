@@ -55,12 +55,12 @@ GameRoom.set('loader', (theme, file = theme) => {
 
 // mongodb persistence
 MongoClient.connect(ENV.mongodb.uri).then((db) => {
-  const resolveGame = (game) => new Promise((resolve, reject) => {
-    if (!game) {
+  const resolveGame = (doc) => new Promise((resolve, reject) => {
+    if (!doc) {
       reject(new MonopolyError('Game not found'));
     } else {
-      const { _id:id, state, config } = game;
-      resolve({ id, state, config });
+      const { _id:id, ...game } = doc;
+      resolve({ id, ...game });
     }
   });
 
