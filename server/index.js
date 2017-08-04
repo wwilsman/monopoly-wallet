@@ -38,6 +38,12 @@ if (ENV.environment === 'development') {
   app.use(webpackHotMiddleware(compiler));
 }
 
+// serve our theme icons
+app.use('/icons/:theme.svg', (req, res) => {
+  const iconsPath = `./themes/${req.params.theme}/icons.svg`;
+  res.sendFile(path.join(__dirname, iconsPath));
+});
+
 // all other endpoints render the app
 app.use(/\/[^.]*$/, (req, res) => {
   res.sendFile(path.join(__dirname, '../public/index.html'));
