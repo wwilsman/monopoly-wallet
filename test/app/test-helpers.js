@@ -15,7 +15,7 @@ export const after = window.after;
 export function pauseTest(context) {
   if (context) context.timeout(0);
   return new Promise(() => {});
-};
+}
 
 /**
  * Creates a promise that will only resolve once a give condition has

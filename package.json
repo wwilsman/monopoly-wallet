@@ -7,13 +7,9 @@
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
   "scripts": {
-    "build": "NODE_ENV=production babel server -d dist && webpack",
-    "start": "if [ -d './dist' ]; then node dist; else babel-node server; fi",
-    "test": "yarn test:server; yarn test:app",
-    "test:app": "karma start",
-    "test:server": "mocha --recursive test/server",
-    "test:watch:app": "yarn test:app -- --no-single-run",
-    "test:watch:server": "yarn test:server -- --watch"
+    "build": "./bin/build",
+    "start": "./bin/start",
+    "test": "./bin/test"
   },
   "dependencies": {
     "express": "^4.15.3",

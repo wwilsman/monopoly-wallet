@@ -1,0 +1,19 @@
+#!/usr/bin/env bash
+
+export NODE_ENV="test"
+
+test_server() {
+    if [ "$1" == "--watch" ];
+    then yarn run mocha -- --recursive test/server --watch;
+    else yarn run mocha -- --recursive test/server; fi
+}
+
+test_app() {
+    if [ "$1" == "--watch" ];
+    then yarn run karma -- start;
+    else yarn run karma -- start --single-run; fi
+}
+
+if [ "$1" == "server" ]; then test_server $2;
+elif [ "$1" == "app" ]; then test_app $2;
+else test_server && test_app; fi

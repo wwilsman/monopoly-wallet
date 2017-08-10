@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+if [ -d './dist' ]; then node ./dist;
+else yarn run babel-node -- ./server; fi
