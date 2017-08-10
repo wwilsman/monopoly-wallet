@@ -1,14 +1,28 @@
 import $ from 'jquery';
-import { clickable } from './helpers';
-
-const SELECTORS = {
-  NEW_GAME_BUTTON: '[data-test-welcome-new-game-btn]',
-  JOIN_GAME_BUTTON: '[data-test-welcome-join-game-btn]'
-};
+import { click } from './helpers';
 
 export default {
-  get newGameButton() { return $(SELECTORS.NEW_GAME_BUTTON); },
-  get joinGameButton() { return $(SELECTORS.JOIN_GAME_BUTTON); },
-  clickNewGame: clickable(SELECTORS.NEW_GAME_BUTTON),
-  clickJoinGame: clickable(SELECTORS.JOIN_GAME_BUTTON)
+  get $root() {
+    return $('[data-test-welcome]');
+  },
+
+  get title() {
+    return $('[data-test-welcome-title]').text();
+  },
+
+  get $newGameBtn() {
+    return $('[data-test-welcome-new-game-btn]');
+  },
+
+  clickNewGame() {
+    click(this.$newGameBtn);
+  },
+
+  get $joinGameBtn() {
+    return $('[data-test-welcome-join-game-btn]');
+  },
+
+  clickJoinGame() {
+    click(this.$joinGameBtn);
+  }
 };

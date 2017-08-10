@@ -1,27 +1,71 @@
 import $ from 'jquery';
 import { click, fill } from './helpers';
 
-const SELECTORS = {
-  FIND_GAME_MODAL: '[data-test-find-game-modal]',
-  FIND_GAME_LABEL: '[data-test-find-game-input] [data-test-label]',
-  FIND_GAME_INPUT: '[data-test-find-game-input] [data-test-input]',
-  FIND_GAME_ERROR: '[data-test-find-game-input] [data-test-error]',
-  FIND_GAME_BUTTON: '[data-test-find-game-btn]',
-  JOIN_NAME_LABEL: '[data-test-join-name-input] [data-test-label]',
-  JOIN_NAME_INPUT: '[data-test-join-name-input] [data-test-input]',
-  JOIN_BUTTON: '[data-test-join-button]'
-};
-
 export default {
-  get nameLabel() { return $(SELECTORS.JOIN_NAME_LABEL); },
-  get nameInput() { return $(SELECTORS.JOIN_NAME_INPUT); },
-  get findGameModal() { return $(SELECTORS.FIND_GAME_MODAL); },
-  get findGameLabel() { return $(SELECTORS.FIND_GAME_LABEL); },
-  get findGameInput() { return $(SELECTORS.FIND_GAME_INPUT); },
-  get findGameError() { return $(SELECTORS.FIND_GAME_ERROR); },
+  get $root() {
+    return $('[data-test-join-game]');
+  },
 
-  async findGame(room) {
-    fill(SELECTORS.FIND_GAME_INPUT, room);
-    click(SELECTORS.FIND_GAME_BUTTON);
+  get heading() {
+    return $('[data-test-join-game-heading]').text();
+  },
+
+  get $findGameModal() {
+    return $('[data-test-find-game-modal]');
+  },
+
+  get $findGameInput() {
+    return $('[data-test-find-game-input] [data-test-input]');
+  },
+
+  get findGameLabel() {
+    return $('[data-test-find-game-input] [data-test-label]').text();
+  },
+
+  get findGameError() {
+    return $('[data-test-find-game-input] [data-test-error]').text();
+  },
+
+  get $findGameBtn() {
+    return $('[data-test-find-game-btn]');
+  },
+
+  findGame(room) {
+    fill(this.$findGameInput, room);
+    click(this.$findGameBtn);
+  },
+
+  get $nameInput() {
+    return $('[data-test-join-game-name-input] [data-test-input]');
+  },
+
+  get nameLabel() {
+    return $('[data-test-join-game-name-input] [data-test-label]').text();
+  },
+
+  fillName(value) {
+    fill(this.$nameInput, value);
+  },
+
+  get tokensLabel() {
+    return $('[data-test-join-game-token-select] [data-test-label]').text();
+  },
+
+  get $tokens() {
+    return $('[data-test-join-game-token-select] [data-test-radio-item]');
+  },
+
+  selectToken(name) {
+    click(this.$tokens.find(`[title=${name}]`));
+  },
+
+  get $joinBtn() {
+    return $('[data-test-join-game-btn]');
+  },
+
+  joinGame(name, token) {
+    name && this.fillName(name);
+    token && this.selectToken(token);
+    click(this.$joinBtn);
   }
 };

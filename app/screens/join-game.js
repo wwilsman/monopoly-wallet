@@ -68,9 +68,11 @@ class JoinGame extends Component {
     } = this.props;
 
     return (
-      <Container>
+      <Container data-test-join-game>
         <Section flex="none">
-          <Heading>Join Game</Heading>
+          <Heading data-test-join-game-heading>
+            Join Game
+          </Heading>
         </Section>
         {!room ? (
           <FindGameModal

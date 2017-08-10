@@ -1,20 +1,13 @@
 import $ from 'jquery';
 
 export function click(selector) {
-  $(selector).get(0).click();
-}
-
-export function clickable(selector) {
-  return () => click(selector);
+  const node = $(selector).get(0);
+  node && node.click();
 }
 
 export function fill(selector, value) {
   $(selector).val(value)
     .each((i, el) => triggerChange(el));
-}
-
-export function fillable(selector) {
-  return (value) => fill(selector, value);
 }
 
 function triggerChange(node) {

@@ -30,9 +30,9 @@ class Welcome extends Component {
     } = this.props;
 
     return (
-      <Container>
+      <Container data-test-welcome>
         <Section justify="center">
-          <Title>
+          <Title data-test-welcome-title>
             Monopoly<br/>Wallet
           </Title>
         </Section>

@@ -1,26 +1,26 @@
 import { expect } from 'chai';
-import $ from 'jquery';
-
-import {
-  beforeEach,
-  describe,
-  describeApplication,
-  it
-} from '../helpers';
+import { describe, beforeEach, it } from '../test-helpers';
+import { describeApplication, } from '../acceptance-helpers';
 
 import WelcomePage from '../pages/welcome';
 
 describeApplication('welcome screen', function() {
+  beforeEach(function() {
+    return this.visit('/', () => {
+      expect(WelcomePage.$root).to.exist;
+    });
+  });
+
   it('should display the app name', function() {
-    expect($('h1')).to.have.text('MonopolyWallet');
+    expect(WelcomePage.title).to.equal('MonopolyWallet');
   });
 
   it('should display a new game button', function() {
-    expect(WelcomePage.newGameButton).to.have.text('New Game');
+    expect(WelcomePage.$newGameBtn).to.have.text('New Game');
   });
 
   it('should display a join game button', function() {
-    expect(WelcomePage.joinGameButton).to.have.text('Join Game');
+    expect(WelcomePage.$joinGameBtn).to.have.text('Join Game');
   });
 
   describe('visiting a non-existent route', function() {
