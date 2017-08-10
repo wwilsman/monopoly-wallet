@@ -13,12 +13,11 @@ module.exports = function(config) {
     browsers: ['Chrome'],
 
     files: [
-      'node_modules/babel-polyfill/dist/polyfill.js',
-      { pattern: 'test/app/**/*-test.js', watched: false }
+      { pattern: 'test/app/acceptance/index.js', watched: false }
     ],
 
     preprocessors: {
-      'test/app/**/*-test.js': ['webpack']
+      'test/app/acceptance/index.js': ['webpack']
     },
 
     webpack: Object.assign(webpackConfig, {
