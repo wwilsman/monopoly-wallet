@@ -1,4 +1,5 @@
 @import '../../styles/variables';
+@import '../../styles/helpers';
 
 .root {
   display: flex;
@@ -6,6 +7,10 @@
 
   &:not(:last-child) {
     margin-bottom: var(--pad-med);
+  }
+
+  input[type="radio"] {
+    @extend visually-hidden;
   }
 }
 
@@ -22,6 +27,10 @@
     vertical-align: top;
   }
 
+  .has-focus & {
+    color: var(--color-text-lighter);
+  }
+
   .is-error & .error {
     color: var(--color-alert);
     margin-left: auto;
@@ -36,6 +45,10 @@
   padding: var(--pad-xs) var(--pad-sm);
   color: var(--color-text-lighter);
 
+  .alt & {
+    background: var(--color-bg);
+  }
+
   .is-error & {
     border-color: var(--color-alert);
   }
@@ -47,12 +60,4 @@
   &:focus {
     border-color: var(--color-primary);
   }
-}
-
-.alt {
-  background: var(--color-bg);
-}
-
-.is-center {
-  text-align: center;
 }

@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
-import styles from './input.css';
+import styles from './forms.css';
 
 import { uuid, dataAttrs } from '../../utils';
 
@@ -9,7 +9,6 @@ const cx = classNames.bind(styles);
 
 class Input extends Component {
   static propTypes = {
-    id: PropTypes.string,
     alt: PropTypes.bool,
     length: PropTypes.number,
     error: PropTypes.string,
@@ -69,17 +68,9 @@ class Input extends Component {
       empty
     } = this.state;
 
-    const rootClassName = cx('root', {
-      'is-error': !!error
-    });
-
-    const labelClassName = cx('label', {
-      'has-focus': focused,
-      'is-empty': empty
-    });
-
     const inputId = `${this.elementId}-input`;
-    const inputClassName = cx('input', {
+    const rootClassName = cx('root', {
+      'is-error': !!error,
       'has-focus': focused,
       'is-empty': empty,
       alt
@@ -91,7 +82,7 @@ class Input extends Component {
           className={rootClassName}
           {...dataAttrs(props)}>
         <label
-            className={labelClassName}
+            className={styles.label}
             htmlFor={inputId}
             data-test-label>
           <span>{label}</span>
@@ -106,7 +97,7 @@ class Input extends Component {
         </label>
         <input
             id={inputId}
-            className={inputClassName}
+            className={styles.input}
             value={value}
             placeholder={placeholder}
             onChange={this.handleChange}

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 
 import Modal from '../ui/modal';
-import Input from '../ui/input';
+import Input from '../ui/forms/input';
 import Button from '../ui/button';
 
 class FindGameModal extends Component {
