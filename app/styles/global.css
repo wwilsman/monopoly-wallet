@@ -22,7 +22,7 @@
     font: inherit;
   }
 
-  input, button, a {
+  fieldset, input, button, a {
     appearance: none;
     background: none;
     border: 0;

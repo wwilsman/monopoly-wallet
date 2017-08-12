@@ -1,4 +1,4 @@
-@import '../../variables';
+@import '../../styles/variables';
 
 .title {
   color: var(--color-text-lighter);

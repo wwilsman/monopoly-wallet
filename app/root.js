@@ -9,7 +9,7 @@ import {
   createMemoryHistory
 } from 'history';
 
-import './app.css';
+import './styles/global.css';
 import createStore from './store';
 
 import App from './screens/app';
