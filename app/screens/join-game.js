@@ -9,11 +9,13 @@ import { Container, Section } from '../ui/layout';
 import Heading from '../ui/typography/heading';
 
 import FindGameModal from '../game/find-game-modal';
+import JoinGameForm from '../game/join-game-form';
 
 @connect(({ game }) => ({
   room: game.room,
   loading: game.loading,
-  error: game.error
+  error: game.error,
+  tokens: game.config.playerTokens
 }), {
   connectToGame,
   push
@@ -24,6 +26,7 @@ class JoinGame extends Component {
     room: PropTypes.string,
     loading: PropTypes.bool,
     error: PropTypes.string,
+    tokens: PropTypes.array,
     connectToGame: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
     match: PropTypes.shape({
@@ -61,10 +64,11 @@ class JoinGame extends Component {
 
   render() {
     const {
-      room,
       loading,
       error,
-      connectToGame
+      tokens,
+      connectToGame,
+      match: { params }
     } = this.props;
 
     return (
@@ -74,13 +78,16 @@ class JoinGame extends Component {
             Join Game
           </Heading>
         </Section>
-        {!room ? (
+        {!params.room ? (
           <FindGameModal
               error={error}
               loading={loading}
               onFindGame={connectToGame}/>
-        ) : [
-        ]}
+        ) : (
+          <JoinGameForm
+              tokens={tokens}
+              onSubmit={(data) => console.log(data)}/>
+        )}
       </Container>
     );
   }
