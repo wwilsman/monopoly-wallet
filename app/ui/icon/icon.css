@@ -1,0 +1,12 @@
+.root {
+  display: inline-block;
+  line-height: 1;
+
+  svg {
+    height: 1em;
+    width: 1em;
+    display: block;
+    fill: currentcolor;
+    margin: auto;
+  }
+}
