@@ -1,0 +1,39 @@
+@import '../../styles/variables';
+
+.root {
+  display: flex;
+  flex-wrap: wrap;
+}
+
+.item {
+  $size: calc(var(--pad-xxl) + (var(--pad-med) * 2));
+  $gutter: calc((100% - (3 * $size)) / 2);
+
+  align-items: center;
+  display: flex;
+  height: $size;
+  justify-content: center;
+  width: $size;
+  margin-top: calc($gutter / 2);
+
+  &:nth-child(3n - 2) {
+    margin-right: $gutter;
+  }
+
+  &:nth-child(3n) {
+    margin-left: $gutter;
+  }
+}
+
+.token {
+  display: flex;
+  border-radius: 50%;
+  font-size: var(--pad-xxl);
+  padding: var(--pad-med);
+
+  .item:active &,
+  &.is-selected {
+    background: color(black a(10%));
+    color: white;
+  }
+}
