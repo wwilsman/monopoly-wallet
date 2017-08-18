@@ -26,6 +26,10 @@ const socketActions = {
     dispatch(syncPlayers(players));
     dispatch(gameDoneLoading());
   },
+  'room:sync': (dispatch) => ({ players, ...game }) => {
+    dispatch(syncGame(game));
+    dispatch(syncPlayers(players));
+  },
   'game:error': (dispatch) => (error) => {
     dispatch(gameError(error.message));
   },

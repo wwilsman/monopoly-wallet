@@ -6,7 +6,8 @@ import {
 
 const initialState = {
   error: '',
-  loading: true
+  loading: true,
+  players: []
 };
 
 export default (state = initialState, action) => {

@@ -9,17 +9,45 @@ import TokenSelect from './token-select';
 
 class JoinGameForm extends Component {
   static propTypes = {
-    tokens: PropTypes.array.isRequired,
+    tokens: PropTypes.arrayOf(PropTypes.string).isRequired,
+    players: PropTypes.arrayOf(PropTypes.object).isRequired,
     onSubmit: PropTypes.func.isRequired
   };
 
   state = {
     name: '',
-    token: ''
+    token: '',
+    disabled: this.getDisabledTokens()
   };
+
+  componentWillUpdate(nextProps, nextState) {
+    const { players } = nextProps;
+    const { name, token } = nextState;
+    const existing = players.find((pl) => pl.token === token);
+    const disabled = this.getDisabledTokens(name, players);
+
+    if (existing && name !== existing.name) {
+      this.setState({ token: '', disabled });
+    } else if (disabled !== this.state.disabled) {
+      this.setState({ disabled });
+    }
+  }
+
+  getDisabledTokens(name = '', players = this.props.players) {
+    const disabled = this.state && this.state.disabled;
+
+    if (!disabled || players !== this.props.players || name !== this.state.name) {
+      return players.map((player) => (player.active ? player.token : (
+        name.toLowerCase() !== player.name.toLowerCase() && player.token
+      ))).filter(Boolean);
+    } else {
+      return disabled;
+    }
+  }
 
   changeName = (name) => {
     this.setState({
+      disabled: this.getDisabledTokens(name),
       name: name.toUpperCase()
     });
   };
@@ -41,7 +69,7 @@ class JoinGameForm extends Component {
 
   render() {
     const { tokens } = this.props;
-    const { name, token } = this.state;
+    const { name, token, disabled } = this.state;
 
     return (
       <Container
@@ -57,6 +85,7 @@ class JoinGameForm extends Component {
           <TokenSelect
               tokens={tokens}
               selected={token}
+              disabled={disabled}
               onSelect={this.selectToken}
               data-test-join-game-token-select/>
         </Section>

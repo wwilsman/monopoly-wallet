@@ -3459,9 +3459,9 @@ mocha@^3.3.0:
     mkdirp "0.5.1"
     supports-color "3.1.2"
 
-mock-socket@^6.1.0:
-  version "6.1.0"
-  resolved "https://registry.yarnpkg.com/mock-socket/-/mock-socket-6.1.0.tgz#f0a8815c8d05eae4a4db2485bd398f23e303052c"
+mock-socket@^7.0.0:
+  version "7.0.0"
+  resolved "https://registry.yarnpkg.com/mock-socket/-/mock-socket-7.0.0.tgz#4ae80b9ff8b40625e4f491ef1d1043c1667bdb72"
 
 mongodb-core@2.1.15:
   version "2.1.15"
@@ -4777,6 +4777,10 @@ require_optional@~1.0.0:
 requires-port@1.x.x:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/requires-port/-/requires-port-1.0.0.tgz#925d2601d39ac485e091cf0da5c6e694dc3dcaff"
+
+reselect@^3.0.1:
+  version "3.0.1"
+  resolved "https://registry.yarnpkg.com/reselect/-/reselect-3.0.1.tgz#efdaa98ea7451324d092b2b2163a6a1d7a9a2147"
 
 resolve-from@^1.0.0:
   version "1.0.1"

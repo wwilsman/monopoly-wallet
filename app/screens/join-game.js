@@ -4,6 +4,7 @@ import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
 import { connectToGame } from '../actions/game';
+import { getCurrentPlayers } from '../selectors/player';
 
 import { Container, Section } from '../ui/layout';
 import Heading from '../ui/typography/heading';
@@ -11,11 +12,12 @@ import Heading from '../ui/typography/heading';
 import FindGameModal from '../game/find-game-modal';
 import JoinGameForm from '../game/join-game-form';
 
-@connect(({ game }) => ({
-  room: game.room,
-  loading: game.loading,
-  error: game.error,
-  tokens: game.config.playerTokens
+@connect((state) => ({
+  room: state.game.room,
+  loading: state.game.loading,
+  error: state.game.error,
+  players: getCurrentPlayers(state),
+  tokens: state.game.config.playerTokens
 }), {
   connectToGame,
   push
@@ -27,6 +29,7 @@ class JoinGame extends Component {
     loading: PropTypes.bool,
     error: PropTypes.string,
     tokens: PropTypes.array,
+    players: PropTypes.arrayOf(PropTypes.object),
     connectToGame: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
     match: PropTypes.shape({
@@ -50,23 +53,28 @@ class JoinGame extends Component {
 
   componentWillReceiveProps(nextProps) {
     const {
+      error,
       room:nextRoom,
       match: { params:nextParams },
       push
     } = nextProps;
 
-    if (nextRoom && (!nextParams.room || nextRoom !== nextParams.room)) {
-      push(`/${nextRoom}/join`);
-    } else if (!nextRoom && nextParams.room) {
-      push('/join');
+    if (!error) {
+      if (nextRoom && (!nextParams.room || nextRoom !== nextParams.room)) {
+        push(`/${nextRoom}/join`);
+      } else if (!nextRoom && nextParams.room) {
+        push('/join');
+      }
     }
   }
 
   render() {
     const {
+      room,
       loading,
       error,
       tokens,
+      players,
       connectToGame,
       match: { params }
     } = this.props;
@@ -83,10 +91,13 @@ class JoinGame extends Component {
               error={error}
               loading={loading}
               onFindGame={connectToGame}/>
-        ) : (
+        ) : room ? (
           <JoinGameForm
               tokens={tokens}
+              players={players}
               onSubmit={(data) => console.log(data)}/>
+        ) : (
+          <span>...</span>
         )}
       </Container>
     );
