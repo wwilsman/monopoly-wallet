@@ -13,6 +13,8 @@ import {
   describe,
   beforeEach,
   afterEach,
+  pauseTest,
+  visit,
   convergeOn
 } from './test-helpers';
 import {
@@ -77,14 +79,9 @@ export function describeApplication(name, setup) {
         this.location = this.state.router.location;
       });
 
-      // helper to change routes
-      this.visit = (path, assertion) => {
-        this.app.history.push(path);
-
-        if (assertion) {
-          return convergeOn(assertion);
-        }
-      };
+      // helpers specific to this context
+      this.visit = visit.bind(undefined, this.app.history.push);
+      this.pauseTest = pauseTest;
 
       // wait until our app has finished loading
       return convergeOn(() => {
@@ -102,6 +99,14 @@ export function describeApplication(name, setup) {
       rootElement = null;
 
       this.io.stop();
+
+      // sometimes our context can hang around
+      this.visit = null;
+      this.pauseTest = null;
+      this.location = null;
+      this.state = null;
+      this.app = null;
+      this.io = null;
     });
 
     // passthrough to our tests

@@ -9,12 +9,29 @@ export const after = window.after;
  * Pauses a test by removing the timeout and returning a promise that
  * will never resolve.
  *
- * @param {Object} context - test execution context
  * @returns {Promise} a promise that will never resolve
  */
-export function pauseTest(context) {
-  if (context) context.timeout(0);
+export function pauseTest() {
+  if (typeof this.timeout === 'function') {
+    this.timeout(0);
+  }
+
   return new Promise(() => {});
+}
+
+/**
+ * Visits a path using the provided push function and returns a
+ * convergent assertion
+ *
+ * @param {function} push - function to push  the current history
+ * @param {mixed} path - the argument provided to `push`
+ * @param {function} assertion - the assertion to converge on
+ */
+export function visit(push, path, assertion) {
+  push(path);
+  if (assertion) {
+    return convergeOn.call(this, assertion);
+  }
 }
 
 /**
