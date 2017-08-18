@@ -37,6 +37,7 @@ TokenSelectItem.propTypes = {
 function TokenSelect({
   tokens,
   selected,
+  disabled,
   onSelect,
   ...props
 }) {
@@ -46,6 +47,7 @@ function TokenSelect({
         itemClassName={styles.item}
         label="Select a token"
         data={tokens}
+        disabled={disabled.map((t) => tokens.indexOf(t))}
         selected={tokens.indexOf(selected)}
         onSelect={onSelect}
         renderItem={(token, attrs) => (
@@ -57,6 +59,7 @@ function TokenSelect({
 
 TokenSelect.propTypes = {
   tokens: PropTypes.arrayOf(PropTypes.string).isRequired,
+  disabled: PropTypes.arrayOf(PropTypes.string).isRequired,
   selected: PropTypes.string.isRequired,
   onSelect: PropTypes.func.isRequired
 };

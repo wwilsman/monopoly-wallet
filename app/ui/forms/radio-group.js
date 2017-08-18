@@ -75,8 +75,8 @@ class RadioGroup extends Component {
         <input
             id={id}
             type="radio"
-            disabled={disabled}
-            checked={selected}/>
+            disabled={attrs.disabled}
+            checked={attrs.selected}/>
         {renderItem(item, attrs)}
       </label>
     );

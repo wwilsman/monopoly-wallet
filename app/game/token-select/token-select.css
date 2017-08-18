@@ -31,8 +31,12 @@
   font-size: var(--pad-xxl);
   padding: var(--pad-med);
 
-  .item:active &,
-  &.is-selected {
+  &.is-disabled {
+    color: var(--color-bg-light);
+  }
+
+  &.is-selected,
+  .item:active &:not(.is-disabled) {
     background: color(black a(10%));
     color: white;
   }
