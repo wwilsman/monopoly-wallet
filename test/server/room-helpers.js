@@ -154,18 +154,18 @@ export async function createSocketAndJoinGame(gameID, token) {
   const socket = await createSocketAndConnect(gameID);
   const game = await GameRoom.database.find(gameID);
 
-  let name;
-  if (game.state.players[token]) {
-    name = game.state.players[token].name;
-  } else {
-    name = `Player ${Object.keys(game.state.players).length + 1}`;
+  if (!game.state.players[token]) {
     game.state.players[token] = {
-      name, token,
+      name: `Player ${game.state.players._all.length + 1}`,
       balance: game.config.playerStart,
-      bankrupt: false
+      bankrupt: false,
+      token
     };
+
+    GameRoom._cache[gameID].refresh();
   }
 
+  const name = game.state.players[token].name;
   await joinGameRoom(socket, name, token);
   return socket;
 }

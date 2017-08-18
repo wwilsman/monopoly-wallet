@@ -22,12 +22,7 @@ describe('Room: joining', function() {
 
   it('should let the first player join', async function() {
     await expect(joinGameRoom(socket1, 'Player 1', 'top-hat')).to.be.fulfilled
-      .and.eventually.have.keys('id', 'state', 'config', 'players')
-      .and.eventually.have.property('state')
-      .that.has.property('players')
-      .that.has.property('top-hat')
-      .that.has.property('name')
-      .that.equals('Player 1');
+      .and.eventually.deep.equal({ token: 'top-hat', room: this.room });
   });
 
   it('should let the player disconnect and rejoin', async function() {

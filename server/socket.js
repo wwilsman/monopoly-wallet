@@ -62,7 +62,7 @@ function askRoomToJoin(room, socket, name, token) {
 
   } else if (!room.players.size || room.game.players[token]) {
     return room.join(name, token, socket).then(() => {
-      socket.emit('game:joined', room.state);
+      socket.emit('game:joined', { room: room.id, token });
     });
 
   } else {
@@ -72,7 +72,7 @@ function askRoomToJoin(room, socket, name, token) {
       if (!result) throw room.error('player.denied');
 
       return room.join(name, token, socket).then(() => {
-        socket.emit('game:joined', room.state);
+        socket.emit('game:joined', { room: room.id, token });
       });
     });
   }
