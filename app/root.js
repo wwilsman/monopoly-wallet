@@ -15,6 +15,7 @@ import createStore from './store';
 import App from './screens/app';
 import Welcome from './screens/welcome';
 import JoinGame from './screens/join-game';
+import GameRoom from './screens/game-room';
 
 class AppRoot extends Component {
   static propTypes = {
@@ -40,7 +41,8 @@ class AppRoot extends Component {
             <App {...props}>
               <Route path="/" exact component={Welcome}/>
               <Route path="/join" exact component={JoinGame}/>
-              <Route path="/:room/join" exact component={JoinGame}/>
+              <Route path="/:room([^\/]{5})/join" exact component={JoinGame}/>
+              <Route path="/:room([^\/]{5})" exact component={GameRoom}/>
               <Route render={() => <Redirect to="/"/>}/>
             </App>
           )}/>

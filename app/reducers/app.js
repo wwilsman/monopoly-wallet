@@ -1,12 +1,14 @@
 import {
   APP_ERROR,
   APP_LOADING_DONE,
-  APP_PLAYERS_SYNC
+  APP_PLAYERS_SYNC,
+  APP_SET_PLAYER,
 } from '../actions/app';
 
 const initialState = {
   error: '',
   loading: true,
+  player: null,
   players: []
 };
 
@@ -26,6 +28,11 @@ export default (state = initialState, action) => {
     case APP_PLAYERS_SYNC:
       return { ...state,
         players: action.players
+      };
+
+    case APP_SET_PLAYER:
+      return { ...state,
+        player: action.player
       };
 
     default:

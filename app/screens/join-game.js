@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
-import { connectToGame } from '../actions/game';
+import { connectToGame, joinGame } from '../actions/game';
 import { getCurrentPlayers } from '../selectors/player';
 
 import { Container, Section } from '../ui/layout';
@@ -20,6 +20,7 @@ import JoinGameForm from '../game/join-game-form';
   tokens: state.game.config.playerTokens
 }), {
   connectToGame,
+  joinGame,
   push
 })
 
@@ -31,6 +32,7 @@ class JoinGame extends Component {
     tokens: PropTypes.array,
     players: PropTypes.arrayOf(PropTypes.object),
     connectToGame: PropTypes.func.isRequired,
+    joinGame: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
     match: PropTypes.shape({
       params: PropTypes.shape({
@@ -76,6 +78,7 @@ class JoinGame extends Component {
       tokens,
       players,
       connectToGame,
+      joinGame,
       match: { params }
     } = this.props;
 
@@ -95,7 +98,7 @@ class JoinGame extends Component {
           <JoinGameForm
               tokens={tokens}
               players={players}
-              onSubmit={(data) => console.log(data)}/>
+              onSubmit={joinGame}/>
         ) : (
           <span>...</span>
         )}

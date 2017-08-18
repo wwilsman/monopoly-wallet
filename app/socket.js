@@ -4,7 +4,8 @@ import {
 import {
   appError,
   appDoneLoading,
-  syncPlayers
+  syncPlayers,
+  setCurrentPlayer
 } from './actions/app';
 import {
   syncGame,
@@ -19,6 +20,11 @@ const socketActions = {
   'game:created': (dispatch) => (game) => {
     dispatch(syncGame(game));
     dispatch(push(`/${game.id}/join`));
+    dispatch(gameDoneLoading());
+  },
+  'game:joined': (dispatch) => ({ token, room }) => {
+    dispatch(setCurrentPlayer(token));
+    dispatch(push(`/${room}`));
     dispatch(gameDoneLoading());
   },
   'room:connected': (dispatch) => ({ players, ...game }) => {

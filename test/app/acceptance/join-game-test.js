@@ -108,6 +108,7 @@ describeApplication('join game screen', function() {
         });
 
         it('should join the game', function() {
+          expect(this.state.game.state.players).to.have.property('top-hat');
           expect(this.state.app.player).to.equal('top-hat');
         });
 
