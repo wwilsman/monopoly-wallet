@@ -16,7 +16,7 @@ export const auctionProperty = (playerToken, propertyId) => ({
   type: AUCTION_PROPERTY,
   player: { token: playerToken },
   property: { id: propertyId },
-  players: calc(({ state }) => Object.keys(state.players)),
+  players: calc(({ state }) => state.players._all),
   notice: { id: 'auction.start' }
 });
 

@@ -84,6 +84,7 @@ export default (state = {}, action) => {
   switch (action.type) {
     case JOIN_GAME:
       return { ...state,
+        _all: [...state._all, action.player.token],
         [action.player.token]: player(undefined, action)
       };
 

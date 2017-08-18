@@ -34,11 +34,13 @@ export function transformGameState(state, transforms, config) {
     players: (transforms.players||[]).reduce((players, transform) => ({
       ...players,
 
+      _all: [...players._all, transform.token],
+
       [transform.token]: players[transform.token] ? {
         ...players[transform.token],
         ...transform
       } : {
-        name: transform.name || `Player ${Object.keys(players).length + 1}`,
+        name: transform.name || `Player ${players._all.length + 1}`,
         balance: transform.balance || config.playerStart,
         bankrupt: transform.bankrupt || false,
         ...transform

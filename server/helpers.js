@@ -29,7 +29,7 @@ export function createGameState(properties, config) {
     bank: config.bankStart < 0 ? Infinity : config.bankStart,
     houses: config.houseCount,
     hotels: config.hotelCount,
-    players: {},
+    players: { _all: [] },
     trades: {},
 
     properties: properties.reduce((map, property) => {
