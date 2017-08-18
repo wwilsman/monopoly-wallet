@@ -107,7 +107,7 @@ module.exports = {
       test: [
         {
           test: /\.yml/,
-          use: ['json-loader', 'yaml-loader']
+          use: ['js-yaml-loader']
         }
       ]
     })
