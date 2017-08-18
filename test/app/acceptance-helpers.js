@@ -135,20 +135,32 @@ export function mockGame({
   );
 
   beforeEach(function() {
-    this.room = id;
+    this.room = getRoom(id);
+
     old = GameRoom.database.store[id];
     GameRoom.database.store[id] = {
       id, state, config,
       theme: 'classic'
     };
+
+    if (this.room.refresh) {
+      this.room.refresh();
+    }
   });
 
   afterEach(function() {
     if (old) {
       GameRoom.database.store[id] = old;
+      this.room = getRoom(old.id);
       old = null;
     } else {
+      delete GameRoom._cache[this.room.id];
       delete GameRoom.database.store[id];
+      this.room = null;
     }
   });
+}
+
+function getRoom(id) {
+  return GameRoom._cache[id] || { id };
 }

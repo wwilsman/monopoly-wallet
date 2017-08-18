@@ -27,11 +27,11 @@ describeApplication('join game screen', function() {
 
     describe('and searching for an existing room', function() {
       beforeEach(function() {
-        JoinGamePage.findGame(this.room);
+        JoinGamePage.findGame(this.room.id);
       });
 
       it('should go to the join game route for a game', function() {
-        expect(this.location.pathname).to.equal(`/${this.room}/join`);
+        expect(this.location.pathname).to.equal(`/${this.room.id}/join`);
       });
     });
 
@@ -52,7 +52,7 @@ describeApplication('join game screen', function() {
 
   describe.skip('with a specific room', function() {
     beforeEach(function() {
-      return this.visit(`/${this.room}/join`, () => {
+      return this.visit(`/${this.room.id}/join`, () => {
         expect(JoinGamePage.$root).to.exist;
       });
     });
@@ -112,7 +112,7 @@ describeApplication('join game screen', function() {
         });
 
         it('should go to the game\'s home screen', function() {
-          expect(this.location.pathname).to.equal(`/${this.room}`);
+          expect(this.location.pathname).to.equal(`/${this.room.id}`);
         });
       });
     });
