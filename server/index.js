@@ -7,6 +7,7 @@ import { MongoClient } from 'mongodb';
 
 import GameRoom from './room';
 import MonopolyError from './error';
+import connectSocket from './socket';
 
 // environment specific variables
 const ENV = {
@@ -70,7 +71,7 @@ MongoClient.connect(ENV.mongodb.uri).then((db) => {
     }
   });
 
-  GameRoom.set('db', {
+  GameRoom.set('database', {
     find: (id) => db.collection('games')
       .findOne({ _id: id }).then(resolveGame),
     save: ({ id, ...game }) => db.collection('games')
@@ -89,4 +90,4 @@ const server = app.listen(ENV.port, () => {
 });
 
 // listen for socket connections
-io(server).on('connection', GameRoom.setup);
+io(server).on('connection', connectSocket);

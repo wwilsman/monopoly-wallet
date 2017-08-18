@@ -3,6 +3,9 @@ import { applyMiddleware, createStore } from 'redux';
 import gameReducer from './reducers';
 import ruleMiddleware from './rules/middleware';
 
+export const HYDRATE = 'HYDRATE';
+export const hydrate = (state) => ({ type: HYDRATE, state });
+
 /**
  * Creates a new store instance for games
  * @param {Object} initialState - Initial game state
@@ -11,8 +14,14 @@ import ruleMiddleware from './rules/middleware';
  * @returns {Object} Redux Store object
  */
 export default (initialState, config, notices) => {
-  const reducer = (state, action) =>
-    gameReducer(state, action, config);
+  const reducer = (state, action) => {
+    switch (action.type) {
+      case HYDRATE:
+        return gameReducer(action.state, action, config);
+      default:
+        return gameReducer(state, action, config);
+    }
+  };
 
   const store = createStore(
     reducer,

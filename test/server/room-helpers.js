@@ -17,6 +17,7 @@ import {
 } from '../helpers';
 import GameRoom from '../../server/room';
 import MonopolyError from '../../server/error';
+import connectSocket from '../../server/socket';
 
 // use chai as promised
 chai.use(chaiAsPromised);
@@ -27,13 +28,13 @@ const PROPERTY_FIXTURES = YAML.load('./server/themes/classic/properties.yml');
 const MESSAGES_FIXTURE = YAML.load('./server/themes/classic/messages.yml');
 
 // always use fixtures for themes
-GameRoom.load = (theme, name = theme) => {
+GameRoom.set('loader', (theme, name) => {
   switch (name) {
     case 'config': return CONFIG_FIXTURE;
     case 'properties': return PROPERTY_FIXTURES;
     case 'messages': return MESSAGES_FIXTURE;
   }
-};
+});
 
 /**
  * Starts the server and adds mock data
@@ -66,9 +67,9 @@ export function setupRoomForTesting({
 
   beforeEach(async function() {
     server = ioServer(8080);
-    server.on('connection', GameRoom.setup);
+    server.on('connection', connectSocket);
 
-    GameRoom.db.store[this.room] = {
+    GameRoom.database.store[this.room] = {
       id: this.room,
       state: this.game,
       config: this.config
@@ -85,7 +86,7 @@ export function setupRoomForTesting({
     }
 
     return new Promise((resolve) => {
-      delete GameRoom.db.store[this.room];
+      delete GameRoom.database.store[this.room];
       server.close(resolve);
     });
   });
@@ -151,7 +152,7 @@ export async function createSocketAndConnect(gameID) {
  */
 export async function createSocketAndJoinGame(gameID, token) {
   const socket = await createSocketAndConnect(gameID);
-  const game = await GameRoom.db.find(gameID);
+  const game = await GameRoom.database.find(gameID);
 
   let name;
   if (game.state.players[token]) {

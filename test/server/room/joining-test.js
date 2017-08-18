@@ -55,9 +55,9 @@ describe('Room: joining', function() {
     });
 
     it('should poll the first player to let the second join', function(done) {
-      socket1.on('poll:new', (pollID, message) => {
-        expect(pollID).to.be.a('string');
-        expect(message).to.match(/join/);
+      socket1.on('poll:new', (poll) => {
+        expect(poll).to.have.keys('id', 'message');
+        expect(poll.message).to.match(/join/);
         done();
       });
 
@@ -65,12 +65,12 @@ describe('Room: joining', function() {
     });
 
     it('should join after the first player votes yes', async function() {
-      socket1.on('poll:new', (pollID) => socket1.emit('poll:vote', pollID, true));
+      socket1.on('poll:new', ({ id }) => socket1.emit('poll:vote', id, true));
       await expect(joinGameRoom(socket2, 'Player 2', 'automobile')).to.be.fulfilled;
     });
 
     it('should not join after the first player votes no', async function() {
-      socket1.on('poll:new', (pollID) => socket1.emit('poll:vote', pollID, false));
+      socket1.on('poll:new', ({ id }) => socket1.emit('poll:vote', id, false));
 
       await expect(joinGameRoom(socket2, 'Player 2', 'automobile'))
         .to.be.rejectedWith(MonopolyError, /sorry/i);
@@ -104,9 +104,9 @@ describe('Room: joining', function() {
     it('should poll all players', function(done) {
       let count = 0;
 
-      const handleNewPoll = (pollID, message) => {
-        expect(pollID).to.be.a('string');
-        expect(message).to.match(/Player 3 .* join/);
+      const handleNewPoll = (poll) => {
+        expect(poll).to.have.keys('id', 'message');
+        expect(poll.message).to.match(/Player 3 .* join/);
         if (++count === 2) done();
       };
 
@@ -117,14 +117,14 @@ describe('Room: joining', function() {
     });
 
     it('should join after majority votes yes', async function() {
-      socket1.on('poll:new', (pollID) => socket1.emit('poll:vote', pollID, true));
-      socket2.on('poll:new', (pollID) => socket2.emit('poll:vote', pollID, true));
+      socket1.on('poll:new', ({ id }) => socket1.emit('poll:vote', id, true));
+      socket2.on('poll:new', ({ id }) => socket2.emit('poll:vote', id, true));
       await expect(joinGameRoom(socket3, 'Player 3', 'thimble')).to.be.fulfilled;
     });
 
     it('should not join after majority votes no', async function() {
-      socket1.on('poll:new', (pollID) => socket1.emit('poll:vote', pollID, true));
-      socket2.on('poll:new', (pollID) => socket2.emit('poll:vote', pollID, false));
+      socket1.on('poll:new', ({ id }) => socket1.emit('poll:vote', id, true));
+      socket2.on('poll:new', ({ id }) => socket2.emit('poll:vote', id, false));
       await expect(joinGameRoom(socket3, 'Player 3', 'thimble')).to.be.rejected;
     });
   });

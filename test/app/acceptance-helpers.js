@@ -21,6 +21,7 @@ import {
 } from '../helpers';
 
 import GameRoom from '../../server/room';
+import connectSocket from '../../server/socket';
 import AppRoot from '../../app/root';
 
 import CONFIG_FIXTURE from '../../server/themes/classic/config.yml';
@@ -31,13 +32,13 @@ import MESSAGES_FIXTURE from '../../server/themes/classic/messages.yml';
 chai.use((chai, utils) => chaiJQuery(chai, utils, $));
 
 // always use fixtures for themes
-GameRoom.load = (theme, name = theme) => {
+GameRoom.set('loader', (theme, name) => {
   switch (name) {
     case 'config': return CONFIG_FIXTURE;
     case 'properties': return PROPERTY_FIXTURES;
     case 'messages': return MESSAGES_FIXTURE;
   }
-};
+});
 
 /**
  * Starts a mock websocket server and mounts our app
@@ -61,7 +62,7 @@ export function describeApplication(name, setup) {
 
       // setup a mock websocket server
       this.io = new ioServer('/');
-      this.io.on('connection', GameRoom.setup);
+      this.io.on('connection', connectSocket);
 
       // mount our app
       this.app = render(<AppRoot test/>, rootElement);
@@ -130,8 +131,8 @@ export function mockGame({
 
   beforeEach(function() {
     this.room = id;
-    old = GameRoom.db.store[id];
-    GameRoom.db.store[id] = {
+    old = GameRoom.database.store[id];
+    GameRoom.database.store[id] = {
       id, state, config,
       theme: 'classic'
     };
@@ -139,10 +140,10 @@ export function mockGame({
 
   afterEach(function() {
     if (old) {
-      GameRoom.db.store[id] = old;
+      GameRoom.database.store[id] = old;
       old = null;
     } else {
-      delete GameRoom.db.store[id];
+      delete GameRoom.database.store[id];
     }
   });
 }

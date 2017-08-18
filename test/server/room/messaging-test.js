@@ -17,9 +17,9 @@ describe('Room: messaging', function() {
   });
 
   it('should send and recieve messages', function(done) {
-    socket2.on('message:recieved', (fromToken, message) => {
-      expect(fromToken).to.equal('top-hat');
-      expect(message).to.equal('hello world');
+    socket2.on('message:received', ({ from, content }) => {
+      expect(from).to.equal('top-hat');
+      expect(content).to.equal('hello world');
       done();
     });
 
