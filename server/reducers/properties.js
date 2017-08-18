@@ -62,11 +62,11 @@ const property = (state, action) => {
 
 /**
  * Properties reducer
- * @param {Array} state - Array of property states
+ * @param {Object} state - Property states keyed by id
  * @param {Object} action - Redux action
  * @returns {Array} Reduced state
  */
-export default (state = [], action) => {
+export default (state = {}, action) => {
   switch (action.type) {
     case BUY_PROPERTY:
     case IMPROVE_PROPERTY:
