@@ -50,7 +50,7 @@ describeApplication('join game screen', function() {
     });
   });
 
-  describe.skip('with a specific room', function() {
+  describe('with a specific room', function() {
     beforeEach(function() {
       return this.visit(`/${this.room.id}/join`, () => {
         expect(JoinGamePage.$root).to.exist;
@@ -125,12 +125,32 @@ describeApplication('join game screen', function() {
         ]
       }});
 
-      it('should prevent selecting used tokens');
-      it('should enable a used token with the token player\'s name');
+      it('should prevent selecting used tokens', function() {
+        expect(JoinGamePage.$token('top-hat')).to.have.attr('disabled');
+        expect(JoinGamePage.$token('automobile')).to.have.attr('disabled');
+      });
 
-      describe('when one is playing', function() {
-        it('should not enable their token with their name');
-        it('should still enable the other token with the other\'s name');
+      describe('when one of their names are filled in', function() {
+        beforeEach(function() {
+          JoinGamePage.fillName('player 1');
+        });
+
+        it('should enable a used token with the token player\'s name', function() {
+          expect(JoinGamePage.$token('top-hat')).to.not.have.attr('disabled');
+          expect(JoinGamePage.$token('automobile')).to.have.attr('disabled');
+        });
+
+        describe('and they are playing', function() {
+          beforeEach(function() {
+            return this.room.constructor.connect(this.room.id)
+              .then((room) => room.join('Player 1', 'top-hat'));
+          });
+
+          it('should not enable their token with their name', function() {
+            expect(JoinGamePage.$token('top-hat')).to.have.attr('disabled');
+            expect(JoinGamePage.$token('automobile')).to.have.attr('disabled');
+          });
+        });
       });
     });
   });

@@ -13,23 +13,18 @@ export default {
   get $findGameModal() {
     return $('[data-test-find-game-modal]');
   },
-
   get $findGameInput() {
     return $('[data-test-find-game-input] [data-test-input]');
   },
-
   get findGameLabel() {
     return $('[data-test-find-game-input] [data-test-label]').text();
   },
-
   get findGameError() {
     return $('[data-test-find-game-input] [data-test-error]').text();
   },
-
   get $findGameBtn() {
     return $('[data-test-find-game-btn]');
   },
-
   findGame(room) {
     fill(this.$findGameInput, room);
     click(this.$findGameBtn);
@@ -38,11 +33,9 @@ export default {
   get $nameInput() {
     return $('[data-test-join-game-name-input] [data-test-input]');
   },
-
   get nameLabel() {
     return $('[data-test-join-game-name-input] [data-test-label]').text();
   },
-
   fillName(value) {
     fill(this.$nameInput, value);
   },
@@ -50,19 +43,22 @@ export default {
   get tokensLabel() {
     return $('[data-test-join-game-token-select] [data-test-label]').text();
   },
-
   get $tokens() {
     return $('[data-test-join-game-token-select] [data-test-radio-item]');
   },
-
+  $token(name) {
+    return this.$tokens
+      .find(`[title=${name}]`)
+      .closest('[data-test-radio-item]')
+      .find('input[type="radio"]');
+  },
   selectToken(name) {
-    click(this.$tokens.find(`[title=${name}]`));
+    click(this.$token(name));
   },
 
   get $joinBtn() {
     return $('[data-test-join-game-btn]');
   },
-
   joinGame(name, token) {
     name && this.fillName(name);
     token && this.selectToken(token);
