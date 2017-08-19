@@ -2,5 +2,15 @@
 
 export NODE_ENV="${1:-production}"
 
-babel server -d ./dist
+if [ -d './dist' ]; then
+    printf "removing old files...\n"
+    rm -rfv ./dist/*
+    printf "\n"
+fi
+
+printf "compiling server files...\n"
+babel ./server --out-dir ./dist --copy-files
+printf "\n"
+
+printf "creating app bundle...\n"
 webpack --config ./webpack.config.js

@@ -1,4 +1,14 @@
 #!/usr/bin/env bash
 
-if [ -d './dist' ]; then node ./dist;
-else yarn run babel-node -- ./server; fi
+export NODE_ENV="${NODE_ENV:=${1:-development}}"
+
+if [ "$NODE_ENV" == 'production' ]; then
+    if [ -d './dist' ]; then
+        node ./dist/index.js;
+    else
+        printf "unable to find \"./dist\""
+        exit 1
+    fi
+else
+    yarn run babel-node -- ./server
+fi
