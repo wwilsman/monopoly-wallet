@@ -13,6 +13,7 @@
 .section {
   @extend .container;
   padding: var(--pad-lg);
+  min-height: min-content;
 
   &.no-flex {
     flex: none;
