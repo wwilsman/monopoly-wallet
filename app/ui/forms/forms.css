@@ -35,6 +35,10 @@
     color: var(--color-alert);
     margin-left: auto;
   }
+
+  .is-disabled & {
+    color: var(--color-text-dark);
+  }
 }
 
 .input {
@@ -52,6 +56,21 @@
 
   .is-error & {
     border-color: var(--color-alert);
+  }
+
+  .is-disabled & {
+    background-color: color(var(--color-bg-light) a(0.5));
+    border-color: var(--color-text-darker);
+    color: var(--color-text-light);
+
+    &::placeholder {
+      color: var(--color-text-darker);
+    }
+  }
+
+  .is-disabled.alt & {
+    background-color: color(var(--color-bg) a(0.5));
+    border-color: var(--color-text-dark);
   }
 
   &::placeholder {

@@ -9,13 +9,14 @@ const cx = classNames.bind(styles);
 
 class Input extends Component {
   static propTypes = {
-    alt: PropTypes.bool,
-    length: PropTypes.number,
-    error: PropTypes.string,
     label: PropTypes.string.isRequired,
     value: PropTypes.string.isRequired,
+    onChangeText: PropTypes.func.isRequired,
     placeholder: PropTypes.string,
-    onChangeText: PropTypes.func
+    disabled: PropTypes.bool,
+    error: PropTypes.string,
+    length: PropTypes.number,
+    alt: PropTypes.bool
   };
 
   state = {
@@ -26,9 +27,11 @@ class Input extends Component {
   elementId = uuid(Input);
 
   handleChange = (e) => {
-    const { length, onChangeText } = this.props;
+    const { disabled, length, onChangeText } = this.props;
     const { empty } = this.state;
     let { value } = e.target;
+
+    if (disabled) return;
 
     if (empty && value) {
       this.setState({ empty: false });
@@ -40,9 +43,7 @@ class Input extends Component {
       value = value.substr(0, length);
     }
 
-    if (onChangeText) {
-      onChangeText(value);
-    }
+    onChangeText(value);
   };
 
   handleFocus = () => {
@@ -60,6 +61,7 @@ class Input extends Component {
       value,
       error,
       placeholder,
+      disabled,
       ...props
     } = this.props;
 
@@ -73,6 +75,7 @@ class Input extends Component {
       'is-error': !!error,
       'has-focus': focused,
       'is-empty': empty,
+      'is-disabled': disabled,
       alt
     });
 
@@ -100,6 +103,7 @@ class Input extends Component {
             className={styles.input}
             value={value}
             placeholder={placeholder}
+            disabled={disabled}
             onChange={this.handleChange}
             onFocus={this.handleFocus}
             onBlur={this.handleBlur}
