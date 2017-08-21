@@ -11,15 +11,15 @@
   --color-alert-active: #D32F2F;     /* red 700 */
 
   /* background */
-  --color-bg: #333343;
-  --color-bg-light: #444454;
-  --color-bg-lighter: #555565;
+  --color-bg: #033343;
+  --color-bg-light: #144454;
+  --color-bg-lighter: #255565;
 
   /* text colors */
-  --color-text: #777787;
-  --color-text-light: #9999A9;
+  --color-text: #477787;
+  --color-text-light: #6999A9;
   --color-text-lighter: #FFFFFF;
-  --color-text-dark: #666676;
+  --color-text-dark: #366676;
 
   /* font sizes */
   --size-sm: 0.8125rem;
