@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
-import { push } from 'react-router-redux';
+import { replace } from 'react-router-redux';
 
 import {
   connectToGame,
@@ -28,7 +28,7 @@ import JoinGameForm from '../game/join-game-form';
   connectToGame,
   disconnectGame,
   joinGame,
-  push
+  replace
 })
 
 class JoinGame extends Component {
@@ -41,7 +41,7 @@ class JoinGame extends Component {
     connectToGame: PropTypes.func.isRequired,
     disconnectGame: PropTypes.func.isRequired,
     joinGame: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
+    replace: PropTypes.func.isRequired,
     match: PropTypes.shape({
       params: PropTypes.shape({
         room: PropTypes.string
@@ -50,7 +50,7 @@ class JoinGame extends Component {
   };
 
   componentWillMount() {
-    const { room, match: { params } } = this.props;
+    const { room, match: { params }} = this.props;
     this.connectOrDisconnect(params.room, room);
   }
 
@@ -60,17 +60,13 @@ class JoinGame extends Component {
       loading,
       room:nextRoom,
       match: { params:nextParams },
-      push
+      replace
     } = nextProps;
 
-    if (!error && !loading) {
-      if (nextParams.room !== this.props.match.params.room) {
-        this.connectOrDisconnect(nextParams.room, nextRoom);
-      } else if (nextRoom && !nextParams.room) {
-        push(`/${nextRoom}/join`);
-      } else if (!nextRoom && nextParams.room) {
-        push('/join');
-      }
+    if (!error && !loading && nextRoom !== nextParams.room) {
+      this.connectOrDisconnect(nextParams.room, nextRoom);
+    } else if (error && !nextRoom && nextParams.room) {
+      replace('/join');
     }
   }
 
@@ -82,7 +78,7 @@ class JoinGame extends Component {
 
     if (targetRoom && targetRoom !== currentRoom) {
       connectToGame(targetRoom);
-    } else if (currentRoom) {
+    } else if (!targetRoom && currentRoom) {
       disconnectGame();
     }
   }

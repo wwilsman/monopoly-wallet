@@ -31,8 +31,15 @@ const getSocketActions = ({ dispatch, getState }) => ({
   },
 
   'room:connected': ({ players, ...game }) => {
+    const { router: { location }} = getState();
+
     dispatch(syncGame(game));
     dispatch(syncPlayers(players));
+
+    if (!location.pathname.includes(game.id)) {
+      dispatch(push(`/${game.id}/join`));
+    }
+
     dispatch(gameDoneLoading());
   },
 
