@@ -7,11 +7,13 @@ module.exports = function(config) {
 
     files: [
       { pattern: 'test/app/acceptance/index.js', watched: false },
-      { pattern: 'server/themes/classic/icons.svg', watched: false, included: false }
+      { pattern: 'server/themes/classic/icons.svg', watched: false, included: false },
+      { pattern: 'public/logo.png', watched: false, included: false }
     ],
 
     proxies: {
-      '/icons/classic.svg': '/base/server/themes/classic/icons.svg'
+      '/icons/classic.svg': '/base/server/themes/classic/icons.svg',
+      '/logo.png': '/base/public/logo.png'
     },
 
     preprocessors: {

@@ -7,6 +7,7 @@ import { newGame } from '../actions/game';
 import { Container, Section } from '../ui/layout';
 import Title from '../ui/typography/title';
 import Button from '../ui/button';
+import Logo from '../ui/logo';
 
 @connect(({ game }) => ({
   loading: game.loading
@@ -31,13 +32,14 @@ class Welcome extends Component {
 
     return (
       <Container data-test-welcome>
-        <Section justify="center">
+        <Section align="center">
+          <Logo/>
           <Title data-test-welcome-title>
             Monopoly<br/>Wallet
           </Title>
         </Section>
 
-        <Section align="center">
+        <Section align="center" justify="center">
           <Button
               type="secondary"
               loading={loading}
