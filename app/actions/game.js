@@ -1,6 +1,7 @@
 export const GAME_NEW = 'GAME_NEW';
 export const GAME_SYNC = 'GAME_SYNC';
 export const GAME_CONNECT = 'GAME_CONNECT';
+export const GAME_DISCONNECT = 'GAME_DISCONNECT';
 export const GAME_JOIN = 'GAME_JOIN';
 export const GAME_ERROR = 'GAME_ERROR';
 export const GAME_LOADING_DONE = 'GAME_LOADING_DONE';
@@ -21,6 +22,10 @@ export const connectToGame = (room) => ({
     emit: 'room:connect',
     args: [room]
   }
+});
+
+export const disconnectGame = () => ({
+  type: GAME_DISCONNECT
 });
 
 export const joinGame = ({ name, token }) => ({

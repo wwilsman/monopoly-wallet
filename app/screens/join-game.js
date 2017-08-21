@@ -3,8 +3,14 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import { push } from 'react-router-redux';
 
-import { connectToGame, joinGame } from '../actions/game';
-import { getCurrentPlayers } from '../selectors/player';
+import {
+  connectToGame,
+  disconnectGame,
+  joinGame
+} from '../actions/game';
+import {
+  getCurrentPlayers
+} from '../selectors/player';
 
 import { Container, Section } from '../ui/layout';
 import Heading from '../ui/typography/heading';
@@ -20,6 +26,7 @@ import JoinGameForm from '../game/join-game-form';
   tokens: state.game.config.playerTokens
 }), {
   connectToGame,
+  disconnectGame,
   joinGame,
   push
 })
@@ -32,6 +39,7 @@ class JoinGame extends Component {
     tokens: PropTypes.array,
     players: PropTypes.arrayOf(PropTypes.object),
     connectToGame: PropTypes.func.isRequired,
+    disconnectGame: PropTypes.func.isRequired,
     joinGame: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
     match: PropTypes.shape({
@@ -42,31 +50,40 @@ class JoinGame extends Component {
   };
 
   componentWillMount() {
-    const {
-      room,
-      match: { params },
-      connectToGame
-    } = this.props;
-
-    if (params.room && params.room !== room) {
-      connectToGame(params.room);
-    }
+    const { room, match: { params } } = this.props;
+    this.connectOrDisconnect(params.room, room);
   }
 
   componentWillReceiveProps(nextProps) {
     const {
       error,
+      loading,
       room:nextRoom,
       match: { params:nextParams },
       push
     } = nextProps;
 
-    if (!error) {
-      if (nextRoom && (!nextParams.room || nextRoom !== nextParams.room)) {
+    if (!error && !loading) {
+      if (nextParams.room !== this.props.match.params.room) {
+        this.connectOrDisconnect(nextParams.room, nextRoom);
+      } else if (nextRoom && !nextParams.room) {
         push(`/${nextRoom}/join`);
       } else if (!nextRoom && nextParams.room) {
         push('/join');
       }
+    }
+  }
+
+  connectOrDisconnect(targetRoom, currentRoom) {
+    const {
+      connectToGame,
+      disconnectGame
+    } = this.props;
+
+    if (targetRoom && targetRoom !== currentRoom) {
+      connectToGame(targetRoom);
+    } else if (currentRoom) {
+      disconnectGame();
     }
   }
 

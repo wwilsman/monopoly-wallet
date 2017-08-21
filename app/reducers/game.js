@@ -2,6 +2,7 @@ import {
   GAME_NEW,
   GAME_SYNC,
   GAME_CONNECT,
+  GAME_DISCONNECT,
   GAME_ERROR,
   GAME_LOADING_DONE
 } from '../actions/game';
@@ -41,6 +42,9 @@ export default (state = initialState, action) => {
       return { ...state,
         loading: false
       };
+
+    case GAME_DISCONNECT:
+      return { ...initialState };
 
     default:
       return state;
