@@ -96,10 +96,11 @@ class JoinGameForm extends Component {
           <Button
               block
               type="primary"
-              disabled={loading || !name || !token}
+              loading={loading}
+              disabled={!name || !token}
               onClick={this.handleSubmit}
               data-test-join-game-btn>
-            {!loading ? 'Join Game' : '...'}
+            Join Game
           </Button>
         </Section>
       </Container>
