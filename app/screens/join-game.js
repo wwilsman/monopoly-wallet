@@ -9,7 +9,7 @@ import {
   joinGame
 } from '../actions/game';
 import {
-  getCurrentPlayers
+  getActivePlayers
 } from '../selectors/player';
 
 import { Container, Section } from '../ui/layout';
@@ -22,7 +22,7 @@ import JoinGameForm from '../game/join-game-form';
   room: state.game.room,
   loading: state.game.loading,
   error: state.game.error,
-  players: getCurrentPlayers(state),
+  players: getActivePlayers(state),
   tokens: state.game.config.playerTokens
 }), {
   connectToGame,
