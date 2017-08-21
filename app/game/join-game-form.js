@@ -11,7 +11,8 @@ class JoinGameForm extends Component {
   static propTypes = {
     tokens: PropTypes.arrayOf(PropTypes.string).isRequired,
     players: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onSubmit: PropTypes.func.isRequired
+    onSubmit: PropTypes.func.isRequired,
+    loading: PropTypes.bool
   };
 
   state = {
@@ -68,7 +69,7 @@ class JoinGameForm extends Component {
   };
 
   render() {
-    const { tokens } = this.props;
+    const { loading, tokens } = this.props;
     const { name, token, disabled } = this.state;
 
     return (
@@ -80,12 +81,14 @@ class JoinGameForm extends Component {
               label="Your name"
               value={name}
               placeholder="MR. MONOPOLY"
+              disabled={loading}
               onChangeText={this.changeName}
               data-test-join-game-name-input/>
           <TokenSelect
               tokens={tokens}
               selected={token}
               disabled={disabled}
+              disableAll={loading}
               onSelect={this.selectToken}
               data-test-join-game-token-select/>
         </Section>
@@ -93,10 +96,10 @@ class JoinGameForm extends Component {
           <Button
               block
               type="primary"
-              disabled={!name || !token}
+              disabled={loading || !name || !token}
               onClick={this.handleSubmit}
               data-test-join-game-btn>
-            Join Game
+            {!loading ? 'Join Game' : '...'}
           </Button>
         </Section>
       </Container>

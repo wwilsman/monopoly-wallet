@@ -98,6 +98,7 @@ class JoinGame extends Component {
           <JoinGameForm
               tokens={tokens}
               players={players}
+              loading={loading}
               onSubmit={joinGame}/>
         ) : (
           <span>...</span>
