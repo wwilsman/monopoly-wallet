@@ -13,41 +13,50 @@ import {
   gameDoneLoading
 } from './actions/game';
 
-const socketActions = {
-  'connect': (dispatch) => () => {
+const getSocketActions = ({ dispatch, getState }) => ({
+  'connect': () => {
     dispatch(appDoneLoading());
   },
-  'game:created': (dispatch) => (game) => {
+
+  'game:created': (game) => {
     dispatch(syncGame(game));
     dispatch(push(`/${game.id}/join`));
     dispatch(gameDoneLoading());
   },
-  'game:joined': (dispatch) => ({ token, room }) => {
+
+  'game:joined': ({ token, room }) => {
     dispatch(setCurrentPlayer(token));
     dispatch(push(`/${room}`));
     dispatch(gameDoneLoading());
   },
-  'room:connected': (dispatch) => ({ players, ...game }) => {
+
+  'room:connected': ({ players, ...game }) => {
     dispatch(syncGame(game));
     dispatch(syncPlayers(players));
     dispatch(gameDoneLoading());
   },
-  'room:sync': (dispatch) => ({ players, ...game }) => {
+
+  'room:sync': ({ players, ...game }) => {
     dispatch(syncGame(game));
     dispatch(syncPlayers(players));
   },
-  'game:error': (dispatch) => (error) => {
+
+  'game:error': (error) => {
     dispatch(gameError(error.message));
   },
-  'room:error': (dispatch) => (error) => {
+
+  'room:error': (error) => {
     dispatch(appError(error.message));
   }
-};
+});
 
 export default (socket) => (store) => {
-  for (let event in socketActions) {
-    const action = socketActions[event];
-    socket.on(event, action(store.dispatch));
+  const actions = getSocketActions(store);
+
+  for (let event in actions) {
+    socket.on(event, (...args) => {
+      actions[event](...args);
+    });
   }
 
   return (next) => (action) => {
