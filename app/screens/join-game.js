@@ -14,6 +14,7 @@ import {
 
 import { Container, Section } from '../ui/layout';
 import Heading from '../ui/typography/heading';
+import Spinner from '../ui/spinner';
 
 import FindGameModal from '../game/find-game-modal';
 import JoinGameForm from '../game/join-game-form';
@@ -114,7 +115,7 @@ class JoinGame extends Component {
               loading={loading}
               onSubmit={joinGame}/>
         ) : (
-          <span>...</span>
+          <Spinner xl/>
         )}
       </Container>
     );

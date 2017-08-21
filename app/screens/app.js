@@ -4,7 +4,7 @@ import { connect } from 'react-redux';
 import { Switch } from 'react-router-dom';
 
 import { Container, Section } from '../ui/layout';
-import Text from '../ui/typography/text';
+import Spinner from '../ui/spinner';
 
 @connect(({ app }) => ({
   loading: app.loading
@@ -24,8 +24,8 @@ class App extends Component {
 
     return loading ? (
       <Container>
-        <Section justify="center">
-          <Text center>...</Text>
+        <Section align="center" justify="center">
+          <Spinner xl/>
         </Section>
       </Container>
     ) : (

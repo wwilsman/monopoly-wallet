@@ -4,6 +4,8 @@ import { Link } from 'react-router-dom';
 import classNames from 'classnames/bind';
 import styles from './button.css';
 
+import Spinner from '../spinner';
+
 const cx = classNames.bind(styles);
 
 const Button = ({
@@ -36,7 +38,7 @@ const Button = ({
         onClick={!(disabled || loading) && onClick}
         disabled={disabled}
         {...props}>
-      {loading ? '...' : children}
+      {!loading ? children : <Spinner/>}
     </button>
   );
 };
