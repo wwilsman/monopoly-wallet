@@ -109,7 +109,7 @@ export default class GameRoom {
     return this.database.find(id).then((game) => {
       const room = this._cache[id] || new GameRoom(game);
 
-      if (meta) {
+      if (meta && !room.connected.has(meta)) {
         room.connected.add(meta);
         room.trigger('sync');
       }
