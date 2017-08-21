@@ -38,6 +38,7 @@ function TokenSelect({
   tokens,
   selected,
   disabled,
+  disableAll,
   onSelect,
   ...props
 }) {
@@ -47,8 +48,9 @@ function TokenSelect({
         itemClassName={styles.item}
         label="Select a token"
         data={tokens}
-        disabled={disabled.map((t) => tokens.indexOf(t))}
         selected={tokens.indexOf(selected)}
+        disabled={disabled.map((t) => tokens.indexOf(t))}
+        disableAll={disableAll}
         onSelect={onSelect}
         renderItem={(token, attrs) => (
           <TokenSelectItem name={token} {...attrs}/>
@@ -61,7 +63,8 @@ TokenSelect.propTypes = {
   tokens: PropTypes.arrayOf(PropTypes.string).isRequired,
   disabled: PropTypes.arrayOf(PropTypes.string).isRequired,
   selected: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired
+  onSelect: PropTypes.func.isRequired,
+  disableAll: PropTypes.bool
 };
 
 export default TokenSelect;

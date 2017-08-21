@@ -15,6 +15,7 @@ class RadioGroup extends Component {
     disabled: PropTypes.arrayOf(PropTypes.number),
     renderItem: PropTypes.func.isRequired,
     onSelect: PropTypes.func.isRequired,
+    disableAll: PropTypes.bool,
     error: PropTypes.string,
     className: PropTypes.string,
     itemClassName: PropTypes.string
@@ -43,10 +44,11 @@ class RadioGroup extends Component {
       data,
       selected,
       disabled,
+      disableAll,
       onSelect
     } = this.props;
 
-    if (i !== selected && !disabled.includes(i)) {
+    if (i !== selected && !(disableAll || disabled.includes(i))) {
       return () => onSelect(data[i]);
     }
   }
@@ -55,14 +57,15 @@ class RadioGroup extends Component {
     const {
       selected,
       disabled,
+      disableAll,
       itemClassName,
-      renderItem,
+      renderItem
     } = this.props;
 
     const id = `${this.elementId}-btn-${i}`;
     const attrs = {
       selected: i === selected,
-      disabled: disabled.includes(i)
+      disabled: disableAll || disabled.includes(i)
     };
 
     return (
@@ -87,13 +90,15 @@ class RadioGroup extends Component {
       data,
       label,
       error,
+      disableAll,
       className,
       ...props
     } = this.props;
 
     const rootClassName = cx('root', {
       'is-error': !!error,
-      'has-focus': this.state.focused
+      'has-focus': this.state.focused,
+      'is-disabled': disableAll
     });
 
     return (

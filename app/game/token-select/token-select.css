@@ -33,6 +33,10 @@
 
   &.is-disabled {
     color: var(--color-bg-light);
+
+    &.is-selected {
+      color: var(--color-text-light);
+    }
   }
 
   &.is-selected,
