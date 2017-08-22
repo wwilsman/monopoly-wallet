@@ -9,6 +9,7 @@ import {
 } from './actions/app';
 import {
   syncGame,
+  connectToGame,
   gameError,
   gameDoneLoading
 } from './actions/game';
@@ -21,9 +22,7 @@ const getSocketActions = ({ dispatch, getState }) => ({
   },
 
   'game:created': (game) => {
-    dispatch(syncGame(game));
-    dispatch(push(`/${game.id}/join`));
-    dispatch(gameDoneLoading());
+    dispatch(connectToGame(game.id));
   },
 
   'game:joined': ({ token, room }) => {
