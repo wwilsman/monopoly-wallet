@@ -1,5 +1,14 @@
-const webpack = require('webpack');
 const path = require('path');
+const webpack = require('webpack');
+const HTMLWebpackPlugin = require('html-webpack-plugin');
+const HTMLWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+
+const htmlWebpackPlugin = new HTMLWebpackPlugin({
+  title: 'Monopoly Wallet',
+  alwaysWriteToDisk: true,
+  template: 'index.ejs',
+  hash: true
+});
 
 module.exports = {
   devtool: env({
@@ -36,12 +45,15 @@ module.exports = {
 
   plugins: env({
     base: [
-      new webpack.EnvironmentPlugin({
-        NODE_ENV: 'development'
-      })
+      new webpack.EnvironmentPlugin({ NODE_ENV: 'development' }),
+    ],
+    production: [
+      htmlWebpackPlugin
     ],
     development: [
-      new webpack.HotModuleReplacementPlugin()
+      htmlWebpackPlugin,
+      new HTMLWebpackHarddiskPlugin(),
+      new webpack.HotModuleReplacementPlugin(),
     ]
   }),
 
