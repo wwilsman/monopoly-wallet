@@ -13,6 +13,8 @@ import {
   gameDoneLoading
 } from './actions/game';
 
+import logger from './logger';
+
 const getSocketActions = ({ dispatch, getState }) => ({
   'connect': () => {
     dispatch(appDoneLoading());
@@ -49,10 +51,12 @@ const getSocketActions = ({ dispatch, getState }) => ({
   },
 
   'game:error': (error) => {
+    logger.error(error);
     dispatch(gameError(error.message));
   },
 
   'room:error': (error) => {
+    logger.error(error);
     dispatch(appError(error.message));
   }
 });
@@ -62,6 +66,7 @@ export default (socket) => (store) => {
 
   for (let event in actions) {
     socket.on(event, (...args) => {
+      logger.log(`socket.on(${event})`, args);
       actions[event](...args);
     });
   }
@@ -69,6 +74,7 @@ export default (socket) => (store) => {
   return (next) => (action) => {
     if (action.socket) {
       const { emit, args = [] } = action.socket;
+      logger.log(`socket.emit(${emit})`, args);
       socket.emit(emit, ...args);
     }
 
