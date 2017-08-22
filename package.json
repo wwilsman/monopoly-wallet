@@ -6,6 +6,9 @@
   "repository": "wwilsman/monopoly-wallet.git",
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
+  "engines": {
+    "node": "8"
+  },
   "scripts": {
     "build": "./bin/build",
     "start": "./bin/start",
