@@ -35,6 +35,11 @@ module.exports = {
   }),
 
   plugins: env({
+    base: [
+      new webpack.EnvironmentPlugin({
+        NODE_ENV: 'development'
+      })
+    ],
     development: [
       new webpack.HotModuleReplacementPlugin()
     ]
