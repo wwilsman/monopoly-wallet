@@ -115,7 +115,9 @@ class JoinGame extends Component {
               loading={loading}
               onSubmit={joinGame}/>
         ) : (
-          <Spinner xl/>
+          <Section align="center" justify="center">
+            <Spinner xl/>
+          </Section>
         )}
       </Container>
     );
