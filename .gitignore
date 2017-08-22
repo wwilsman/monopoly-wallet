@@ -2,4 +2,5 @@
 /dist
 /public/index.html
 /public/*.bundle.js
+/public/styles.css
 .DS_Store

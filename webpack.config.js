@@ -2,6 +2,7 @@ const path = require('path');
 const webpack = require('webpack');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const HTMLWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const htmlWebpackPlugin = new HTMLWebpackPlugin({
   title: 'Monopoly Wallet',
@@ -46,6 +47,7 @@ module.exports = {
   plugins: env({
     base: [
       new webpack.EnvironmentPlugin({ NODE_ENV: 'development' }),
+      new ExtractTextPlugin('styles.css')
     ],
     production: [
       htmlWebpackPlugin
@@ -94,31 +96,31 @@ module.exports = {
         },
         {
           test: /\.css$/,
-          use: [
-            {
-              loader: 'style-loader'
-            },
-            {
-              loader: 'css-loader',
-              options: {
-                modules: true,
-                sourceMap: true,
-                importLoaders: 2,
-                localIdentName: '[name]__[local]--[hash:base64:5]'
-              }
-            },
-            {
-              loader: 'postcss-loader',
-              options: {
-                plugins() {
-                  return [
-                    require('precss'),
-                    require('autoprefixer')
-                  ];
+          use: ExtractTextPlugin.extract({
+            fallback: 'style-loader',
+            use: [
+              {
+                loader: 'css-loader',
+                options: {
+                  modules: true,
+                  sourceMap: true,
+                  importLoaders: 2,
+                  localIdentName: '[name]__[local]--[hash:base64:5]'
+                }
+              },
+              {
+                loader: 'postcss-loader',
+                options: {
+                  plugins() {
+                    return [
+                      require('precss'),
+                      require('autoprefixer')
+                    ];
+                  }
                 }
               }
-            }
-          ]
+            ]
+          })
         }
       ],
       test: [
