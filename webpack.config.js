@@ -2,13 +2,30 @@ const path = require('path');
 const webpack = require('webpack');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const HTMLWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
+const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const ExtractTextPlugin = require('extract-text-webpack-plugin');
 
 const htmlWebpackPlugin = new HTMLWebpackPlugin({
   title: 'Monopoly Wallet',
+  inject: false,
+  template: require('html-webpack-template'),
   alwaysWriteToDisk: true,
-  template: 'index.ejs',
-  hash: true
+  appMountId: 'react-root',
+  hash: true,
+  meta: [{
+    name: 'viewport',
+    content: 'width=device-width,maximum-scale=1'
+  }]
+});
+
+const faviconsWebpackPlugin = new FaviconsWebpackPlugin({
+  title: 'Monopoly Wallet',
+  logo: './public/logo.png',
+  background: '#033343',
+  icons: {
+    appleIcon: true,
+    appleStartup: { offset: 20 }
+  }
 });
 
 module.exports = {
@@ -50,10 +67,12 @@ module.exports = {
       new ExtractTextPlugin('styles.css')
     ],
     production: [
-      htmlWebpackPlugin
+      htmlWebpackPlugin,
+      faviconsWebpackPlugin
     ],
     development: [
       htmlWebpackPlugin,
+      faviconsWebpackPlugin,
       new HTMLWebpackHarddiskPlugin(),
       new webpack.HotModuleReplacementPlugin(),
     ]
