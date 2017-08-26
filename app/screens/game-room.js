@@ -6,6 +6,7 @@ import { replace } from 'react-router-redux';
 import { getCurrentPlayer } from '../selectors/player';
 
 import { Container, Section } from '../ui/layout';
+import Toaster from '../ui/toaster';
 
 @connect((state) => ({
   player: getCurrentPlayer(state)
@@ -40,6 +41,7 @@ class GameRoom extends Component {
     return (
       <Container data-test-game-room>
         <Section/>
+        <Toaster/>
       </Container>
     );
   }
