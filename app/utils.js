@@ -1,7 +1,7 @@
-export function uuid(Component) {
-  uuid.cache = uuid.cache || {};
+export function uid(Component) {
+  uid.cache = uid.cache || {};
   const name = Component.name || Component.displayName || 'generic';
-  const id = uuid.cache[name] = (uuid.cache[name] || 0) + 1;
+  const id = uid.cache[name] = (uid.cache[name] || 0) + 1;
   return `${name}-${id}`;
 }
 

@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './forms.css';
 
-import { uuid, dataAttrs } from '../../utils';
+import { uid, dataAttrs } from '../../utils';
 
 const cx = classNames.bind(styles);
 
@@ -29,7 +29,7 @@ class RadioGroup extends Component {
     focused: false
   };
 
-  elementId = uuid(RadioGroup);
+  elementId = uid(RadioGroup);
 
   _handleFocus = () => {
     this.setState({ focused: true });

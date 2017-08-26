@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './forms.css';
 
-import { uuid, dataAttrs } from '../../utils';
+import { uid, dataAttrs } from '../../utils';
 
 const cx = classNames.bind(styles);
 
@@ -24,7 +24,7 @@ class Input extends Component {
     empty: false
   };
 
-  elementId = uuid(Input);
+  elementId = uid(Input);
 
   handleChange = (e) => {
     const { disabled, length, onChangeText } = this.props;
