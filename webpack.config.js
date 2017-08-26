@@ -28,6 +28,29 @@ const faviconsWebpackPlugin = new FaviconsWebpackPlugin({
   }
 });
 
+const cssLoaders = [
+  {
+    loader: 'css-loader',
+    options: {
+      modules: true,
+      sourceMap: true,
+      importLoaders: 2,
+      localIdentName: '[name]__[local]--[hash:base64:5]'
+    }
+  },
+  {
+    loader: 'postcss-loader',
+    options: {
+      plugins() {
+        return [
+          require('precss'),
+          require('autoprefixer')
+        ];
+      }
+    }
+  }
+];
+
 module.exports = {
   devtool: env({
     development: 'inline-source-map'
@@ -63,10 +86,10 @@ module.exports = {
 
   plugins: env({
     base: [
-      new webpack.EnvironmentPlugin({ NODE_ENV: 'development' }),
-      new ExtractTextPlugin('styles.css')
+      new webpack.EnvironmentPlugin({ NODE_ENV: 'development' })
     ],
     production: [
+      new ExtractTextPlugin('styles.css'),
       htmlWebpackPlugin,
       faviconsWebpackPlugin
     ],
@@ -74,7 +97,7 @@ module.exports = {
       htmlWebpackPlugin,
       faviconsWebpackPlugin,
       new HTMLWebpackHarddiskPlugin(),
-      new webpack.HotModuleReplacementPlugin(),
+      new webpack.HotModuleReplacementPlugin()
     ]
   }),
 
@@ -89,65 +112,46 @@ module.exports = {
 
   module: {
     rules: env({
-      base: [
-        {
-          enforce: "pre",
-          test: /\.js$/,
-          exclude: /node_modules/,
-          loader: 'eslint-loader'
-        },
-        {
-          test: /\.js$/,
-          exclude: /node_modules/,
-          loader: 'babel-loader',
-          options: {
-            babelrc: false,
-            presets: [
-              ['env', { modules: false }],
-              'stage-2',
-              'react'
-            ],
-            plugins: env({
-              base: ['transform-decorators-legacy'],
-              development: ['react-hot-loader/babel']
-            })
-          }
-        },
-        {
-          test: /\.css$/,
-          use: ExtractTextPlugin.extract({
-            fallback: 'style-loader',
-            use: [
-              {
-                loader: 'css-loader',
-                options: {
-                  modules: true,
-                  sourceMap: true,
-                  importLoaders: 2,
-                  localIdentName: '[name]__[local]--[hash:base64:5]'
-                }
-              },
-              {
-                loader: 'postcss-loader',
-                options: {
-                  plugins() {
-                    return [
-                      require('precss'),
-                      require('autoprefixer')
-                    ];
-                  }
-                }
-              }
-            ]
+      base: [{
+        enforce: "pre",
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'eslint-loader'
+      }, {
+        test: /\.js$/,
+        exclude: /node_modules/,
+        loader: 'babel-loader',
+        options: {
+          babelrc: false,
+          presets: [
+            ['env', { modules: false }],
+            'stage-2',
+            'react'
+          ],
+          plugins: env({
+            base: ['transform-decorators-legacy'],
+            development: ['react-hot-loader/babel']
           })
         }
-      ],
-      test: [
-        {
-          test: /\.yml/,
-          use: ['js-yaml-loader']
-        }
-      ]
+      }],
+      production: [{
+        test: /\.css$/,
+        use: ExtractTextPlugin.extract({
+          fallback: 'style-loader',
+          use: cssLoaders
+        })
+      }],
+      development: [{
+        test: /\.css$/,
+        use: ['style-loader'].concat(cssLoaders)
+      }],
+      test: [{
+        test: /\.css$/,
+        use: ['style-loader'].concat(cssLoaders)
+      }, {
+        test: /\.yml/,
+        use: ['js-yaml-loader']
+      }]
     })
   }
 };
