@@ -16,6 +16,7 @@ import App from './screens/app';
 import Welcome from './screens/welcome';
 import JoinGame from './screens/join-game';
 import GameRoom from './screens/game-room';
+import Sandbox from './screens/sandbox';
 
 class AppRoot extends Component {
   static propTypes = {
@@ -43,6 +44,11 @@ class AppRoot extends Component {
               <Route path="/join" exact component={JoinGame}/>
               <Route path="/:room([^\/]{5})/join" exact component={JoinGame}/>
               <Route path="/:room([^\/]{5})" exact component={GameRoom}/>
+
+              {process.env.NODE_ENV === 'development' && (
+                <Route path="/sandbox" component={Sandbox}/>
+              )}
+
               <Route render={() => <Redirect to="/"/>}/>
             </App>
           )}/>
