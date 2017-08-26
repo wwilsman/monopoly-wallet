@@ -20,7 +20,7 @@ const Button = ({
 }) => {
   const className = cx('button', {
     [type]: !!type,
-    'is-disabled': disabled,
+    'is-disabled': loading || disabled,
     'is-loading': loading,
     'is-block': block
   });
@@ -36,7 +36,7 @@ const Button = ({
     <button
         className={className}
         onClick={!(disabled || loading) && onClick}
-        disabled={disabled}
+        disabled={loading || disabled}
         {...props}>
       {!loading ? children : <Spinner/>}
     </button>

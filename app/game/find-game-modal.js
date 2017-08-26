@@ -44,7 +44,7 @@ class FindGameModal extends Component {
             block
             type="primary"
             loading={loading}
-            disabled={loading || room.length !== 5}
+            disabled={room.length !== 5}
             onClick={this.findGame}
             data-test-find-game-btn>
           Find Room
