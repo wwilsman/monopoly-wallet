@@ -34,8 +34,8 @@ function Toast({
 
       {type === 'attention' && (
         <div className={styles.actions}>
-          {actions.map(({ label, action }, i) => (
-            <button key={i} onClick={() => dispatch(action)}>
+          {actions.map(({ label, actions }, i) => (
+            <button key={i} onClick={() => actions.forEach(dispatch)}>
               {label}
             </button>
           ))}
@@ -57,7 +57,7 @@ Toast.propTypes = {
   dismiss: PropTypes.func,
   actions: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string.isRequired,
-    action: PropTypes.object.isRequired
+    actions: PropTypes.arrayOf(PropTypes.object).isRequired
   }))
 };
 

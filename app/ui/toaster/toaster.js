@@ -1,8 +1,18 @@
 import React, { Component} from 'react';
 import PropTypes from 'prop-types';
+import { connect } from 'react-redux';
 import styles from './toaster.css';
 
+import { removeToast } from '../../actions/toasts';
+
 import Toast from './toast';
+
+@connect(({ toasts }) => ({
+  toasts
+}), (dispatch) => ({
+  removeToast: (id) => dispatch(removeToast(id)),
+  dispatch
+}))
 
 class Toaster extends Component {
   static propTypes = {
@@ -12,21 +22,21 @@ class Toaster extends Component {
       message: Toast.propTypes.message,
       actions: Toast.propTypes.actions
     })).isRequired,
-    dismissToast: PropTypes.func.isRequired,
+    removeToast: PropTypes.func.isRequired,
     dispatch: PropTypes.func.isRequired
   };
 
   _timeouts = {};
 
   dismiss(id) {
-    const { dismissToast } = this.props;
+    const { removeToast } = this.props;
 
     if (this._timeouts[id]) {
       clearTimeout(this._timeouts[id]);
       delete this._timeouts[id];
     }
 
-    dismissToast(id);
+    removeToast(id);
   }
 
   dismissable(index) {
