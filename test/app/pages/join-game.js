@@ -13,6 +13,9 @@ export default {
   get $findGameModal() {
     return $('[data-test-find-game-modal]');
   },
+  get isFindGameLoading() {
+    return this.$findGameModal.find('[data-test-spinner]').length > 0;
+  },
   get $findGameInput() {
     return $('[data-test-find-game-input] [data-test-input]');
   },
@@ -46,6 +49,10 @@ export default {
   get $tokens() {
     return $('[data-test-join-game-token-select] [data-test-radio-item]');
   },
+  get areTokensDisabled() {
+    return this.$tokens.length ===
+      $('[data-test-join-game-token-select] input[type="radio"][disabled]').length;
+  },
   $token(name) {
     return this.$tokens
       .find(`[title=${name}]`)
@@ -58,6 +65,9 @@ export default {
 
   get $joinBtn() {
     return $('[data-test-join-game-btn]');
+  },
+  get isJoinGameLoading() {
+    return this.$joinBtn.find('[data-test-spinner]').length > 0;
   },
   joinGame(name, token) {
     name && this.fillName(name);

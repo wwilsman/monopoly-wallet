@@ -30,8 +30,27 @@ describeApplication('join game screen', function() {
         JoinGamePage.findGame(this.room.id);
       });
 
+      it('should show a loading indicator and disable inputs', function() {
+        expect(JoinGamePage.isFindGameLoading).to.be.true;
+        expect(JoinGamePage.$findGameInput).to.have.attr('disabled');
+        expect(JoinGamePage.$findGameBtn).to.have.attr('disabled');
+      });
+
       it('should go to the join game route for a game', function() {
         expect(this.location.pathname).to.equal(`/${this.room.id}/join`);
+        expect(this.state.game.room).to.equal(this.room.id);
+      });
+
+      describe('then navigating back', function() {
+        beforeEach(function() {
+          return this.visit('/join', () => {
+            expect(this.location.pathname).to.equal('/join');
+          });
+        });
+
+        it('should clear the game state', function() {
+          expect(this.state.game.room).to.not.equal(this.room.id);
+        });
       });
     });
 
@@ -105,6 +124,13 @@ describeApplication('join game screen', function() {
       describe('and join game is clicked', function() {
         beforeEach(function() {
           JoinGamePage.joinGame();
+        });
+
+        it('should show a loading indicator and disabled inputs', function() {
+          expect(JoinGamePage.isJoinGameLoading).to.be.true;
+          expect(JoinGamePage.$nameInput).to.have.attr('disabled');
+          expect(JoinGamePage.areTokensDisabled).to.be.true;
+          expect(JoinGamePage.$joinBtn).to.have.attr('disabled');
         });
 
         it('should join the game', function() {
