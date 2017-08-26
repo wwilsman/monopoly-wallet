@@ -58,6 +58,7 @@
     "mocha": "^3.3.0",
     "mocha-eslint": "^3.0.1",
     "mock-socket": "^7.0.0",
+    "nodemon": "^1.11.0",
     "postcss-loader": "^2.0.6",
     "precss": "^2.0.0",
     "prop-types": "^15.5.10",

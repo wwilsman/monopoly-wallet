@@ -10,5 +10,22 @@ if [ "$NODE_ENV" == 'production' ]; then
         exit 1
     fi
 else
-    yarn run babel-node -- ./server
+    if [ -f './public/main.bundle.js' ] || [ -f './public/styles.css' ]; then
+        cat <<-EOF
+
+						WARNING!!
+						App bundle found in public directory!
+
+						The server will serve files in the public
+						directory before webpack development files.
+
+						Remove these files to squelch this message.
+
+				EOF
+    fi
+
+    yarn run nodemon -- \
+         --watch ./server \
+         --watch `realpath ./webpack.config.js` \
+         --exec "babel-node" ./server
 fi
