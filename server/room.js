@@ -154,7 +154,10 @@ export default class GameRoom {
     this.game = this.store.getState();
     this.fresh = true;
 
-    this.store.subscribe(() => this.sync());
+    this.store.subscribe(() => {
+      this.fresh = false;
+      this.sync();
+    });
 
     Object.keys(actions).forEach((name) => {
       if (!this[name]) {
@@ -163,7 +166,6 @@ export default class GameRoom {
             throw this.error('player.not-playing');
           }
 
-          this.fresh = false;
           this.store.dispatch(actions[name](token, ...args));
           resolve();
         });
@@ -183,7 +185,7 @@ export default class GameRoom {
         this.off(event, meta);
       });
 
-      this.players.forEach((token, value, players) => {
+      this.players.forEach((value, token, players) => {
         value === meta && players.delete(token);
       });
 
