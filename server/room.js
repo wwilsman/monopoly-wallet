@@ -146,6 +146,7 @@ export default class GameRoom {
     this.config = config;
     this.connected = new Set();
     this.players = new Map();
+    this.events = new Map();
     this.polls = {};
 
     this.messages = this.constructor.load(theme, 'messages');
@@ -178,6 +179,10 @@ export default class GameRoom {
     if (meta) {
       this.connected.delete(meta);
 
+      this.events.forEach((r, event) => {
+        this.off(event, meta);
+      });
+
       this.players.forEach((token, value, players) => {
         value === meta && players.delete(token);
       });
@@ -193,26 +198,40 @@ export default class GameRoom {
   /**
    * Simple event registration
    * @param {String} event - Event to register with
-   * @param {Function} cb - Function called on event
+   * @param {Function} callback - Function called on event
+   * @param {Mixed} [meta] - Additional meta to register with the callback
    */
-  on(event, cb) {
-    this._events = this._events || {};
-    this._events[event] = this._events[event] || new Set();
-    this._events[event].add(cb);
+  on(event, callback, meta) {
+    if (!this.events.has(event)) {
+      this.events.set(event, new Map());
+    }
+
+    this.events.get(event).set(callback, meta);
   }
 
   /**
    * Simple event deregistration, if no callback is provided all callbacks
    * for the event will be removed
    * @param {String} event - Event to deregister from
-   * @param {Function} [cb] - Function to deregister
+   * @param {Function} [callback] - Function to deregister
+   * @param {Mixed} [meta] - Meta to deregister
    */
-  off(event, cb) {
-    if (this._events && this._events[event]) {
-      if (cb) {
-        this._events[event].delete(cb);
+  off(event, callback, meta = callback) {
+    if (this.events && this.events.has(event)) {
+      const registry = this.events.get(event);
+
+      if (registry.has(callback)) {
+        registry.delete(callback);
+
+      } else if (typeof meta !== 'undefined') {
+        registry.forEach((m, cb, reg) => {
+          if (meta === m && (meta === callback || cb === callback)) {
+            reg.delete(cb);
+          }
+        });
+
       } else {
-        this._events[event].clear();
+        registry.clear();
       }
     }
   }
@@ -223,8 +242,8 @@ export default class GameRoom {
    * @param {Mixed} [args] - Arguments to pass to the callbacks
    */
   trigger(event, ...args) {
-    if (this._events && this._events[event]) {
-      this._events[event].forEach((cb) => cb(...args));
+    if (this.events && this.events.has(event)) {
+      this.events.get(event).forEach((m, cb) => cb(...args));
     }
   }
 

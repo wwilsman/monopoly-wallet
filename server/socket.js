@@ -21,10 +21,7 @@ export default function connectSocket(socket) {
       socket.on('disconnect', () => room.disconnect(socket));
 
       // keep the room state in sync
-      room.on('sync', () => socket.emit('room:sync', room.state));
-
-      // tell the socket it's connected
-      socket.emit('room:connected', room.state);
+      room.on('sync', () => socket.emit('room:sync', room.state), socket);
 
       // allow the socket to join the game
       socket.on('game:join', (name, token) => {
@@ -32,6 +29,9 @@ export default function connectSocket(socket) {
           .then(() => connectPlayer(room, socket, token))
           .catch(emitError);
       });
+
+      // tell the socket it's connected
+      socket.emit('room:connected', room.state);
     }).catch(emitError);
   });
 }
@@ -88,7 +88,7 @@ function connectPlayer(room, player, token) {
   const emitError = socketError.bind(null, player);
 
   // tell our player about new polls
-  room.on('poll', (poll) => player.emit('poll:new', poll));
+  room.on('poll', (poll) => player.emit('poll:new', poll), player);
 
   // allow the player vote in a poll
   player.on('poll:vote', (id, vote) => room.vote(token, id, vote));
