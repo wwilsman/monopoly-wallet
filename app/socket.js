@@ -10,9 +10,14 @@ import {
 import {
   syncGame,
   connectToGame,
+  voteInPoll,
   gameError,
   gameDoneLoading
 } from './actions/game';
+import {
+  newPoll,
+  removeToast
+} from './actions/toasts';
 
 import logger from './logger';
 
@@ -47,6 +52,16 @@ const getSocketActions = ({ dispatch, getState }) => ({
   'room:sync': ({ players, ...game }) => {
     dispatch(syncGame(game));
     dispatch(syncPlayers(players));
+  },
+
+  'poll:new': ({ id, message }) => {
+    const { game: { config }} = getState();
+    const dismiss = removeToast(id);
+
+    dispatch(newPoll(id, message, [
+      { label: 'Yes', actions: [voteInPoll(id, true), dismiss] },
+      { label: 'No', actions: [voteInPoll(id, false), dismiss] },
+    ], config.pollTimeout));
   },
 
   'game:error': (error) => {

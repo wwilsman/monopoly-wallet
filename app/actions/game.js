@@ -3,6 +3,7 @@ export const GAME_SYNC = 'GAME_SYNC';
 export const GAME_CONNECT = 'GAME_CONNECT';
 export const GAME_DISCONNECT = 'GAME_DISCONNECT';
 export const GAME_JOIN = 'GAME_JOIN';
+export const GAME_POLL_VOTE = 'GAME_POLL_VOTE';
 export const GAME_ERROR = 'GAME_ERROR';
 export const GAME_LOADING_DONE = 'GAME_LOADING_DONE';
 
@@ -36,6 +37,14 @@ export const joinGame = ({ name, token }) => ({
   socket: {
     emit: 'game:join',
     args: [name, token]
+  }
+});
+
+export const voteInPoll = (id, vote) => ({
+  type: GAME_POLL_VOTE,
+  socket: {
+    emit: 'poll:vote',
+    args: [id, vote]
   }
 });
 
