@@ -1,0 +1,78 @@
+@import '../../styles/variables';
+
+.root {
+  padding: 0 var(--pad-med);
+  position: fixed;
+  top: auto;
+  bottom: 0;
+  width: 100%;
+
+  .toast {
+    margin-bottom: var(--pad-med);
+  }
+}
+
+.toast {
+  background: white;
+  border-radius: var(--radius-med);
+  border-right: var(--pad-xs) solid;
+  box-shadow: var(--shadow-med);
+  font-size: var(--size-sm);
+  line-height: var(--pad-med);
+  padding: calc(var(--pad-lg) / 2);
+
+  &.is-alert {
+    color: var(--color-alert);
+  }
+
+  &.is-attention {
+    color: var(--color-primary);
+  }
+
+  &.is-success {
+    color: var(--color-secondary);
+  }
+}
+
+.message {
+  display: flex;
+  flex-direction: row;
+
+  span {
+    flex: 1;
+  }
+
+  button {
+    margin-left: var(--pad-sm);
+    font-size: var(--pad-med);
+
+    .is-default & {
+      color: color(black a(20%));
+    }
+  }
+}
+
+.actions {
+  align-items: stretch;
+  display: flex;
+  margin: calc(var(--pad-sm) / -2) -var(--pad-sm);
+  margin-top: calc(var(--pad-lg) / 2);
+
+  button {
+    background: color(black a(20%));
+    border-radius: var(--radius-med);
+    color: black;
+    flex: 1;
+    margin: 0 calc(var(--pad-sm) / 2);
+    line-height: var(--pad-xl);
+    text-align: center;
+
+    &:focus {
+      background: color(black a(25%));
+    }
+
+    &:active {
+      background: color(black a(30%));
+    }
+  }
+}
