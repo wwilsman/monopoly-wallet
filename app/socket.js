@@ -72,9 +72,19 @@ export default (socket) => (store) => {
 
   return (next) => (action) => {
     if (action.socket) {
-      const { emit, args = [] } = action.socket;
-      logger.log(`socket.emit(${emit})`, args);
-      socket.emit(emit, ...args);
+      const {
+        emit,
+        args = [],
+        reconnect
+      } = action.socket;
+
+      if (reconnect) {
+        socket.close().open();
+        logger.log('socket reconnected');
+      } else {
+        logger.log(`socket.emit(${emit})`, args);
+        socket.emit(emit, ...args);
+      }
     }
 
     next(action);

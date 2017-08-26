@@ -25,7 +25,10 @@ export const connectToGame = (room) => ({
 });
 
 export const disconnectGame = () => ({
-  type: GAME_DISCONNECT
+  type: GAME_DISCONNECT,
+  socket: {
+    reconnect: true
+  }
 });
 
 export const joinGame = ({ name, token }) => ({
