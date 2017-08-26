@@ -3,6 +3,7 @@ import {
   GAME_SYNC,
   GAME_CONNECT,
   GAME_DISCONNECT,
+  GAME_JOIN,
   GAME_ERROR,
   GAME_LOADING_DONE
 } from '../actions/game';
@@ -20,6 +21,7 @@ export default (state = initialState, action) => {
   switch (action.type) {
     case GAME_NEW:
     case GAME_CONNECT:
+    case GAME_JOIN:
       return { ...state,
         loading: true
       };
