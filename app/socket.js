@@ -30,9 +30,11 @@ const getSocketActions = ({ dispatch, getState }) => ({
     dispatch(connectToGame(game.id));
   },
 
-  'game:joined': ({ token, room }) => {
-    dispatch(setCurrentPlayer(token));
-    dispatch(push(`/${room}`));
+  'game:joined': ({ player, players, ...game }) => {
+    dispatch(syncGame(game));
+    dispatch(setCurrentPlayer(player));
+    dispatch(syncPlayers(players));
+    dispatch(push(`/${game.id}`));
     dispatch(gameDoneLoading());
   },
 

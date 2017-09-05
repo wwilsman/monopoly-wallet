@@ -21,8 +21,13 @@ describe('Room: joining', function() {
   });
 
   it('should let the first player join', async function() {
-    await expect(joinGameRoom(socket1, 'Player 1', 'top-hat')).to.be.fulfilled
-      .and.eventually.deep.equal({ token: 'top-hat', room: this.room });
+    const payload = await joinGameRoom(socket1, 'Player 1', 'top-hat');
+    const { player, players, ...game } = payload;
+
+    expect(player).to.equal('top-hat');
+    expect(players).to.include('top-hat');
+    expect(game).to.have.property('id', this.room);
+    expect(game).to.have.nested.property('state.players.top-hat');
   });
 
   it('should let the player disconnect and rejoin', async function() {

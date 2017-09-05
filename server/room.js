@@ -111,7 +111,7 @@ export default class GameRoom {
 
       if (meta && !room.connected.has(meta)) {
         room.connected.add(meta);
-        room.trigger('sync');
+        room.trigger('sync', meta);
       }
 
       this._cache[id] = room;
@@ -189,7 +189,7 @@ export default class GameRoom {
         value === meta && players.delete(token);
       });
 
-      this.trigger('sync');
+      this.trigger('sync', meta);
     }
 
     if (this.connected.size === 0) {
@@ -277,8 +277,14 @@ export default class GameRoom {
    * to false if the room state is fresh, otherwise true
    */
   sync(save = !this.fresh) {
-    const sync = () => this.trigger('sync');
     this.game = this.store.getState();
+
+    const sync = () => {
+      // no one to blame if we aren't saving
+      const blame = save && this.game.notice.meta.player;
+      const meta = blame && this.players.get(blame.token);
+      this.trigger('sync', meta);
+    };
 
     if (save) {
       this.constructor.database.save({
@@ -295,14 +301,14 @@ export default class GameRoom {
   }
 
   /**
-   * Reloads the game from the database
-   * triggers this.sync() via dispatching, but since we just loaded the game we don't need to save it again, so we flag the room as being "fresh"
+   * Reloads the game from the database and syncs it with the room
    */
   refresh() {
     this.constructor.database.find(this.id)
       .then(({ config, state }) => {
         this.fresh = true;
         this.config = config;
+        // this will trigger a sync which sets `this.game`
         this.store.dispatch(hydrate(state));
       });
   }
@@ -318,18 +324,20 @@ export default class GameRoom {
     return new Promise((resolve, reject) => {
       const player = this.game.players[token];
 
-      if (player) {
-        if (player.name !== name) {
-          return reject(this.error('player.used-token'));
-        } else if (this.players.has(token)) {
-          return reject(this.error('player.playing'));
-        }
-      } else {
-        this.store.dispatch(actions.join(name, token));
+      if (player && player.name !== name) {
+        return reject(this.error('player.used-token'));
+      } else if (player && this.players.has(token)) {
+        return reject(this.error('player.playing'));
       }
 
       this.players.set(token, meta);
-      this.trigger('sync');
+
+      if (!player) {
+        this.store.dispatch(actions.join(name, token));
+      } else {
+        this.trigger('sync', meta);
+      }
+
       return resolve();
     });
   }

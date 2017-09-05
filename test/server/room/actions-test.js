@@ -39,7 +39,7 @@ describe('Room: actions', function() {
     const promisedAction = () => {
       return promisifySocketEvent(socket, {
         emit: actionTest.emit,
-        resolve: 'game:sync',
+        resolve: 'game:update',
         reject: 'game:error'
       })(...actionTest.args);
     };

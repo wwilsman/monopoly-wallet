@@ -18,10 +18,17 @@ export default function connectSocket(socket) {
   socket.on('room:connect', (id) => {
     GameRoom.connect(id, socket).then((room) => {
       // on disconnect remove the socket from the room
-      socket.on('disconnect', () => room.disconnect(socket));
+      socket.on('disconnect', () => {
+        room.disconnect(socket);
+      });
 
-      // keep the room state in sync
-      room.on('sync', () => socket.emit('room:sync', room.state), socket);
+      // keep the room state in sync when other players make changes.
+      // the sync event receives the meta that triggered it
+      room.on('sync', (blame) => {
+        if (blame !== socket) {
+          socket.emit('room:sync', room.state);
+        }
+      }, socket);
 
       // allow the socket to join the game
       socket.on('game:join', (name, token) => {
@@ -57,23 +64,22 @@ function socketError(socket, error) {
  * the poll resolves to false
  */
 function askRoomToJoin(room, socket, name, token) {
+  const joinGame = () => room.join(name, token, socket).then(() => {
+    socket.emit('game:joined', { ...room.state, player: token });
+  });
+
   if (Array.from(room.players.values()).includes(socket)) {
     return Promise.reject(room.error('player.playing'));
 
   } else if (!room.players.size || room.game.players[token]) {
-    return room.join(name, token, socket).then(() => {
-      socket.emit('game:joined', { room: room.id, token });
-    });
+    return joinGame();
 
   } else {
     const ask = room.notice('player.ask-to-join', { player: { name }});
 
     return room.poll(ask).then((result) => {
       if (!result) throw room.error('player.denied');
-
-      return room.join(name, token, socket).then(() => {
-        socket.emit('game:joined', { room: room.id, token });
-      });
+      return joinGame();
     });
   }
 }
@@ -88,10 +94,14 @@ function connectPlayer(room, player, token) {
   const emitError = socketError.bind(null, player);
 
   // tell our player about new polls
-  room.on('poll', (poll) => player.emit('poll:new', poll), player);
+  room.on('poll', (poll) => {
+    player.emit('poll:new', poll);
+  }, player);
 
   // allow the player vote in a poll
-  player.on('poll:vote', (id, vote) => room.vote(token, id, vote));
+  player.on('poll:vote', (id, vote) => {
+    room.vote(token, id, vote);
+  });
 
   // allow the player to message others in the room by token
   player.on('message:send', (to, message) => {
@@ -108,7 +118,7 @@ function connectPlayer(room, player, token) {
   });
 
   // wrap game actions to pass the token as the first argument
-  // and emit any errors as game errors
+  // and emit a game update or error
   const gameActions = {
     'player:transfer': room.makeTransfer,
     'player:claim-bankruptcy': room.claimBankruptcy,
@@ -131,8 +141,9 @@ function connectPlayer(room, player, token) {
 
   for (let event in gameActions) {
     player.on(event, (...args) => {
-      const promised = gameActions[event];
-      promised(player, ...args).catch(emitError);
+      gameActions[event](player, ...args)
+        .then(() => player.emit('game:update', room.game))
+        .catch(emitError);
     });
   }
 }
