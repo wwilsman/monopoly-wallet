@@ -25,7 +25,7 @@ const ENV = {
 const app = express();
 
 // static assets
-app.use(express.static('public'));
+app.use(express.static(path.join(__dirname, '../public')));
 
 // setup webpack dev middleware
 if (ENV.environment === 'development') {
