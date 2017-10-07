@@ -104,8 +104,8 @@ class RadioGroup extends Component {
     return (
       <fieldset
           className={rootClassName}
-          onFocusIn={this.handleFocus}
-          onFocusOut={this.handleBlur}
+          onFocus={this.handleFocus}
+          onBlur={this.handleBlur}
           {...dataAttrs(props)}>
         <legend
             className={styles.label}

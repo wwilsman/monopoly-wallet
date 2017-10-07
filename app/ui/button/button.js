@@ -18,25 +18,36 @@ const Button = ({
   children,
   ...props
 }) => {
-  const className = cx('button', {
+  let actuallyDisabled = loading || disabled;
+
+  let className = cx('button', {
     [type]: !!type,
-    'is-disabled': loading || disabled,
+    'is-disabled': actuallyDisabled,
     'is-loading': loading,
     'is-block': block
   });
 
-  return linkTo && !(disabled || loading) ? (
+  let handleClick = (e) => {
+    if (actuallyDisabled) {
+      e.preventDefault();
+    } else if (onClick) {
+      onClick(e);
+    }
+  };
+
+  return linkTo ? (
     <Link
         to={linkTo}
         className={className}
+        onClick={handleClick}
         {...props}>
-      {children}
+      {!loading ? children : <Spinner/>}
     </Link>
   ) : (
     <button
         className={className}
-        onClick={!(disabled || loading) && onClick}
-        disabled={loading || disabled}
+        disabled={actuallyDisabled}
+        onClick={handleClick}
         {...props}>
       {!loading ? children : <Spinner/>}
     </button>
