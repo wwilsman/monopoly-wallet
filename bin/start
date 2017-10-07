@@ -1,30 +1,16 @@
-#!/usr/bin/env bash
+#! /bin/bash
 
 export NODE_ENV="${NODE_ENV:=${1:-development}}"
 
 if [ "$NODE_ENV" == 'production' ]; then
-    if [ -d './dist' ]; then
-        node ./dist/index.js;
+    if [ -d './dist/server' ]; then
+        node ./dist/server/index.js;
     else
-        printf "unable to find \"./dist\""
+        printf "unable to find \"./dist/server\""
         exit 1
     fi
 else
-    if [ -f './public/main.bundle.js' ] || [ -f './public/styles.css' ]; then
-        cat <<-EOF
-
-						WARNING!!
-						App bundle found in public directory!
-
-						The server will serve files in the public
-						directory before webpack development files.
-
-						Remove these files to squelch this message.
-
-				EOF
-    fi
-
-    yarn run nodemon -- \
+    yarn run nodemon \
          --watch ./server \
          --watch `realpath ./webpack.config.js` \
          --exec "babel-node" ./server

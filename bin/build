@@ -1,16 +1,27 @@
-#!/usr/bin/env bash
+#! /bin/bash
+
+print_header() {
+    blue=$(tput setaf 4)
+    normal=$(tput sgr0)
+    printf "${blue}%s${normal}\n" "$1"
+}
 
 export NODE_ENV="${1:-production}"
 
 if [ -d './dist' ]; then
-    printf "removing old files...\n"
-    rm -rfv ./dist/*
+    print_header "Removing Old Files..."
+    rm -rfv ./dist
     printf "\n"
 fi
 
-printf "compiling server files...\n"
-babel ./server --out-dir ./dist --copy-files
+print_header "Copying Public Files..."
+mkdir -p ./dist/public
+cp -rv ./public/* ./dist/public
 printf "\n"
 
-printf "creating app bundle...\n"
-webpack --config ./webpack.config.js
+print_header "Compiling Server Files..."
+babel ./server --out-dir ./dist/server --copy-files
+printf "\n"
+
+print_header "Creating App Bundle..."
+webpack --config ./webpack.config.js --progress

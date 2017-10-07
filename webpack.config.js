@@ -9,7 +9,6 @@ const htmlWebpackPlugin = new HTMLWebpackPlugin({
   title: 'Monopoly Wallet',
   inject: false,
   template: require('html-webpack-template'),
-  alwaysWriteToDisk: true,
   appMountId: 'react-root',
   hash: true,
   meta: [{
@@ -52,6 +51,11 @@ const cssLoaders = [
 ];
 
 module.exports = {
+  stats: {
+    assets: true,
+    children: false
+  },
+
   devtool: env({
     development: 'inline-source-map'
   }),
@@ -71,7 +75,7 @@ module.exports = {
 
   output: {
     filename: '[name].bundle.js',
-    path: path.resolve(__dirname, 'public'),
+    path: path.resolve(__dirname, 'dist/public'),
     publicPath: '/'
   },
 
@@ -86,7 +90,9 @@ module.exports = {
 
   plugins: env({
     base: [
-      new webpack.EnvironmentPlugin({ NODE_ENV: 'development' })
+      new webpack.EnvironmentPlugin({
+        NODE_ENV: 'development'
+      })
     ],
     production: [
       new ExtractTextPlugin('styles.css'),
@@ -113,11 +119,6 @@ module.exports = {
   module: {
     rules: env({
       base: [{
-        enforce: "pre",
-        test: /\.js$/,
-        exclude: /node_modules/,
-        loader: 'eslint-loader'
-      }, {
         test: /\.js$/,
         exclude: /node_modules/,
         loader: 'babel-loader',
@@ -183,4 +184,4 @@ function env(configs) {
   }
 
   return conf;
-};
+}
