@@ -12,7 +12,7 @@ before_script:
   - export DISPLAY=:99.0
   - sh -e /etc/init.d/xvfb start
 script:
-  - yarn test
+  - yarn lint && yarn test
 before_deploy:
   - NODE_ENV=production yarn build
 deploy:

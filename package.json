@@ -11,6 +11,7 @@
   },
   "scripts": {
     "build": "./bin/build",
+    "lint": "eslint ./",
     "start": "./bin/start",
     "test": "./bin/test"
   },
@@ -39,7 +40,6 @@
     "classnames": "^2.2.5",
     "css-loader": "^0.28.4",
     "eslint": "^4.8.0",
-    "eslint-loader": "^1.9.0",
     "eslint-plugin-react": "^7.4.0",
     "extract-text-webpack-plugin": "^3.0.1",
     "favicons-webpack-plugin": "^0.0.7",
@@ -56,7 +56,6 @@
     "karma-mocha-reporter": "^2.2.3",
     "karma-webpack": "^2.0.3",
     "mocha": "^4.0.1",
-    "mocha-eslint": "^4.1.0",
     "mock-socket": "^7.0.0",
     "nodemon": "^1.12.1",
     "postcss-loader": "^2.0.6",

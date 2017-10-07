@@ -12,24 +12,16 @@ module.exports = {
 
   parser: 'babel-eslint',
 
-  parserOptions: {
-    ecmaVersion: 2017,
-    sourceType: 'module',
-    ecmaFeatures: {
-      modules: true,
-      experimentalObjectRestSpread: true,
-      jsx: true
-    }
-  },
-
   plugins: [
     'react'
   ],
 
   rules: {
-    'indent': ['error', 2, { SwitchCase: 1 }],
+    'indent': ['error', 2, { SwitchCase: 1, ignoredNodes: ['JSXElement *'] }],
     'no-console': 'warn',
     'no-extra-boolean-cast': 'off',
+    'react/jsx-indent': ['error', 2],
+    'react/jsx-indent-props': ['error', 4],
     'semi': ['error', 'always']
   }
 };
