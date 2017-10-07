@@ -24,4 +24,4 @@ babel ./server --out-dir ./dist/server --copy-files
 printf "\n"
 
 print_header "Creating App Bundle..."
-webpack --config ./webpack.config.js --progress
+webpack --config ./webpack.config.js
