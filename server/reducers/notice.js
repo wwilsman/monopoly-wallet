@@ -72,6 +72,27 @@ const initialState = {
 };
 
 /**
+ * Returns the notice type for an action
+ * @param {Object} action - Redux action
+ * @returns {String} - Notice type
+ */
+function noticeType(action) {
+  let type = 'game';
+
+  if (action.type in PLAYER_ACTIONS) {
+    type = 'player';
+  } else if (action.type in PROPERTY_ACTIONS) {
+    type = 'property';
+  } else if (action.type in AUCTION_ACTIONS) {
+    type = 'auction';
+  } else if (action.type in TRADE_ACTIONS) {
+    type = 'trade';
+  }
+
+  return type;
+}
+
+/**
  * Reducer for generating action notices
  * @param {Object} state - Notice state
  * @param {Object} action - Redux action
@@ -80,12 +101,8 @@ export default (state = initialState, action) => {
   if (action.type in ACTIONS && action.notice) {
     return {
       id: action.notice.id,
+      type: noticeType(action),
       message: action.notice.message,
-      type: (action.type in PLAYER_ACTIONS) ? 'player' :
-        (action.type in PROPERTY_ACTIONS) ? 'property' :
-        (action.type in AUCTION_ACTIONS) ? 'auction' :
-        (action.type in TRADE_ACTIONS) ? 'trade' :
-        'game',
       meta: ['player', 'property', 'other', 'amount'].reduce((m, k) => {
         if (action.hasOwnProperty(k) && typeof action[k] !== 'undefined')
           m[k] = action[k];

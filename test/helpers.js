@@ -88,7 +88,7 @@ export function transformGameState(state, transforms, config) {
     }, JSON.parse(JSON.stringify(state.trades))),
 
     // transform existing auction or create a new one
-    auction: transforms.auction ?
+    auction: transforms.auction ? (
       state.auction ? {
         ...JSON.parse(JSON.stringify(state.auction)),
         ...transforms.auction
@@ -99,8 +99,11 @@ export function transformGameState(state, transforms, config) {
         winning: false,
         amount: 0,
         ...transforms.auction
-      } :
-    typeof transforms.auction === 'undefined' ?
-      state.auction : false
+      }
+    ) : (
+      typeof transforms.auction === 'undefined'
+        ? state.auction
+        : false
+    )
   };
 }

@@ -120,7 +120,7 @@ export function calc(get) {
 export function generateNotice(id, data, notices = data) {
   const message = get(id, notices);
   return !message ? id : !data ? message : message
-    .replace(/{{([\w\.]+?)}}/g, (_, key) => get(key, data));
+    .replace(/{{([\w.]+?)}}/g, (_, key) => get(key, data));
 }
 
 /**
