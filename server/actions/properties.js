@@ -1,5 +1,3 @@
-import { calc } from '../helpers';
-
 export const BUY_PROPERTY = 'BUY_PROPERTY';
 export const IMPROVE_PROPERTY = 'IMPROVE_PROPERTY';
 export const UNIMPROVE_PROPERTY = 'UNIMPROVE_PROPERTY';
@@ -14,14 +12,17 @@ export const PAY_RENT = 'PAY_RENT';
  * @param {Number} [amount] - Optional amount defaults to property price
  * @returns {Object} Redux action
  */
-export const buyProperty = (playerToken, propertyId, amount) => ({
-  type: BUY_PROPERTY,
-  player: { token: playerToken },
-  property: { id: propertyId },
-  amount: typeof amount !== 'undefined' ? amount :
-    calc(({ property }) => property.price),
-  notice: { id: 'property.bought' }
-});
+export const buyProperty = (playerToken, propertyId, amount) => {
+  return (select) => ({
+    type: BUY_PROPERTY,
+    player: { token: playerToken },
+    property: { id: propertyId },
+    amount: typeof amount === 'undefined'
+      ? select.property(propertyId).price
+      : amount,
+    notice: { id: 'property.bought' }
+  });
+};
 
 /**
  * Action creator for improving a property
@@ -29,15 +30,21 @@ export const buyProperty = (playerToken, propertyId, amount) => ({
  * @param {String} propertyId - Property ID
  * @returns {Object} Redux action
  */
-export const improveProperty = (playerToken, propertyId) => ({
-  type: IMPROVE_PROPERTY,
-  player: { token: playerToken },
-  property: { id: propertyId },
-  houses: calc(({ property }) => property.buildings === 4 ? -4 : 1),
-  hotels: calc(({ property }) => property.buildings === 4 ? 1 : 0),
-  amount: calc(({ property }) => property.cost),
-  notice: { id: 'property.improved' }
-});
+export const improveProperty = (playerToken, propertyId) => {
+  return (select) => {
+    let property = select.property(propertyId);
+
+    return {
+      type: IMPROVE_PROPERTY,
+      player: { token: playerToken },
+      property: { id: propertyId },
+      houses: property.buildings === 4 ? -4 : 1,
+      hotels: property.buildings === 4 ? 1 : 0,
+      amount: property.cost,
+      notice: { id: 'property.improved' }
+    };
+  };
+};
 
 /**
  * Action creator for unimproving a property
@@ -45,15 +52,21 @@ export const improveProperty = (playerToken, propertyId) => ({
  * @param {String} propertyId - Property ID
  * @returns {Object} Redux action
  */
-export const unimproveProperty = (playerToken, propertyId) => ({
-  type: UNIMPROVE_PROPERTY,
-  player: { token: playerToken },
-  property: { id: propertyId },
-  houses: calc(({ property }) => property.buildings === 5 ? 4 : -1),
-  hotels: calc(({ property }) => property.buildings === 5 ? -1 : 0),
-  amount: calc(({ property, config }) => property.cost * config.buildingRate),
-  notice: { id: 'property.unimproved' }
-});
+export const unimproveProperty = (playerToken, propertyId) => {
+  return (select) => {
+    let property = select.property(propertyId);
+
+    return {
+      type: UNIMPROVE_PROPERTY,
+      player: { token: playerToken },
+      property: { id: propertyId },
+      houses: property.buildings === 5 ? 4 : -1,
+      hotels: property.buildings === 5 ? -1 : 0,
+      amount: property.cost * select.config('buildingRate'),
+      notice: { id: 'property.unimproved' }
+    };
+  };
+};
 
 /**
  * Action creator for mortgaging a property
@@ -61,13 +74,19 @@ export const unimproveProperty = (playerToken, propertyId) => ({
  * @param {String} propertyId - Property ID
  * @returns {Object} Redux action
  */
-export const mortgageProperty = (playerToken, propertyId) => ({
-  type: MORTGAGE_PROPERTY,
-  player: { token: playerToken },
-  property: { id: propertyId },
-  amount: calc(({ property, config }) => property.price * config.mortgageRate),
-  notice: { id: 'property.mortgaged' }
-});
+export const mortgageProperty = (playerToken, propertyId) => {
+  return (select) => {
+    let property = select.property(propertyId);
+
+    return {
+      type: MORTGAGE_PROPERTY,
+      player: { token: playerToken },
+      property: { id: propertyId },
+      amount: property.price * select.config('mortgageRate'),
+      notice: { id: 'property.mortgaged' }
+    };
+  };
+};
 
 /**
  * Action creator for unmortgaging a property
@@ -75,16 +94,21 @@ export const mortgageProperty = (playerToken, propertyId) => ({
  * @param {String} propertyId - Property ID
  * @returns {Object} Redux action
  */
-export const unmortgageProperty = (playerToken, propertyId) => ({
-  type: UNMORTGAGE_PROPERTY,
-  player: { token: playerToken },
-  property: { id: propertyId },
-  amount: calc(({ property, config }) => {
-    const principle = property.price * config.mortgageRate;
-    return principle + (principle * config.interestRate);
-  }),
-  notice: { id: 'property.unmortgaged' }
-});
+export const unmortgageProperty = (playerToken, propertyId) => {
+  return (select) => {
+    let property = select.property(propertyId);
+    let principle = property.price * select.config('mortgageRate');
+    let interest = principle * select.config('interestRate');
+
+    return {
+      type: UNMORTGAGE_PROPERTY,
+      player: { token: playerToken },
+      property: { id: propertyId },
+      amount: principle + interest,
+      notice: { id: 'property.unmortgaged' }
+    };
+  };
+};
 
 /**
  * Action creator for paying rent on a property
@@ -93,23 +117,29 @@ export const unmortgageProperty = (playerToken, propertyId) => ({
  * @param {Number} [dice=2] - Dice roll amount
  * @returns {Object} Redux action
  */
-export const payRent = (playerToken, propertyId, dice = 2) => ({
-  type: PAY_RENT,
-  player: { token: playerToken },
-  property: { id: propertyId },
-  other: calc(({ property }) => ({ token: property.owner })),
-  amount: calc(({ property, group }) => {
-    const owned = group.filter((pr) => pr.owner === property.owner);
+export const payRent = (playerToken, propertyId, dice = 2) => {
+  return (select) => {
+    let property = select.property(propertyId);
+    let group = select.group(property.group);
+    let owned = group.filter((p) => p.owner === property.owner);
+    let monopoly = owned.length === group.length;
+    let rent = property.rent[property.buildings];
 
-    switch (property.group) {
-      case 'railroad':
-        return property.rent[owned.length - 1];
-      case 'utility':
-        return property.rent[owned.length - 1] * dice;
-      default:
-        return (owned.length === group.length && property.buildings === 0) ?
-          property.rent[0] * 2 : property.rent[property.buildings];
+    if (property.group === 'railroad') {
+      rent = property.rent[owned.length - 1];
+    } else if (property.group === 'utility') {
+      rent = property.rent[owned.length - 1] * dice;
+    } else if (monopoly && property.buildings === 0) {
+      rent = property.rent[0] * 2;
     }
-  }),
-  notice: { id: 'property.paid-rent' }
-});
+
+    return {
+      type: PAY_RENT,
+      player: { token: playerToken },
+      other: { token: property.owner },
+      property: { id: propertyId },
+      amount: rent,
+      notice: { id: 'property.paid-rent' }
+    };
+  };
+};

@@ -1,5 +1,3 @@
-import { calc } from '../helpers';
-
 export const JOIN_GAME = 'JOIN_GAME';
 export const MAKE_TRANSFER_TO = 'MAKE_TRANSFER_TO';
 export const MAKE_TRANSFER_FROM = 'MAKE_TRANSFER_FROM';
@@ -12,12 +10,14 @@ export const CLAIM_BANKRUPTCY = 'CLAIM_BANKRUPTCY';
  * @param {String} token - Player token
  * @returns {Object} Redux action
  */
-export const join = (name, token) => ({
-  type: JOIN_GAME,
-  player: { name, token },
-  amount: calc(({ config }) => config.playerStart),
-  notice: { id: 'player.joined' }
-});
+export const join = (name, token) => {
+  return (select) => ({
+    type: JOIN_GAME,
+    player: { name, token },
+    amount: select.config('playerStart'),
+    notice: { id: 'player.joined' }
+  });
+};
 
 /**
  * Action creator for transfers
@@ -53,18 +53,17 @@ export const makeTransfer = (playerToken, otherToken, amount = otherToken) => {
  * @param {String} [beneficiaryToken="bank"] - Beneficiary token
  * @returns {Object} Redux action
  */
-export const claimBankruptcy = (playerToken, beneficiaryToken = 'bank') => ({
-  type: CLAIM_BANKRUPTCY,
-  player: { token: playerToken },
-  other: { token: beneficiaryToken },
-  amount: calc(({ player }) => player.balance),
-  properties: calc(({ state, player }) => (
-    state.properties._all.filter((id) => (
-      state.properties[id].owner === player.token
-    ))
-  )),
-  notice: {
-    id: beneficiaryToken === 'bank' ?
-      'player.bankrupt' : 'player.other-bankrupt'
-  }
-});
+export const claimBankruptcy = (playerToken, beneficiaryToken = 'bank') => {
+  return (select) => ({
+    type: CLAIM_BANKRUPTCY,
+    player: { token: playerToken },
+    other: { token: beneficiaryToken },
+    amount: select.player(playerToken).balance,
+    properties: select.owned(playerToken).map((p) => p.id),
+    notice: {
+      id: beneficiaryToken === 'bank'
+        ? 'player.bankrupt'
+        : 'player.other-bankrupt'
+    }
+  });
+};

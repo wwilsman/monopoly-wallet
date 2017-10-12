@@ -1,4 +1,4 @@
-import { getTradeId, calc } from '../helpers';
+import { getTradeId } from '../helpers';
 
 export const MAKE_OFFER = 'MAKE_OFFER';
 export const DECLINE_OFFER = 'DECLINE_OFFER';
@@ -12,18 +12,25 @@ export const ACCEPT_OFFER = 'ACCEPT_OFFER';
  * @param {Number} [trade.amount=0]  - Amount to trade
  * @returns {Object} Redux action
  */
-export const makeOffer = (playerToken, otherToken, {
-  properties = [],
-  amount = 0
-}) => ({
-  type: MAKE_OFFER,
-  player: { token: playerToken },
-  other: { token: otherToken },
-  trade: { id: getTradeId(playerToken, otherToken) },
-  notice: calc(({ trade }) => ({ id: trade ? 'trade.modified' : 'trade.new' })),
-  properties,
-  amount
-});
+export const makeOffer = (playerToken, otherToken, trade) => {
+  return (select) => {
+    let tradeId = getTradeId(playerToken, otherToken);
+
+    return {
+      type: MAKE_OFFER,
+      player: { token: playerToken },
+      other: { token: otherToken },
+      trade: { id: tradeId },
+      properties: trade.properties || [],
+      amount: trade.amount || 0,
+      notice: {
+        id: select.trade(tradeId)
+          ? 'trade.modified'
+          : 'trade.new'
+      }
+    };
+  };
+};
 
 /**
  * Action creator to decline a trade with another player
@@ -45,12 +52,19 @@ export const declineOffer = (playerToken, otherToken) => ({
  * @param {String} otherToken - Other player's token
  * @returns {Object} Redux action
  */
-export const acceptOffer = (playerToken, otherToken) => ({
-  type: ACCEPT_OFFER,
-  player: { token: playerToken },
-  other: { token: otherToken },
-  trade: { id: getTradeId(playerToken, otherToken) },
-  properties: calc(({ trade }) => trade.properties),
-  amount: calc(({ trade }) => -trade.amount),
-  notice: { id: 'trade.accepted'}
-});
+export const acceptOffer = (playerToken, otherToken) => {
+  return (select) => {
+    let tradeId = getTradeId(playerToken, otherToken);
+    let trade = select.trade(tradeId);
+
+    return {
+      type: ACCEPT_OFFER,
+      player: { token: playerToken },
+      other: { token: otherToken },
+      trade: { id: tradeId },
+      properties: trade ? trade.properties : [],
+      amount: trade ? -trade.amount : 0,
+      notice: { id: 'trade.accepted'}
+    };
+  };
+};

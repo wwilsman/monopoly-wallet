@@ -1,20 +1,24 @@
 /**
  * Validates a trade exists
  * @param {String} trade - Trade data
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creats a monopoly error
  * @throws {MonopolyError}
  */
-export const tradeExists = ({ trade }, throwError) => {
-  !trade && throwError('trade.not-found');
+export const tradeExists = ({ trade }, error) => {
+  if (!trade.from || !trade.with) {
+    throw error('trade.not-found');
+  }
 };
 
 /**
  * Validates a trade is with the player
- * @param {String} trade - Trade data
  * @param {String} player.token - Player token
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Object} trade - Trade data
+ * @param {Function} error - Creats a monopoly error
  * @throws {MonopolyError}
  */
-export const tradeIsWith = ({ trade, player }, throwError) => {
-  trade.with !== player.token && throwError('trade.other-trade');
+export const tradeIsWith = ({ player, trade }, error) => {
+  if (trade.with !== player.token) {
+    throw error('trade.other-trade');
+  }
 };

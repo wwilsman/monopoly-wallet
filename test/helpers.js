@@ -1,19 +1,14 @@
-import {
-  getPlayer,
-  getProperty,
-  getProperties,
-  getTradeId,
-  createGameState
-} from '../server/helpers';
+import { getTradeId, createGameState } from '../server/helpers';
+export { getTradeId, createGameState };
 
-// export our server helpers for convenience
-export {
-  getPlayer,
-  getProperty,
-  getProperties,
-  getTradeId,
-  createGameState
-};
+// Convenient selectors
+export const getPlayer = (state, token) => state.players[token];
+export const getProperty = (state, id) => state.properties[id];
+export const getProperties = (state, group) => (
+  state.properties._all
+    .map((id) => getProperty(state, id))
+    .filter((prop) => prop.group === group)
+);
 
 /**
  * Modifies a game state with transforms

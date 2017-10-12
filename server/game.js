@@ -1,10 +1,12 @@
 import { applyMiddleware, createStore } from 'redux';
 
 import gameReducer from './reducers';
-import ruleMiddleware from './rules/middleware';
 
 export const HYDRATE = 'HYDRATE';
 export const hydrate = (state) => ({ type: HYDRATE, state });
+import gameMiddleware from './middleware';
+import gameRules from './rules';
+import createSelectors from './selectors';
 
 /**
  * Creates a new store instance for games
@@ -27,7 +29,11 @@ export default (initialState, config, notices) => {
     reducer,
     initialState,
     applyMiddleware(
-      ruleMiddleware(config, notices)
+      gameMiddleware({
+        rules: gameRules,
+        selectors: createSelectors(config),
+        notices
+      })
     )
   );
 

@@ -1,34 +1,41 @@
 /**
  * Validates a property has an owner
  * @param {String} property.owner - Property owner token
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const propertyIsOwned = ({ property }, throwError) => {
-  property.owner === 'bank' && throwError('property.unowned');
+export const propertyIsOwned = ({ property }, error) => {
+  if (property.owner === 'bank') {
+    throw error('property.unowned');
+  }
 };
 
 /**
  * Validates a property does not have an owner
- * @param {Object} state - Current game state
  * @param {String} property.owner - Property owner token
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
+ * @param {Function} select.player - Player selector
  * @throws {MonopolyError}
  */
-export const propertyNotOwned = ({ state, property }, throwError) => {
-  const owner = state.players[property.owner];
-  owner && throwError('property.owned', { owner });
+export const propertyNotOwned = ({ property }, error, select) => {
+  if (property.owner !== 'bank') {
+    throw error('property.owned', {
+      owner: select.player(property.owner)
+    });
+  }
 };
 
 /**
  * Validates a property owner is accurate
  * @param {String} player.token - Player token
  * @param {String} property.owner - Property owner token
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const propertyOwnedBy = ({ player, property }, throwError) => {
-  property.owner !== player.token && throwError('property.not-own');
+export const propertyOwnedBy = ({ player, property }, error) => {
+  if (property.owner !== player.token) {
+    throw error('property.not-own');
+  }
 };
 
 /**
@@ -36,20 +43,20 @@ export const propertyOwnedBy = ({ player, property }, throwError) => {
  * @param {String} player.token - Player token
  * @param {String} other.token - Another player's token
  * @param {[Object]} properties - Array of properties to validate
- * @param {String} property.owner - Property owner token
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const propertiesOwnedBy = ({ player, other, properties }, throwError) => {
-  const property = properties.find((pr) => (
-    pr.owner !== player.token && pr.owner !== other.token
+export const propertiesOwnedBy = ({ player, other, properties }, error) => {
+  let property = properties.find((pr) => (
+    pr.owner !== player.token &&
+      pr.owner !== other.token
   ));
 
   if (property) {
-    throwError(
-      property.owner !== 'bank' ?
-        'property.owned' :
-        'property.unowned'
+    throw error(
+      property.owner !== 'bank'
+        ? 'property.owned'
+        : 'property.unowned'
     );
   }
 };
@@ -57,155 +64,184 @@ export const propertiesOwnedBy = ({ player, other, properties }, throwError) => 
 /**
  * Validates a property isn't a railroad or utilty
  * @param {String} property.group - Property group
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const notRailroadOrUtility = ({ property }, throwError) => {
-  (property.group === 'railroad' || property.group === 'utility') &&
-    throwError('property.cannot-improve');
+export const notRailroadOrUtility = ({ property }, error) => {
+  if (property.group === 'railroad' || property.group === 'utility') {
+    throw error('property.cannot-improve');
+  }
 };
 
 /**
  * Validates a property is part of a monopoly
  * @param {String} player.token - Player token
- * @param {[Object]} group - Array of properties in the group
- * @param {Function} throwError - Throws a monopoly error
+ * @param {String} property.group - Property group
+ * @param {Function} error - Creates a monopoly error
+ * @param {Function} select.group - Property group selector
  * @throws {MonopolyError}
  */
-export const propertyIsMonopoly = ({ player, group }, throwError) => {
-  group.find((pr) => pr.owner !== player.token) &&
-    throwError('property.no-monopoly');
+export const propertyIsMonopoly = ({ player, property }, error, select) => {
+  let group = select.group(property.group);
+
+  if (!group.every((pr) => pr.owner === player.token)) {
+    throw error('property.no-monopoly');
+  }
 };
 
 /**
  * Validates a property is mortgaged
  * @param {Boolean} property.mortgaged - Property mortgage status
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const propertyIsMortgaged = ({ property }, throwError) => {
-  !property.mortgaged && throwError('property.unmortgaged');
+export const propertyIsMortgaged = ({ property }, error) => {
+  if (!property.mortgaged) {
+    throw error('property.unmortgaged');
+  }
 };
 
 /**
  * Validates multiple properties are mortgaged
  * @param {[Object]} properties - Properties to validate
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const propertiesAreMortgaged = ({ properties }, throwError) => {
-  properties.find((pr) => !pr.mortgaged) &&
-    throwError('property.multi-unmortgaged');
+export const propertiesAreMortgaged = ({ properties }, error) => {
+  if (properties.find((pr) => !pr.mortgaged)) {
+    throw error('property.multi-unmortgaged');
+  }
 };
 
 /**
  * Validates a property or any in the group is not mortgaged
- * @param {Boolean} property.mortgaged - Property mortgage status
- * @param {[Object]} group - Array of properties in the group
- * @param {Function} throwError - Throws a monopoly error
+ * @param {String} property.group - Property group
+ * @param {Function} error - Creates a monopoly error
+ * @param {Function} select.group - Property group selector
  * @throws {MonopolyError}
  */
-export const propertyNotMortgaged = ({ property, group }, throwError) => {
-  property = (property.mortgaged || group.find((pr) => pr.mortgaged));
-  property && throwError('property.mortgaged', { property });
+export const propertyNotMortgaged = ({ property }, error, select) => {
+  let mortgaged = select.group(property.group).find((p) => p.mortgaged);
+
+  if (mortgaged) {
+    throw error('property.mortgaged', { property: mortgaged });
+  }
 };
 
 /**
  * Validates a property has improvements
  * @param {Number} property.buildings - Property improvements
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const propertyIsImproved = ({ property }, throwError) => {
-  property.buildings === 0 && throwError('property.unimproved');
+export const propertyIsImproved = ({ property }, error) => {
+  if (property.buildings === 0) {
+    throw error('property.unimproved');
+  }
 };
 
 /**
  * Validates a property has no improvements
  * @param {Number} property.buildings - Property improvements
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const propertyNotImproved = ({ property }, throwError) => {
-  property.buildings > 0 && throwError('property.improved');
+export const propertyNotImproved = ({ property }, error) => {
+  if (property.buildings > 0) {
+    throw error('property.improved');
+  }
 };
 
 /**
  * Validates multiple properties have no improvements
  * @param {[Object]} properties - Properties to validate
- * @param {Number} property.buildings - Property improvements
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const propertiesNotImproved = ({ properties }, throwError) => {
-  properties.find((pr) => pr.buildings > 0) &&
-    throwError('property.multi-unimproved');
+export const propertiesNotImproved = ({ properties }, error) => {
+  if (!properties.every((pr) => !pr.buildings)) {
+    throw error('property.multi-unimproved');
+  }
 };
 
 /**
  * Validates a property is not fully improved
  * @param {Number} property.buildings - Property improvements
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const propertyNotFullyImproved = ({ property }, throwError) => {
-  property.buildings === 5 && throwError('property.fully-improved');
+export const propertyNotFullyImproved = ({ property }, error) => {
+  if (property.buildings === 5) {
+    throw error('property.fully-improved');
+  }
 };
 
 /**
  * Validates a property group has no improvements
- * @param {[Object]} group - Array of properties in the group
- * @param {Function} throwError - Throws a monopoly error
+ * @param {String} property.group - Property group
+ * @param {Function} error - Creates a monopoly error
+ * @param {Function} select.group - Property group selector
  * @throws {MonopolyError}
  */
-export const monopolyNotImproved = ({ group }, throwError) => {
-  const property = group.find((pr) => pr.buildings > 0);
-  property && throwError('property.improved', { property });
+export const monopolyNotImproved = ({ property }, error, select) => {
+  let group = select.group(property.group);
+  let improved = group.find((pr) => pr.buildings > 0);
+
+  if (improved) {
+    throw error('property.improved', { property: improved });
+  }
 };
 
 /**
  * Validates a property is being improved evenly
  * @param {Number} property.buildings - Property improvements
- * @param {[Object]} group - Array of properties in the group
- * @param {Function} throwError - Throws a monopoly error
+ * @param {String} property.group - Property group
+ * @param {Function} error - Creates a monopoly error
+ * @param {Function} select.group - Property group selector
  * @throws {MonopolyError}
  */
-export const mustImproveEvenly = ({ property, group }, throwError) => {
-  const lowest = group.reduce(
+export const mustImproveEvenly = ({ property }, error, select) => {
+  let lowest = select.group(property.group).reduce(
     (low, pr) => Math.min(low, pr.buildings),
     property.buildings
   );
 
-  property.buildings > lowest &&
-    throwError('property.build-evenly');
+  if (property.buildings > lowest) {
+    throw error('property.build-evenly');
+  }
 };
 
 /**
  * Validates a property is being unimproved evenly
  * @param {Number} property.buildings - Property improvements
- * @param {[Object]} group - Array of properties in the group
- * @param {Function} throwError - Throws a monopoly error
+ * @param {String} property.group - Property group
+ * @param {Function} error - Creates a monopoly error
+ * @param {Function} select.group - Property group selector
  * @throws {MonopolyError}
  */
-export const mustUnimproveEvenly = ({ property, group }, throwError) => {
-  const highest = group.reduce(
+export const mustUnimproveEvenly = ({ property }, error, select) => {
+  let highest = select.group(property.group).reduce(
     (high, pr) => Math.max(high, pr.buildings),
     property.buildings
   );
 
-  property.buildings < highest &&
-    throwError('property.build-evenly');
+  if (property.buildings < highest) {
+    throw error('property.build-evenly');
+  }
 };
 
 /**
  * Validates that there are enough houses or hotels
- * @param {Object} state - Current game state
  * @param {Number} houses - Houses needed
  * @param {Number} hotels - Hotels needed
- * @param {Function} throwError - Throws a monopoly error
+ * @param {Function} error - Creates a monopoly error
+ * @param {Function} select.state - State selector
  * @throws {MonopolyError}
  */
-export const enoughHousesOrHotels = ({ state, houses, hotels }, throwError) => {
-  if (state.houses < houses) throwError('property.houses');
-  else if (state.hotels < hotels) throwError('property.hotels');
+export const enoughHousesOrHotels = ({ houses, hotels }, error, select) => {
+  if (select.state('houses') < houses) {
+    throw error('property.houses');
+  } else if (select.state('hotels') < hotels) {
+    throw error('property.hotels');
+  }
 };
