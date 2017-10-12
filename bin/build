@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 
 print_header() {
     blue=$(tput setaf 4)

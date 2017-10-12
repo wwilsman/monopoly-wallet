@@ -1,4 +1,4 @@
-#! /bin/bash
+#! /usr/bin/env bash
 
 export NODE_ENV="${NODE_ENV:=${1:-development}}"
 
