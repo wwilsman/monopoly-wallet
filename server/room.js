@@ -4,8 +4,9 @@ import {
   generateNotice
 } from './helpers';
 import MonopolyError from './error';
-import createGame, { hydrate } from './game';
+import createGame from './game';
 import actions from './actions';
+import { hydrate } from './actions/hydrate';
 
 const { from:toArray } = Array;
 const isFn = (obj) => typeof obj === 'function';

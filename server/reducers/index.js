@@ -8,17 +8,20 @@ import properties from './properties';
 import auction from './auction';
 import trades from './trades';
 import notice from './notice';
+import hydratable from './hydrate';
 
 /**
  * Main reducer for our game
  */
-export default combineReducers({
-  bank,
-  houses,
-  hotels,
-  players,
-  properties,
-  auction,
-  trades,
-  notice
-});
+export default hydratable(
+  combineReducers({
+    bank,
+    houses,
+    hotels,
+    players,
+    properties,
+    auction,
+    trades,
+    notice
+  })
+);
