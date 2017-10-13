@@ -90,9 +90,9 @@ describe('Game: closing auctions', function() {
   describe('when there is no auction', function() {
     modifyGameInTesting({ state: { auction: false }});
 
-    it('should do nothing', function() {
+    it('should throw an error', function() {
       expect(() => this.dispatch(closeAuction()))
-        .to.not.throw(MonopolyError);
+        .to.throw(MonopolyError, /no/i);
     });
   });
 });
