@@ -20,13 +20,16 @@ describe('Game: paying rent', function() {
       owner: 'automobile'
     }, {
       group: 'lightblue',
+      monopoly: true,
       owner: 'automobile'
     }, {
       group: 'magenta',
+      monopoly: true,
       owner: 'automobile',
       buildings: 1
     }, {
       group: 'orange',
+      monopoly: true,
       owner: 'automobile',
       buildings: 5
     }]

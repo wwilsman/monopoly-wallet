@@ -13,15 +13,22 @@ export const PAY_RENT = 'PAY_RENT';
  * @returns {Object} Redux action
  */
 export const buyProperty = (playerToken, propertyId, amount) => {
-  return (select) => ({
-    type: BUY_PROPERTY,
-    player: { token: playerToken },
-    property: { id: propertyId },
-    amount: typeof amount === 'undefined'
-      ? select.property(propertyId).price
-      : amount,
-    notice: { id: 'property.bought' }
-  });
+  return (select) => {
+    let property = select.property(propertyId);
+    let monopoly = select.group(property.group).every((pr) => (
+      pr.owner === playerToken || pr.id === propertyId
+    ));
+
+    return {
+      type: BUY_PROPERTY,
+      player: { token: playerToken },
+      property: { id: propertyId, monopoly },
+      amount: typeof amount === 'undefined'
+        ? select.property(propertyId).price
+        : amount,
+      notice: { id: 'property.bought' }
+    };
+  };
 };
 
 /**
@@ -122,14 +129,13 @@ export const payRent = (playerToken, propertyId, dice = 2) => {
     let property = select.property(propertyId);
     let group = select.group(property.group);
     let owned = group.filter((p) => p.owner === property.owner);
-    let monopoly = owned.length === group.length;
     let rent = property.rent[property.buildings];
 
     if (property.group === 'railroad') {
       rent = property.rent[owned.length - 1];
     } else if (property.group === 'utility') {
       rent = property.rent[owned.length - 1] * dice;
-    } else if (monopoly && property.buildings === 0) {
+    } else if (property.monopoly && property.buildings === 0) {
       rent = property.rent[0] * 2;
     }
 

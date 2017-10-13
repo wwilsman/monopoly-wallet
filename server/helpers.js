@@ -38,6 +38,7 @@ export function createGameState(properties, config) {
       map[id] = {
         ...property,
         mortgaged: false,
+        monopoly: false,
         buildings: 0,
         owner: 'bank',
         id

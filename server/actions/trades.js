@@ -62,7 +62,18 @@ export const acceptOffer = (playerToken, otherToken) => {
       player: { token: playerToken },
       other: { token: otherToken },
       trade: { id: tradeId },
-      properties: trade ? trade.properties.map((id) => ({ id })) : [],
+      properties: trade ? trade.properties.map((id, i, props) => {
+        let property = select.property(id);
+        let newOwner = property.owner === playerToken ? otherToken : playerToken;
+        let monopoly = select.group(property.group).every((pr) => (
+          pr.owner === newOwner || (
+            pr.owner === property.owner &&
+              props.includes(pr.id)
+          )
+        ));
+
+        return { id, monopoly };
+      }) : [],
       amount: trade ? -trade.amount : 0,
       notice: { id: 'trade.accepted'}
     };

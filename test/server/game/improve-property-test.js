@@ -17,6 +17,7 @@ describe('Game: improving properties', function() {
     }],
     properties: [{
       group: 'lightblue',
+      monopoly: true,
       owner: 'top-hat'
     }]
   }});
@@ -102,6 +103,9 @@ describe('Game: improving properties', function() {
   describe('when the player does not own the monopoly', function() {
     modifyGameInTesting({ state: {
       properties: [{
+        group: 'lightblue',
+        monopoly: false
+      }, {
         id: 'connecticut-avenue',
         owner: 'bank'
       }]
@@ -178,6 +182,7 @@ describe('Game: improving properties', function() {
       houses: 0,
       properties: [{
         group: 'brown',
+        monopoly: true,
         buildings: 4,
         owner: 'top-hat'
       }]
@@ -200,6 +205,7 @@ describe('Game: improving properties', function() {
       hotels: 0,
       properties: [{
         group: 'brown',
+        monopoly: true,
         buildings: 4,
         owner: 'top-hat'
       }]

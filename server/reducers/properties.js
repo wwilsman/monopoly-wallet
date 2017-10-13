@@ -26,7 +26,10 @@ const property = (state, action) => {
     case BUY_PROPERTY:
     case CLOSE_AUCTION:
       return { ...state,
-        owner: action.player.token
+        owner: action.player.token,
+        monopoly: action.property
+          ? action.property.monopoly
+          : state.monopoly
       };
 
     case IMPROVE_PROPERTY:
@@ -52,7 +55,10 @@ const property = (state, action) => {
     case CLAIM_BANKRUPTCY:
     case ACCEPT_OFFER:
       return { ...state,
-        owner: action.other.token
+        owner: action.other.token,
+        monopoly: action.property
+          ? action.property.monopoly
+          : state.monopoly
       };
 
     default:

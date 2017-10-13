@@ -75,16 +75,12 @@ export const notRailroadOrUtility = ({ property }, error) => {
 
 /**
  * Validates a property is part of a monopoly
- * @param {String} player.token - Player token
- * @param {String} property.group - Property group
+ * @param {String} property.monopoly - Property monopoly statu
  * @param {Function} error - Creates a monopoly error
- * @param {Function} select.group - Property group selector
  * @throws {MonopolyError}
  */
-export const propertyIsMonopoly = ({ player, property }, error, select) => {
-  let group = select.group(property.group);
-
-  if (!group.every((pr) => pr.owner === player.token)) {
+export const propertyIsMonopoly = ({ property }, error) => {
+  if (!property.monopoly) {
     throw error('property.no-monopoly');
   }
 };

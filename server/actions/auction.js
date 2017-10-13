@@ -48,12 +48,21 @@ export const concedeAuction = (playerToken) => {
       auction.players.length === 1 &&
       auction.players[0] === playerToken;
 
-    return {
-      type: last ? CANCEL_AUCTION : CONCEDE_AUCTION,
-      player: { token: playerToken },
-      property: { id: auction.property },
-      notice: { id: last ? 'auction.cancelled' : 'auction.conceded' }
-    };
+    if (auction && !last) {
+      return {
+        type: CONCEDE_AUCTION,
+        player: { token: playerToken },
+        property: { id: auction.property },
+        notice: { id: 'auction.conceded' }
+      };
+    } else {
+      return {
+        type: CANCEL_AUCTION,
+        player: { token: playerToken },
+        property: auction && { id: auction.property },
+        notice: { id: 'auction.cancelled' }
+      };
+    }
   };
 };
 
@@ -61,16 +70,30 @@ export const concedeAuction = (playerToken) => {
  * Action creator for closing an auction
  * @returns {Object} Redux action
  */
-export const closeAuction = () => {
+export const closeAuction = (playerToken) => {
   return (select) => {
     let auction = select.auction();
 
-    return {
-      type: auction.winning ? CLOSE_AUCTION : CANCEL_AUCTION,
-      player: { token: auction.winning },
-      property: { id: auction.property },
-      amount: auction.amount,
-      notice: { id: auction.winning ? 'auction.won' : 'auction.cancelled' }
-    };
+    if (auction && auction.winning) {
+      let property = select.property(auction.property);
+      let monopoly = select.group(property.group).every((pr) => (
+        pr.owner === auction.winning || pr.id === auction.property
+      ));
+
+      return {
+        type: CLOSE_AUCTION,
+        player: { token: auction.winning },
+        property: { id: auction.property, monopoly },
+        amount: auction.amount,
+        notice: { id: 'auction.won' }
+      };
+    } else {
+      return {
+        type: CANCEL_AUCTION,
+        player: { token: playerToken },
+        property: auction && { id: auction.property },
+        notice: { id: 'auction.cancelled' }
+      };
+    }
   };
 };
