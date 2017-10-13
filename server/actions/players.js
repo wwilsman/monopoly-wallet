@@ -59,7 +59,7 @@ export const claimBankruptcy = (playerToken, beneficiaryToken = 'bank') => {
     player: { token: playerToken },
     other: { token: beneficiaryToken },
     amount: select.player(playerToken).balance,
-    properties: select.owned(playerToken).map((p) => p.id),
+    properties: select.owned(playerToken).map(({ id }) => ({ id })),
     notice: {
       id: beneficiaryToken === 'bank'
         ? 'player.bankrupt'

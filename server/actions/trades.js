@@ -21,7 +21,7 @@ export const makeOffer = (playerToken, otherToken, trade) => {
       player: { token: playerToken },
       other: { token: otherToken },
       trade: { id: tradeId },
-      properties: trade.properties || [],
+      properties: (trade.properties||[]).map((id) => ({ id })),
       amount: trade.amount || 0,
       notice: {
         id: select.trade(tradeId)
@@ -62,7 +62,7 @@ export const acceptOffer = (playerToken, otherToken) => {
       player: { token: playerToken },
       other: { token: otherToken },
       trade: { id: tradeId },
-      properties: trade ? trade.properties : [],
+      properties: trade ? trade.properties.map((id) => ({ id })) : [],
       amount: trade ? -trade.amount : 0,
       notice: { id: 'trade.accepted'}
     };

@@ -30,7 +30,8 @@ export default ({ rules, selectors, notices }) => {
         case 'player': return select.player(action.player.token);
         case 'other': return select.player(action.other.token);
         case 'property': return select.property(action.property.id);
-        case 'properties': return action.properties.map(select.property);
+        case 'properties': return action.properties
+          .map(({ id }) => select.property(id));
         case 'trade': return select.trade(action.trade.id);
       }
     };

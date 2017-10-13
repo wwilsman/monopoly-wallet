@@ -37,7 +37,7 @@ describe('Game: making a trade offer', function() {
         id: tradeId,
         from: 'top-hat',
         with: 'automobile',
-        properties: ['oriental-avenue'],
+        properties: [{ id: 'oriental-avenue' }],
         amount: 500
       }
     });
@@ -97,7 +97,7 @@ describe('Game: making a trade offer', function() {
           id: tradeId,
           from: 'automobile',
           with: 'top-hat',
-          properties: ['oriental-avenue'],
+          properties: [{ id: 'oriental-avenue' }],
           amount: 500
         }
       });

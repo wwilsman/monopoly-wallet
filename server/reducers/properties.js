@@ -80,7 +80,7 @@ export default (state = {}, action) => {
 
     case CLAIM_BANKRUPTCY:
     case ACCEPT_OFFER:
-      return action.properties.reduce((state, id) => {
+      return action.properties.reduce((state, { id }) => {
         state[id] = property(state[id], action);
         return state;
       }, { ...state });
