@@ -76,7 +76,7 @@
     cost: 150
     rent: [18, 90, 250, 700, 875, 1050]
 
-  - name: Illinois
+  - name: Illinois Avenue
     group: red
     price: 240
     cost: 150
@@ -154,13 +154,13 @@
     cost: 0
     rent: [25, 50, 100, 200]
 
-  - name: Water Works
+  - name: Electric Company
     group: utility
     price: 150
     cost: 0
     rent: [4, 10]
 
-  - name: Electric Company
+  - name: Water Works
     group: utility
     price: 150
     cost: 0
