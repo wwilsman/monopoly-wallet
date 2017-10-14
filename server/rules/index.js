@@ -34,7 +34,8 @@ import {
   allowedToken,
   uniqueToken,
   playerExists,
-  sufficientBalance
+  sufficientBalance,
+  otherSufficientBalance,
 } from './players';
 import {
   propertyIsOwned,
@@ -187,7 +188,8 @@ const TRADES = {
     tradeExists,
     tradeIsWith,
     propertiesOwnedBy,
-    sufficientBalance
+    sufficientBalance,
+    otherSufficientBalance
   ]
 };
 

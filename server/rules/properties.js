@@ -44,19 +44,19 @@ export const propertyOwnedBy = ({ player, property }, error) => {
  * @param {String} other.token - Another player's token
  * @param {[Object]} properties - Array of properties to validate
  * @param {Function} error - Creates a monopoly error
+ * @param {Function} select.player - Player selector
  * @throws {MonopolyError}
  */
-export const propertiesOwnedBy = ({ player, other, properties }, error) => {
+export const propertiesOwnedBy = ({ player, other, properties }, error, select) => {
   let property = properties.find((pr) => (
     pr.owner !== player.token &&
-      pr.owner !== other.token
+      (!other || pr.owner !== other.token)
   ));
 
   if (property) {
     throw error(
-      property.owner !== 'bank'
-        ? 'property.owned'
-        : 'property.unowned'
+      property.owner !== 'bank' ? 'property.owned' : 'property.unowned',
+      { property, owner: select.player(property.owner) }
     );
   }
 };
@@ -236,8 +236,8 @@ export const mustUnimproveEvenly = ({ property }, error, select) => {
  */
 export const enoughHousesOrHotels = ({ houses, hotels }, error, select) => {
   if (select.state('houses') < houses) {
-    throw error('property.houses');
+    throw error('property.no-houses');
   } else if (select.state('hotels') < hotels) {
-    throw error('property.hotels');
+    throw error('property.no-hotels');
   }
 };

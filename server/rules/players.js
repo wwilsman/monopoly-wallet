@@ -47,15 +47,25 @@ export const playerExists = ({ player, other }, error, select) => {
 /**
  * Validates a player has a sufficient balance
  * @param {Number} player.balance - Player's balance
- * @param {Number} [other.balance] - Other player's balance
  * @param {Number} amount - Amount needed
  * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const sufficientBalance = ({ player, other, amount }, error) => {
+export const sufficientBalance = ({ player, amount }, error) => {
   if (player.balance < amount) {
     throw error('player.balance');
-  } else if (other && other.balance < Math.abs(amount)) {
+  }
+};
+
+/**
+ * Validates the other player has a sufficient balance
+ * @param {Number} other.balance - Other player's balance
+ * @param {Number} amount - Amount requested
+ * @param {Function} error - Creates a monopoly error
+ * @throws {MonopolyError}
+ */
+export const otherSufficientBalance = ({ other, amount }, error) => {
+  if (other && other.token !== 'bank' && other.balance < Math.abs(amount)) {
     throw error('player.other-balance');
   }
 };
