@@ -19,14 +19,14 @@ describe('Game: making transfers', function() {
   }});
 
   it('should transfer money from the bank to the player', function() {
-    this.dispatch(makeTransfer('top-hat', 100));
+    this.dispatch(makeTransfer('top-hat', -100));
 
     expect(this.getPlayer('top-hat').balance).to.equal(200);
     expect(this.state.bank).to.equal(0);
   });
 
   it('should transfer money from the player to the bank', function() {
-    this.dispatch(makeTransfer('top-hat', -100));
+    this.dispatch(makeTransfer('top-hat', 100));
 
     expect(this.getPlayer('top-hat').balance).to.equal(0);
     expect(this.state.bank).to.equal(200);
@@ -40,7 +40,7 @@ describe('Game: making transfers', function() {
 
   it('should not transfer money from the bank with insufficient funds', function() {
     expect(() => this.dispatch(makeTransfer('top-hat', 200)))
-      .to.throw(MonopolyError, /insufficient/);
+      .to.throw(MonopolyError, /insufficient/i);
     expect(this.getPlayer('top-hat').balance).to.equal(100);
     expect(this.state.bank).to.equal(100);
   });

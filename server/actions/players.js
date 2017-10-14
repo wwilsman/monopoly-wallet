@@ -32,7 +32,7 @@ export const makeTransfer = (playerToken, otherToken, amount = otherToken) => {
   let notice = { id: 'player.paid-other' };
 
   if (otherToken === amount) {
-    actionType = amount > 0 ? MAKE_TRANSFER_TO : MAKE_TRANSFER_FROM;
+    actionType = amount > 0 ? MAKE_TRANSFER_FROM : MAKE_TRANSFER_TO;
     notice.id = amount > 0 ? 'player.paid-amount' : 'player.received-amount';
     amount = Math.abs(amount);
     otherToken = 'bank';
