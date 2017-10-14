@@ -6,7 +6,8 @@ import {
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
   MORTGAGE_PROPERTY,
-  UNMORTGAGE_PROPERTY
+  UNMORTGAGE_PROPERTY,
+  MONOPOLIZE_PROPERTY
 } from '../actions/properties';
 import {
   CLOSE_AUCTION
@@ -61,6 +62,11 @@ const property = (state, action) => {
           : state.monopoly
       };
 
+    case MONOPOLIZE_PROPERTY:
+      return { ...state,
+        monopoly: action.property.monopoly
+      };
+
     default:
       return state;
   }
@@ -80,9 +86,21 @@ export default (state = {}, action) => {
     case MORTGAGE_PROPERTY:
     case UNMORTGAGE_PROPERTY:
     case CLOSE_AUCTION:
-      return { ...state,
-        [action.property.id]: property(state[action.property.id], action)
-      };
+      return state._all.reduce((state, id) => {
+        if (id === action.property.id) {
+          state[id] = property(state[id], action);
+
+        // send a different action to properties that are affected by
+        // this property's monopolization
+        } else if (state[id].group === action.property.group) {
+          state[id] = property(state[id], {
+            property: { monopoly: action.property.monopoly },
+            type: MONOPOLIZE_PROPERTY
+          });
+        }
+
+        return state;
+      }, { ...state });
 
     case CLAIM_BANKRUPTCY:
     case ACCEPT_OFFER:

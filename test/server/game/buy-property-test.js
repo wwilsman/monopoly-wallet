@@ -1,7 +1,10 @@
 import { describe, it } from 'mocha';
 import { expect } from 'chai';
 
-import { setupGameForTesting } from '../game-helpers';
+import {
+  setupGameForTesting,
+  modifyGameInTesting
+} from '../game-helpers';
 
 import MonopolyError from '../../../server/error';
 import { buyProperty } from '../../../server/actions/properties';
@@ -78,5 +81,22 @@ describe('Game: buying properties', function() {
       .that.has.property('token', 'top-hat');
     expect(this.state.notice.meta).to.have.property('property')
       .that.has.property('id', 'baltic-avenue');
+  });
+
+  describe('when the player owns the other properties in the group', function() {
+    modifyGameInTesting({ state: {
+      properties: [{
+        id: 'mediterranean-avenue',
+        owner: 'top-hat'
+      }]
+    }});
+
+    it('should monopolize the other properties', function() {
+      this.dispatch(buyProperty('top-hat', 'baltic-avenue'));
+
+      expect(this.getProperty('baltic-avenue').owner).to.equal('top-hat');
+      expect(this.getProperty('baltic-avenue').monopoly).to.be.true;
+      expect(this.getProperty('mediterranean-avenue').monopoly).to.be.true;
+    });
   });
 });

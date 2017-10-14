@@ -76,14 +76,16 @@ export const closeAuction = (playerToken) => {
 
     if (auction && auction.winning) {
       let property = select.property(auction.property);
-      let monopoly = select.group(property.group).every((pr) => (
+      let group = property.group;
+
+      let monopoly = select.group(group).every((pr) => (
         pr.owner === auction.winning || pr.id === auction.property
       ));
 
       return {
         type: CLOSE_AUCTION,
         player: { token: auction.winning },
-        property: { id: auction.property, monopoly },
+        property: { id: auction.property, group, monopoly },
         amount: auction.amount,
         notice: { id: 'auction.won' }
       };

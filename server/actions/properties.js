@@ -3,6 +3,7 @@ export const IMPROVE_PROPERTY = 'IMPROVE_PROPERTY';
 export const UNIMPROVE_PROPERTY = 'UNIMPROVE_PROPERTY';
 export const MORTGAGE_PROPERTY = 'MORTGAGE_PROPERTY';
 export const UNMORTGAGE_PROPERTY = 'UNMORTGAGE_PROPERTY';
+export const MONOPOLIZE_PROPERTY = 'MONOPOLIZE_PROPERTY';
 export const PAY_RENT = 'PAY_RENT';
 
 /**
@@ -15,14 +16,16 @@ export const PAY_RENT = 'PAY_RENT';
 export const buyProperty = (playerToken, propertyId, amount) => {
   return (select) => {
     let property = select.property(propertyId);
-    let monopoly = select.group(property.group).every((pr) => (
+    let group = property.group;
+
+    let monopoly = select.group(group).every((pr) => (
       pr.owner === playerToken || pr.id === propertyId
     ));
 
     return {
       type: BUY_PROPERTY,
       player: { token: playerToken },
-      property: { id: propertyId, monopoly },
+      property: { id: propertyId, group, monopoly },
       amount: typeof amount === 'undefined'
         ? select.property(propertyId).price
         : amount,
