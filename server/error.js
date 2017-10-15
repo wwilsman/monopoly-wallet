@@ -6,7 +6,7 @@ function MonopolyError(message) {
   this.name = 'MonopolyError';
   this.message = message;
 
-  Error.captureStackTrace(this, this.constructor);
+  Error.captureStackTrace(this, MonopolyError);
 }
 
 MonopolyError.prototype = new Error;
