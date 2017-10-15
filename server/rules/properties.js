@@ -64,12 +64,17 @@ export const propertiesOwnedBy = ({ player, other, properties }, error, select) 
 /**
  * Validates a property isn't a railroad or utilty
  * @param {String} property.group - Property group
+ * @param {[Object]} [properties] - Properties to validate
  * @param {Function} error - Creates a monopoly error
  * @throws {MonopolyError}
  */
-export const notRailroadOrUtility = ({ property }, error) => {
-  if (property.group === 'railroad' || property.group === 'utility') {
+export const notRailroadOrUtility = ({ property, properties }, error) => {
+  let railroadOrUtility = (pr) => pr.group === 'railroad' || pr.group === 'utility';
+
+  if (property && railroadOrUtility(property)) {
     throw error('property.cannot-improve');
+  } else if (properties && properties.some(railroadOrUtility)) {
+    throw error('property.cannot-improve', { property: properties[0] });
   }
 };
 
@@ -110,13 +115,25 @@ export const propertiesAreMortgaged = ({ properties }, error) => {
 };
 
 /**
- * Validates a property or any in the group is not mortgaged
+ * Validates a property is not mortgaged
+ * @param {String} property.mortgaged - Property group
+ * @param {Function} error - Creates a monopoly error
+ * @throws {MonopolyError}
+ */
+export const propertyNotMortgaged = ({ property }, error) => {
+  if (property.mortgaged) {
+    throw error('property.mortgaged');
+  }
+};
+
+/**
+ * Validates any properties in the group are not mortgaged
  * @param {String} property.group - Property group
  * @param {Function} error - Creates a monopoly error
  * @param {Function} select.group - Property group selector
  * @throws {MonopolyError}
  */
-export const propertyNotMortgaged = ({ property }, error, select) => {
+export const propertiesNotMortgaged = ({ property }, error, select) => {
   let mortgaged = select.group(property.group).find((p) => p.mortgaged);
 
   if (mortgaged) {
@@ -133,6 +150,18 @@ export const propertyNotMortgaged = ({ property }, error, select) => {
 export const propertyIsImproved = ({ property }, error) => {
   if (property.buildings === 0) {
     throw error('property.unimproved');
+  }
+};
+
+/**
+ * Validates multiple properties have some improvements
+ * @param {[Object]} properties - Properties to validatae
+ * @param {Function} error - Creates a monopoly error
+ * @throws {MonopolyError}
+ */
+export const propertiesAreImproved = ({ properties }, error) => {
+  if (properties.every((pr) => !pr.buildings)) {
+    throw error('property.multi-unimproved');
   }
 };
 

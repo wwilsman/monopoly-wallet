@@ -9,6 +9,7 @@ import {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
+  UNIMPROVE_GROUP,
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY,
   PAY_RENT
@@ -38,6 +39,7 @@ const player = (state, action) => {
 
     case MAKE_TRANSFER_TO:
     case UNIMPROVE_PROPERTY:
+    case UNIMPROVE_GROUP:
     case MORTGAGE_PROPERTY:
       return { ...state,
         balance: state.balance + action.amount
@@ -93,6 +95,7 @@ export default (state = {}, action) => {
     case MAKE_TRANSFER_FROM:
     case IMPROVE_PROPERTY:
     case UNIMPROVE_PROPERTY:
+    case UNIMPROVE_GROUP:
     case MORTGAGE_PROPERTY:
     case UNMORTGAGE_PROPERTY:
     case CLOSE_AUCTION:

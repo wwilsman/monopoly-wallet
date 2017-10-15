@@ -12,6 +12,9 @@ notices:
     bought: '{{player.name}} purchased {{property.name}}'
     improved: '{{player.name}} improved {{property.name}}'
     unimproved: '{{player.name}} unimproved {{property.name}}'
+    unimproved-group: >
+      {{player.name}} unimproved {{properties.length}}
+      {{property.group}} properties
     mortgaged: '{{player.name}} mortgaged {{property.name}}'
     unmortgaged: '{{player.name}} unmortgaged {{property.name}}'
     paid-rent: '{{player.name}} paid {{other.name}} rent for {{property.name}}'

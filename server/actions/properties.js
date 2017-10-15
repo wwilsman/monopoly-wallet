@@ -1,6 +1,7 @@
 export const BUY_PROPERTY = 'BUY_PROPERTY';
 export const IMPROVE_PROPERTY = 'IMPROVE_PROPERTY';
 export const UNIMPROVE_PROPERTY = 'UNIMPROVE_PROPERTY';
+export const UNIMPROVE_GROUP = 'UNIMPROVE_GROUP';
 export const MORTGAGE_PROPERTY = 'MORTGAGE_PROPERTY';
 export const UNMORTGAGE_PROPERTY = 'UNMORTGAGE_PROPERTY';
 export const MONOPOLIZE_PROPERTY = 'MONOPOLIZE_PROPERTY';
@@ -74,6 +75,81 @@ export const unimproveProperty = (playerToken, propertyId) => {
       hotels: property.buildings === 5 ? -1 : 0,
       amount: property.cost * select.config('buildingRate'),
       notice: { id: 'property.unimproved' }
+    };
+  };
+};
+
+/**
+ * Action creator for unimproving a group evenly and minimally; _magically_
+ * @param {String} playerToken - Player token
+ * @param {String} propertyGroup - Property group
+ * @returns {Object} Redux action
+ */
+export const unimproveGroup = (playerToken, propertyGroup) => {
+  return (select) => {
+    let group = select.group(propertyGroup)
+      .sort((a, b) => b.price - a.price || 1);
+    let houses = select.state('houses');
+
+    // current houses + available houses
+    let available = group.reduce((houses, pr) => (
+      houses + (pr.buildings < 5 ? pr.buildings : 0)
+    ), houses);
+
+    // one hotel for each property with 5 buildings
+    let hotels = group.reduce((hotels, pr) => (
+      hotels - (pr.buildings === 5 ? 1 : 0)
+    ), 0);
+
+    // when no houses are needed, or there are more than enough,
+    // unimprove a single property
+    let property = (!hotels || houses > 4) && {
+      id: group.reduce((pr, next) => (
+        next.buildings >= pr.buildings ? next : pr
+      )).id
+    };
+
+    // redistribute all buildings, minus one
+    // effectively unimprove a single property
+    if (property) {
+      available = hotels
+        ? (4 * group.length) - (hotels + 1)
+        : available - houses - 1;
+      houses = hotels ? 4 : -1;
+      hotels = hotels ? -1 : 0;
+    }
+
+    // redistributed buildings
+    let properties = group.map(({ id }, i) => ({
+      buildings: Math.floor(available / group.length) +
+        (available % group.length > i ? 1 : 0),
+      id
+    }));
+
+    // building differences * cost * selling rate
+    let amount = group.reduce((t, pr, i) => (
+      t + ((pr.buildings - properties[i].buildings) * pr.cost)
+    ), 0) * select.config('buildingRate');
+
+    // we only care about unimproved properties
+    properties = properties.filter((pr, i) => (
+      group[i].buildings - pr.buildings > 0
+    ));
+
+    // `property` here is for the notice message
+    return {
+      type: UNIMPROVE_GROUP,
+      player: { token: playerToken },
+      property: property || { group: propertyGroup },
+      properties,
+      houses,
+      hotels,
+      amount,
+      notice: {
+        id: property
+          ? 'property.unimproved'
+          : 'property.unimproved-group'
+      }
     };
   };
 };

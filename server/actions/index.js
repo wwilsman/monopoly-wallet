@@ -7,6 +7,7 @@ import {
   buyProperty,
   improveProperty,
   unimproveProperty,
+  unimproveGroup,
   mortgageProperty,
   unmortgageProperty,
   payRent
@@ -30,6 +31,7 @@ export default {
   buyProperty,
   improveProperty,
   unimproveProperty,
+  unimproveGroup,
   mortgageProperty,
   unmortgageProperty,
   payRent,

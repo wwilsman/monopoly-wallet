@@ -9,6 +9,7 @@ import {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
+  UNIMPROVE_GROUP,
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY,
   PAY_RENT
@@ -38,6 +39,7 @@ const PROPERTY_ACTIONS = {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
+  UNIMPROVE_GROUP,
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY,
   PAY_RENT
@@ -103,7 +105,7 @@ export default (state = initialState, action) => {
       id: action.notice.id,
       type: noticeType(action),
       message: action.notice.message,
-      meta: ['player', 'property', 'other', 'amount'].reduce((m, k) => {
+      meta: ['player', 'property', 'properties', 'other', 'amount'].reduce((m, k) => {
         if (action.hasOwnProperty(k) && typeof action[k] !== 'undefined')
           m[k] = action[k];
         return m;

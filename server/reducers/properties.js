@@ -5,6 +5,7 @@ import {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
+  UNIMPROVE_GROUP,
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY,
   MONOPOLIZE_PROPERTY
@@ -41,6 +42,13 @@ const property = (state, action) => {
     case UNIMPROVE_PROPERTY:
       return { ...state,
         buildings: state.buildings - 1
+      };
+
+    case UNIMPROVE_GROUP:
+      return { ...state,
+        ...action.properties.find((pr) => (
+          pr.id === state.id
+        ))
       };
 
     case MORTGAGE_PROPERTY:
@@ -102,6 +110,7 @@ export default (state = {}, action) => {
         return state;
       }, { ...state });
 
+    case UNIMPROVE_GROUP:
     case CLAIM_BANKRUPTCY:
     case ACCEPT_OFFER:
       return action.properties.reduce((state, { id }) => {

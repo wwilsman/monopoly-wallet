@@ -9,6 +9,7 @@ import {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
+  UNIMPROVE_GROUP,
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY,
   PAY_RENT
@@ -47,7 +48,9 @@ import {
   propertyIsMortgaged,
   propertiesAreMortgaged,
   propertyNotMortgaged,
+  propertiesNotMortgaged,
   propertyIsImproved,
+  propertiesAreImproved,
   propertyNotImproved,
   propertiesNotImproved,
   propertyNotFullyImproved,
@@ -110,7 +113,7 @@ const PROPERTIES = {
     propertyOwnedBy,
     notRailroadOrUtility,
     propertyIsMonopoly,
-    propertyNotMortgaged,
+    propertiesNotMortgaged,
     propertyNotFullyImproved,
     mustImproveEvenly,
     enoughHousesOrHotels,
@@ -123,6 +126,13 @@ const PROPERTIES = {
     propertyIsImproved,
     mustUnimproveEvenly,
     enoughHousesOrHotels,
+    bankHasFunds
+  ],
+  [UNIMPROVE_GROUP]: [
+    playerExists,
+    propertiesOwnedBy,
+    notRailroadOrUtility,
+    propertiesAreImproved,
     bankHasFunds
   ],
   [MORTGAGE_PROPERTY]: [

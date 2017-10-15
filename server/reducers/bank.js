@@ -8,6 +8,7 @@ import {
   BUY_PROPERTY,
   IMPROVE_PROPERTY,
   UNIMPROVE_PROPERTY,
+  UNIMPROVE_GROUP,
   MORTGAGE_PROPERTY,
   UNMORTGAGE_PROPERTY
 } from '../actions/properties';
@@ -26,6 +27,7 @@ export default (state = Infinity, action) => {
     case JOIN_GAME:
     case MAKE_TRANSFER_TO:
     case UNIMPROVE_PROPERTY:
+    case UNIMPROVE_GROUP:
     case MORTGAGE_PROPERTY:
       return state - action.amount;
 

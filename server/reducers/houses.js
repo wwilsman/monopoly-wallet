@@ -1,6 +1,7 @@
 import {
   IMPROVE_PROPERTY,
-  UNIMPROVE_PROPERTY
+  UNIMPROVE_PROPERTY,
+  UNIMPROVE_GROUP
 } from '../actions/properties';
 
 /**
@@ -13,6 +14,7 @@ export default (state = Infinity, action) => {
   switch (action.type) {
     case IMPROVE_PROPERTY:
     case UNIMPROVE_PROPERTY:
+    case UNIMPROVE_GROUP:
       return state - action.houses;
 
     default:
