@@ -32,6 +32,10 @@ describe('Game: paying rent', function() {
       monopoly: true,
       owner: 'automobile',
       buildings: 5
+    }, {
+      id: 'atlantic-avenue',
+      owner: 'automobile',
+      mortgaged: true
     }]
   }});
 
@@ -69,6 +73,13 @@ describe('Game: paying rent', function() {
 
     expect(this.getPlayer('top-hat').balance).to.equal(1500 - property.rent[5]);
     expect(this.getPlayer('automobile').balance).to.equal(1500 + property.rent[5]);
+  });
+
+  it('should not pay rent for a mortgaged property', function() {
+    expect(() => this.dispatch(payRent('top-hat', 'atlantic-avenue')))
+      .to.throw(MonopolyError, /mortgaged/);
+    expect(this.getPlayer('top-hat').balance).to.equal(1500);
+    expect(this.getPlayer('automobile').balance).to.equal(1500);
   });
 
   it('should not pay rent for an unowned property', function() {

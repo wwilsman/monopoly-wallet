@@ -152,6 +152,7 @@ const PROPERTIES = {
   [PAY_RENT]: [
     playerExists,
     propertyIsOwned,
+    propertyNotMortgaged,
     sufficientBalance
   ]
 };
