@@ -2,7 +2,7 @@
 import path from 'path';
 import YAML from 'yamljs';
 import express from 'express';
-import io from 'socket.io';
+import WebSocket from 'ws';
 import { MongoClient } from 'mongodb';
 
 import GameRoom from './room';
@@ -90,4 +90,5 @@ const server = app.listen(ENV.port, () => {
 });
 
 // listen for socket connections
-io(server).on('connection', connectSocket);
+const wss = new WebSocket.Server({ server });
+wss.on('connection', connectSocket);

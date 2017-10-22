@@ -20,7 +20,7 @@
     "mongodb": "^2.2.29",
     "redux": "^3.7.1",
     "slug": "^0.9.1",
-    "socket.io": "^2.0.3",
+    "ws": "^3.2.0",
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
@@ -74,5 +74,9 @@
     "webpack": "^3.6.0",
     "webpack-dev-middleware": "^1.11.0",
     "webpack-hot-middleware": "^2.19.1"
+  },
+  "optionalDependencies": {
+    "bufferutil": "^3.0.2",
+    "utf-8-validate": "^3.0.3"
   }
 }

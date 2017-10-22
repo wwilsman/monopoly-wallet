@@ -2,73 +2,175 @@ import GameRoom from './room';
 
 /**
  * Sets up a socket for interacting with a game room
- * @param {Socket} socket - Socket.io socket instance
+ * @param {WebSocket} ws - WebSocket instance
  */
-export default function connectSocket(socket) {
-  const emitError = socketError.bind(null, socket);
+export default function connectSocket(ws) {
+  const emitError = socketError.bind(null, ws);
+  const emitEvent = socketEmitEvent.bind(null, ws);
 
-  // allow the socket to create a game
-  socket.on('game:new', (config) => {
-    GameRoom.new(config).then((game) => {
-      socket.emit('game:created', game);
-    }).catch(emitError);
+  // some actions need a room, this room will be available once the
+  // socket has connected to the game room via `room:connect`
+  let room = false;
+  const withRoom = (fn) => (...args) => {
+    if (room) fn(...args);
+  };
+
+  // game actions require a token, this token will be available once
+  // the player has successfully joined a game room
+  let token = false;
+  const withToken = (fn) => (...args) => {
+    if (token) fn(...args);
+  };
+
+  // wrap room methods to pass the token as the first argument,
+  // emit an update, and catch any errors
+  const gameMethod = (name) => withRoom(
+    withToken((...args) => {
+      room[name](token, ...args)
+        .then(() => emitEvent('game:update', room.game))
+        .catch(emitError);
+    })
+  );
+
+  // available socket actions
+  const actions = {
+    // forcibly disconnect
+    'disconnect': () => {
+      ws.terminate();
+    },
+
+    // create a game
+    'game:new': (config) => {
+      GameRoom.new(config).then((game) => {
+        emitEvent('game:created', game);
+      }).catch(emitError);
+    },
+
+    // connect to an existing game
+    'room:connect': (id) => {
+      GameRoom.connect(id, ws).then((r) => {
+        // unblock room-required actions
+        room = r;
+
+        // on close, remove the socket from the room
+        ws.on('close', () => room.disconnect(ws));
+
+        // keep the room state in sync when other players make changes.
+        // the sync event receives the meta that triggered it
+        room.on('sync', (blame) => {
+          if (blame !== ws) {
+            emitEvent('room:sync', room.state);
+          }
+        }, ws);
+
+        // tell the socket it's connected
+        emitEvent('room:connected', room.state);
+      }).catch(emitError);
+    },
+
+    // join the game if available
+    'game:join': withRoom((name, t) => {
+      askRoomToJoin(room, ws, name, t).then(() => {
+        // make game actions available
+        token = t;
+
+        // tell our player about new polls
+        room.on('poll', (poll) => {
+          emitEvent('poll:new', poll);
+        }, ws);
+      }).catch(emitError);
+    }),
+
+    // players are allowed to vote in a poll
+    'poll:vote': withToken((id, vote) => {
+      room.vote(token, id, vote);
+    }),
+
+    // players are allowed to message others in the room
+    'message:send': withToken((to, message) => {
+      let player = room.players.get(to);
+
+      if (player) {
+        socketEmitEvent(player, 'message:received', {
+          content: message,
+          from: token
+        });
+      } else {
+        emitError(room.error('player.not-found', {
+          player: { token: to }
+        }));
+      }
+    }),
+
+    // game actions are available to players that have successfully joined
+    'player:transfer': gameMethod('makeTransfer'),
+    'player:claim-bankruptcy': gameMethod('claimBankruptcy'),
+
+    'property:buy': gameMethod('buyProperty'),
+    'property:improve': gameMethod('improveProperty'),
+    'property:unimprove': gameMethod('unimproveProperty'),
+    'property:mortgage': gameMethod('mortgageProperty'),
+    'property:unmortgage': gameMethod('unmortgageProperty'),
+    'property:pay-rent': gameMethod('payRent'),
+
+    'auction:new': gameMethod('auctionProperty'),
+    'auction:bid': gameMethod('placeBid'),
+    'auction:concede': gameMethod('concedeAuction'),
+
+    'trade:new': gameMethod('makeOffer'),
+    'trade:decline': gameMethod('declineOffer'),
+    'trade:accept': gameMethod('acceptOffer')
+  };
+
+  // execute an action if it's available
+  ws.on('message', (payload) => {
+    let { event, args } = JSON.parse(payload);
+
+    if (actions[event]) {
+      actions[event](...args);
+    }
   });
 
-  // allow the socket to connect to an existing game
-  socket.on('room:connect', (id) => {
-    GameRoom.connect(id, socket).then((room) => {
-      // on disconnect remove the socket from the room
-      socket.on('disconnect', () => {
-        room.disconnect(socket);
-      });
-
-      // keep the room state in sync when other players make changes.
-      // the sync event receives the meta that triggered it
-      room.on('sync', (blame) => {
-        if (blame !== socket) {
-          socket.emit('room:sync', room.state);
-        }
-      }, socket);
-
-      // allow the socket to join the game
-      socket.on('game:join', (name, token) => {
-        askRoomToJoin(room, socket, name, token)
-          .then(() => connectPlayer(room, socket, token))
-          .catch(emitError);
-      });
-
-      // tell the socket it's connected
-      socket.emit('room:connected', room.state);
-    }).catch(emitError);
-  });
+  // tell the socket it's connected
+  emitEvent('connected');
 }
 
 /**
  * Emits an error to the socket
- * @param {Socket} socket - Socket.io socket instance
+ * @param {WebSocket} ws - WebSocket instance
  * @param {Error|Object} error - Error or Error-like object
  */
-function socketError(socket, error) {
+function socketError(ws, error) {
   const { name, message } = error;
   const type = name === 'MonopolyError' ? 'game' : 'room';
-  socket.emit(`${type}:error`, { name, message });
+  socketEmitEvent(ws, `${type}:error`, { name, message });
+}
+
+/**
+ * Emits an event to the socket with arguments
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {String} event - Event name
+ * @param {Mixed} ...args - Remaining arguments to send
+ */
+function socketEmitEvent(ws, event, ...args) {
+  ws.send(JSON.stringify({ event, args }));
 }
 
 /**
  * Joins or asks to join the current game
  * @param {GameRoom} room - GameRoom instance
- * @param {Socket} socket - Socket.io socket instance
+ * @param {WebSocket} ws - WebSocket instance
  * @param {String} name - Player name
  * @param {String} token - Player token
  * @returns {Promise} Resolves when the player has joined, rejects when
  * the poll resolves to false
  */
-function askRoomToJoin(room, socket, name, token) {
-  const joinGame = () => room.join(name, token, socket).then(() => {
-    socket.emit('game:joined', { ...room.state, player: token });
+function askRoomToJoin(room, ws, name, token) {
+  const joinGame = () => room.join(name, token, ws).then(() => {
+    socketEmitEvent(ws, 'game:joined', { ...room.state, player: token });
   });
 
-  if (Array.from(room.players.values()).includes(socket)) {
+  if (Array.from(room.players.values()).includes(ws)) {
     return Promise.reject(room.error('player.playing'));
 
   } else if (!room.players.size || room.game.players[token]) {
@@ -80,70 +182,6 @@ function askRoomToJoin(room, socket, name, token) {
     return room.poll(ask).then((result) => {
       if (!result) throw room.error('player.denied');
       return joinGame();
-    });
-  }
-}
-
-/**
- * Sets up player-only events
- * @param {GameRoom} room - GameRoom instance
- * @param {Socket} player - Socket.io socket instance
- * @param {String} token - The chosen player token
- */
-function connectPlayer(room, player, token) {
-  const emitError = socketError.bind(null, player);
-
-  // tell our player about new polls
-  room.on('poll', (poll) => {
-    player.emit('poll:new', poll);
-  }, player);
-
-  // allow the player vote in a poll
-  player.on('poll:vote', (id, vote) => {
-    room.vote(token, id, vote);
-  });
-
-  // allow the player to message others in the room by token
-  player.on('message:send', (to, message) => {
-    if (!room.players.has(to)) {
-      emitError(room.error('player.not-found', {
-        player: { token: to }
-      }));
-    } else {
-      room.players.get(to).emit('message:received', {
-        content: message,
-        from: token
-      });
-    }
-  });
-
-  // wrap game actions to pass the token as the first argument
-  // and emit a game update or error
-  const gameActions = {
-    'player:transfer': room.makeTransfer,
-    'player:claim-bankruptcy': room.claimBankruptcy,
-
-    'property:buy': room.buyProperty,
-    'property:improve': room.improveProperty,
-    'property:unimprove': room.unimproveProperty,
-    'property:mortgage': room.mortgageProperty,
-    'property:unmortgage': room.unmortgageProperty,
-    'property:pay-rent': room.payRent,
-
-    'auction:new': room.auctionProperty,
-    'auction:bid': room.placeBid,
-    'auction:concede': room.concedeAuction,
-
-    'trade:new': room.makeOffer,
-    'trade:decline': room.declineOffer,
-    'trade:accept': room.acceptOffer
-  };
-
-  for (let event in gameActions) {
-    player.on(event, (...args) => {
-      gameActions[event](player, ...args)
-        .then(() => player.emit('game:update', room.game))
-        .catch(emitError);
     });
   }
 }

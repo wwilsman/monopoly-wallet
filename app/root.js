@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import io from 'socket.io-client';
 import { Provider } from 'react-redux';
 import { Redirect, Route } from 'react-router-dom';
 import { ConnectedRouter } from 'react-router-redux';
@@ -27,7 +26,9 @@ class AppRoot extends Component {
     createBrowserHistory() :
     createMemoryHistory();
 
-  socket = io('/');
+  socket = new WebSocket(
+    `ws://${window.location.host}`
+  );
 
   store = createStore({
     history: this.history,
