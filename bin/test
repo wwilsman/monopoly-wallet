@@ -4,8 +4,8 @@ export NODE_ENV="test"
 
 test_server() {
     if [ "$1" == "--watch" ];
-    then yarn mocha --exit --recursive test/server --watch;
-    else yarn mocha --exit --recursive test/server; fi
+    then yarn mocha --recursive test/server --watch;
+    else yarn mocha --recursive test/server; fi
 }
 
 test_app() {

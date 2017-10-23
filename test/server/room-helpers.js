@@ -1,4 +1,5 @@
 import YAML from 'yamljs';
+import WebSocket from 'ws';
 import {
   before,
   beforeEach,
@@ -7,9 +8,6 @@ import {
 
 import chai from 'chai';
 import chaiAsPromised from 'chai-as-promised';
-
-import ioServer from 'socket.io';
-import ioClient from 'socket.io-client';
 
 import {
   createGameState,
@@ -49,7 +47,7 @@ export function setupRoomForTesting({
   beforeEach:beforeEachCB,
   afterEach:afterEachCB
 } = {}) {
-  let server = null;
+  let wss = null;
 
   before(function() {
     this.room = 't35tt';
@@ -66,8 +64,11 @@ export function setupRoomForTesting({
   });
 
   beforeEach(async function() {
-    server = ioServer(8080);
-    server.on('connection', connectSocket);
+    await new Promise((resolve) => {
+      wss = new WebSocket.Server({ port: 8080 }, resolve);
+    });
+
+    wss.on('connection', connectSocket);
 
     GameRoom.database.store[this.room] = {
       id: this.room,
@@ -87,72 +88,143 @@ export function setupRoomForTesting({
 
     return new Promise((resolve) => {
       delete GameRoom.database.store[this.room];
-      server.close(resolve);
+      wss.close(resolve);
     });
   });
 }
 
 /**
  * Creates a new socket instance
- * @returns {Socket} Socket.io socket instance
+ * @returns {Promise} resolves to the WebSocket once open
  */
 export function createSocket() {
-  return ioClient('http://localhost:8080', {
-    transports: ['websocket'],
-    forceNew: true
+  return new Promise((resolve) => {
+    let ws = new WebSocket('http://localhost:8080');
+    ws.once('open', () => resolve(ws));
   });
 }
 
 /**
- * Connects a socket to a game room
- * @param {Socket} socket - Socket.io socket instance
- * @param {String} gameID - Game room ID
- * @returns {Promise} Resolves once connected
+ * Emits an event via a websocket paylaod
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {String} event - Event name
+ * @param {Mixed} ...args - Arguments to send with the event
  */
-export function connectToGameRoom(socket, gameID) {
-  return promisifySocketEvent(socket, {
-    emit: 'room:connect',
-    resolve: 'room:connected',
-    reject: 'game:error'
-  })(gameID);
+export function emitSocketEvent(ws, event, ...args) {
+  ws.send(JSON.stringify({ event, args }));
 }
 
 /**
- * Connects a socket to a game room
- * @param {Socket} socket - Socket.io socket instance
+ * Creates a promise that resolves when the supplied handler returns a
+ * value, otherwise the promise rejects when an error-like object is
+ * passed as the event argument of the event
+ *
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {Function} handler - A function called when an event is received
+ * @returns {Promise} resolves when the handler returns, otherwise
+ * rejects when an error-like object is passed as the event argument
+ */
+export function handleSocketEvent(ws, handler) {
+  return new Promise((resolve, reject) => {
+    ws.on('message', (payload) => {
+      let { event, args } = JSON.parse(payload);
+      let ret = handler(event, ...args);
+
+      if (typeof ret !== 'undefined') {
+        resolve(ret);
+      } else if (args[0].name && args[0].message) {
+        reject(createError(args[0]));
+      }
+    });
+  });
+}
+
+/**
+ * Promises that an event will be received
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {String} event - The event to handle
+ * @param {Function} [resolver=identity] - Resolves the event arguments
+ * @returns {Function} `emitSocketEvent` that returns the handler
+ * promise which resolves with the event arguments
+ */
+export function promisifySocketEvent(ws, event, resolver = (i) => i) {
+  return handleSocketEvent(ws, (evt, ...args) => {
+    if (evt === event) return resolver(...args) || args[0];
+  });
+}
+
+/**
+ * Emits a create game event and resolves when the game is created
+ * @param {WebSocket} ws - WebSocket instaice
+ * @returns {Promise} Resolves when the game is created
+ */
+export function createGame(ws) {
+  let promised = promisifySocketEvent(ws, 'game:created');
+  emitSocketEvent(ws, 'game:new');
+  return promised;
+}
+
+/**
+ * Emits a connect event and resolves when the socket has connected
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {String} room - Game room ID
+ * @returns {Promise} Resolves when the socket is connected
+ */
+export function connectToGameRoom(ws, room) {
+  let promised = promisifySocketEvent(ws, 'room:connected');
+  emitSocketEvent(ws, 'room:connect', room);
+  return promised;
+}
+
+/**
+ * Emits a join event and resolves when the player joins
+ * @param {WebSocket} ws - WebSocket instance
  * @param {String} name - Player name
  * @param {String} token - Player token
- * @returns {Promise} Resolves once player has joined
+ * @returns {Promise} Resolves when the player has joined
  */
-export function joinGameRoom(socket, name, token) {
-  return promisifySocketEvent(socket, {
-    emit: 'game:join',
-    resolve: 'game:joined',
-    reject: 'game:error'
-  })(name, token);
+export function joinGameRoom(ws, name, token) {
+  let join = promisifySocketEvent(ws, 'game:joined');
+  emitSocketEvent(ws, 'game:join', name, token);
+  return join;
 }
 
 /**
- * Creats a socket and connects it to a game room
- * @param {gameID} gameID - Game room ID
- * @returns {Promise} Resolves once connected
+ * Votes in the very next poll and resolves
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {Boolean} vote - yes or no (true or false)
+ * @returns {Promise} Resolves after the vote is emitted
  */
-export async function createSocketAndConnect(gameID) {
-  const socket = createSocket();
-  await connectToGameRoom(socket, gameID);
-  return socket;
+export function voteInNextPoll(ws, vote) {
+  return promisifySocketEvent(ws, 'poll:new').then(({ id }) => {
+    emitSocketEvent(ws, 'poll:vote', id, vote);
+  });
+}
+
+
+/**
+ * Creates a socket and resolves to it after connecting to a game room
+ * @param {String} room - Game room ID
+ * @returns {Promise} Resolves to the new WebSocket after it has
+ * connected to the game room
+ */
+export async function createSocketAndConnect(room) {
+  let ws = await createSocket();
+  let connect = promisifySocketEvent(ws, 'room:connected');
+  emitSocketEvent(ws, 'room:connect', room);
+  return connect.then(() => ws);
 }
 
 /**
- * Creates a socket and joins the game room
- * @param {Socket} socket - Socket.io socket instance
- * @param {String} name - Player name
+ * Creates a socket and resolves to it after joining a game
+ * @param {String} room - Game room ID
  * @param {String} token - Player token
- * @returns {Promise} Resolves once the player has joined
+ * @returns {Promise} Resolves to the new WebSocket after it has
+ * joined the game
  */
-export async function createSocketAndJoinGame(gameID, token) {
-  const socket = await createSocketAndConnect(gameID);
-  const game = await GameRoom.database.find(gameID);
+export async function createSocketAndJoinGame(room, token) {
+  let ws = await createSocketAndConnect(room);
+  let game = await GameRoom.database.find(room);
 
   if (!game.state.players[token]) {
     game.state.players[token] = {
@@ -162,40 +234,11 @@ export async function createSocketAndJoinGame(gameID, token) {
       token
     };
 
-    GameRoom._cache[gameID].refresh();
+    GameRoom._cache[room].refresh();
   }
 
-  const name = game.state.players[token].name;
-  await joinGameRoom(socket, name, token);
-  return socket;
-}
-
-/**
- * Promisifies a socket emit event that resolves or rejects on other events
- * @param {Socket} socket - Socket.io socket instance
- * @param {String} emitEvent - Event name to emit when the return function is called
- * @param {String} resolveEvent - Event name to resolve the resulting promise
- * @param {String} rejectEvent - Event name to reject the resulting promise
- * @returns {Function} Called with event args will return a promise that
- * resolves or rejects on option events
- */
-export function promisifySocketEvent(socket, {
-  emit:emitEvent,
-  resolve:resolveEvent,
-  reject:rejectEvent
-}) {
-  return (...args) => new Promise((resolve, reject) => {
-    const handleResolve = (...payload) => off() && resolve(...payload);
-    const handleReject = (error) => off() && reject(createError(error));
-
-    const off = () => socket
-      .off(resolveEvent, handleResolve)
-      .off(rejectEvent, handleReject);
-
-    socket.on(resolveEvent, handleResolve);
-    socket.on(rejectEvent, handleReject);
-    socket.emit(emitEvent, ...args);
-  });
+  let name = game.state.players[token].name;
+  return joinGameRoom(ws, name, token).then(() => ws);
 }
 
 /**

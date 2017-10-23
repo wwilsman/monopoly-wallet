@@ -4,35 +4,33 @@ import { expect } from 'chai';
 import {
   setupRoomForTesting,
   createSocket,
-  connectToGameRoom,
-  promisifySocketEvent,
+  createGame,
+  connectToGameRoom
 } from '../room-helpers';
 
 import MonopolyError from '../../../server/error';
 
-const createGame = (socket) => {
-  return promisifySocketEvent(socket, {
-    emit: 'game:new',
-    resolve: 'game:created',
-    reject: 'room:error'
-  })();
-};
-
 describe('Room: connecting', function() {
-  setupRoomForTesting();
+  let ws;
+
+  setupRoomForTesting({
+    async beforeEach() {
+      ws = await createSocket();
+    }
+  });
 
   it('should allow creating games', async function() {
-    await expect(createGame(createSocket())).to.be.fulfilled
+    await expect(createGame(ws)).to.be.fulfilled
       .and.eventually.include.keys('id', 'state', 'config');
   });
 
   it('should allow connecting to games', async function() {
-    await expect(connectToGameRoom(createSocket(), this.room)).to.be.fulfilled
+    await expect(connectToGameRoom(ws, this.room)).to.be.fulfilled
       .and.eventually.include.keys('id', 'state', 'config', 'players');
   });
 
   it('should emit an error when no game is found', async function() {
-    await expect(connectToGameRoom(createSocket(), 'F4K33'))
+    await expect(connectToGameRoom(ws, 'F4K33'))
       .to.be.rejectedWith(MonopolyError, /not found/);
   });
 });

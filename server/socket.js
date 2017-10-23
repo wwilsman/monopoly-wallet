@@ -153,7 +153,11 @@ function socketError(ws, error) {
  * @param {Mixed} ...args - Remaining arguments to send
  */
 function socketEmitEvent(ws, event, ...args) {
-  ws.send(JSON.stringify({ event, args }));
+  // a socket might not be open if it disconnects before receiving
+  // an expected event
+  if (ws.readyState === 1) {
+    ws.send(JSON.stringify({ event, args }));
+  }
 }
 
 /**

@@ -3,26 +3,35 @@ import { expect } from 'chai';
 
 import {
   setupRoomForTesting,
+  emitSocketEvent,
+  promisifySocketEvent,
   createSocketAndJoinGame
 } from '../room-helpers';
 
+import MonopolyError from '../../../server/error';
+
 describe('Room: messaging', function() {
-  let socket1, socket2;
+  let ws1, ws2;
 
   setupRoomForTesting({
     async beforeEach() {
-      socket1 = await createSocketAndJoinGame(this.room, 'top-hat');
-      socket2 = await createSocketAndJoinGame(this.room, 'automobile');
+      ws1 = await createSocketAndJoinGame(this.room, 'top-hat');
+      ws2 = await createSocketAndJoinGame(this.room, 'automobile');
     }
   });
 
-  it('should send and recieve messages', function(done) {
-    socket2.on('message:received', ({ from, content }) => {
-      expect(from).to.equal('top-hat');
-      expect(content).to.equal('hello world');
-      done();
-    });
+  it('should send and recieve messages', async function() {
+    let message = promisifySocketEvent(ws2, 'message:received');
+    emitSocketEvent(ws1, 'message:send', 'automobile', 'hello world');
 
-    socket1.emit('message:send', 'automobile', 'hello world');
+    await expect(message).to.be.fulfilled;
+    await expect(message).to.eventually.have.property('from', 'top-hat');
+    await expect(message).to.eventually.have.property('content', 'hello world');
+  });
+
+  it('should error when the other player does not exist', async function() {
+    let error = promisifySocketEvent(ws1); // simply throws on errors; never resolves
+    emitSocketEvent(ws1, 'message:send', 'thimble', 'hello world');
+    await expect(error).to.be.rejectedWith(MonopolyError, /cannot find player/i);
   });
 });
