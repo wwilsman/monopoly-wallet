@@ -27,6 +27,12 @@ const app = express();
 // static assets
 app.use(express.static(path.join(__dirname, '../public')));
 
+// serve our theme icons
+app.use('/icons/:theme.svg', (req, res) => {
+  const iconsPath = `./themes/${req.params.theme}/icons.svg`;
+  res.sendFile(path.join(__dirname, iconsPath));
+});
+
 // setup webpack dev middleware
 if (ENV.environment === 'development') {
   const webpack = require('webpack');
@@ -34,21 +40,17 @@ if (ENV.environment === 'development') {
   const webpackHotMiddleware = require('webpack-hot-middleware');
   const webpackConfig = require('../webpack.config');
   const compiler = webpack(webpackConfig);
+  const middle = webpackDevMiddleware(compiler, webpackConfig.devServer);
 
-  app.use(webpackDevMiddleware(compiler, webpackConfig.devServer));
+  app.use(middle);
   app.use(webpackHotMiddleware(compiler));
+  app.use(/\/[^.]*$/, middle);
+} else {
+  // all endpoints render the app
+  app.use(/\/[^.]*$/, (req, res) => {
+    res.sendFile(path.join(__dirname, '../public/index.html'));
+  });
 }
-
-// serve our theme icons
-app.use('/icons/:theme.svg', (req, res) => {
-  const iconsPath = `./themes/${req.params.theme}/icons.svg`;
-  res.sendFile(path.join(__dirname, iconsPath));
-});
-
-// all other endpoints render the app
-app.use(/\/[^.]*$/, (req, res) => {
-  res.sendFile(path.join(__dirname, '../public/index.html'));
-});
 
 // theme loader
 const themeCache = {};
