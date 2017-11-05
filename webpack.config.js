@@ -107,15 +107,6 @@ module.exports = {
     ]
   }),
 
-  resolve: {
-    alias: env({
-      test: {
-        'mock-socket': 'mock-socket/src',
-        'socket.io-client': 'mock-socket/socket-io'
-      }
-    })
-  },
-
   module: {
     rules: env({
       base: [{

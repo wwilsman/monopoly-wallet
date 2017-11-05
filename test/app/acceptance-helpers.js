@@ -3,7 +3,6 @@ import {
   render,
   unmountComponentAtNode
 } from 'react-dom';
-import ioServer from 'mock-socket/server';
 
 import chai from 'chai';
 import chaiJQuery from 'chai-jquery';
@@ -21,6 +20,8 @@ import {
   createGameState,
   transformGameState
 } from '../helpers';
+
+import WebSocket from './mock-websocket';
 
 import GameRoom from '../../server/room';
 import connectSocket from '../../server/socket';
@@ -41,6 +42,8 @@ GameRoom.set('loader', (theme, name) => {
     case 'messages': return MESSAGES_FIXTURE;
   }
 });
+
+window.WebSocket = WebSocket;
 
 /**
  * Starts a mock websocket server and mounts our app
@@ -63,7 +66,7 @@ export function describeApplication(name, setup) {
       document.body.appendChild(rootElement);
 
       // setup a mock websocket server
-      this.io = new ioServer('/');
+      this.io = new WebSocket.Server(`ws://${window.location.host}`);
       this.io.on('connection', connectSocket);
 
       // mount our app
@@ -98,7 +101,7 @@ export function describeApplication(name, setup) {
       document.body.removeChild(rootElement);
       rootElement = null;
 
-      this.io.stop();
+      this.io.close();
 
       // sometimes our context can hang around
       this.visit = null;
