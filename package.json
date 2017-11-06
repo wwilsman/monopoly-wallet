@@ -58,6 +58,7 @@
     "karma-webpack": "^2.0.3",
     "mocha": "^4.0.1",
     "nodemon": "^1.12.1",
+    "path-to-regexp": "^2.1.0",
     "postcss-loader": "^2.0.6",
     "precss": "^2.0.0",
     "prop-types": "^15.6.0",
