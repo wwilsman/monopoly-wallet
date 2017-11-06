@@ -1,12 +1,11 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { Switch } from 'react-router-dom';
+import route from './route';
 
 import { Container, Section } from '../ui/layout';
 import Spinner from '../ui/spinner';
 
-@connect(({ app }) => ({
+@route(({ app }) => ({
   loading: app.loading
 }))
 
@@ -17,21 +16,14 @@ class AppScreen extends Component {
   };
 
   render() {
-    const {
-      loading,
-      children
-    } = this.props;
-
-    return loading ? (
+    return this.props.loading ? (
       <Container>
         <Section align="center" justify="center">
           <Spinner xl/>
         </Section>
       </Container>
     ) : (
-      <Switch>
-        {children}
-      </Switch>
+      this.props.children
     );
   }
 }

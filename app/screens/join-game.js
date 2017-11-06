@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { replace } from 'react-router-redux';
+import route from './route';
 
 import {
   connectToGame,
@@ -19,7 +18,7 @@ import Spinner from '../ui/spinner';
 import FindGameModal from '../game/find-game-modal';
 import JoinGameForm from '../game/join-game-form';
 
-@connect((state) => ({
+@route((state) => ({
   room: state.game.room,
   loading: state.game.loading,
   error: state.game.error,
@@ -28,8 +27,7 @@ import JoinGameForm from '../game/join-game-form';
 }), {
   connectToGame,
   disconnectGame,
-  joinGame,
-  replace
+  joinGame
 })
 
 class JoinGameScreen extends Component {
@@ -43,15 +41,13 @@ class JoinGameScreen extends Component {
     disconnectGame: PropTypes.func.isRequired,
     joinGame: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        room: PropTypes.string
-      }).isRequired
+    params: PropTypes.shape({
+      room: PropTypes.string
     }).isRequired
   };
 
   componentWillMount() {
-    const { room, match: { params }} = this.props;
+    const { room, params } = this.props;
     this.connectOrDisconnect(params.room, room);
   }
 
@@ -60,7 +56,7 @@ class JoinGameScreen extends Component {
       error,
       loading,
       room:nextRoom,
-      match: { params:nextParams },
+      params:nextParams,
       replace
     } = nextProps;
 
@@ -93,7 +89,7 @@ class JoinGameScreen extends Component {
       players,
       connectToGame,
       joinGame,
-      match: { params }
+      params
     } = this.props;
 
     return (

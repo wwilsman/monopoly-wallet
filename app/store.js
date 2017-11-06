@@ -1,8 +1,8 @@
 import { applyMiddleware, createStore, compose, } from 'redux';
-import { routerMiddleware } from 'react-router-redux';
 
 import rootReducer from './reducers';
 import socketMiddleware from './socket';
+import routerMiddleware from './router';
 
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
@@ -15,11 +15,11 @@ const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
  * @returns {Object} A new redux store
  */
 export default ({
-  initialState = {},
+  socket,
   history,
-  socket
+  initialState = {}
 }) => {
-  const store = createStore(
+  let store = createStore(
     rootReducer,
     initialState,
     composeEnhancers(

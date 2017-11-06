@@ -1,34 +1,29 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
-import { replace } from 'react-router-redux';
+import route from './route';
 
 import { getCurrentPlayer } from '../selectors/player';
 
 import { Container, Section } from '../ui/layout';
 import Toaster from '../ui/toaster';
 
-@connect((state) => ({
+@route((state) => ({
   player: getCurrentPlayer(state)
-}), {
-  replace
-})
+}))
 
 class GameRoomScreen extends Component {
   static propTypes = {
     player: PropTypes.object,
     replace: PropTypes.func.isRequired,
-    match: PropTypes.shape({
-      params: PropTypes.shape({
-        room: PropTypes.string.isRequired
-      }).isRequired
+    params: PropTypes.shape({
+      room: PropTypes.string.isRequired
     }).isRequired
   };
 
   componentWillMount() {
     const {
       player,
-      match: { params },
+      params,
       replace
     } = this.props;
 

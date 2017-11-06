@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import route from './route';
 
 import { newGame } from '../actions/game';
 
@@ -9,7 +9,7 @@ import Title from '../ui/typography/title';
 import Button from '../ui/button';
 import Logo from '../ui/logo';
 
-@connect(({ game }) => ({
+@route(({ game }) => ({
   loading: game.loading
 }), {
   newGame

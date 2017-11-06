@@ -1,6 +1,6 @@
 import {
   push
-} from 'react-router-redux';
+} from './actions/router';
 import {
   appError,
   appDoneLoading,

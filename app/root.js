@@ -1,8 +1,6 @@
 import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { Provider } from 'react-redux';
-import { Redirect, Route } from 'react-router-dom';
-import { ConnectedRouter } from 'react-router-redux';
 import {
   createBrowserHistory,
   createMemoryHistory
@@ -11,11 +9,11 @@ import {
 import './styles/global.css';
 import createStore from './store';
 
-import App from './screens/app';
-import Welcome from './screens/welcome';
-import JoinGame from './screens/join-game';
-import GameRoom from './screens/game-room';
-import Sandbox from './screens/sandbox';
+import AppScreen from './screens/app';
+import WelcomeScreen from './screens/welcome';
+import JoinGameScreen from './screens/join-game';
+import GameRoomScreen from './screens/game-room';
+import SandboxScreen from './screens/sandbox';
 
 class AppRoot extends Component {
   static propTypes = {
@@ -31,29 +29,29 @@ class AppRoot extends Component {
   );
 
   store = createStore({
+    socket: this.socket,
     history: this.history,
-    socket: this.socket
+    initialState: {
+      router: {
+        location: {
+          pathname: this.history.location.pathname
+        }
+      }
+    }
   });
 
   render() {
     return (
       <Provider store={this.store}>
-        <ConnectedRouter history={this.history}>
-          <Route path="/" render={(props) => (
-            <App {...props}>
-              <Route path="/" exact component={Welcome}/>
-              <Route path="/join" exact component={JoinGame}/>
-              <Route path="/:room([^\/]{5})/join" exact component={JoinGame}/>
-              <Route path="/:room([^\/]{5})" exact component={GameRoom}/>
+        <AppScreen path="/(.*)" redirect="/">
+          <WelcomeScreen path="/"/>
+          <JoinGameScreen path="/:room([^\/]{5})?/join"/>
+          <GameRoomScreen path="/:room([^\/]{5})"/>
 
-              {process.env.NODE_ENV === 'development' && (
-                <Route path="/sandbox" component={Sandbox}/>
-              )}
-
-              <Route render={() => <Redirect to="/"/>}/>
-            </App>
-          )}/>
-        </ConnectedRouter>
+          {process.env.NODE_ENV === 'development' && (
+            <SandboxScreen path="/sandbox"/>
+          )}
+        </AppScreen>
       </Provider>
     );
   }
