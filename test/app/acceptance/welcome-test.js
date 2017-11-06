@@ -23,8 +23,7 @@ describeApplication('WelcomeScreen', function() {
     expect(WelcomePage.$joinGameBtn).to.have.text('Join Game');
   });
 
-  // `this.location` is not updated properly
-  describe.skip('visiting a non-existent route', function() {
+  describe('visiting a non-existent route', function() {
     beforeEach(function() {
       this.visit('/404-not-found');
     });
