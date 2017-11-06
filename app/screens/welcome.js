@@ -15,7 +15,7 @@ import Logo from '../ui/logo';
   newGame
 })
 
-class Welcome extends Component {
+class WelcomeScreen extends Component {
   static propTypes = {
     loading: PropTypes.bool,
     newGame: PropTypes.func.isRequired
@@ -61,4 +61,4 @@ class Welcome extends Component {
   }
 }
 
-export default Welcome;
+export default WelcomeScreen;

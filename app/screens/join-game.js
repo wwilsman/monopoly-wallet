@@ -32,7 +32,7 @@ import JoinGameForm from '../game/join-game-form';
   replace
 })
 
-class JoinGame extends Component {
+class JoinGameScreen extends Component {
   static propTypes = {
     room: PropTypes.string,
     loading: PropTypes.bool,
@@ -124,4 +124,4 @@ class JoinGame extends Component {
   }
 }
 
-export default JoinGame;
+export default JoinGameScreen;

@@ -10,10 +10,10 @@ import Spinner from '../ui/spinner';
   loading: app.loading
 }))
 
-class App extends Component {
+class AppScreen extends Component {
   static propTypes = {
     loading: PropTypes.bool.isRequired,
-    children: PropTypes.any
+    children: PropTypes.node
   };
 
   render() {
@@ -36,4 +36,4 @@ class App extends Component {
   }
 }
 
-export default App;
+export default AppScreen;

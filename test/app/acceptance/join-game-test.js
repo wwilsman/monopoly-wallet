@@ -4,7 +4,7 @@ import { describeApplication, mockGame } from '../acceptance-helpers.js';
 
 import JoinGamePage from '../pages/join-game';
 
-describeApplication('join game screen', function() {
+describeApplication('JoinGameScreen', function() {
   describe('without specifying a room', function() {
     beforeEach(function() {
       return this.visit('/join', () => {

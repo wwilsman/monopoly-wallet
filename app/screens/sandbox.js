@@ -4,7 +4,7 @@ import PropTypes from 'prop-types';
 import { Container, Section } from '../ui/layout';
 import Heading from '../ui/typography/heading';
 
-class Sandbox extends Component {
+class SandboxScreen extends Component {
   static propTypes = {
     location: PropTypes.object.isRequired,
     match: PropTypes.object.isRequired
@@ -24,4 +24,4 @@ class Sandbox extends Component {
   }
 }
 
-export default Sandbox;
+export default SandboxScreen;

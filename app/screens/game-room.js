@@ -14,7 +14,7 @@ import Toaster from '../ui/toaster';
   replace
 })
 
-class GameRoom extends Component {
+class GameRoomScreen extends Component {
   static propTypes = {
     player: PropTypes.object,
     replace: PropTypes.func.isRequired,
@@ -47,4 +47,4 @@ class GameRoom extends Component {
   }
 }
 
-export default GameRoom;
+export default GameRoomScreen;

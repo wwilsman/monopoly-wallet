@@ -4,7 +4,7 @@ import { describeApplication, } from '../acceptance-helpers';
 
 import WelcomePage from '../pages/welcome';
 
-describeApplication('welcome screen', function() {
+describeApplication('WelcomeScreen', function() {
   beforeEach(function() {
     return this.visit('/', () => {
       expect(WelcomePage.$root).to.exist;
