@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, beforeEach, it } from '../test-helpers';
-import { describeApplication, mockGame } from '../acceptance-helpers.js';
+import { describeApplication, mockGame } from '../acceptance-helpers';
 
 import JoinGamePage from '../pages/join-game';
 
@@ -32,8 +32,8 @@ describeApplication('JoinGameScreen', function() {
 
       it('should show a loading indicator and disable inputs', function() {
         expect(JoinGamePage.isFindGameLoading).to.be.true;
-        expect(JoinGamePage.$findGameInput).to.have.attr('disabled');
-        expect(JoinGamePage.$findGameBtn).to.have.attr('disabled');
+        expect(JoinGamePage.$findGameInput).to.have.prop('disabled', true);
+        expect(JoinGamePage.$findGameBtn).to.have.prop('disabled', true);
       });
 
       it('should go to the join game route for a game', function() {
@@ -97,7 +97,7 @@ describeApplication('JoinGameScreen', function() {
       });
 
       it('should not allow joining yet', function() {
-        expect(JoinGamePage.$joinBtn).to.have.attr('disabled');
+        expect(JoinGamePage.$joinBtn).to.have.prop('disabled', true);
       });
     });
 
@@ -107,7 +107,7 @@ describeApplication('JoinGameScreen', function() {
       });
 
       it('should not allow joining yet', function() {
-        expect(JoinGamePage.$joinBtn).to.have.attr('disabled');
+        expect(JoinGamePage.$joinBtn).to.have.prop('disabled', true);
       });
     });
 
@@ -118,7 +118,7 @@ describeApplication('JoinGameScreen', function() {
       });
 
       it('should allow joining', function() {
-        expect(JoinGamePage.$joinBtn).to.not.have.attr('disabled');
+        expect(JoinGamePage.$joinBtn).to.have.prop('disabled', false);
       });
 
       describe('and join game is clicked', function() {
@@ -128,9 +128,9 @@ describeApplication('JoinGameScreen', function() {
 
         it('should show a loading indicator and disabled inputs', function() {
           expect(JoinGamePage.isJoinGameLoading).to.be.true;
-          expect(JoinGamePage.$nameInput).to.have.attr('disabled');
+          expect(JoinGamePage.$nameInput).to.have.prop('disabled', true);
           expect(JoinGamePage.areTokensDisabled).to.be.true;
-          expect(JoinGamePage.$joinBtn).to.have.attr('disabled');
+          expect(JoinGamePage.$joinBtn).to.have.prop('disabled', true);
         });
 
         it('should join the game', function() {
@@ -153,8 +153,8 @@ describeApplication('JoinGameScreen', function() {
       }});
 
       it('should prevent selecting used tokens', function() {
-        expect(JoinGamePage.$token('top-hat')).to.have.attr('disabled');
-        expect(JoinGamePage.$token('automobile')).to.have.attr('disabled');
+        expect(JoinGamePage.$token('top-hat')).to.have.prop('disabled', true);
+        expect(JoinGamePage.$token('automobile')).to.have.prop('disabled', true);
       });
 
       describe('when one of their names are filled in', function() {
@@ -163,8 +163,8 @@ describeApplication('JoinGameScreen', function() {
         });
 
         it('should enable a used token with the token player\'s name', function() {
-          expect(JoinGamePage.$token('top-hat')).to.not.have.attr('disabled');
-          expect(JoinGamePage.$token('automobile')).to.have.attr('disabled');
+          expect(JoinGamePage.$token('top-hat')).to.have.prop('disabled', false);
+          expect(JoinGamePage.$token('automobile')).to.have.prop('disabled', true);
         });
 
         describe('and they are playing', function() {
@@ -174,8 +174,8 @@ describeApplication('JoinGameScreen', function() {
           });
 
           it('should not enable their token with their name', function() {
-            expect(JoinGamePage.$token('top-hat')).to.have.attr('disabled');
-            expect(JoinGamePage.$token('automobile')).to.have.attr('disabled');
+            expect(JoinGamePage.$token('top-hat')).to.have.prop('disabled', true);
+            expect(JoinGamePage.$token('automobile')).to.have.prop('disabled', true);
           });
         });
       });
