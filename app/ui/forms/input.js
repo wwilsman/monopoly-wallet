@@ -24,7 +24,7 @@ class Input extends Component {
     empty: false
   };
 
-  elementId = uid(Input);
+  elementId = uid('Input');
 
   handleChange = (e) => {
     const { disabled, length, onChangeText } = this.props;

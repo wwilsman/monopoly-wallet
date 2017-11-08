@@ -29,7 +29,7 @@ class RadioGroup extends Component {
     focused: false
   };
 
-  elementId = uid(RadioGroup);
+  elementId = uid('RadioGroup');
 
   _handleFocus = () => {
     this.setState({ focused: true });

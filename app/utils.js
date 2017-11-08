@@ -1,8 +1,6 @@
-export function uid(Component) {
-  uid.cache = uid.cache || {};
-  const name = Component.name || Component.displayName || 'generic';
-  const id = uid.cache[name] = (uid.cache[name] || 0) + 1;
-  return `${name}-${id}`;
+export function uid(prefix = 'uid') {
+  let n = uid.n = (uid.n || 0) + 1;
+  return `${prefix}-${n}`;
 }
 
 export function dataAttrs(props) {

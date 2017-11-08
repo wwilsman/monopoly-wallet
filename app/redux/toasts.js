@@ -1,3 +1,5 @@
+import { uid } from '../utils';
+
 // action types
 export const TOASTS_ADD = 'TOASTS_ADD';
 export const TOASTS_REMOVE = 'TOASTS_REMOVE';
@@ -28,18 +30,12 @@ export const removeToast = (id) => ({
   toast: { id }
 });
 
-// toast id helpers
-const uid = () => {
-  const n = uid.n = (uid.n || 0) + 1;
-  return `toast-${n}`;
-};
-
 // single toast reducer
 const toast = (state = {}, action) => {
   switch (action.type) {
     case TOASTS_ADD:
       return {
-        id: action.toast.id || uid(),
+        id: action.toast.id || uid('toast'),
         type: action.toast.type,
         message: action.toast.message,
         actions: action.toast.actions || [],
