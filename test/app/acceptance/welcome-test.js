@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, beforeEach, it } from '../test-helpers';
-import { describeApplication, } from '../acceptance-helpers';
+import { describeApplication } from '../acceptance-helpers';
 
 import WelcomePage from '../pages/welcome';
 
