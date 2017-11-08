@@ -1,10 +1,37 @@
-import { applyMiddleware, createStore, compose, } from 'redux';
+import {
+  applyMiddleware,
+  combineReducers,
+  compose,
+  createStore
+} from 'redux';
 
-import rootReducer from './reducers';
-import socketMiddleware from './socket';
-import routerMiddleware from './router';
+import {
+  reducer as appReducer
+} from './app';
+import {
+  reducer as gameReducer
+} from './game';
+import {
+  reducer as toastsReducer
+} from './toasts';
+import {
+  reducer as routerReducer,
+  middleware as routerMiddleware
+} from './router';
+import {
+  middleware as socketMiddleware
+} from './socket';
 
+// redux dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+// root reducer
+const rootReducer = combineReducers({
+  app: appReducer,
+  game: gameReducer,
+  toasts: toastsReducer,
+  router: routerReducer
+});
 
 /**
  * Creates a new redux store instance with our middleware and sets up

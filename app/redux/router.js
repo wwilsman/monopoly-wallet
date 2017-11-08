@@ -1,15 +1,49 @@
-import {
-  PUSH,
-  REPLACE,
-  LOCATION_CHANGED
-} from './actions/router';
+// action types
+export const PUSH = 'ROUTER_PUSH';
+export const REPLACE = 'ROUTER_REPLACE';
+export const LOCATION_CHANGED = 'ROUTER_LOCATION_CHANGED';
+
+// action creators
+export const push = (pathname) => ({
+  type: PUSH,
+  location: { pathname }
+});
+
+export const replace = (pathname) => ({
+  type: REPLACE,
+  location: { pathname }
+});
+
+// initial state
+const initialState = {
+  location: {}
+};
+
+// reducer
+export const reducer = (state = initialState, action) => {
+  switch (action.type) {
+    case PUSH:
+    case REPLACE:
+    case LOCATION_CHANGED:
+      return {
+        ...state,
+        location: {
+          ...state.location,
+          ...action.location
+        }
+      };
+
+    default:
+      return state;
+  }
+};
 
 /**
  * Redux middleware to keep the state and URL in sync
  * @param {Object} history - history object
  * @returns {Function} Redux middleware
  */
-export default (history) => (store) => {
+export const middleware = (history) => (store) => {
   let isDispatching = false;
 
   // update our state location when the history changes

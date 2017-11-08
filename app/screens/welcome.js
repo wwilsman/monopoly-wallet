@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import route from './route';
 
-import { newGame } from '../actions/game';
+import { newGame } from '../redux/game';
 
 import { Container, Section } from '../ui/layout';
 import Title from '../ui/typography/title';

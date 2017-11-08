@@ -7,7 +7,7 @@ import {
 } from 'history';
 
 import './styles/global.css';
-import createStore from './store';
+import createStore from './redux/store';
 
 import AppScreen from './screens/app';
 import WelcomeScreen from './screens/welcome';

@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 
-import { push } from '../actions/router';
+import { push } from '../redux/router';
 
 @connect(null, { push })
 class Link extends Component {

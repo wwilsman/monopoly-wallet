@@ -1,25 +1,25 @@
 import {
   push
-} from './actions/router';
+} from './router';
 import {
   appError,
   appDoneLoading,
   syncPlayers,
   setCurrentPlayer
-} from './actions/app';
+} from './app';
 import {
   syncGame,
   connectToGame,
   voteInPoll,
   gameError,
   gameDoneLoading
-} from './actions/game';
+} from './game';
 import {
   newPoll,
   removeToast
-} from './actions/toasts';
+} from './toasts';
 
-import logger from './logger';
+import logger from '../logger';
 
 /**
  * Creates a hash of socket actions using a store that implements
@@ -102,7 +102,7 @@ const getSocketActions = ({ dispatch, getState }) => ({
  * @param {WebSocket} ws - WebSocket instance
  * @returns {Function} Redux middleware
  */
-export default (ws) => (store) => {
+export const middleware = (ws) => (store) => {
   const actions = getSocketActions(store);
 
   // helper to stringify events and their args

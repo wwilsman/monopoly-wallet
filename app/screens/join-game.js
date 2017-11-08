@@ -6,7 +6,7 @@ import {
   connectToGame,
   disconnectGame,
   joinGame
-} from '../actions/game';
+} from '../redux/game';
 import {
   getActivePlayers
 } from '../selectors/player';

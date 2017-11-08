@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import pathToRegexp from 'path-to-regexp';
 
-import { push, replace } from '../actions/router';
+import { push, replace } from '../redux/router';
 
 export default (
   mapStateToProps,
