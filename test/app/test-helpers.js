@@ -35,6 +35,22 @@ export function visit(push, path, assertion) {
 }
 
 /**
+ * Emits an event on behalf of the socket after 1ms to ensure other
+ * events have been received first
+ *
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {String} event - event name
+ * @param {Mixed} ...args - arguments to emit
+ */
+export function emit(ws, event, ...args) {
+  window.setTimeout(() => {
+    if (ws.readyState === 1) {
+      ws.send(JSON.stringify({ event, args }));
+    }
+  }, 1);
+}
+
+/**
  * Creates a promise that will only resolve once a give condition has
  * been met. After a given timeout, if the `assertion` still does not
  * pass, the promise will be rejected.

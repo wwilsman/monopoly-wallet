@@ -14,6 +14,7 @@ import {
   afterEach,
   pauseTest,
   visit,
+  emit,
   convergeOn
 } from './test-helpers';
 import {
@@ -84,6 +85,7 @@ export function describeApplication(name, setup) {
 
       // helpers specific to this context
       this.visit = visit.bind(undefined, this.app.history.push);
+      this.emit = emit.bind(undefined, this.app.socket);
       this.pauseTest = pauseTest;
 
       // wait until our app has finished loading
