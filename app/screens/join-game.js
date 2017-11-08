@@ -7,9 +7,6 @@ import {
   disconnectGame,
   joinGame
 } from '../redux/game';
-import {
-  getActivePlayers
-} from '../selectors/player';
 
 import { Container, Section } from '../ui/layout';
 import Heading from '../ui/typography/heading';
@@ -18,12 +15,16 @@ import Spinner from '../ui/spinner';
 import FindGameModal from '../game/find-game-modal';
 import JoinGameForm from '../game/join-game-form';
 
-@route((state) => ({
-  room: state.game.room,
-  loading: state.game.loading,
-  error: state.game.error,
-  players: getActivePlayers(state),
-  tokens: state.game.config.playerTokens
+@route(({ app, game }) => ({
+  room: game.room,
+  loading: game.loading,
+  error: game.error,
+  tokens: game.config.playerTokens,
+  players: !game.state.players ? [] :
+    game.state.players._all.map((token) => ({
+      active: app.players.includes(token),
+      ...game.state.players[token]
+    }))
 }), {
   connectToGame,
   disconnectGame,

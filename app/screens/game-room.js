@@ -2,13 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import route from './route';
 
-import { getCurrentPlayer } from '../selectors/player';
-
 import { Container, Section } from '../ui/layout';
 import Toaster from '../ui/toaster';
 
-@route((state) => ({
-  player: getCurrentPlayer(state)
+@route(({ app, game }) => ({
+  player: app.player && game.state.players[app.player]
 }))
 
 class GameRoomScreen extends Component {
