@@ -5,6 +5,7 @@ import {
   setupRoomForTesting,
   emitSocketEvent,
   promisifySocketEvent,
+  connectToGameRoom,
   joinGameRoom,
   voteInNextPoll,
   createSocketAndConnect,
@@ -34,10 +35,8 @@ describe('Room: joining', function() {
 
   it('should let the player disconnect and rejoin', async function() {
     await joinGameRoom(ws1, 'Player 1', 'top-hat');
-
-    ws1.terminate();
-    ws1 = await createSocketAndConnect(this.room);
-
+    emitSocketEvent(ws1, 'room:disconnect');
+    await connectToGameRoom(ws1, this.room);
     await expect(joinGameRoom(ws1, 'Player 1', 'top-hat')).to.be.fulfilled;
   });
 

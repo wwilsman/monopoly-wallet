@@ -64,11 +64,6 @@ export default function connectSocket(ws) {
 
   // available socket actions
   const actions = {
-    // forcibly disconnect
-    'disconnect': () => {
-      ws.terminate();
-    },
-
     // create a game
     'game:new': (config) => {
       GameRoom.new(config).then((game) => {
@@ -97,6 +92,11 @@ export default function connectSocket(ws) {
         emitEvent('room:connected', room.state);
       }).catch(emitError);
     },
+
+    // disconnect from a game
+    'room:disconnect': withRoom(() => {
+      room.disconnect(ws);
+    }),
 
     // join the game if available
     'game:join': withRoom((name, t) => {
