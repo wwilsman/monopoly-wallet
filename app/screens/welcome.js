@@ -10,6 +10,7 @@ import Button from '../ui/button';
 import Logo from '../ui/logo';
 
 @route(({ game }) => ({
+  room: game.room,
   loading: game.loading
 }), {
   newGame
@@ -17,18 +18,26 @@ import Logo from '../ui/logo';
 
 class WelcomeScreen extends Component {
   static propTypes = {
-    loading: PropTypes.bool,
+    room: PropTypes.string,
+    loading: PropTypes.bool.isRequired,
+    push: PropTypes.func.isRequired,
     newGame: PropTypes.func.isRequired
   };
+
+  componentWillReceiveProps(nextProps) {
+    let { room, push } = nextProps;
+
+    if (room) {
+      push(`/${room}/join`);
+    }
+  }
 
   newGame = () => {
     this.props.newGame();
   };
 
   render() {
-    const {
-      loading
-    } = this.props;
+    let { loading } = this.props;
 
     return (
       <Container data-test-welcome>

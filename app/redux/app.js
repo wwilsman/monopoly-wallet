@@ -1,28 +1,4 @@
-// action types
-export const APP_ERROR = 'APP_ERROR';
-export const APP_LOADING_DONE = 'APP_LOADING_DONE';
-export const APP_PLAYERS_SYNC = 'APP_PLAYERS_SYNC';
-export const APP_SET_PLAYER = 'APP_SET_PLAYER';
-
-// action creators
-export const appError = (message) => ({
-  type: APP_ERROR,
-  error: { message }
-});
-
-export const appDoneLoading = () => ({
-  type: APP_LOADING_DONE
-});
-
-export const syncPlayers = (players) => ({
-  type: APP_PLAYERS_SYNC,
-  players
-});
-
-export const setCurrentPlayer = (player) => ({
-  type: APP_SET_PLAYER,
-  player
-});
+import { event } from './socket';
 
 // initial state
 const initialState = {
@@ -35,25 +11,23 @@ const initialState = {
 // reducer
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case APP_ERROR:
+    case event('room:error'):
       return { ...state,
         error: action.error.message,
         loading: false
       };
 
-    case APP_LOADING_DONE:
+    case event('connected'):
       return { ...state,
         loading: false
       };
 
-    case APP_PLAYERS_SYNC:
+    case event('game:joined'):
+    case event('room:connected'):
+    case event('room:sync'):
       return { ...state,
-        players: action.players
-      };
-
-    case APP_SET_PLAYER:
-      return { ...state,
-        player: action.player
+        players: action.players,
+        player: action.player || state.player
       };
 
     default:

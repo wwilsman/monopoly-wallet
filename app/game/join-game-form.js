@@ -64,7 +64,7 @@ class JoinGameForm extends Component {
     e.preventDefault();
 
     if (name && token) {
-      onSubmit({ name, token });
+      onSubmit(name, token);
     }
   };
 

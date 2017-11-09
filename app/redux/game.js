@@ -1,63 +1,10 @@
-// action types
-export const GAME_NEW = 'GAME_NEW';
-export const GAME_SYNC = 'GAME_SYNC';
-export const GAME_CONNECT = 'GAME_CONNECT';
-export const GAME_DISCONNECT = 'GAME_DISCONNECT';
-export const GAME_JOIN = 'GAME_JOIN';
-export const GAME_POLL_VOTE = 'GAME_POLL_VOTE';
-export const GAME_ERROR = 'GAME_ERROR';
-export const GAME_LOADING_DONE = 'GAME_LOADING_DONE';
+import { event, emit } from './socket';
 
 // action creators
-export const newGame = () => ({
-  type: GAME_NEW,
-  socket: { emit: 'game:new' }
-});
-
-export const syncGame = (game) => ({
-  type: GAME_SYNC,
-  game
-});
-
-export const connectToGame = (room) => ({
-  type: GAME_CONNECT,
-  socket: {
-    emit: 'room:connect',
-    args: [room]
-  }
-});
-
-export const disconnectGame = () => ({
-  type: GAME_DISCONNECT,
-  socket: {
-    reconnect: true
-  }
-});
-
-export const joinGame = ({ name, token }) => ({
-  type: GAME_JOIN,
-  socket: {
-    emit: 'game:join',
-    args: [name, token]
-  }
-});
-
-export const voteInPoll = (id, vote) => ({
-  type: GAME_POLL_VOTE,
-  socket: {
-    emit: 'poll:vote',
-    args: [id, vote]
-  }
-});
-
-export const gameError = (message) => ({
-  type: GAME_ERROR,
-  error: { message }
-});
-
-export const gameDoneLoading = () => ({
-  type: GAME_LOADING_DONE
-});
+export const newGame = emit.bind(null, 'game:new');
+export const connectToGame = emit.bind(null, 'room:connect');
+export const disconnectGame = emit.bind(null, 'room:disconnect');
+export const joinGame = emit.bind(null, 'game:join');
 
 // initial state
 const initialState = {
@@ -72,33 +19,32 @@ const initialState = {
 // reducer
 export const reducer = (state = initialState, action) => {
   switch (action.type) {
-    case GAME_NEW:
-    case GAME_CONNECT:
-    case GAME_JOIN:
+    case event('game:new'):
+    case event('game:join'):
+    case event('room:connect'):
       return { ...state,
         loading: true
       };
 
-    case GAME_SYNC:
+    case event('game:created'):
+    case event('game:joined'):
+    case event('room:connected'):
+    case event('room:sync'):
       return { ...state,
         room: action.game.id,
         theme: action.game.theme,
         state: action.game.state,
-        config: action.game.config
+        config: action.game.config,
+        loading: false
       };
 
-    case GAME_ERROR:
+    case event('game:error'):
       return { ...state,
         error: action.error.message,
         loading: false
       };
 
-    case GAME_LOADING_DONE:
-      return { ...state,
-        loading: false
-      };
-
-    case GAME_DISCONNECT:
+    case event('room:disconnect'):
       return { ...initialState };
 
     default:

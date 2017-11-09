@@ -20,6 +20,7 @@ import JoinGameForm from '../game/join-game-form';
   loading: game.loading,
   error: game.error,
   tokens: game.config.playerTokens,
+  player: app.player,
   players: !game.state.players ? [] :
     game.state.players._all.map((token) => ({
       active: app.players.includes(token),
@@ -37,10 +38,12 @@ class JoinGameScreen extends Component {
     loading: PropTypes.bool,
     error: PropTypes.string,
     tokens: PropTypes.array,
+    player: PropTypes.string,
     players: PropTypes.arrayOf(PropTypes.object),
     connectToGame: PropTypes.func.isRequired,
     disconnectGame: PropTypes.func.isRequired,
     joinGame: PropTypes.func.isRequired,
+    push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
     params: PropTypes.shape({
       room: PropTypes.string
@@ -48,41 +51,49 @@ class JoinGameScreen extends Component {
   };
 
   componentWillMount() {
-    const { room, params } = this.props;
-    this.connectOrDisconnect(params.room, room);
-  }
+    let {
+      room,
+      params,
+      connectToGame
+    } = this.props;
 
-  componentWillReceiveProps(nextProps) {
-    const {
-      error,
-      loading,
-      room:nextRoom,
-      params:nextParams,
-      replace
-    } = nextProps;
-
-    if (!error && !loading && nextRoom !== nextParams.room) {
-      this.connectOrDisconnect(nextParams.room, nextRoom);
-    } else if (error && !nextRoom && nextParams.room) {
-      replace('/join');
+    if (params.room && params.room !== room) {
+      connectToGame(params.room);
     }
   }
 
-  connectOrDisconnect(targetRoom, currentRoom) {
-    const {
+  componentWillReceiveProps(nextProps) {
+    let {
+      error,
+      loading,
+      player,
+      room:nextRoom,
+      params,
       connectToGame,
-      disconnectGame
-    } = this.props;
+      disconnectGame,
+      push,
+      replace
+    } = nextProps;
 
-    if (targetRoom && targetRoom !== currentRoom) {
-      connectToGame(targetRoom);
-    } else if (!targetRoom && currentRoom) {
-      disconnectGame();
+    if (nextRoom && player) {
+      push(`/${nextRoom}`);
+    } else if (!nextRoom && params.room && error) {
+      replace(`/join`);
+    } else if (!error && !loading) {
+      if (!nextRoom && params.room) {
+        connectToGame(params.room);
+      } else if (nextRoom && !params.room) {
+        if (!this.props.room) {
+          push(`/${nextRoom}/join`);
+        } else {
+          disconnectGame();
+        }
+      }
     }
   }
 
   render() {
-    const {
+    let {
       room,
       loading,
       error,

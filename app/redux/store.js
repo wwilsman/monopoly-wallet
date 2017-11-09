@@ -58,7 +58,7 @@ export default ({
   );
 
   if (module.hot) {
-    module.hot.accept('./reducers', () => {
+    module.hot.accept('./store', () => {
       store.replaceReducer(rootReducer);
     });
   }
