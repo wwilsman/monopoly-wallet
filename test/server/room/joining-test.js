@@ -24,7 +24,7 @@ describe('Room: joining', function() {
 
   it('should let the first player join', async function() {
     const payload = await joinGameRoom(ws1, 'Player 1', 'top-hat');
-    const { player, players, ...game } = payload;
+    const { player, players, game } = payload;
 
     expect(player).to.equal('top-hat');
     expect(players).to.include('top-hat');
@@ -61,9 +61,9 @@ describe('Room: joining', function() {
       emitSocketEvent(ws2, 'game:join', 'Player 2', 'automobile');
 
       await expect(poll).to.be.fulfilled;
-      await expect(poll).to.eventually.have.keys('id', 'message');
-      await expect(poll).to.eventually.have.property('message')
-        .that.matches(/Player 2 .* join/);
+      await expect(poll).to.eventually.have.property('poll')
+        .that.has.keys('id', 'message')
+        .and.property('message').matches(/Player 2 .* join/);
       await expect(join).to.be.rejected;
     });
 
@@ -112,13 +112,13 @@ describe('Room: joining', function() {
       emitSocketEvent(ws3, 'game:join', 'Player 3', 'thimble');
 
       await expect(poll1).to.be.fulfilled;
-      await expect(poll1).to.eventually.have.keys('id', 'message');
-      await expect(poll1).to.eventually.have.property('message')
-        .that.matches(/Player 3 .* join/);
+      await expect(poll1).to.eventually.have.property('poll')
+        .that.has.keys('id', 'message')
+        .and.property('message').matches(/Player 3 .* join/);
       await expect(poll2).to.be.fulfilled;
-      await expect(poll2).to.eventually.have.keys('id', 'message');
-      await expect(poll2).to.eventually.have.property('message')
-        .that.matches(/Player 3 .* join/);
+      await expect(poll2).to.eventually.have.property('poll')
+        .that.has.keys('id', 'message')
+        .and.property('message').matches(/Player 3 .* join/);
       await expect(join).to.be.rejected;
     });
 

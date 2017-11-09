@@ -25,8 +25,8 @@ describe('Room: messaging', function() {
     emitSocketEvent(ws1, 'message:send', 'automobile', 'hello world');
 
     await expect(message).to.be.fulfilled;
-    await expect(message).to.eventually.have.property('from', 'top-hat');
-    await expect(message).to.eventually.have.property('content', 'hello world');
+    await expect(message).to.eventually.have.property('message')
+      .that.deep.equals({ from: 'top-hat', content: 'hello world' });
   });
 
   it('should error when the other player does not exist', async function() {

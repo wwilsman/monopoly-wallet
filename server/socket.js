@@ -1,6 +1,34 @@
 import GameRoom from './room';
 
 /**
+ * Emits an error to the socket
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {Error|Object} error - Error or Error-like object
+ */
+function socketError(ws, error) {
+  let { name, message } = error;
+  let type = name === 'MonopolyError' ? 'game' : 'room';
+
+  socketEmitEvent(ws, `${type}:error`, {
+    error: { name, message }
+  });
+}
+
+/**
+ * Emits an event to the socket with arguments
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {String} name - Event name
+ * @param {Object} data - Event data
+ */
+function socketEmitEvent(ws, name, data) {
+  // a socket might not be open if it disconnects before receiving
+  // an expected event
+  if (ws.readyState === 1) {
+    ws.send(JSON.stringify({ name, data }));
+  }
+}
+
+/**
  * Sets up a socket for interacting with a game room
  * @param {WebSocket} ws - WebSocket instance
  */
@@ -27,7 +55,9 @@ export default function connectSocket(ws) {
   const gameMethod = (name) => withRoom(
     withToken((...args) => {
       room[name](token, ...args)
-        .then(() => emitEvent('game:update', room.game))
+        .then(() => emitEvent('game:update', {
+          game: room.game
+        }))
         .catch(emitError);
     })
   );
@@ -42,7 +72,7 @@ export default function connectSocket(ws) {
     // create a game
     'game:new': (config) => {
       GameRoom.new(config).then((game) => {
-        emitEvent('game:created', game);
+        emitEvent('game:created', { game });
       }).catch(emitError);
     },
 
@@ -76,7 +106,7 @@ export default function connectSocket(ws) {
 
         // tell our player about new polls
         room.on('poll', (poll) => {
-          emitEvent('poll:new', poll);
+          emitEvent('poll:new', { poll });
         }, ws);
       }).catch(emitError);
     }),
@@ -92,8 +122,10 @@ export default function connectSocket(ws) {
 
       if (player) {
         socketEmitEvent(player, 'message:received', {
-          content: message,
-          from: token
+          message: {
+            content: message,
+            from: token
+          }
         });
       } else {
         emitError(room.error('player.not-found', {
@@ -133,31 +165,6 @@ export default function connectSocket(ws) {
 
   // tell the socket it's connected
   emitEvent('connected');
-}
-
-/**
- * Emits an error to the socket
- * @param {WebSocket} ws - WebSocket instance
- * @param {Error|Object} error - Error or Error-like object
- */
-function socketError(ws, error) {
-  const { name, message } = error;
-  const type = name === 'MonopolyError' ? 'game' : 'room';
-  socketEmitEvent(ws, `${type}:error`, { name, message });
-}
-
-/**
- * Emits an event to the socket with arguments
- * @param {WebSocket} ws - WebSocket instance
- * @param {String} event - Event name
- * @param {Mixed} ...args - Remaining arguments to send
- */
-function socketEmitEvent(ws, event, ...args) {
-  // a socket might not be open if it disconnects before receiving
-  // an expected event
-  if (ws.readyState === 1) {
-    ws.send(JSON.stringify({ event, args }));
-  }
 }
 
 /**

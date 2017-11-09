@@ -125,13 +125,16 @@ export default class GameRoom {
    * @returns {Object} - Overrall room state
    */
   get state() {
-    return {
+    let game = {
       id: this.id,
       theme: this.theme,
       state: this.game,
-      config: this.config,
-      players: toArray(this.players.keys())
+      config: this.config
     };
+
+    let players = toArray(this.players.keys());
+
+    return { game, players };
   }
 
   /**

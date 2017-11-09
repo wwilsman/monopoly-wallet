@@ -72,6 +72,7 @@ export function setupRoomForTesting({
 
     GameRoom.database.store[this.room] = {
       id: this.room,
+      theme: 'classic',
       state: this.game,
       config: this.config
     };
@@ -127,13 +128,13 @@ export function emitSocketEvent(ws, event, ...args) {
 export function handleSocketEvent(ws, handler) {
   return new Promise((resolve, reject) => {
     ws.on('message', (payload) => {
-      let { event, args } = JSON.parse(payload);
-      let ret = handler(event, ...args);
+      let { name, data } = JSON.parse(payload);
+      let ret = handler(name, data);
 
       if (typeof ret !== 'undefined') {
         resolve(ret);
-      } else if (args[0].name && args[0].message) {
-        reject(createError(args[0]));
+      } else if (data && data.error) {
+        reject(createError(data.error));
       }
     });
   });
@@ -196,8 +197,8 @@ export function joinGameRoom(ws, name, token) {
  * @returns {Promise} Resolves after the vote is emitted
  */
 export function voteInNextPoll(ws, vote) {
-  return promisifySocketEvent(ws, 'poll:new').then(({ id }) => {
-    emitSocketEvent(ws, 'poll:vote', id, vote);
+  return promisifySocketEvent(ws, 'poll:new').then(({ poll }) => {
+    emitSocketEvent(ws, 'poll:vote', poll.id, vote);
   });
 }
 
