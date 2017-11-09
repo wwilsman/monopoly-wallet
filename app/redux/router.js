@@ -1,7 +1,7 @@
 // action types
-export const PUSH = 'ROUTER_PUSH';
-export const REPLACE = 'ROUTER_REPLACE';
-export const LOCATION_CHANGED = 'ROUTER_LOCATION_CHANGED';
+export const PUSH = 'ROUTER/PUSH';
+export const REPLACE = 'ROUTER/REPLACE';
+export const LOCATION_CHANGED = 'ROUTER/LOCATION_CHANGED';
 
 // action creators
 export const push = (pathname) => ({

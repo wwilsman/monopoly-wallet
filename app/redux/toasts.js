@@ -1,7 +1,7 @@
 import { event } from './socket';
 
 // action types
-export const TOASTS_REMOVE = 'TOASTS_REMOVE';
+export const TOASTS_REMOVE = 'TOASTS/REMOVE';
 
 // action creators
 export const removeToast = (id) => ({
