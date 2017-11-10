@@ -17,7 +17,10 @@ function Icon({ theme, name }) {
 
 Icon.propTypes = {
   name: PropTypes.string.isRequired,
-  theme: PropTypes.string
+  theme: PropTypes.oneOfType([
+    PropTypes.string,
+    PropTypes.bool
+  ]).isRequired
 };
 
 export default connect(({ game }, props) => {
