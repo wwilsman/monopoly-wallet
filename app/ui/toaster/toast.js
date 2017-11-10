@@ -11,9 +11,8 @@ const cx = classNames.bind(styles);
 function Toast({
   type,
   message,
-  dispatch,
   dismiss,
-  actions = [],
+  actions,
   ...props
 }) {
   const className = cx('toast', {
@@ -25,17 +24,17 @@ function Toast({
       <div className={styles.message}>
         <span>{message}</span>
 
-        {type !== 'attention' && (
+        {!!dismiss && (
           <button onClick={dismiss}>
             <Icon name={type === 'success' ? 'check' : 'close'}/>
           </button>
         )}
       </div>
 
-      {type === 'attention' && (
+      {!!actions && (
         <div className={styles.actions}>
-          {actions.map(({ label, actions }, i) => (
-            <button key={i} onClick={() => actions.forEach(dispatch)}>
+          {actions.map(({ label, action }, i) => (
+            <button key={i} onClick={action}>
               {label}
             </button>
           ))}
@@ -48,16 +47,15 @@ function Toast({
 Toast.propTypes = {
   type: PropTypes.oneOf([
     'alert',
-    'attention',
+    'poll',
     'default',
     'success'
   ]).isRequired,
   message: PropTypes.string.isRequired,
-  dispatch: PropTypes.func.isRequired,
   dismiss: PropTypes.func,
   actions: PropTypes.arrayOf(PropTypes.shape({
     label: PropTypes.string.isRequired,
-    actions: PropTypes.arrayOf(PropTypes.object).isRequired
+    action: PropTypes.func.isRequired
   }))
 };
 

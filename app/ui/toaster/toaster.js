@@ -3,72 +3,78 @@ import PropTypes from 'prop-types';
 import { connect } from 'react-redux';
 import styles from './toaster.css';
 
-import { removeToast } from '../../redux/toasts';
+import {
+  removeToast,
+  voteInPoll
+} from '../../redux/toasts';
 
 import Toast from './toast';
 
-@connect(({ toasts }) => ({
+@connect(({ app, game, toasts }) => ({
+  player: app.player && game.state.players[app.player],
   toasts
-}), (dispatch) => ({
-  removeToast: (id) => dispatch(removeToast(id)),
-  dispatch
-}))
+}), {
+  removeToast,
+  voteInPoll
+})
 
 class Toaster extends Component {
   static propTypes = {
+    player: PropTypes.object,
     toasts: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string,
       type: Toast.propTypes.type,
-      message: Toast.propTypes.message,
-      actions: Toast.propTypes.actions
+      message: Toast.propTypes.message
     })).isRequired,
     removeToast: PropTypes.func.isRequired,
-    dispatch: PropTypes.func.isRequired
+    voteInPoll: PropTypes.func.isRequired
   };
 
-  _timeouts = {};
 
-  dismiss(id) {
-    const { removeToast } = this.props;
+  renderPoll(poll) {
+    let { removeToast, voteInPoll } = this.props;
 
-    if (this._timeouts[id]) {
-      clearTimeout(this._timeouts[id]);
-      delete this._timeouts[id];
-    }
+    let vote = (v) => () => {
+      voteInPoll(poll.id, v);
+      removeToast(poll.id);
+    };
 
-    removeToast(id);
+    return (
+      <Toast
+          key={poll.id}
+          type={poll.type}
+          message={poll.message}
+          actions={[
+            { label: 'Yes', action: vote(true) },
+            { label: 'Yes', action: vote(false) }
+          ]}/>
+    );
   }
 
-  dismissable(index) {
-    const toast = this.props.toasts[index];
+  renderNotice(notice) {
+    let { removeToast } = this.props;
+    let dismiss = () => removeToast(notice.id);
 
-    if (toast.type !== 'attention') {
-      if (toast.timeout) {
-        this._timeouts[toast.id] = setTimeout(() => {
-          this.dismiss(toast.id);
-        }, toast.timeout);
-      }
-
-      return () => {
-        this.dismiss(toast.id);
-      };
-    }
+    return (
+      <Toast
+          key={notice.id}
+          type={notice.type}
+          message={notice.message}
+          dismiss={dismiss}/>
+    );
   }
 
   render() {
-    const {
-      toasts,
-      dispatch
-    } = this.props;
+    let { toasts } = this.props;
 
     return (
       <div className={styles.root}>
-        {toasts.map((props, i) => (
-          <Toast
-              key={i}
-              dispatch={dispatch}
-              dismiss={this.dismissable(i)}
-              {...props}/>
+        {toasts.map((toast) => (
+          toast.type === 'poll' ? (
+            this.renderPoll(toast)
+          ) : (
+            this.renderNotice(toast)
+          )
         ))}
       </div>
     );

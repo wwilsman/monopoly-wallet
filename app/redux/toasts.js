@@ -1,4 +1,4 @@
-import { event } from './socket';
+import { event, emit } from './socket';
 
 // action types
 export const TOASTS_REMOVE = 'TOASTS/REMOVE';
@@ -8,6 +8,8 @@ export const removeToast = (id) => ({
   type: TOASTS_REMOVE,
   toast: { id }
 });
+
+export const voteInPoll = emit.bind(null, 'poll:vote');
 
 // single toast reducer
 const toast = (state = {}, action) => {
@@ -31,6 +33,11 @@ export const reducer = (state = [], action) => {
       return [...state,
         toast(undefined, action)
       ];
+
+    case event('poll:end'):
+      return state.filter((toast) => (
+        toast.id !== action.poll.id
+      ));
 
     case TOASTS_REMOVE:
       return state.filter((toast) => (
