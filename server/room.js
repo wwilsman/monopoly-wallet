@@ -371,13 +371,14 @@ export default class GameRoom {
         },
 
         done: (res) => {
+          this.trigger('poll:end', { id });
           clearTimeout(poll._timeout);
           delete this.polls[id];
           resolve(res);
         }
       };
 
-      this.trigger('poll', { id, message });
+      this.trigger('poll:new', { id, message });
       poll.reset();
     });
   }

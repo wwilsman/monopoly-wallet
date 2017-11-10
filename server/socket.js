@@ -104,9 +104,13 @@ export default function connectSocket(ws) {
         // make game actions available
         token = t;
 
-        // tell our player about new polls
-        room.on('poll', (poll) => {
+        // tell our player about polls
+        room.on('poll:new', (poll) => {
           emitEvent('poll:new', { poll });
+        }, ws);
+
+        room.on('poll:end', (poll) => {
+          emitEvent('poll:end', { poll });
         }, ws);
       }).catch(emitError);
     }),

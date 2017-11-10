@@ -79,6 +79,13 @@ describe('Room: joining', function() {
       await expect(vote).to.be.fulfilled;
     });
 
+    it('should tell players when the poll has ended', async function() {
+      let ended = promisifySocketEvent(ws1, 'poll:end');
+      voteInNextPoll(ws1, true);
+      joinGameRoom(ws2, 'Player 2', 'automobile');
+      await expect(ended).to.be.fulfilled;
+    });
+
     it('should not join after the poll times out', async function() {
       await expect(joinGameRoom(ws2, 'Player 2', 'automobile'))
         .to.be.rejectedWith(MonopolyError, /sorry/i);
