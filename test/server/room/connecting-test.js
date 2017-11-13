@@ -21,17 +21,23 @@ describe('Room: connecting', function() {
 
   it('should allow creating games', async function() {
     await expect(createGame(ws)).to.be.fulfilled
-      .and.eventually.have.property('game')
-      .that.has.keys('id', 'theme', 'state', 'config');
+      .and.eventually.be.an('object').that.has.keys(
+        'room',
+        'theme',
+        'game',
+        'config'
+      );
   });
 
   it('should allow connecting to games', async function() {
-    let connected = connectToGameRoom(ws, this.room);
-
-    await expect(connected).to.be.fulfilled;
-    await expect(connected).to.eventually.have.property('game')
-      .that.has.keys('id', 'theme', 'state', 'config');
-    await expect(connected).to.eventually.have.property('players');
+    await expect(connectToGameRoom(ws, this.room)).to.be.fulfilled
+      .and.eventually.be.an('object').that.has.keys(
+        'room',
+        'theme',
+        'game',
+        'config',
+        'players'
+      );
   });
 
   it('should emit an error when no game is found', async function() {

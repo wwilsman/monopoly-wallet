@@ -144,8 +144,10 @@ export function mockGame({
 
     old = GameRoom.database.store[id];
     GameRoom.database.store[id] = {
-      id, state, config,
-      theme: 'classic'
+      id,
+      theme: 'classic',
+      game: state,
+      config
     };
 
     if (this.room.refresh) {

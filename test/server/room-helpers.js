@@ -73,7 +73,7 @@ export function setupRoomForTesting({
     GameRoom.database.store[this.room] = {
       id: this.room,
       theme: 'classic',
-      state: this.game,
+      game: this.game,
       config: this.config
     };
 
@@ -225,12 +225,12 @@ export async function createSocketAndConnect(room) {
  */
 export async function createSocketAndJoinGame(room, token) {
   let ws = await createSocketAndConnect(room);
-  let game = await GameRoom.database.find(room);
+  let { game, config } = await GameRoom.database.find(room);
 
-  if (!game.state.players[token]) {
-    game.state.players[token] = {
-      name: `Player ${game.state.players._all.length + 1}`,
-      balance: game.config.playerStart,
+  if (!game.players[token]) {
+    game.players[token] = {
+      name: `Player ${game.players._all.length + 1}`,
+      balance: config.playerStart,
       bankrupt: false,
       token
     };
@@ -238,7 +238,7 @@ export async function createSocketAndJoinGame(room, token) {
     GameRoom._cache[room].refresh();
   }
 
-  let name = game.state.players[token].name;
+  let name = game.players[token].name;
   return joinGameRoom(ws, name, token).then(() => ws);
 }
 

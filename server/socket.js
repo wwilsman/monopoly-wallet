@@ -66,8 +66,8 @@ export default function connectSocket(ws) {
   const actions = {
     // create a game
     'game:new': (config) => {
-      GameRoom.new(config).then((game) => {
-        emitEvent('game:created', { game });
+      GameRoom.new(config).then(({ id: room, ...game }) => {
+        emitEvent('game:created', { room, ...game });
       }).catch(emitError);
     },
 

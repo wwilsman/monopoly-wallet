@@ -28,9 +28,9 @@ export default class GameRoom {
       return this.store[id] ? Promise.resolve(this.store[id]) :
         Promise.reject(new MonopolyError('Game not found'));
     },
-    save(game) {
-      this.store[game.id] = game;
-      return Promise.resolve(game);
+    save(doc) {
+      this.store[doc.id] = doc;
+      return Promise.resolve(doc);
     }
   };
 
@@ -83,12 +83,12 @@ export default class GameRoom {
     }
 
     const config = { ...this.load(theme, 'config'), ...options };
-    const state = createGameState(this.load(theme, 'properties'), config);
+    const game = createGameState(this.load(theme, 'properties'), config);
 
     const createGame = () => {
       const id = randomString().toLowerCase();
       return this.database.find(id).then(createGame)
-        .catch(() => this.database.save({ id, theme, state, config }));
+        .catch(() => this.database.save({ id, theme, game, config }));
     };
 
     return createGame();
@@ -125,26 +125,23 @@ export default class GameRoom {
    * @returns {Object} - Overrall room state
    */
   get state() {
-    let game = {
-      id: this.id,
+    return {
+      room: this.id,
       theme: this.theme,
-      state: this.game,
-      config: this.config
+      game: this.game,
+      config: this.config,
+      players: toArray(this.players.keys())
     };
-
-    let players = toArray(this.players.keys());
-
-    return { game, players };
   }
 
   /**
    * Game room constructor
    * @param {String} id - Game room ID
    * @param {Object} theme - Game theme
-   * @param {Object} state - Game state
+   * @param {Object} game - Game state
    * @param {Object} config - Game config
    */
-  constructor({ id, theme, state, config }) {
+  constructor({ id, theme, game, config }) {
     this.id = id;
     this.theme = theme;
     this.config = config;
@@ -154,7 +151,7 @@ export default class GameRoom {
     this.polls = {};
 
     this.messages = this.constructor.load(theme, 'messages');
-    this.store = createGame(state, config, this.messages);
+    this.store = createGame(game, config, this.messages);
     this.game = this.store.getState();
     this.fresh = true;
 
@@ -293,7 +290,7 @@ export default class GameRoom {
     if (save) {
       this.constructor.database.save({
         id: this.id,
-        state: this.game,
+        game: this.game,
         config: this.config
       }).then(() => {
         this.fresh = true;
@@ -309,11 +306,11 @@ export default class GameRoom {
    */
   refresh() {
     this.constructor.database.find(this.id)
-      .then(({ config, state }) => {
+      .then(({ config, game }) => {
         this.fresh = true;
         this.config = config;
         // this will trigger a sync which sets `this.game`
-        this.store.dispatch(hydrate(state));
+        this.store.dispatch(hydrate(game));
       });
   }
 

@@ -31,10 +31,10 @@ export const reducer = (state = initialState, action) => {
     case event('room:connected'):
     case event('room:sync'):
       return { ...state,
-        room: action.game.id,
-        theme: action.game.theme,
-        state: action.game.state,
-        config: action.game.config,
+        room: action.room,
+        theme: action.theme,
+        state: action.game,
+        config: action.config,
         loading: false
       };
 

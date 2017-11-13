@@ -24,13 +24,13 @@ describe('Room: joining', function() {
   });
 
   it('should let the first player join', async function() {
-    const payload = await joinGameRoom(ws1, 'Player 1', 'top-hat');
-    const { player, players, game } = payload;
+    let payload = await joinGameRoom(ws1, 'Player 1', 'top-hat');
+    let { room, game, players, player } = payload;
 
+    expect(room).to.equal(this.room);
+    expect(game).to.have.nested.property('players.top-hat');
     expect(player).to.equal('top-hat');
     expect(players).to.include('top-hat');
-    expect(game).to.have.property('id', this.room);
-    expect(game).to.have.nested.property('state.players.top-hat');
   });
 
   it('should let the player disconnect and rejoin', async function() {
