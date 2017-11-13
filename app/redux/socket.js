@@ -13,7 +13,7 @@ export const event = (name) => (
  */
 export const emit = (name, ...args) => ({
   type: event(name),
-  socket: { emit: name, args }
+  socket: { event: name, args }
 });
 
 /**
@@ -24,32 +24,23 @@ export const emit = (name, ...args) => ({
  * @returns {Function} Redux middleware
  */
 export const middleware = (ws) => (store) => {
-
-  // helper to stringify events and their args
-  const emitEvent = (event, args) => {
-    ws.send(JSON.stringify({ event, args }));
-  };
-
   // on every event, we dispatch a socket event action
-  ws.addEventListener('message', ({ data }) => {
-    let evt = JSON.parse(data);
+  ws.addEventListener('message', (e) => {
+    let { name, data } = JSON.parse(e.data);
 
     store.dispatch({
-      type: event(evt.name),
-      ...evt.data
+      type: event(name),
+      socket: { on: name },
+      ...data
     });
   });
 
   // the actual middleware will simply send a socket event defined in
   // the action's `socket` property along with arguments
   return (next) => (action) => {
-    if (action.socket) {
-      let {
-        emit: event,
-        args = []
-      } = action.socket;
-
-      emitEvent(event, args);
+    if (action.socket && !action.socket.on) {
+      let { event, args = [] } = action.socket;
+      ws.send(JSON.stringify({ event, args }));
     }
 
     // always continue to dispatch

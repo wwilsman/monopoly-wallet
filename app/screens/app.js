@@ -6,7 +6,7 @@ import { Container, Section } from '../ui/layout';
 import Spinner from '../ui/spinner';
 
 @route(({ app }) => ({
-  loading: app.loading
+  loading: app.waiting.includes('connected')
 }))
 
 class AppScreen extends Component {

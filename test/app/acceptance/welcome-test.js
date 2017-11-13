@@ -39,11 +39,11 @@ describeApplication('WelcomeScreen', function() {
     });
 
     it('should create a new game', function() {
-      expect(this.state.game.room).to.not.be.empty;
+      expect(this.state.app.room).to.not.be.empty;
     });
 
     it('should go to the join game route for a room', function() {
-      expect(this.location.pathname).to.equal(`/${this.state.game.room}/join`);
+      expect(this.location.pathname).to.equal(`/${this.state.app.room}/join`);
     });
   });
 

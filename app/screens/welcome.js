@@ -9,9 +9,9 @@ import Title from '../ui/typography/title';
 import Button from '../ui/button';
 import Logo from '../ui/logo';
 
-@route(({ game }) => ({
-  room: game.room,
-  loading: game.loading
+@route(({ app }) => ({
+  room: app.room,
+  loading: app.waiting.includes('game:created')
 }), {
   newGame
 })
@@ -33,7 +33,11 @@ class WelcomeScreen extends Component {
   }
 
   newGame = () => {
-    this.props.newGame();
+    let { loading, newGame } = this.props;
+
+    if (!loading) {
+      newGame();
+    }
   };
 
   render() {

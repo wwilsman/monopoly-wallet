@@ -15,16 +15,17 @@ import Spinner from '../ui/spinner';
 import FindGameModal from '../game/find-game-modal';
 import JoinGameForm from '../game/join-game-form';
 
-@route(({ app, game }) => ({
-  room: game.room,
-  loading: game.loading,
-  error: game.error,
-  tokens: game.config.playerTokens,
+@route(({ app, game, config }) => ({
+  room: app.room,
+  error: app.error,
   player: app.player,
-  players: !game.state.players ? [] :
-    game.state.players._all.map((token) => ({
+  tokens: config.playerTokens,
+  connecting: app.waiting.includes('room:connected'),
+  joining: app.waiting.includes('game:joined'),
+  players: !game.players ? [] :
+    game.players._all.map((token) => ({
       active: app.players.includes(token),
-      ...game.state.players[token]
+      ...game.players[token]
     }))
 }), {
   connectToGame,
@@ -35,10 +36,11 @@ import JoinGameForm from '../game/join-game-form';
 class JoinGameScreen extends Component {
   static propTypes = {
     room: PropTypes.string,
-    loading: PropTypes.bool,
     error: PropTypes.string,
     tokens: PropTypes.array,
     player: PropTypes.string,
+    connecting: PropTypes.bool.isRequired,
+    joining: PropTypes.bool.isRequired,
     players: PropTypes.arrayOf(PropTypes.object),
     connectToGame: PropTypes.func.isRequired,
     disconnectGame: PropTypes.func.isRequired,
@@ -64,10 +66,10 @@ class JoinGameScreen extends Component {
 
   componentWillReceiveProps(nextProps) {
     let {
-      error,
-      loading,
-      player,
       room:nextRoom,
+      error,
+      player,
+      connecting,
       params,
       connectToGame,
       disconnectGame,
@@ -79,7 +81,7 @@ class JoinGameScreen extends Component {
       push(`/${nextRoom}`);
     } else if (!nextRoom && params.room && error) {
       replace(`/join`);
-    } else if (!error && !loading) {
+    } else if (!error && !connecting) {
       if (!nextRoom && params.room) {
         connectToGame(params.room);
       } else if (nextRoom && !params.room) {
@@ -95,9 +97,10 @@ class JoinGameScreen extends Component {
   render() {
     let {
       room,
-      loading,
       error,
       tokens,
+      connecting,
+      joining,
       players,
       connectToGame,
       joinGame,
@@ -114,13 +117,13 @@ class JoinGameScreen extends Component {
         {!params.room ? (
           <FindGameModal
               error={error}
-              loading={loading}
+              loading={connecting}
               onFindGame={connectToGame}/>
         ) : room ? (
           <JoinGameForm
               tokens={tokens}
               players={players}
-              loading={loading}
+              loading={joining}
               onSubmit={joinGame}/>
         ) : (
           <Section align="center" justify="center">

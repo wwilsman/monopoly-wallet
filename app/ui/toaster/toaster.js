@@ -11,7 +11,7 @@ import {
 import Toast from './toast';
 
 @connect(({ app, game, toasts }) => ({
-  player: app.player && game.state.players[app.player],
+  player: app.player && game.players[app.player],
   toasts
 }), {
   removeToast,

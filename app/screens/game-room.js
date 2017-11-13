@@ -6,7 +6,7 @@ import { Container, Section } from '../ui/layout';
 import Toaster from '../ui/toaster';
 
 @route(({ app, game }) => ({
-  player: app.player && game.state.players[app.player]
+  player: app.player && game.players[app.player]
 }))
 
 class GameRoomScreen extends Component {

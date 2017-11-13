@@ -38,7 +38,7 @@ describeApplication('JoinGameScreen', function() {
 
       it('should go to the join game route for a game', function() {
         expect(this.location.pathname).to.equal(`/${this.room.id}/join`);
-        expect(this.state.game.room).to.equal(this.room.id);
+        expect(this.state.app.room).to.equal(this.room.id);
       });
 
       describe('then navigating back', function() {
@@ -49,7 +49,7 @@ describeApplication('JoinGameScreen', function() {
         });
 
         it('should clear the game state', function() {
-          expect(this.state.game.room).to.not.equal(this.room.id);
+          expect(this.state.app.room).to.not.equal(this.room.id);
         });
       });
     });
@@ -86,7 +86,7 @@ describeApplication('JoinGameScreen', function() {
     });
 
     it('should display a token select field', function() {
-      const tokenCount = this.state.game.config.playerTokens.length;
+      const tokenCount = this.state.config.playerTokens.length;
       expect(JoinGamePage.$tokens).to.have.lengthOf(tokenCount);
       expect(JoinGamePage.tokensLabel).to.equal('Select a token');
     });
@@ -134,7 +134,7 @@ describeApplication('JoinGameScreen', function() {
         });
 
         it('should join the game', function() {
-          expect(this.state.game.state.players).to.have.property('top-hat');
+          expect(this.state.game.players).to.have.property('top-hat');
           expect(this.state.app.player).to.equal('top-hat');
         });
 

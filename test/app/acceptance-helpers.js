@@ -90,7 +90,7 @@ export function describeApplication(name, setup) {
 
       // wait until our app has finished loading
       return convergeOn(() => {
-        chai.expect(this.state.app.loading).to.be.false;
+        chai.expect(this.state.app.waiting).to.not.include('connected');
       });
     });
 
