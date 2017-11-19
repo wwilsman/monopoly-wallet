@@ -64,10 +64,11 @@ export default function connectSocket(ws) {
 
   // available socket actions
   const actions = {
-    // create a game
+    // create a game and connect to it
     'game:new': (config) => {
       GameRoom.new(config).then(({ id: room, ...game }) => {
         emitEvent('game:created', { room, ...game });
+        actions['room:connect'](room);
       }).catch(emitError);
     },
 
