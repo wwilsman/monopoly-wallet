@@ -20,5 +20,5 @@ before_deploy:
 deploy:
   provider: heroku
   api_key:
-    secure: LknKCBprgPSBc3AkfeJf2XthOkqSxyK2VJ7qRyJ3JG2O9a04PVzDjIPkf539WTMCDPCjRmSfYE0RLshw9L8wcoddzKXVH57xf3G2XSrVf9TVApzK+nuM93y6yTNoKy6tY4rAJ5tt9nmdEt/zJDN8o++HSVpnQppN7YhUU944r04=
+    secure: NKPD1XpyAIefkCqT5EevKSSsNLuwP5ZcAc+fO1TT6eJcYh3J3ZEaEF8lPMibD65D+qChuyNqP9c1zMl6kC9Ia3D8QmLrAZopZOWEEgTe09GDJYxvx0RYEsd/t6OWuhCvuT/gvFJ8x2oWLkaB0/r0Ogi3gdq4FuIHNDaW5KXD+j4=
   skip_cleanup: true
