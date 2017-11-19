@@ -143,7 +143,10 @@ export function mockGame({
   );
 
   beforeEach(function() {
-    this.room = getRoom(id);
+    Object.defineProperty(this, 'room', {
+      get() { return getRoom(id); },
+      configurable: true
+    });
 
     old = GameRoom.database.store[id];
     GameRoom.database.store[id] = {
@@ -161,12 +164,10 @@ export function mockGame({
   afterEach(function() {
     if (old) {
       GameRoom.database.store[id] = old;
-      this.room = getRoom(old.id);
       old = null;
     } else {
-      delete GameRoom._cache[this.room.id];
+      delete GameRoom._cache[id];
       delete GameRoom.database.store[id];
-      this.room = null;
     }
   });
 }
