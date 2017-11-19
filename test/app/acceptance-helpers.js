@@ -6,6 +6,7 @@ import {
 
 import chai from 'chai';
 import chaiJQuery from 'chai-jquery';
+import chaiAsPromised from 'chai-as-promised';
 import $ from 'jquery';
 
 import {
@@ -34,6 +35,8 @@ import MESSAGES_FIXTURE from '../../server/themes/classic/messages.yml';
 
 // use chai jquery matchers
 chai.use((chai, utils) => chaiJQuery(chai, utils, $));
+// and chai as promised
+chai.use(chaiAsPromised);
 
 // always use fixtures for themes
 GameRoom.set('loader', (theme, name) => {
