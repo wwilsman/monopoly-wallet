@@ -112,6 +112,18 @@ export default function connectSocket(ws) {
         room.on('poll:end', (poll) => {
           emitEvent('poll:end', { poll });
         }, ws);
+
+        // tell our player about notices
+        room.on('notice', (notice) => {
+          emitEvent('notice:new', { notice });
+        }, ws);
+
+        // tell the player they've joined
+        emitEvent('game:joined', {
+          ...room.state,
+          notice: room.notice('player.joined', { player: { name } }),
+          player: token
+        });
       }).catch(emitError);
     }),
 
@@ -181,22 +193,18 @@ export default function connectSocket(ws) {
  * the poll resolves to false
  */
 function askRoomToJoin(room, ws, name, token) {
-  const joinGame = () => room.join(name, token, ws).then(() => {
-    socketEmitEvent(ws, 'game:joined', { ...room.state, player: token });
-  });
-
   if (Array.from(room.players.values()).includes(ws)) {
     return Promise.reject(room.error('player.playing'));
 
   } else if (!room.players.size || room.game.players[token]) {
-    return joinGame();
+    return room.join(name, token, ws);
 
   } else {
     const ask = room.notice('player.ask-to-join', { player: { name }});
 
     return room.poll(ask).then((result) => {
       if (!result) throw room.error('player.denied');
-      return joinGame();
+      return room.join(name, token, ws);
     });
   }
 }

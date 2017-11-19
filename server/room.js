@@ -335,6 +335,7 @@ export default class GameRoom {
 
       if (!player) {
         this.store.dispatch(actions.join(name, token));
+        this.trigger('notice', this.notice('player.joined', { player: { name } }));
       } else {
         this.trigger('sync', meta);
       }
