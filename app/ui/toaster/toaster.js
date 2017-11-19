@@ -30,9 +30,15 @@ class Toaster extends Component {
     voteInPoll: PropTypes.func.isRequired
   };
 
+  formatMessage(message) {
+    let { player } = this.props;
+    let nameReg = new RegExp(`(^|\\s+)${player.name}(\\s+|$)`);
+    return message.replace(nameReg, '$1YOU$2');
+  }
 
   renderPoll(poll) {
     let { removeToast, voteInPoll } = this.props;
+    let message = this.formatMessage(poll.message);
 
     let vote = (v) => () => {
       voteInPoll(poll.id, v);
@@ -43,7 +49,7 @@ class Toaster extends Component {
       <Toast
           key={poll.id}
           type={poll.type}
-          message={poll.message}
+          message={message}
           actions={[
             { label: 'Yes', action: vote(true) },
             { label: 'Yes', action: vote(false) }
@@ -53,13 +59,14 @@ class Toaster extends Component {
 
   renderNotice(notice) {
     let { removeToast } = this.props;
+    let message = this.formatMessage(notice.message);
     let dismiss = () => removeToast(notice.id);
 
     return (
       <Toast
           key={notice.id}
           type={notice.type}
-          message={notice.message}
+          message={message}
           dismiss={dismiss}/>
     );
   }

@@ -1,7 +1,6 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
-import { dataAttrs } from '../../utils';
 import styles from './toaster.css';
 
 import Icon from '../icon';
@@ -12,27 +11,28 @@ function Toast({
   type,
   message,
   dismiss,
-  actions,
-  ...props
+  actions
 }) {
   const className = cx('toast', {
     [`is-${type}`]: !!type
   });
 
   return (
-    <div className={className} {...dataAttrs(props)}>
+    <div className={className} data-test-toast={type}>
       <div className={styles.message}>
-        <span>{message}</span>
+        <span data-test-toast-message>
+          {message}
+        </span>
 
         {!!dismiss && (
           <button onClick={dismiss}>
-            <Icon name={type === 'success' ? 'check' : 'close'}/>
+            <Icon name={type === 'message' ? 'check' : 'close'}/>
           </button>
         )}
       </div>
 
       {!!actions && (
-        <div className={styles.actions}>
+        <div className={styles.actions} data-test-actions>
           {actions.map(({ label, action }, i) => (
             <button key={i} onClick={action}>
               {label}
@@ -49,7 +49,7 @@ Toast.propTypes = {
     'alert',
     'poll',
     'default',
-    'success'
+    'message'
   ]).isRequired,
   message: PropTypes.string.isRequired,
   dismiss: PropTypes.func,

@@ -29,7 +29,7 @@
     color: var(--color-primary);
   }
 
-  &.is-success {
+  &.is-message {
     color: var(--color-secondary);
   }
 }
