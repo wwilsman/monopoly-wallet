@@ -52,7 +52,7 @@ class Toaster extends Component {
           message={message}
           actions={[
             { label: 'Yes', action: vote(true) },
-            { label: 'Yes', action: vote(false) }
+            { label: 'No', action: vote(false) }
           ]}/>
     );
   }
