@@ -25,8 +25,7 @@ describeApplication('GameRoomScreen', function() {
       });
     });
 
-    // TODO
-    it.skip('should show the room code', function() {
+    it('should show the room code', function() {
       expect(GameRoomPage.room).to.equal(this.room.id);
     });
 
