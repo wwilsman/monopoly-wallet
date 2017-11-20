@@ -118,6 +118,7 @@ describeApplication('JoinGameScreen', function() {
       });
 
       it('should allow joining', function() {
+        expect(JoinGamePage.$joinBtn).to.have.text('Join Game');
         expect(JoinGamePage.$joinBtn).to.have.prop('disabled', false);
       });
 
@@ -157,6 +158,10 @@ describeApplication('JoinGameScreen', function() {
         expect(JoinGamePage.$token('automobile')).to.have.prop('disabled', true);
       });
 
+      it('should show an "ask to join" message', function() {
+        expect(JoinGamePage.$joinBtn).to.have.text('Ask to Join');
+      });
+
       describe('when one of their names are filled in', function() {
         beforeEach(function() {
           JoinGamePage.fillName('player 1');
@@ -176,6 +181,62 @@ describeApplication('JoinGameScreen', function() {
           it('should not enable their token with their name', function() {
             expect(JoinGamePage.$token('top-hat')).to.have.prop('disabled', true);
             expect(JoinGamePage.$token('automobile')).to.have.prop('disabled', true);
+          });
+        });
+      });
+
+      describe('when asking to join', function() {
+        let pollId;
+
+        beforeEach(function() {
+          this.room.on('poll:new', ({ id }) => pollId = id);
+
+          return this.room.constructor.connect(this.room.id)
+            .then((room) => room.join('Player 1', 'top-hat'));
+        });
+
+        beforeEach(function() {
+          JoinGamePage.joinGame('Player 3', 'thimble');
+        });
+
+        it('should indicate the other players are being asked', function() {
+          expect(JoinGamePage.$joinBtn).to.have.text('Asking...');
+        });
+
+        it('should disable inputs', function() {
+          expect(JoinGamePage.$nameInput).to.have.prop('disabled', true);
+          expect(JoinGamePage.areTokensDisabled).to.be.true;
+          expect(JoinGamePage.$joinBtn).to.have.prop('disabled', true);
+        });
+
+        describe('and the other player votes yes', function() {
+          beforeEach(function() {
+            return this.room.vote('top-hat', pollId, true);
+          });
+
+          it('should join the game', function() {
+            expect(this.state.game.players).to.have.property('thimble');
+            expect(this.state.app.player).to.equal('thimble');
+          });
+
+          it('should go to the game\'s home screen', function() {
+            expect(this.location.pathname).to.equal(`/${this.room.id}`);
+          });
+        });
+
+        describe('and the other player votes no', function() {
+          beforeEach(function() {
+            return this.room.vote('top-hat', pollId, false);
+          });
+
+          it.still('should leave inputs disabled', function() {
+            expect(JoinGamePage.$nameInput).to.have.prop('disabled', true);
+            expect(JoinGamePage.areTokensDisabled).to.be.true;
+            expect(JoinGamePage.$joinBtn).to.have.prop('disabled', true);
+          });
+
+          it('should show an error', function() {
+            expect(JoinGamePage.$joinBtn).to.have.text('Sorry, your friends hate you');
           });
         });
       });

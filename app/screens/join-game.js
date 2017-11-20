@@ -121,6 +121,7 @@ class JoinGameScreen extends Component {
               onFindGame={connectToGame}/>
         ) : room ? (
           <JoinGameForm
+              error={error}
               tokens={tokens}
               players={players}
               loading={joining}
