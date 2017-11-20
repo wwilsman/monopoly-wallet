@@ -11,6 +11,7 @@
 .heading {
   @extend .title;
   font-size: var(--size-lg);
+  line-height: var(--pad-xl);
 }
 
 .is-center {
@@ -19,4 +20,20 @@
 
 .is-error {
   color: var(--color-alert);
+}
+
+.is-upper {
+  text-transform: uppercase;
+}
+
+.color--primary {
+  color: var(--color-primary);
+}
+
+.color--secondary {
+  color: var(--color-secondary);
+}
+
+.size--sm {
+  font-size: var(--size-sm);
 }
