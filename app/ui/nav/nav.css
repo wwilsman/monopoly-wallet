@@ -1,0 +1,21 @@
+@import '../../styles/variables';
+
+.root {
+  height: var(--pad-xl);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  flex: 1;
+}
+
+.left {
+  @extend .root;
+  align-self: flex-start;
+  justify-content: flex-start;
+}
+
+.right {
+  @extend .root;
+  align-self: flex-end;
+  justify-content: flex-end;
+}
