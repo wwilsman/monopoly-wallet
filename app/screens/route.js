@@ -69,7 +69,7 @@ export default (
 
   return connect((state, { path }) => {
     let tokens = [];
-    let re = pathToRegexp(path, tokens, { end: true });
+    let re = pathToRegexp(path, tokens);
     let { location } = state.router;
     let match = re.exec(location.pathname);
     let isMatch = !!match;
