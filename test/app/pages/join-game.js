@@ -9,6 +9,9 @@ export default {
   get heading() {
     return $('[data-test-join-game-heading]').text();
   },
+  get room() {
+    return $('[data-test-room-code]').text();
+  },
 
   get $findGameModal() {
     return $('[data-test-find-game-modal]');

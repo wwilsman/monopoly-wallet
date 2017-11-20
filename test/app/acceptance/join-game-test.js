@@ -80,6 +80,10 @@ describeApplication('JoinGameScreen', function() {
       expect(JoinGamePage.heading).to.equal('Join Game');
     });
 
+    it('should display the room code', function() {
+      expect(JoinGamePage.room).to.equal(this.room.id);
+    });
+
     it('should display a name input field', function() {
       expect(JoinGamePage.$nameInput).to.exist;
       expect(JoinGamePage.nameLabel).to.equal('Your name');

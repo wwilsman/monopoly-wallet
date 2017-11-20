@@ -9,7 +9,8 @@ import {
 } from '../redux/game';
 
 import { Container, Section } from '../ui/layout';
-import Heading from '../ui/typography/heading';
+import { NavLeft, NavRight } from '../ui/nav';
+import { Heading, Text } from '../ui/typography';
 import Spinner from '../ui/spinner';
 
 import FindGameModal from '../game/find-game-modal';
@@ -109,10 +110,20 @@ class JoinGameScreen extends Component {
 
     return (
       <Container data-test-join-game>
-        <Section flex="none">
+        <Section flex="none" row>
+          <NavLeft/>
+
           <Heading data-test-join-game-heading>
             Join Game
           </Heading>
+
+          <NavRight>
+            {!!params.room && (
+              <Text sm upper color="secondary" data-test-room-code>
+                {params.room}
+              </Text>
+            )}
+          </NavRight>
         </Section>
         {!params.room ? (
           <FindGameModal
