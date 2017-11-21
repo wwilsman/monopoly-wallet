@@ -12,13 +12,17 @@ export default {
   get room() {
     return $('[data-test-room-code]').text();
   },
+  get $backBtn() {
+    return $('[data-test-back]');
+  },
+  goBack() {
+    click(this.$backBtn);
+  },
 
-  get $findGameModal() {
-    return $('[data-test-find-game-modal]');
+  get isLoading() {
+    return $('[data-test-spinner]').length > 0;
   },
-  get isFindGameLoading() {
-    return this.$findGameModal.find('[data-test-spinner]').length > 0;
-  },
+
   get $findGameInput() {
     return $('[data-test-find-game-input] [data-test-input]');
   },
@@ -68,9 +72,6 @@ export default {
 
   get $joinBtn() {
     return $('[data-test-join-game-btn]');
-  },
-  get isJoinGameLoading() {
-    return this.$joinBtn.find('[data-test-spinner]').length > 0;
   },
   joinGame(name, token) {
     name && this.fillName(name);

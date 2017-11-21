@@ -45,6 +45,20 @@ describeApplication('WelcomeScreen', function() {
     it('should go to the join game route for a room', function() {
       expect(this.location.pathname).to.equal(`/${this.state.app.room}/join`);
     });
+
+    describe('then navigating back', function() {
+      beforeEach(function() {
+        WelcomePage.goBack();
+      });
+
+      it('should go back', function() {
+        expect(this.location.pathname).to.equal('/');
+      });
+
+      it('should clear the game room', function() {
+        expect(this.state.app.room).to.be.empty;
+      });
+    });
   });
 
   describe('clicking the join game button', function() {

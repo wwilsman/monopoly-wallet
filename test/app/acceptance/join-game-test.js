@@ -16,13 +16,9 @@ describeApplication('JoinGameScreen', function() {
       expect(JoinGamePage.heading).to.equal('Join Game');
     });
 
-    it('should display the find game modal', function() {
-      expect(JoinGamePage.$findGameModal).to.exist;
-    });
-
-    it('should display a game room input', function() {
+    it('should display a room code input', function() {
       expect(JoinGamePage.$findGameInput).to.exist;
-      expect(JoinGamePage.findGameLabel).to.equal('enter room');
+      expect(JoinGamePage.findGameLabel).to.equal('room code');
     });
 
     describe('and searching for an existing room', function() {
@@ -31,7 +27,7 @@ describeApplication('JoinGameScreen', function() {
       });
 
       it('should show a loading indicator and disable inputs', function() {
-        expect(JoinGamePage.isFindGameLoading).to.be.true;
+        expect(JoinGamePage.isLoading).to.be.true;
         expect(JoinGamePage.$findGameInput).to.have.prop('disabled', true);
         expect(JoinGamePage.$findGameBtn).to.have.prop('disabled', true);
       });
@@ -43,13 +39,15 @@ describeApplication('JoinGameScreen', function() {
 
       describe('then navigating back', function() {
         beforeEach(function() {
-          return this.visit('/join', () => {
-            expect(this.location.pathname).to.equal('/join');
-          });
+          JoinGamePage.goBack();
         });
 
-        it('should clear the game state', function() {
-          expect(this.state.app.room).to.not.equal(this.room.id);
+        it('should go back', function() {
+          expect(this.location.pathname).to.equal('/join');
+        });
+
+        it('should clear the game room', function() {
+          expect(this.state.app.room).to.be.empty;
         });
       });
     });
@@ -95,6 +93,10 @@ describeApplication('JoinGameScreen', function() {
       expect(JoinGamePage.tokensLabel).to.equal('Select a token');
     });
 
+    it.still('should not show a back button', function() {
+      expect(JoinGamePage.$backBtn).to.not.exist;
+    });
+
     describe('when only a name is provided', function() {
       beforeEach(function() {
         JoinGamePage.fillName('Player 1');
@@ -132,7 +134,7 @@ describeApplication('JoinGameScreen', function() {
         });
 
         it('should show a loading indicator and disabled inputs', function() {
-          expect(JoinGamePage.isJoinGameLoading).to.be.true;
+          expect(JoinGamePage.isLoading).to.be.true;
           expect(JoinGamePage.$nameInput).to.have.prop('disabled', true);
           expect(JoinGamePage.areTokensDisabled).to.be.true;
           expect(JoinGamePage.$joinBtn).to.have.prop('disabled', true);

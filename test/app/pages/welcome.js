@@ -13,7 +13,6 @@ export default {
   get $newGameBtn() {
     return $('[data-test-welcome-new-game-btn]');
   },
-
   clickNewGame() {
     click(this.$newGameBtn);
   },
@@ -21,8 +20,11 @@ export default {
   get $joinGameBtn() {
     return $('[data-test-welcome-join-game-btn]');
   },
-
   clickJoinGame() {
     click(this.$joinGameBtn);
+  },
+
+  goBack() {
+    click($('[data-test-back]'));
   }
 };

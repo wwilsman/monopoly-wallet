@@ -12,6 +12,8 @@ import { Container, Section } from '../ui/layout';
 import { NavLeft, NavRight } from '../ui/nav';
 import { Heading, Text } from '../ui/typography';
 import Spinner from '../ui/spinner';
+import Button from '../ui/button';
+import Icon from '../ui/icon';
 
 import FindGameForm from '../game/find-game-form';
 import JoinGameForm from '../game/join-game-form';
@@ -48,6 +50,10 @@ class JoinGameScreen extends Component {
     joinGame: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
+    goBack: PropTypes.func.isRequired,
+    location: PropTypes.shape({
+      state: PropTypes.object.isRequired
+    }).isRequired,
     params: PropTypes.shape({
       room: PropTypes.string
     }).isRequired
@@ -105,13 +111,21 @@ class JoinGameScreen extends Component {
       players,
       connectToGame,
       joinGame,
-      params
+      location,
+      params,
+      goBack
     } = this.props;
 
     return (
       <Container data-test-join-game>
         <Section flex="none" row>
-          <NavLeft/>
+          <NavLeft>
+            {location.state.internal && (
+              <Button type="icon" onClick={goBack} data-test-back>
+                <Icon name="larr"/>
+              </Button>
+            )}
+          </NavLeft>
 
           <Heading data-test-join-game-heading>
             Join Game
