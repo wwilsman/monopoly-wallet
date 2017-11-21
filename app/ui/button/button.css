@@ -13,6 +13,7 @@
   text-align: center;
   text-shadow: var(--shadow-xs);
   width: calc(50% - (var(--pad-sm) / 2));
+  cursor: pointer;
 
   &:not(.is-disabled) {
     &:hover, &:focus {
@@ -68,6 +69,30 @@
 
     &:active {
       background: var(--color-alert-active);
+    }
+  }
+}
+
+.icon {
+  background: transparent;
+  box-shadow: none;
+  color: var(--color-text);
+  font-size: var(--size-lg);
+  padding: 0;
+  width: auto;
+
+  & > span {
+    display: inline;
+  }
+
+  &:not(.is-disabled) {
+    &:hover, &:focus {
+      background: transparent;
+    }
+
+    &:active {
+      background: transparent;
+      color: var(--color-text-darker);
     }
   }
 }

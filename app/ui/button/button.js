@@ -58,7 +58,8 @@ Button.propTypes = {
   type: PropTypes.oneOf([
     'primary',
     'secondary',
-    'alert'
+    'alert',
+    'icon'
   ]).isRequired,
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
