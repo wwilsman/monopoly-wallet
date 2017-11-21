@@ -24,7 +24,8 @@ Icon.propTypes = {
 };
 
 export default connect(({ app, config }, props) => {
-  let whitelist = config.playerTokens.concat(['currency', 'building']);
+  let tokens = config.playerTokens || [];
+  let whitelist = tokens.concat(['currency', 'building']);
   let theme = whitelist.includes(props.name) && app.theme;
   return { theme };
 })(Icon);
