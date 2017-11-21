@@ -13,7 +13,7 @@ import { NavLeft, NavRight } from '../ui/nav';
 import { Heading, Text } from '../ui/typography';
 import Spinner from '../ui/spinner';
 
-import FindGameModal from '../game/find-game-modal';
+import FindGameForm from '../game/find-game-form';
 import JoinGameForm from '../game/join-game-form';
 
 @route(({ app, game, config }) => ({
@@ -126,10 +126,10 @@ class JoinGameScreen extends Component {
           </NavRight>
         </Section>
         {!params.room ? (
-          <FindGameModal
+          <FindGameForm
               error={error}
               loading={connecting}
-              onFindGame={connectToGame}/>
+              onSubmit={connectToGame}/>
         ) : room ? (
           <JoinGameForm
               error={error}
