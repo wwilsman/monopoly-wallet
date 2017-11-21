@@ -1,6 +1,7 @@
 // action types
 export const PUSH = 'ROUTER/PUSH';
 export const REPLACE = 'ROUTER/REPLACE';
+export const GO_BACK = 'ROUTER/GO_BACK';
 export const LOCATION_CHANGED = 'ROUTER/LOCATION_CHANGED';
 
 // action creators
@@ -12,6 +13,10 @@ export const push = (pathname) => ({
 export const replace = (pathname) => ({
   type: REPLACE,
   location: { pathname }
+});
+
+export const goBack = () => ({
+  type: GO_BACK
 });
 
 // initial state
@@ -76,5 +81,11 @@ export const middleware = (history) => (store) => {
 
     // let the history listener know we're done
     isDispatching = false;
+
+    // history navigation happens outside of isDispatching so the
+    // listener can dispatch a LOCATION_CHANGED action
+    if (action.type === GO_BACK) {
+      history.goBack();
+    }
   };
 };
