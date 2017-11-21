@@ -34,7 +34,8 @@ class AppRoot extends Component {
     initialState: {
       router: {
         location: {
-          pathname: this.history.location.pathname
+          pathname: this.history.location.pathname,
+          state: this.history.location.state || {}
         }
       }
     }

@@ -7,7 +7,10 @@ export const LOCATION_CHANGED = 'ROUTER/LOCATION_CHANGED';
 // action creators
 export const push = (pathname) => ({
   type: PUSH,
-  location: { pathname }
+  location: {
+    pathname,
+    state: { internal: true }
+  }
 });
 
 export const replace = (pathname) => ({
@@ -21,7 +24,10 @@ export const goBack = () => ({
 
 // initial state
 const initialState = {
-  location: {}
+  location: {
+    pathname: '',
+    state: {}
+  }
 };
 
 // reducer
@@ -57,7 +63,10 @@ export const middleware = (history) => (store) => {
     if (!isDispatching) {
       store.dispatch({
         type: LOCATION_CHANGED,
-        location: { pathname: history.location.pathname }
+        location: {
+          pathname: history.location.pathname,
+          state: history.location.state || {}
+        }
       });
     }
   });
