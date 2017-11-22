@@ -51,11 +51,14 @@ window.WebSocket = WebSocket;
 
 /**
  * Starts a mock websocket server and mounts our app
- * @param {String} name - Name of the test suite
+ * @param {String} name - name of the test suite
  * @param {Function} setup - suite definition
+ * @param {Boolean} only - use describe.only
  */
-export function describeApplication(name, setup) {
-  describe(name, function() {
+export function describeApplication(name, setup, only) {
+  let descr = only ? describe.only : describe;
+
+  descr(name, function() {
     let rootElement, unsubscribeFromStore;
 
     // mock a basic game
@@ -121,6 +124,11 @@ export function describeApplication(name, setup) {
     setup.call(this);
   });
 }
+
+// convenience helper for describe.only
+describeApplication.only = (name, setup) => {
+  describeApplication(name, setup, true);
+};
 
 /**
  * Creates a mock game to test against.
