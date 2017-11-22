@@ -90,8 +90,8 @@ export function describeApplication(name, setup, only) {
       });
 
       // helpers specific to this context
-      this.visit = visit.bind(undefined, this.app.history.push);
-      this.emit = emit.bind(undefined, this.app.socket);
+      this.visit = visit.bind(this, this.app.history.push);
+      this.emit = emit.bind(this, this.app.socket);
       this.pauseTest = pauseTest;
 
       // wait until our app has finished loading
