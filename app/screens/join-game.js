@@ -84,16 +84,24 @@ class JoinGameScreen extends Component {
       replace
     } = nextProps;
 
+    // if we have a known player, send them to the game room
     if (nextRoom && player) {
       push(`/${nextRoom}`);
+    // if connecting to a new room errors, send them to find a room
+    // where it will show the connecting error
     } else if (!nextRoom && params.room && error) {
       replace(`/join`);
+    // if we don't have an error and aren't connecting...
     } else if (!error && !connecting) {
+      // ...we need to connect to a room
       if (!nextRoom && params.room) {
         connectToGame(params.room);
+      // ...we are connected but we aren't at the join form...
       } else if (nextRoom && !params.room) {
+        // ...we weren't connected before, send them to the join  form
         if (!this.props.room) {
           push(`/${nextRoom}/join`);
+        // ...we want to disconnect
         } else {
           disconnectGame();
         }
