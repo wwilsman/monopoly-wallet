@@ -61,10 +61,7 @@ export default {
       $('[data-test-join-game-token-select] input[type="radio"][disabled]').length;
   },
   $token(name) {
-    return this.$tokens
-      .find(`[title=${name}]`)
-      .closest('[data-test-radio-item]')
-      .find('input[type="radio"]');
+    return $(`[data-test-radio-item="${name}"] input[type="radio"]`);
   },
   selectToken(name) {
     click(this.$token(name));

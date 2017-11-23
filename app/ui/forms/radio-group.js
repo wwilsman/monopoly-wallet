@@ -40,7 +40,7 @@ class RadioGroup extends Component {
   };
 
   _selectItem(i) {
-    const {
+    let {
       data,
       selected,
       disabled,
@@ -54,7 +54,7 @@ class RadioGroup extends Component {
   }
 
   renderItem(item, i) {
-    const {
+    let {
       selected,
       disabled,
       disableAll,
@@ -62,8 +62,11 @@ class RadioGroup extends Component {
       renderItem
     } = this.props;
 
-    const id = `${this.elementId}-btn-${i}`;
-    const attrs = {
+    // attempt to get an identifier for this item
+    let id = typeof item === 'string' ? item : (item.id || i);
+    let elemId = `${this.elementId}-${id}`;
+
+    let attrs = {
       selected: i === selected,
       disabled: disableAll || disabled.includes(i)
     };
@@ -71,12 +74,12 @@ class RadioGroup extends Component {
     return (
       <label
           key={i}
-          htmlFor={id}
+          htmlFor={elemId}
           className={itemClassName}
           onClick={this._selectItem(i)}
-          data-test-radio-item>
+          data-test-radio-item={id}>
         <input
-            id={id}
+            id={elemId}
             type="radio"
             disabled={attrs.disabled}
             checked={attrs.selected}/>
@@ -86,7 +89,7 @@ class RadioGroup extends Component {
   }
 
   render() {
-    const {
+    let {
       data,
       label,
       error,
@@ -95,7 +98,7 @@ class RadioGroup extends Component {
       ...props
     } = this.props;
 
-    const rootClassName = cx('root', {
+    let rootClassName = cx('root', {
       'is-error': !!error,
       'has-focus': this.state.focused,
       'is-disabled': disableAll
