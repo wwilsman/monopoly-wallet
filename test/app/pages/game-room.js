@@ -10,23 +10,26 @@ export default {
     return $('[data-test-room-code]').text();
   },
 
-  get toasts() {
-    return $('[data-test-toast]').map((i, t) => ({
+  toast(index) {
+    let selector = `[data-test-toast]:eq(${index})`;
+
+    return {
       get type() {
-        return $(t).data('test-toast');
+        return $(selector).data('test-toast');
       },
 
       get message() {
-        return $('[data-test-toast-message]', t).text();
+        return $(`${selector} [data-test-toast-message]`).text();
       },
 
-      get $buttons() {
-        return $('[data-test-actions] button', t);
+      get $actions() {
+        return $(`${selector} [data-test-actions]`);
       },
 
-      click(i) {
-        click(this.$buttons.eq(i));
+      click(i, assertion) {
+        let btn = `${selector} [data-test-actions] button:eq(${i})`;
+        return click(btn, assertion);
       }
-    }));
+    };
   }
 };
