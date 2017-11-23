@@ -25,7 +25,7 @@ describeApplication('WelcomeScreen', function() {
 
   describe('visiting a non-existent route', function() {
     beforeEach(function() {
-      this.visit('/404-not-found');
+      return this.visit('/404-not-found');
     });
 
     it.still('should redirect back to welcome', function() {

@@ -251,7 +251,7 @@ describeApplication('JoinGameScreen', function() {
 
   describe('with a non-existent room', function() {
     beforeEach(function() {
-      this.visit('/f4k3e/join');
+      return this.visit('/f4k3e/join');
     });
 
     it('should redirect to no room', function() {

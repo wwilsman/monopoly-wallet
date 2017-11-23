@@ -25,13 +25,12 @@ export function pauseTest() {
  *
  * @param {function} push - function to push  the current history
  * @param {mixed} path - the argument provided to `push`
- * @param {function} assertion - the assertion to converge on
+ * @param {function} [assertion] - the assertion to converge on
  */
-export function visit(push, path, assertion) {
+export function visit(push, path, assertion = () => {}) {
   push(path);
-  if (assertion) {
-    return convergeOn.call(this, assertion);
-  }
+
+  return convergeOn.call(this, assertion);
 }
 
 /**

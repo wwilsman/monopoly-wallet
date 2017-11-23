@@ -7,7 +7,7 @@ import GameRoomPage from '../pages/game-room';
 describeApplication('GameRoomScreen', function() {
   describe('without joining', function() {
     beforeEach(function() {
-      this.visit(`/${this.room.id}`);
+      return this.visit(`/${this.room.id}`);
     });
 
     it.still('should redirect to the join game screen', function() {
