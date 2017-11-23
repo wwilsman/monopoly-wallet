@@ -68,30 +68,46 @@ export function emit(ws, event, ...args) {
  * @returns {Promise} resolves according to the above
  */
 export function convergeOn(assertion, invert, time) {
-  const test = this;
-  const start = Date.now();
-  const timeout = time || (test ? test.timeout() : 2000);
-  const interval = 10;
+  let start = convergeOn._start = convergeOn._start || Date.now();
+  let timeout = time || (this ? this.timeout() : 2000);
+  let interval = 10;
+  let context = this;
+
+  // cleanup when all convergences are done after the interval
+  let done = () => {
+    convergeOn._length -= 1;
+
+    setTimeout(() => {
+      if (!convergeOn._length) {
+        delete convergeOn._start;
+        delete convergeOn._length;
+      }
+    }, interval);
+  };
 
   return new Promise((resolve, reject) => {
+    // keep track of all convergences
+    convergeOn._length = (convergeOn._length || 0) + 1;
+
+    // do the actual loop
     (function loop() {
-      const ellapsed = Date.now() - start;
-      const doLoop = ellapsed + interval < timeout;
+      let ellapsed = Date.now() - start;
+      let doLoop = ellapsed + interval < timeout;
 
       try {
-        const ret = assertion.call(test);
+        let ret = assertion.call(context);
 
         if (invert && doLoop) {
           window.setTimeout(loop, interval);
-        } else if (ret && typeof ret.then === 'function') {
-          ret.then(resolve);
         } else {
-          resolve();
+          done();
+          resolve(ret);
         }
       } catch(error) {
         if (!invert && doLoop) {
           window.setTimeout(loop, interval);
         } else if (invert || !doLoop) {
+          done();
           reject(error);
         }
       }
@@ -104,7 +120,7 @@ export function convergeOn(assertion, invert, time) {
  * `convergeOn` with the current context and any passed arguments
  * @returns {Function}
  */
-const convergent = (...args) => function() {
+export const convergent = (...args) => function() {
   return convergeOn.apply(this, args);
 };
 
