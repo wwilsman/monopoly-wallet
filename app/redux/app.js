@@ -52,6 +52,12 @@ export const reducer = (state = initialState, action) => {
         ))
       };
 
+    case event('room:disconnect'):
+      return {
+        ...initialState,
+        waiting: []
+      };
+
     default:
       return state;
   }
