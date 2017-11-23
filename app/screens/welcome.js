@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import route from './route';
 
-import { newGame } from '../redux/game';
+import { newGame, disconnectGame } from '../redux/game';
 
 import { Container, Section } from '../ui/layout';
 import Title from '../ui/typography/title';
@@ -13,7 +13,8 @@ import Logo from '../ui/logo';
   room: app.room,
   loading: app.waiting.includes('game:created')
 }), {
-  newGame
+  newGame,
+  disconnectGame
 })
 
 class WelcomeScreen extends Component {
@@ -21,8 +22,17 @@ class WelcomeScreen extends Component {
     room: PropTypes.string,
     loading: PropTypes.bool.isRequired,
     push: PropTypes.func.isRequired,
-    newGame: PropTypes.func.isRequired
+    newGame: PropTypes.func.isRequired,
+    disconnectGame: PropTypes.func.isRequired
   };
+
+  componentWillMount() {
+    let { room, disconnectGame } = this.props;
+
+    if (room) {
+      disconnectGame(room);
+    }
+  }
 
   componentWillReceiveProps(nextProps) {
     let { room, push } = nextProps;
