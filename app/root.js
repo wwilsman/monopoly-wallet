@@ -11,6 +11,7 @@ import createStore from './redux/store';
 
 import AppScreen from './screens/app';
 import WelcomeScreen from './screens/welcome';
+import FindRoomScreen from './screens/find-room';
 import JoinGameScreen from './screens/join-game';
 import GameRoomScreen from './screens/game-room';
 import SandboxScreen from './screens/sandbox';
@@ -46,7 +47,8 @@ class AppRoot extends Component {
       <Provider store={this.store}>
         <AppScreen path="/(.*)" redirect="/">
           <WelcomeScreen path="/"/>
-          <JoinGameScreen path="/:room([^\/]{5})?/join"/>
+          <FindRoomScreen path="/join"/>
+          <JoinGameScreen path="/:room([^\/]{5})/join"/>
           <GameRoomScreen path="/:room([^\/]{5})"/>
 
           {process.env.NODE_ENV === 'development' && (

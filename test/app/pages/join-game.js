@@ -18,33 +18,12 @@ export default {
     return $('[data-test-room-code]').text();
   },
 
-  get $backBtn() {
+  get $backButton() {
     return $('[data-test-back]');
   },
 
   goBack(assertion) {
     return click('[data-test-back]', assertion);
-  },
-
-  get $findGameInput() {
-    return $('[data-test-find-game-input] [data-test-input]');
-  },
-
-  get findGameLabel() {
-    return $('[data-test-find-game-input] [data-test-label]').text();
-  },
-
-  get findGameError() {
-    return $('[data-test-find-game-input] [data-test-error]').text();
-  },
-
-  get $findGameBtn() {
-    return $('[data-test-find-game-btn]');
-  },
-
-  findGame(room, assertion) {
-    return fill('[data-test-find-game-input] [data-test-input]', room)
-      .then(() => click('[data-test-find-game-btn]', assertion));
   },
 
   get $nameInput() {
@@ -67,9 +46,8 @@ export default {
     return $('[data-test-join-game-token-select] [data-test-radio-item]');
   },
 
-  get areTokensDisabled() {
-    let $disabled = this.$tokens.find('input[type="radio"][disabled]');
-    return this.$tokens.length === $disabled.length;
+  get $disabledTokens() {
+    return this.$tokens.find('input[type="radio"][disabled]');
   },
 
   $token(name) {
@@ -80,7 +58,7 @@ export default {
     return click(`[data-test-radio-item="${name}"]`, assertion);
   },
 
-  get $joinBtn() {
+  get $submit() {
     return $('[data-test-join-game-btn]');
   },
 
