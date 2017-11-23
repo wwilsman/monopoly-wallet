@@ -35,7 +35,9 @@ describeApplication('WelcomeScreen', function() {
 
   describe('clicking the new game button', function() {
     beforeEach(function() {
-      WelcomePage.clickNewGame();
+      return WelcomePage.clickNewGame(() => {
+        expect(WelcomePage.$root).to.not.exist;
+      });
     });
 
     it('should create a new game', function() {
@@ -48,7 +50,9 @@ describeApplication('WelcomeScreen', function() {
 
     describe('then navigating back', function() {
       beforeEach(function() {
-        WelcomePage.goBack();
+        return WelcomePage.goBack(() => {
+          expect(WelcomePage.$root).to.exist;
+        });
       });
 
       it('should go back', function() {
@@ -63,7 +67,9 @@ describeApplication('WelcomeScreen', function() {
 
   describe('clicking the join game button', function() {
     beforeEach(function() {
-      WelcomePage.clickJoinGame();
+      return WelcomePage.clickJoinGame(() => {
+        expect(WelcomePage.$root).to.not.exist;
+      });
     });
 
     it('should go to the join game route', function() {

@@ -23,23 +23,28 @@ describeApplication('JoinGameScreen', function() {
 
     describe('and searching for an existing room', function() {
       beforeEach(function() {
-        JoinGamePage.findGame(this.room.id);
+        return JoinGamePage.findGame(this.room.id);
       });
 
-      it('should show a loading indicator and disable inputs', function() {
+      it('should show a loading indicator', function() {
         expect(JoinGamePage.isLoading).to.be.true;
+      });
+
+      it('should disable all inputs', function() {
         expect(JoinGamePage.$findGameInput).to.have.prop('disabled', true);
         expect(JoinGamePage.$findGameBtn).to.have.prop('disabled', true);
       });
 
       it('should go to the join game route for a game', function() {
         expect(this.location.pathname).to.equal(`/${this.room.id}/join`);
-        expect(this.state.app.room).to.equal(this.room.id);
+        expect(JoinGamePage.room).to.equal(this.room.id);
       });
 
       describe('then navigating back', function() {
         beforeEach(function() {
-          JoinGamePage.goBack();
+          return JoinGamePage.goBack(() => {
+            expect(JoinGamePage.room).to.be.empty;
+          });
         });
 
         it('should go back', function() {
@@ -54,7 +59,7 @@ describeApplication('JoinGameScreen', function() {
 
     describe('and searching for a non-existent room', function() {
       beforeEach(function() {
-        JoinGamePage.findGame('f4k33');
+        return JoinGamePage.findGame('f4k33');
       });
 
       it.still('should not change routes', function() {
@@ -70,7 +75,7 @@ describeApplication('JoinGameScreen', function() {
   describe('with a specific room', function() {
     beforeEach(function() {
       return this.visit(`/${this.room.id}/join`, () => {
-        expect(JoinGamePage.$root).to.exist;
+        expect(JoinGamePage.room).to.equal(this.room.id);
       });
     });
 
@@ -88,7 +93,7 @@ describeApplication('JoinGameScreen', function() {
     });
 
     it('should display a token select field', function() {
-      const tokenCount = this.state.config.playerTokens.length;
+      let tokenCount = this.state.config.playerTokens.length;
       expect(JoinGamePage.$tokens).to.have.lengthOf(tokenCount);
       expect(JoinGamePage.tokensLabel).to.equal('Select a token');
     });
@@ -99,7 +104,7 @@ describeApplication('JoinGameScreen', function() {
 
     describe('when only a name is provided', function() {
       beforeEach(function() {
-        JoinGamePage.fillName('Player 1');
+        return JoinGamePage.fillName('Player 1');
       });
 
       it('should not allow joining yet', function() {
@@ -109,7 +114,7 @@ describeApplication('JoinGameScreen', function() {
 
     describe('when only a token is selected', function() {
       beforeEach(function() {
-        JoinGamePage.selectToken('top-hat');
+        return JoinGamePage.selectToken('top-hat');
       });
 
       it('should not allow joining yet', function() {
@@ -119,8 +124,8 @@ describeApplication('JoinGameScreen', function() {
 
     describe('when both a name and token is selected', function() {
       beforeEach(function() {
-        JoinGamePage.fillName('Player 1');
-        JoinGamePage.selectToken('top-hat');
+        return JoinGamePage.fillName('Player 1')
+          .then(() => JoinGamePage.selectToken('top-hat'));
       });
 
       it('should allow joining', function() {
@@ -130,11 +135,14 @@ describeApplication('JoinGameScreen', function() {
 
       describe('and join game is clicked', function() {
         beforeEach(function() {
-          JoinGamePage.joinGame();
+          return JoinGamePage.joinGame();
         });
 
-        it('should show a loading indicator and disabled inputs', function() {
+        it('should show a loading indicator', function() {
           expect(JoinGamePage.isLoading).to.be.true;
+        });
+
+        it('should disable all inputs', function() {
           expect(JoinGamePage.$nameInput).to.have.prop('disabled', true);
           expect(JoinGamePage.areTokensDisabled).to.be.true;
           expect(JoinGamePage.$joinBtn).to.have.prop('disabled', true);
@@ -170,7 +178,7 @@ describeApplication('JoinGameScreen', function() {
 
       describe('when one of their names are filled in', function() {
         beforeEach(function() {
-          JoinGamePage.fillName('player 1');
+          return JoinGamePage.fillName('player 1');
         });
 
         it('should enable a used token with the token player\'s name', function() {
@@ -197,12 +205,11 @@ describeApplication('JoinGameScreen', function() {
         beforeEach(function() {
           this.room.on('poll:new', ({ id }) => pollId = id);
 
+          // join with the other player first...
           return this.room.constructor.connect(this.room.id)
-            .then((room) => room.join('Player 1', 'top-hat'));
-        });
-
-        beforeEach(function() {
-          JoinGamePage.joinGame('Player 3', 'thimble');
+            .then((room) => room.join('Player 1', 'top-hat'))
+          // ...then ask to join via the UI
+            .then(() => JoinGamePage.joinGame('Player 3', 'thimble'));
         });
 
         it('should indicate the other players are being asked', function() {

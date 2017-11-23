@@ -13,18 +13,20 @@ export default {
   get $newGameBtn() {
     return $('[data-test-welcome-new-game-btn]');
   },
-  clickNewGame() {
-    click(this.$newGameBtn);
+
+  clickNewGame(assertion) {
+    return click('[data-test-welcome-new-game-btn]', assertion);
   },
 
   get $joinGameBtn() {
     return $('[data-test-welcome-join-game-btn]');
   },
-  clickJoinGame() {
-    click(this.$joinGameBtn);
+
+  clickJoinGame(assertion) {
+    return click('[data-test-welcome-join-game-btn]', assertion);
   },
 
-  goBack() {
-    click($('[data-test-back]'));
+  goBack(assertion) {
+    return click($('[data-test-back]'), assertion);
   }
 };
