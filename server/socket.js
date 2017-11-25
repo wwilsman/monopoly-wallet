@@ -33,26 +33,26 @@ function socketEmitEvent(ws, name, data) {
  * @param {WebSocket} ws - WebSocket instance
  */
 export default function connectSocket(ws) {
-  const emitError = socketError.bind(null, ws);
-  const emitEvent = socketEmitEvent.bind(null, ws);
+  let emitError = socketError.bind(null, ws);
+  let emitEvent = socketEmitEvent.bind(null, ws);
 
   // some actions need a room, this room will be available once the
   // socket has connected to the game room via `room:connect`
   let room = false;
-  const withRoom = (fn) => (...args) => {
+  let withRoom = (fn) => (...args) => {
     if (room) fn(...args);
   };
 
   // game actions require a token, this token will be available once
   // the player has successfully joined a game room
   let token = false;
-  const withToken = (fn) => (...args) => {
+  let withToken = (fn) => (...args) => {
     if (token) fn(...args);
   };
 
   // wrap room methods to pass the token as the first argument,
   // emit an update, and catch any errors
-  const gameMethod = (name) => withRoom(
+  let gameMethod = (name) => withRoom(
     withToken((...args) => {
       room[name](token, ...args)
         .then(() => emitEvent('game:update', {
@@ -63,7 +63,7 @@ export default function connectSocket(ws) {
   );
 
   // available socket actions
-  const actions = {
+  let actions = {
     // create a game and connect to it
     'game:new': (config) => {
       GameRoom.new(config).then(({ id: room, ...game }) => {
@@ -75,19 +75,21 @@ export default function connectSocket(ws) {
     // connect to an existing game
     'room:connect': (id) => {
       GameRoom.connect(id, ws).then((r) => {
-        // unblock room-required actions
-        room = r;
+        if (!room) {
+          // unblock room-required actions
+          room = r;
 
-        // on close, remove the socket from the room
-        ws.on('close', () => room.disconnect(ws));
+          // on close, remove the socket from the room
+          ws.on('close', () => room.disconnect(ws));
 
-        // keep the room state in sync when other players make changes.
-        // the sync event receives the meta that triggered it
-        room.on('sync', (blame) => {
-          if (blame !== ws) {
-            emitEvent('room:sync', room.state);
-          }
-        }, ws);
+          // keep the room state in sync when other players make changes.
+          // the sync event receives the meta that triggered it
+          room.on('sync', (blame) => {
+            if (blame !== ws) {
+              emitEvent('room:sync', room.state);
+            }
+          }, ws);
+        }
 
         // tell the socket it's connected
         emitEvent('room:connected', room.state);

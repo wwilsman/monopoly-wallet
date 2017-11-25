@@ -40,6 +40,11 @@ describe('Room: connecting', function() {
       );
   });
 
+  it('should not care when connecting more than once', async function() {
+    await expect(connectToGameRoom(ws, this.room)).to.be.fulfilled;
+    await expect(connectToGameRoom(ws, this.room)).to.be.fulfilled;
+  });
+
   it('should emit an error when no game is found', async function() {
     await expect(connectToGameRoom(ws, 'F4K33'))
       .to.be.rejectedWith(MonopolyError, /not found/);
