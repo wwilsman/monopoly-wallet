@@ -10,8 +10,8 @@ import {
 
 import Toast from './toast';
 
-@connect(({ app, game, toasts }) => ({
-  player: app.player && game.players[app.player],
+@connect(({ app, toasts }) => ({
+  player: app.player,
   toasts
 }), {
   removeToast,
@@ -20,7 +20,9 @@ import Toast from './toast';
 
 class Toaster extends Component {
   static propTypes = {
-    player: PropTypes.object,
+    player: PropTypes.shape({
+      name: PropTypes.string.isRequired
+    }).isRequired,
     toasts: PropTypes.arrayOf(PropTypes.shape({
       id: PropTypes.string,
       type: Toast.propTypes.type,
