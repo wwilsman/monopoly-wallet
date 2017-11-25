@@ -9,6 +9,12 @@ import {
   reducer as appReducer
 } from './app';
 import {
+  reducer as gameReducer
+} from './game';
+import {
+  reducer as configReducer
+} from './config';
+import {
   reducer as toastsReducer
 } from './toasts';
 import {
@@ -22,20 +28,11 @@ import {
 // redux dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
 
-// simple reducer creator to copy state from actions
-const simpleReducer = (key, initialState = {}) => {
-  return (state = initialState, action) => {
-    return action.hasOwnProperty(key)
-      ? { ...state, ...action[key] }
-      : state;
-  };
-};
-
 // root reducer
 const rootReducer = combineReducers({
   app: appReducer,
-  game: simpleReducer('game'),
-  config: simpleReducer('config'),
+  game: gameReducer,
+  config: configReducer,
   toasts: toastsReducer,
   router: routerReducer
 });
