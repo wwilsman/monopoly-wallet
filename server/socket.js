@@ -125,7 +125,7 @@ export default function connectSocket(ws) {
         emitEvent('game:joined', {
           ...room.state,
           notice: room.notice('player.joined', { player: { name } }),
-          player: token
+          player: { name, token }
         });
       }).catch(emitError);
     }),

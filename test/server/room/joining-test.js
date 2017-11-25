@@ -29,7 +29,7 @@ describe('Room: joining', function() {
 
     expect(room).to.equal(this.room);
     expect(game).to.have.nested.property('players.top-hat');
-    expect(player).to.equal('top-hat');
+    expect(player).to.deep.equal({ name: 'Player 1', token: 'top-hat' });
     expect(players).to.include('top-hat');
   });
 
