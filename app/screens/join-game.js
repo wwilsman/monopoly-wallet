@@ -19,11 +19,11 @@ import JoinGameForm from '../game/join-game-form';
   player: app.player,
   tokens: config.playerTokens,
   joining: app.waiting.includes('game:joined'),
-  players: !game.players ? [] :
-    game.players._all.map((token) => ({
-      active: app.players.includes(token),
-      ...game.players[token]
-    }))
+  connecting: app.waiting.includes('room:connected'),
+  players: !game ? [] : game.players._all.map((token) => ({
+    active: app.players.includes(token),
+    ...game.players[token]
+  }))
 }), {
   connectToGame,
   joinGame
@@ -34,8 +34,9 @@ class JoinGameScreen extends Component {
     room: PropTypes.string,
     error: PropTypes.string,
     tokens: PropTypes.array,
-    player: PropTypes.string,
+    player: PropTypes.object,
     joining: PropTypes.bool.isRequired,
+    connecting: PropTypes.bool.isRequired,
     players: PropTypes.arrayOf(PropTypes.object),
     connectToGame: PropTypes.func.isRequired,
     joinGame: PropTypes.func.isRequired,
@@ -57,8 +58,12 @@ class JoinGameScreen extends Component {
       connectToGame
     } = this.props;
 
-    if (params.room && params.room !== room) {
+    // different room, different game
+    if (params.room !== room) {
       connectToGame(params.room);
+    // make sure we always connect to a room
+    } else {
+      connectToGame(room);
     }
   }
 
@@ -86,6 +91,7 @@ class JoinGameScreen extends Component {
       error,
       tokens,
       joining,
+      connecting,
       players,
       joinGame,
       location,
@@ -95,7 +101,7 @@ class JoinGameScreen extends Component {
 
     return (
       <Container data-test-join-game>
-        {!room ? (
+        {connecting ? (
           <Section align="center" justify="center">
             <Spinner xl/>
           </Section>
