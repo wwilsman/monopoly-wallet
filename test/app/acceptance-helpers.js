@@ -48,7 +48,24 @@ GameRoom.set('loader', (theme, name) => {
   }
 });
 
+// mock the global WebSocket class
 window.WebSocket = WebSocket;
+
+// mock the global localStorage interface
+Object.defineProperty(window, 'localStorage', {
+  value: {
+    data: {},
+    setItem(key, string) {
+      this.data[key] = JSON.parse(string);
+    },
+    getItem(key) {
+      return JSON.stringify(this.data[key]);
+    },
+    clear() {
+      this.data = {};
+    }
+  }
+});
 
 /**
  * Starts a mock websocket server and mounts our app
@@ -76,6 +93,9 @@ export function describeApplication(name, setup, only) {
       // setup a mock websocket server
       this.io = new WebSocket.Server(`ws://${window.location.host}`);
       this.io.on('connection', connectSocket);
+
+      // reference the mocked localStorage data
+      this.localStorage = window.localStorage.data;
 
       // mount our app
       this.app = render(<AppRoot test/>, rootElement);
@@ -111,6 +131,7 @@ export function describeApplication(name, setup, only) {
       document.body.removeChild(rootElement);
       rootElement = null;
 
+      window.localStorage.clear();
       this.io.close();
 
       // sometimes our context can hang around
@@ -119,6 +140,7 @@ export function describeApplication(name, setup, only) {
       this.location = null;
       this.state = null;
       this.app = null;
+      this.localStorage = null;
       this.io = null;
     });
 
