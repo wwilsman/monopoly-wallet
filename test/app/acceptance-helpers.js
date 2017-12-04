@@ -15,6 +15,7 @@ import {
   afterEach,
   pauseTest,
   visit,
+  goBack,
   emit,
   convergeOn
 } from './test-helpers';
@@ -91,6 +92,7 @@ export function describeApplication(name, setup, only) {
 
       // helpers specific to this context
       this.visit = visit.bind(this, this.app.history.push);
+      this.goBack = goBack.bind(this, this.app.history.goBack);
       this.emit = emit.bind(this, this.app.socket);
       this.pauseTest = pauseTest;
 

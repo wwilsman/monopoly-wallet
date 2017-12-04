@@ -8,7 +8,6 @@ export const after = window.after;
 /**
  * Pauses a test by removing the timeout and returning a promise that
  * will never resolve.
- *
  * @returns {Promise} a promise that will never resolve
  */
 export function pauseTest() {
@@ -22,21 +21,31 @@ export function pauseTest() {
 /**
  * Visits a path using the provided push function and returns a
  * convergent assertion
- *
- * @param {function} push - function to push  the current history
- * @param {mixed} path - the argument provided to `push`
- * @param {function} [assertion] - the assertion to converge on
+ * @param {Function} push - function to push the current history
+ * @param {Mixed} path - the argument provided to `push`
+ * @param {Function} [assertion] - the assertion to converge on
+ * @returns {Promise} a convergent assertion
  */
 export function visit(push, path, assertion = () => {}) {
   push(path);
+  return convergeOn.call(this, assertion);
+}
 
+/**
+ * Navigates backwards by calling the provided goBack function and
+ * returns a convergent assertion
+ * @param {Function} goBack - function to go back in the current history
+ * @param {Function} [assertion] - the assertion to converge on
+ * @returns {Promise} a convergent assertion
+ */
+export function goBack(goBack, assertion = () => {}) {
+  goBack();
   return convergeOn.call(this, assertion);
 }
 
 /**
  * Emits an event on behalf of the socket after 1ms to ensure other
  * events have been received first
- *
  * @param {WebSocket} ws - WebSocket instance
  * @param {String} event - event name
  * @param {Mixed} ...args - arguments to emit
