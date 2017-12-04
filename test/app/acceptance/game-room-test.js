@@ -84,4 +84,32 @@ describeApplication('GameRoomScreen', function() {
       });
     });
   });
+
+  describe('when reading persisted data', function() {
+    beforeEach(function() {
+      this.localStorage.app = {
+        room: this.room.id,
+        player: {
+          name: 'Player 1',
+          token: 'top-hat'
+        }
+      };
+
+      return this.visit(`/${this.room.id}`, () => {
+        expect(GameRoomPage.$root).to.exist;
+      });
+    });
+
+    it('should show a loading indicator', function() {
+      expect(GameRoomPage.isLoading).to.be.true;
+    });
+
+    it('should automatically connect to and join a room', function() {
+      expect(this.state.app.room).to.equal(this.room.id);
+      expect(this.state.app.player).to.deep.equal({
+        name: 'Player 1',
+        token: 'top-hat'
+      });
+    });
+  });
 });

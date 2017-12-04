@@ -10,6 +10,10 @@ export default {
     return $('[data-test-room-code]').text();
   },
 
+  get isLoading() {
+    return $('[data-test-spinner]').length > 0;
+  },
+
   toast(index) {
     let selector = `[data-test-toast]:eq(${index})`;
 
