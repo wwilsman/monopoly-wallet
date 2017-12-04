@@ -84,7 +84,10 @@ describeApplication('JoinGameScreen', function() {
 
         it('should join the game', function() {
           expect(this.state.game.players).to.have.property('top-hat');
-          expect(this.state.app.player).to.equal('top-hat');
+          expect(this.state.app.player).to.deep.equal({
+            name: 'PLAYER 1',
+            token: 'top-hat'
+          });
         });
 
         it('should go to the game\'s home screen', function() {
@@ -165,7 +168,10 @@ describeApplication('JoinGameScreen', function() {
 
           it('should join the game', function() {
             expect(this.state.game.players).to.have.property('thimble');
-            expect(this.state.app.player).to.equal('thimble');
+            expect(this.state.app.player).to.deep.equal({
+              name: 'PLAYER 3',
+              token: 'thimble'
+            });
           });
 
           it('should go to the game\'s home screen', function() {
