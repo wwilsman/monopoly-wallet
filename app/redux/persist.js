@@ -1,5 +1,3 @@
-const storage = window.localStorage;
-
 /**
  * Persists each value of a state by it's key
  * @param {Object} state - state to persist
@@ -10,7 +8,7 @@ function save(state) {
   for (let i = 0, l = keys.length; i < l; i++) {
     let key = keys[i];
     let value = JSON.stringify(state[key]);
-    storage.setItem(key, value);
+    window.localStorage.setItem(key, value);
   }
 }
 
@@ -22,7 +20,7 @@ function save(state) {
  * @returns {Mixed} the persisted value or defaultValue
  */
 export function load(key, defaultValue = {}) {
-  let value = storage.getItem(key);
+  let value = window.localStorage.getItem(key);
   return value ? JSON.parse(value) : defaultValue;
 }
 
