@@ -5,11 +5,14 @@ export const GO_BACK = 'ROUTER/GO_BACK';
 export const LOCATION_CHANGED = 'ROUTER/LOCATION_CHANGED';
 
 // action creators
-export const push = (pathname) => ({
+export const push = (pathname, state = {}) => ({
   type: PUSH,
   location: {
     pathname,
-    state: { internal: true }
+    state: {
+      internal: true,
+      ...state
+    }
   }
 });
 
