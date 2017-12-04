@@ -61,6 +61,9 @@ export const reducer = (state = [], action) => {
         toast.id !== action.toast.id
       ));
 
+    case event('room:disconnect'):
+      return [];
+
     default:
       return state;
   }
