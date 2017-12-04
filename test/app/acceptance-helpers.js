@@ -175,18 +175,24 @@ export function mockGame({
   );
 
   beforeEach(function() {
-    Object.defineProperty(this, 'room', {
-      get() { return getRoom(id); },
-      configurable: true
-    });
-
-    old = GameRoom.database.store[id];
-    GameRoom.database.store[id] = {
+    let game = {
       id,
       theme: 'classic',
       game: state,
       config
     };
+
+    old = GameRoom.database.store[id];
+    GameRoom.database.store[id] = game;
+
+    Object.defineProperty(this, 'room', {
+      configurable: true,
+      get() {
+        let room = GameRoom._cache[id] || new GameRoom(game);
+        GameRoom._cache[id] = room;
+        return room;
+      }
+    });
 
     if (this.room.refresh) {
       this.room.refresh();
@@ -202,8 +208,4 @@ export function mockGame({
       delete GameRoom.database.store[id];
     }
   });
-}
-
-function getRoom(id) {
-  return GameRoom._cache[id] || { id };
 }
