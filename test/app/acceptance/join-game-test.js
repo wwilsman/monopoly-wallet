@@ -96,6 +96,42 @@ describeApplication('JoinGameScreen', function() {
       });
     });
 
+    describe('after joining a game', function() {
+      beforeEach(function() {
+        return JoinGamePage.joinGame('Player 1', 'top-hat', () => {
+          expect(this.location.pathname).to.equal(`/${this.room.id}`);
+        });
+      });
+
+      it('should persist app data to local storage', function() {
+        expect(this.localStorage.app).to.have.property('room', this.room.id);
+        expect(this.localStorage.app).to.have.property('player')
+          .that.deep.equals({ name: 'PLAYER 1', token: 'top-hat' });
+      });
+
+      it('should persist player data to the location state', function() {
+        expect(this.location.state).to.have.property('player')
+          .that.deep.equals({ name: 'PLAYER 1', token: 'top-hat' });
+      });
+
+      describe('then navigating back', function() {
+        beforeEach(function() {
+          return this.goBack(() => {
+            expect(JoinGamePage.$root).to.exist;
+          });
+        });
+
+        it('should disconnect the player', function() {
+          expect(this.state.app.player).to.be.null;
+        });
+
+        it('should clear the persisted player from local storage', function() {
+          expect(this.localStorage.app).to.have.property('room', this.room.id);
+          expect(this.localStorage.app).to.have.property('player').that.is.null;
+        });
+      });
+    });
+
     describe('with other players', function() {
       mockGame({ state: {
         players: [
