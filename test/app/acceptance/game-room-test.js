@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import { describe, beforeEach, it } from '../test-helpers';
-import { describeApplication } from '../acceptance-helpers';
+import { describeApplication, mockGame } from '../acceptance-helpers';
 
 import GameRoomPage from '../pages/game-room';
 
@@ -85,30 +85,61 @@ describeApplication('GameRoomScreen', function() {
     });
   });
 
-  describe('when reading persisted data', function() {
-    beforeEach(function() {
-      this.localStorage.app = {
-        room: this.room.id,
-        player: {
+  describe('automatically connecting and joining', function() {
+    describe('when reading persisted data', function() {
+      beforeEach(function() {
+        this.localStorage.app = {
+          room: this.room.id,
+          player: {
+            name: 'Player 1',
+            token: 'top-hat'
+          }
+        };
+
+        return this.visit(`/${this.room.id}`, () => {
+          expect(GameRoomPage.$root).to.exist;
+        });
+      });
+
+      it('should show a loading indicator', function() {
+        expect(GameRoomPage.isLoading).to.be.true;
+      });
+
+      it('should automatically connect to and join a room', function() {
+        expect(this.state.app.room).to.equal(this.room.id);
+        expect(this.state.app.player).to.deep.equal({
           name: 'Player 1',
           token: 'top-hat'
-        }
-      };
-
-      return this.visit(`/${this.room.id}`, () => {
-        expect(GameRoomPage.$root).to.exist;
+        });
       });
     });
 
-    it('should show a loading indicator', function() {
-      expect(GameRoomPage.isLoading).to.be.true;
-    });
+    describe('when reading incorrect persisted data', function() {
+      mockGame({ state: {
+        players: [{ token: 'top-hat' }]
+      }});
 
-    it('should automatically connect to and join a room', function() {
-      expect(this.state.app.room).to.equal(this.room.id);
-      expect(this.state.app.player).to.deep.equal({
-        name: 'Player 1',
-        token: 'top-hat'
+      beforeEach(function() {
+        return this.room.constructor.connect(this.room.id)
+          .then((room) => room.join('Player 1', 'top-hat'));
+      });
+
+      beforeEach(function() {
+        this.localStorage.app = {
+          room: this.room.id,
+          player: {
+            name: 'Player 1',
+            token: 'top-hat'
+          }
+        };
+
+        return this.visit(`/${this.room.id}`, function() {
+          expect(GameRoomPage.$root).to.exist;
+        });
+      });
+
+      it('should redirect to the join game screen', function() {
+        expect(this.location.pathname).to.equal(`/${this.room.id}/join`);
       });
     });
   });

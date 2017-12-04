@@ -18,6 +18,7 @@ import Spinner from '../ui/spinner';
   return {
     room: app.room || persisted.room || params.room,
     player: app.player || persisted.player || location.state.player,
+    error: app.error,
     connected: !!game,
     joined: !!app.player
   };
@@ -30,6 +31,7 @@ class GameRoomScreen extends Component {
   static propTypes = {
     room: PropTypes.string,
     player: PropTypes.object,
+    error: PropTypes.string,
     connected: PropTypes.bool.isRequired,
     joined: PropTypes.bool.isRequired,
     connectToGame: PropTypes.func.isRequired,
@@ -70,11 +72,20 @@ class GameRoomScreen extends Component {
   }
 
   componentWillReceiveProps(nextProps) {
-    let { connected, joinGame } = nextProps;
     let { player } = this.state;
+    let {
+      room,
+      error,
+      connected,
+      joinGame,
+      replace
+    } = nextProps;
 
+    // send any errors to the find game screen
+    if (error) {
+      replace(`/${room}/join`);
     // if we just connected join the game
-    if (connected && !this.props.connected) {
+    } else if (connected && !this.props.connected) {
       joinGame(player.name, player.token);
     }
   }
