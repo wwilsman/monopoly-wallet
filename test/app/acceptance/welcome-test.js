@@ -59,8 +59,9 @@ describeApplication('WelcomeScreen', function() {
         expect(this.location.pathname).to.equal('/');
       });
 
-      it('should clear the game room', function() {
+      it('should disconnect from the game', function() {
         expect(this.state.app.room).to.be.empty;
+        expect(this.state.game).to.be.null;
       });
     });
   });
@@ -74,6 +75,23 @@ describeApplication('WelcomeScreen', function() {
 
     it('should go to the join game route', function() {
       expect(this.location.pathname).to.equal('/join');
+    });
+
+    describe('then navigating back', function() {
+      beforeEach(function() {
+        return WelcomePage.goBack(() => {
+          expect(WelcomePage.$root).to.exist;
+        });
+      });
+
+      it('should go back', function() {
+        expect(this.location.pathname).to.equal('/');
+      });
+
+      it('should clear the game ', function() {
+        expect(this.state.app.room).to.be.empty;
+        expect(this.state.game).to.be.null;
+      });
     });
   });
 });
