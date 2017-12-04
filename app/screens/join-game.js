@@ -62,7 +62,6 @@ class JoinGameScreen extends Component {
   componentWillMount() {
     let {
       room,
-      player,
       connected,
       params,
       connectToGame,
@@ -108,7 +107,6 @@ class JoinGameScreen extends Component {
 
   render() {
     let {
-      room,
       error,
       tokens,
       joining,
