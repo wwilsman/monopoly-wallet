@@ -2,7 +2,11 @@ import React, { Component } from 'react';
 import PropTypes from 'prop-types';
 import route from './route';
 
-import { connectToGame, joinGame } from '../redux/game';
+import {
+  connectToGame,
+  disconnectGame,
+  joinGame
+} from '../redux/game';
 
 import { Container, Section } from '../ui/layout';
 import { NavLeft, NavRight } from '../ui/nav';
@@ -17,6 +21,7 @@ import JoinGameForm from '../game/join-game-form';
   room: app.room,
   error: app.error,
   player: app.player,
+  connected: !!game,
   tokens: config.playerTokens,
   joining: app.waiting.includes('game:joined'),
   connecting: app.waiting.includes('room:connected'),
@@ -26,6 +31,7 @@ import JoinGameForm from '../game/join-game-form';
   }))
 }), {
   connectToGame,
+  disconnectGame,
   joinGame
 })
 
@@ -35,10 +41,12 @@ class JoinGameScreen extends Component {
     error: PropTypes.string,
     tokens: PropTypes.array,
     player: PropTypes.object,
+    connected: PropTypes.bool.isRequired,
     joining: PropTypes.bool.isRequired,
     connecting: PropTypes.bool.isRequired,
     players: PropTypes.arrayOf(PropTypes.object),
     connectToGame: PropTypes.func.isRequired,
+    disconnectGame: PropTypes.func.isRequired,
     joinGame: PropTypes.func.isRequired,
     push: PropTypes.func.isRequired,
     replace: PropTypes.func.isRequired,
@@ -54,34 +62,47 @@ class JoinGameScreen extends Component {
   componentWillMount() {
     let {
       room,
+      player,
+      connected,
       params,
-      connectToGame
+      connectToGame,
+      disconnectGame
     } = this.props;
 
     // different room, different game
     if (params.room !== room) {
       connectToGame(params.room);
     // make sure we always connect to a room
-    } else {
+    } else if (!connected) {
       connectToGame(room);
+    // if we are connected to a room, disconnect
+    } else {
+      disconnectGame();
     }
   }
 
   componentWillReceiveProps(nextProps) {
     let {
-      room:nextRoom,
+      room,
       error,
       player,
+      connected,
+      connecting,
+      connectToGame,
+      params,
       push,
       replace
     } = nextProps;
 
     // if we have a known player, send them to the game room
-    if (nextRoom && player) {
-      push(`/${nextRoom}`);
+    if (room && player) {
+      push(`/${room}`, { player });
     // if we aren't connected and have an error, send them to find a room
-    } else if (!nextRoom && error) {
+    } else if (!connected && error) {
       replace(`/join`);
+    // if we aren't connected or connecting, connect
+    } else if (!connected && !connecting) {
+      connectToGame(params.room);
     }
   }
 
