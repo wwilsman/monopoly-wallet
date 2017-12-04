@@ -31,15 +31,7 @@ class AppRoot extends Component {
 
   store = createStore({
     socket: this.socket,
-    history: this.history,
-    initialState: {
-      router: {
-        location: {
-          pathname: this.history.location.pathname,
-          state: this.history.location.state || {}
-        }
-      }
-    }
+    history: this.history
   });
 
   render() {

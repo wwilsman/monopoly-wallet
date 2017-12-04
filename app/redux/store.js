@@ -24,6 +24,9 @@ import {
 import {
   middleware as socketMiddleware
 } from './socket';
+import {
+  middleware as persistMiddleware
+} from './persist';
 
 // redux dev tools
 const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
@@ -37,26 +40,37 @@ const rootReducer = combineReducers({
   router: routerReducer
 });
 
+// helper to create the initial state
+const getInitialState = (history) => ({
+  router: {
+    location: {
+      pathname: history.location.pathname,
+      state: history.location.state || {}
+    }
+  }
+});
+
 /**
  * Creates a new redux store instance with our middleware and sets up
  * hot module reloading for reducers
- * @param {Object} [initialState] The initial app state
- * @param {Object} history - Implements a history interface
  * @param {Socket} socket - Socket.io socket instance
+ * @param {Object} history - Implements a history interface
  * @returns {Object} A new redux store
  */
-export default ({
-  socket,
-  history,
-  initialState = {}
-}) => {
+export default ({ socket, history }) => {
   let store = createStore(
     rootReducer,
-    initialState,
+    getInitialState(history),
     composeEnhancers(
       applyMiddleware(
         routerMiddleware(history),
-        socketMiddleware(socket)
+        socketMiddleware(socket),
+        persistMiddleware(({ app }) => ({
+          app: {
+            room: app.room,
+            player: app.player
+          }
+        }))
       )
     )
   );
