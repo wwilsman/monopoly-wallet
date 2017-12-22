@@ -25,6 +25,7 @@
     "yamljs": "^0.3.0"
   },
   "devDependencies": {
+    "@bigtest/convergence": "^0.1.0",
     "autoprefixer": "^7.1.5",
     "babel-cli": "^6.24.1",
     "babel-core": "^6.25.0",

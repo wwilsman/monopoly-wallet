@@ -1,3 +1,6 @@
+import { convergeOn } from '@bigtest/convergence';
+export { convergeOn };
+
 // handy exports
 export const describe = window.describe;
 export const beforeEach = window.beforeEach;
@@ -56,71 +59,6 @@ export function emit(ws, event, ...args) {
       ws.send(JSON.stringify({ event, args }));
     }
   }, 1);
-}
-
-/**
- * Creates a promise that will only resolve once a give condition has
- * been met. After a given timeout, if the `assertion` still does not
- * pass, the promise will be rejected.
- *
- * By default, `convergeOn` checks that an assertion passes at least
- * once during the timeout window. Sometimes however, you want to
- * check the opposite: not that something has changed, but that
- * something remains constant. In that case you want to set `invert`
- * to true, and it will only resolve if the `assertion` is true for
- * the entire timeout period, and reject when the `assertion` fails.
- *
- * @param {function} assertion - run to test condition repeatedly
- * @param {boolean} invert - if true, makes sure assertion passes throughout the entire timeout
- * @param {number} time - timeout in milliseconds to check the assertion
- * @returns {Promise} resolves according to the above
- */
-export function convergeOn(assertion, invert, time) {
-  let start = convergeOn._start = convergeOn._start || Date.now();
-  let timeout = time || (this ? this.timeout() : 2000);
-  let interval = 10;
-  let context = this;
-
-  // cleanup when all convergences are done after the interval
-  let done = () => {
-    convergeOn._length -= 1;
-
-    setTimeout(() => {
-      if (!convergeOn._length) {
-        delete convergeOn._start;
-        delete convergeOn._length;
-      }
-    }, interval);
-  };
-
-  return new Promise((resolve, reject) => {
-    // keep track of all convergences
-    convergeOn._length = (convergeOn._length || 0) + 1;
-
-    // do the actual loop
-    (function loop() {
-      let ellapsed = Date.now() - start;
-      let doLoop = ellapsed + interval < timeout;
-
-      try {
-        let ret = assertion.call(context);
-
-        if (invert && doLoop) {
-          window.setTimeout(loop, interval);
-        } else {
-          done();
-          resolve(ret);
-        }
-      } catch(error) {
-        if (!invert && doLoop) {
-          window.setTimeout(loop, interval);
-        } else if (invert || !doLoop) {
-          done();
-          reject(error);
-        }
-      }
-    })();
-  });
 }
 
 /**
