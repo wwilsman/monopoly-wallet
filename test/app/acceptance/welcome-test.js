@@ -28,7 +28,7 @@ describeApplication('WelcomeScreen', function() {
       return this.visit('/404-not-found');
     });
 
-    it.still('should redirect back to welcome', function() {
+    it.always('should redirect back to welcome', function() {
       expect(this.location.pathname).to.equal('/');
     });
   });

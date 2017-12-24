@@ -10,7 +10,7 @@ describeApplication('GameRoomScreen', function() {
       return this.visit(`/${this.room.id}`);
     });
 
-    it.still('should redirect to the join game screen', function() {
+    it.always('should redirect to the join game screen', function() {
       expect(this.location.pathname).to.equal(`/${this.room.id}/join`);
     });
   });

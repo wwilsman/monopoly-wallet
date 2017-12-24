@@ -13,11 +13,10 @@ import {
   describe,
   beforeEach,
   afterEach,
-  pauseTest,
   visit,
   goBack,
   emit,
-  convergeOn
+  converge
 } from './test-helpers';
 import {
   createGameState,
@@ -114,12 +113,14 @@ export function describeApplication(name, setup, only) {
       this.visit = visit.bind(this, this.app.history.push);
       this.goBack = goBack.bind(this, this.app.history.goBack);
       this.emit = emit.bind(this, this.app.socket);
-      this.pauseTest = pauseTest;
+
+      // convergence creator
+      this.converge = converge;
 
       // wait until our app has finished loading
-      return convergeOn(() => {
+      return converge().once(() => {
         chai.expect(this.state.app.waiting).to.not.include('connected');
-      });
+      }).run();
     });
 
     // teardown

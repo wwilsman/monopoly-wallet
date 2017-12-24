@@ -1,70 +1,118 @@
 import $ from 'jquery';
 import { expect } from 'chai';
-import { convergeOn, convergent } from '../test-helpers';
+import Convergence from '@bigtest/convergence';
 
 /**
- * A convergent helper for selecting an element using jQuery and
- * ensuring that the element exists in the DOM
- * @param {String} selector - jQuery selector
- * @returns {Promise} a converging promise
+ * Interaction class to perform multiple interactions with the DOM
+ * within one convergence period
  */
-export function select(selector) {
-  return convergeOn(() => {
-    let $node = $(selector);
-    expect($node).to.exist;
-    return $node;
-  });
+export class Interaction {
+  /**
+   * @constructor
+   * @param {Convergence} convergence - the convergence to start with
+   */
+  constructor(convergence = new Convergence()) {
+    Object.defineProperty(this, 'convergence', {
+      value: convergence
+    });
+  }
+
+  /**
+   * @see Convergence.once
+   */
+  once(assert) {
+    return new Interaction(
+      this.convergence.once(assert)
+    );
+  }
+
+  /**
+   * @see Convergence.do
+   */
+  do(exec) {
+    return new Interaction(
+      this.convergence.do(exec)
+    );
+  }
+
+  /**
+   * Adds a convergence for an element existing in the DOM
+   * @param {String} selector - jQuery selector
+   * @returns {Interaction}
+   */
+  select(selector) {
+    return new Interaction(
+      this.convergence.once(() => {
+        let $node = $(selector);
+        expect($node).to.exist;
+        return $node;
+      })
+    );
+  }
+
+  /**
+   * Adds a convergence that clicks an element when it exists
+   * @param {String} selector - jQuery selector
+   * @returns {Interaction}
+   */
+  click(selector) {
+    return this.select(selector)
+      .do(($node) => {
+        $node.get(0).click();
+      });
+  }
+
+  /**
+   * Adds a convergence that fills an input when it exists
+   * @param {String} selector - jQuery selector
+   * @param {String} value - desired input value
+   * @returns {Interaction}
+   */
+  fill(selector, value) {
+    return this.select(selector)
+      .do(($node) => {
+        $node.val(value).each((i, el) => {
+          triggerChange(el);
+        });
+      });
+  }
+
+  /**
+   * @see Convergence.run
+   */
+  run() {
+    return this.convergence.run();
+  }
 }
 
 /**
- * A convergent click helper that waits for the element to exist and,
- * by default, asserts that the element was clicked
+ * Helper to return an converging promise that clicks an element and
+ * asserts something before converging
  * @param {String} selector - jQuery selector
- * @param {Function} [assertion] - convergent assertion
- * @returns {Promise} a converging promise
+ * @param {Function} assertion - converging assertion
+ * @returns {Promise} converging promise
  */
 export function click(selector, assertion) {
-  // used for the default assertion
-  let clicked = false;
-  let useDefault = !assertion;
-
-  if (useDefault) {
-    assertion = () => {
-      expect(clicked, `unable to click ${selector}`).to.be.true;
-    };
-  }
-
-  return select(selector).then(($node) => {
-    if (useDefault) {
-      $node.one('click', () => clicked = true);
-    }
-
-    $node.get(0).click();
-  }).then(convergent(assertion));
+  return new Interaction()
+    .click(selector)
+    .once(assertion)
+    .run();
 }
 
+
 /**
- * A convergent fill helper that waits for the input to exist and,
- * by default, asserts that the value of the input has changed
+ * Helper to return an converging promise that fills an input and
+ * asserts something before converging
  * @param {String} selector - jQuery selector
- * @param {String} value - value to fill
- * @param {Function} [assertion] - convergent assertion
- * @returns {Promise} a converging promise
+ * @param {String} value - desired input value
+ * @param {Function} assertion - converging assertion
+ * @returns {Promise} converging promise
  */
 export function fill(selector, value, assertion) {
-  if (!assertion) {
-    assertion = () => {
-      // we don't care about the case
-      let val = ($(selector).val() || '').toLowerCase();
-      expect(val).to.equal(value.toLowerCase());
-    };
-  }
-
-  return select(selector).then(($input) => {
-    $input.val(value).each((i, el) => {
-      triggerChange(el);
-    });
-  }).then(convergent(assertion));
+  return new Interaction()
+    .fill(selector, value)
+    .once(assertion)
+    .run();
 }
 
 /**

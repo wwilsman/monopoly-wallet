@@ -21,7 +21,7 @@ describeApplication('FindRoomScreen', function() {
   });
 
 
-  it.still('should not show a back button', function() {
+  it.always('should not show a back button', function() {
     expect(FindRoomPage.$backButton).to.not.exist;
   });
 
@@ -66,7 +66,7 @@ describeApplication('FindRoomScreen', function() {
       return FindRoomPage.findGame('f4k33');
     });
 
-    it.still('should not change routes', function() {
+    it.always('should not change routes', function() {
       expect(this.location.pathname).to.equal('/join');
     });
 

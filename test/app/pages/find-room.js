@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { click, fill } from './helpers';
+import { Interaction, click } from './helpers';
 
 export default {
   get $root() {
@@ -38,8 +38,10 @@ export default {
     return $('[data-test-find-game-btn]');
   },
 
-  findGame(room, assertion) {
-    return fill('[data-test-find-game-input] [data-test-input]', room)
-      .then(() => click('[data-test-find-game-btn]', assertion));
+  findGame(room) {
+    return new Interaction()
+      .fill('[data-test-find-game-input] [data-test-input]', room)
+      .click('[data-test-find-game-btn]')
+      .run();
   }
 };

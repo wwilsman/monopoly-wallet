@@ -31,7 +31,7 @@ describeApplication('JoinGameScreen', function() {
       expect(JoinGamePage.tokensLabel).to.equal('Select a token');
     });
 
-    it.still('should not show a back button', function() {
+    it.always('should not show a back button', function() {
       expect(JoinGamePage.$backButton).to.not.exist;
     });
 
@@ -220,7 +220,7 @@ describeApplication('JoinGameScreen', function() {
             return this.room.vote('top-hat', pollId, false);
           });
 
-          it.still('should leave inputs disabled', function() {
+          it.always('should leave inputs disabled', function() {
             let tokenCount = this.state.config.playerTokens.length;
             expect(JoinGamePage.$nameInput).to.have.prop('disabled', true);
             expect(JoinGamePage.$disabledTokens).to.have.lengthOf(tokenCount);

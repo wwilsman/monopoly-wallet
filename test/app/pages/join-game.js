@@ -1,5 +1,5 @@
 import $ from 'jquery';
-import { click, fill } from './helpers';
+import { Interaction, click, fill } from './helpers';
 
 export default {
   get $root() {
@@ -63,8 +63,22 @@ export default {
   },
 
   joinGame(name, token, assertion) {
-    name && this.fillName(name);
-    token && this.selectToken(token);
-    return click('[data-test-join-game-btn]', assertion);
+    let join = new Interaction();
+
+    if (name) {
+      join = join.fill('[data-test-join-game-name-input] [data-test-input]', name);
+    }
+
+    if (token) {
+      join = join.click(`[data-test-radio-item="${token}"]`);
+    }
+
+    join = join.click('[data-test-join-game-btn]');
+
+    if (assertion) {
+      join = join.once(assertion);
+    }
+
+    return join.run();
   }
 };
