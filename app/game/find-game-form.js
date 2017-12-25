@@ -5,7 +5,7 @@ import { Container, Section } from '../ui/layout';
 import Input from '../ui/forms/input';
 import Button from '../ui/button';
 
-class FindGameModal extends Component {
+class FindGameForm extends Component {
   static propTypes = {
     loading: PropTypes.bool,
     error: PropTypes.string,
@@ -66,4 +66,4 @@ class FindGameModal extends Component {
   }
 }
 
-export default FindGameModal;
+export default FindGameForm;
