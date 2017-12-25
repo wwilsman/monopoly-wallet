@@ -1,6 +1,11 @@
 @import '../../styles/variables';
 
+.root > * {
+  vertical-align: middle;
+}
+
 .title {
+  @extends .root;
   color: var(--color-text-lighter);
   font-size: var(--size-xl);
   text-align: center;
@@ -36,4 +41,8 @@
 
 .size--sm {
   font-size: var(--size-sm);
+}
+
+.size--xl {
+  font-size: var(--size-xl);
 }

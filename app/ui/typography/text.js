@@ -5,31 +5,36 @@ import styles from './typography.css';
 
 const cx = classNames.bind(styles);
 
-const Text = ({
+function Text({
   color,
   center,
   error,
   sm,
+  xl,
   upper,
   className,
   ...props
-}) => (
-  <span
-      className={cx(className, {
-        [`color--${color}`]: !!color,
-        'is-center': center,
-        'is-error': error,
-        'is-upper': upper,
-        'size--sm': sm
-      })}
-      {...props}/>
-);
+}) {
+  return (
+    <span
+        className={cx('root', {
+          [`color--${color}`]: !!color,
+          'is-center': center,
+          'is-error': error,
+          'is-upper': upper,
+          'size--sm': sm,
+          'size--xl': xl
+        }, className)}
+        {...props}/>
+  );
+}
 
 Text.propTypes = {
   color: PropTypes.oneOf(['primary', 'secondary']),
   center: PropTypes.bool,
   error: PropTypes.bool,
   sm: PropTypes.bool,
+  xl: PropTypes.bool,
   upper: PropTypes.bool,
   className: PropTypes.string
 };
