@@ -39,7 +39,8 @@ class GameRoomScreen extends Component {
     replace: PropTypes.func.isRequired,
     params: PropTypes.shape({
       room: PropTypes.string.isRequired
-    }).isRequired
+    }).isRequired,
+    children: PropTypes.node.isRequired
   };
 
   // when the component updates during the connect event, we lose the
@@ -91,7 +92,7 @@ class GameRoomScreen extends Component {
   }
 
   render() {
-    let { room, joined } = this.props;
+    let { room, joined, children } = this.props;
 
     return (
       <Container data-test-game-room>
@@ -100,7 +101,7 @@ class GameRoomScreen extends Component {
             <Spinner xl/>
           </Section>
         ) : [
-          <Section key={0} flex="none" row>
+          <Section key="header" flex="none" row>
             <NavLeft/>
 
             <NavRight>
@@ -112,7 +113,11 @@ class GameRoomScreen extends Component {
             </NavRight>
           </Section>,
 
-          <Toaster key={1}/>
+          <Container key="content">
+            {children}
+          </Container>,
+
+          <Toaster key="toaster"/>
         ]}
       </Container>
     );

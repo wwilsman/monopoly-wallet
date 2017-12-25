@@ -14,6 +14,7 @@ import WelcomeScreen from './screens/welcome';
 import FindRoomScreen from './screens/find-room';
 import JoinGameScreen from './screens/join-game';
 import GameRoomScreen from './screens/game-room';
+import DashboardScreen from './screens/dashboard';
 import SandboxScreen from './screens/sandbox';
 
 class AppRoot extends Component {
@@ -35,13 +36,18 @@ class AppRoot extends Component {
   });
 
   render() {
+    let roompath = ':room([^/]{5})';
+
     return (
       <Provider store={this.store}>
         <AppScreen path="/(.*)" redirect="/">
           <WelcomeScreen path="/"/>
           <FindRoomScreen path="/join"/>
-          <JoinGameScreen path="/:room([^\/]{5})/join"/>
-          <GameRoomScreen path="/:room([^\/]{5})"/>
+          <JoinGameScreen path={`/${roompath}/join`}/>
+
+          <GameRoomScreen path={`/${roompath}`}>
+            <DashboardScreen path={`/${roompath}`}/>
+          </GameRoomScreen>
 
           {process.env.NODE_ENV === 'development' && (
             <SandboxScreen path="/sandbox"/>
