@@ -1,32 +1,16 @@
-import $ from 'jquery';
-import { click } from './helpers';
+import {
+  page,
+  find,
+  text,
+  clickable
+} from '@bigtest/interaction';
 
-export default {
-  get $root() {
-    return $('[data-test-welcome]');
-  },
+@page class WelcomePage {
+  title = text('[data-test-welcome-title]');
+  $newGameBtn = find('[data-test-welcome-new-game-btn]');
+  clickNewGame = clickable('[data-test-welcome-new-game-btn]');
+  $joinGameBtn = find('[data-test-welcome-join-game-btn]');
+  clickJoinGame = clickable('[data-test-welcome-join-game-btn]');
+}
 
-  get title() {
-    return $('[data-test-welcome-title]').text();
-  },
-
-  get $newGameBtn() {
-    return $('[data-test-welcome-new-game-btn]');
-  },
-
-  clickNewGame(assertion) {
-    return click('[data-test-welcome-new-game-btn]', assertion);
-  },
-
-  get $joinGameBtn() {
-    return $('[data-test-welcome-join-game-btn]');
-  },
-
-  clickJoinGame(assertion) {
-    return click('[data-test-welcome-join-game-btn]', assertion);
-  },
-
-  goBack(assertion) {
-    return click($('[data-test-back]'), assertion);
-  }
-};
+export default new WelcomePage('[data-test-welcome]');

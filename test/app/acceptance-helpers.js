@@ -1,30 +1,14 @@
 import React from 'react';
-import {
-  render,
-  unmountComponentAtNode
-} from 'react-dom';
+import { render, unmountComponentAtNode } from 'react-dom';
 
 import chai from 'chai';
-import chaiJQuery from 'chai-jquery';
+import chaiDOM from 'chai-dom';
 import chaiAsPromised from 'chai-as-promised';
-import $ from 'jquery';
+import { describe, beforeEach, afterEach } from '@bigtest/mocha';
+import Convergence from '@bigtest/convergence';
 
-import {
-  describe,
-  beforeEach,
-  afterEach,
-  visit,
-  goBack,
-  emit,
-  converge
-} from './test-helpers';
-import {
-  createGameState,
-  transformGameState
-} from '../helpers';
-
+import { createGameState, transformGameState } from '../helpers';
 import WebSocket from './mock-websocket';
-
 import GameRoom from '../../server/room';
 import connectSocket from '../../server/socket';
 import AppRoot from '../../app/root';
@@ -33,8 +17,8 @@ import CONFIG_FIXTURE from '../../server/themes/classic/config.yml';
 import PROPERTY_FIXTURES from '../../server/themes/classic/properties.yml';
 import MESSAGES_FIXTURE from '../../server/themes/classic/messages.yml';
 
-// use chai jquery matchers
-chai.use((chai, utils) => chaiJQuery(chai, utils, $));
+// use chai dom matchers
+chai.use(chaiDOM);
 // and chai as promised
 chai.use(chaiAsPromised);
 
@@ -65,6 +49,42 @@ Object.defineProperty(window, 'localStorage', {
     }
   }
 });
+
+/**
+ * Visits a path using the provided push function and returns
+ * a convergence instance
+ * @param {Function} push - function to push the current history
+ * @param {Mixed} path - the argument provided to `push`
+ * @returns {Convergence}
+ */
+function visit(push, path) {
+  return new Convergence().do(() => push(path));
+}
+
+/**
+ * Navigates backwards by calling the provided goBack function and
+ * returns a convergence instance
+ * @param {Function} goBack - function to go back in the current history
+ * @returns {Convergence}
+ */
+function goBack(goBack) {
+  return new Convergence().do(() => goBack());
+}
+
+/**
+ * Emits an event on behalf of the socket after 1ms to ensure other
+ * events have been received first
+ * @param {WebSocket} ws - WebSocket instance
+ * @param {String} event - event name
+ * @param {Mixed} ...args - arguments to emit
+ */
+function emit(ws, event, ...args) {
+  window.setTimeout(() => {
+    if (ws.readyState === 1) {
+      ws.send(JSON.stringify({ event, args }));
+    }
+  }, 1);
+}
 
 /**
  * Starts a mock websocket server and mounts our app
@@ -114,13 +134,10 @@ export function describeApplication(name, setup, only) {
       this.goBack = goBack.bind(this, this.app.history.goBack);
       this.emit = emit.bind(this, this.app.socket);
 
-      // convergence creator
-      this.converge = converge;
-
       // wait until our app has finished loading
-      return converge().once(() => {
+      return new Convergence().once(() => {
         chai.expect(this.state.app.waiting).to.not.include('connected');
-      }).run();
+      });
     });
 
     // teardown

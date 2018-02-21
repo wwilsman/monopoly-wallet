@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { describe, beforeEach, it } from '../test-helpers';
+import { describe, beforeEach, it } from '@bigtest/mocha';
 import { describeApplication, mockGame } from '../acceptance-helpers';
 
 import JoinGamePage from '../pages/join-game';
@@ -7,7 +7,7 @@ import JoinGamePage from '../pages/join-game';
 describeApplication('JoinGameScreen', function() {
   describe('with a specific room', function() {
     beforeEach(function() {
-      return this.visit(`/${this.room.id}/join`, () => {
+      return this.visit(`/${this.room.id}/join`).once(() => {
         expect(JoinGamePage.room).to.equal(this.room.id);
       });
     });
@@ -27,12 +27,12 @@ describeApplication('JoinGameScreen', function() {
 
     it('should display a token select field', function() {
       let tokenCount = this.state.config.playerTokens.length;
-      expect(JoinGamePage.$tokens).to.have.lengthOf(tokenCount);
+      expect(JoinGamePage.tokens()).to.have.lengthOf(tokenCount);
       expect(JoinGamePage.tokensLabel).to.equal('Select a token');
     });
 
     it.always('should not show a back button', function() {
-      expect(JoinGamePage.$backButton).to.not.exist;
+      expect(JoinGamePage.hasBackBtn).to.be.false;
     });
 
     describe('when only a name is provided', function() {
@@ -40,30 +40,31 @@ describeApplication('JoinGameScreen', function() {
         return JoinGamePage.fillName('Player 1');
       });
 
-      it('should not allow joining yet', function() {
-        expect(JoinGamePage.$submit).to.have.prop('disabled', true);
+      it.always('should not allow joining yet', function() {
+        expect(JoinGamePage.$submit).to.have.property('disabled', true);
       });
     });
 
     describe('when only a token is selected', function() {
       beforeEach(function() {
-        return JoinGamePage.selectToken('top-hat');
+        return JoinGamePage.tokens(0).click();
       });
 
-      it('should not allow joining yet', function() {
-        expect(JoinGamePage.$submit).to.have.prop('disabled', true);
+      it.always('should not allow joining yet', function() {
+        expect(JoinGamePage.$submit).to.have.property('disabled', true);
       });
     });
 
     describe('when both a name and token is selected', function() {
       beforeEach(function() {
-        return JoinGamePage.fillName('Player 1')
-          .then(() => JoinGamePage.selectToken('top-hat'));
+        return JoinGamePage
+          .fillName('Player 1')
+          .append(JoinGamePage.tokens(6).click());
       });
 
       it('should allow joining', function() {
         expect(JoinGamePage.$submit).to.have.text('Join Game');
-        expect(JoinGamePage.$submit).to.have.prop('disabled', false);
+        expect(JoinGamePage.$submit).to.have.property('disabled', false);
       });
 
       describe('and join game is clicked', function() {
@@ -77,9 +78,9 @@ describeApplication('JoinGameScreen', function() {
 
         it('should disable all inputs', function() {
           let tokenCount = this.state.config.playerTokens.length;
-          expect(JoinGamePage.$nameInput).to.have.prop('disabled', true);
-          expect(JoinGamePage.$disabledTokens).to.have.lengthOf(tokenCount);
-          expect(JoinGamePage.$submit).to.have.prop('disabled', true);
+          expect(JoinGamePage.$nameInput).to.have.property('disabled', true);
+          expect(JoinGamePage.disabledTokens).to.equal(tokenCount);
+          expect(JoinGamePage.$submit).to.have.property('disabled', true);
         });
 
         it('should join the game', function() {
@@ -98,7 +99,7 @@ describeApplication('JoinGameScreen', function() {
 
     describe('after joining a game', function() {
       beforeEach(function() {
-        return JoinGamePage.joinGame('Player 1', 'top-hat', () => {
+        return JoinGamePage.joinGame('Player 1', 'top-hat').once(() => {
           expect(this.location.pathname).to.equal(`/${this.room.id}`);
         });
       });
@@ -116,7 +117,7 @@ describeApplication('JoinGameScreen', function() {
 
       describe('then navigating back', function() {
         beforeEach(function() {
-          return this.goBack(() => {
+          return this.goBack().once(() => {
             expect(JoinGamePage.$root).to.exist;
           });
         });
@@ -141,8 +142,8 @@ describeApplication('JoinGameScreen', function() {
       }});
 
       it('should prevent selecting used tokens', function() {
-        expect(JoinGamePage.$token('top-hat')).to.have.prop('disabled', true);
-        expect(JoinGamePage.$token('automobile')).to.have.prop('disabled', true);
+        expect(JoinGamePage.tokens(6).isDisabled).to.be.true; // 6 => top-hat
+        expect(JoinGamePage.tokens(0).isDisabled).to.be.true; // 0 => automobile
       });
 
       it('should show an "ask to join" message', function() {
@@ -155,8 +156,8 @@ describeApplication('JoinGameScreen', function() {
         });
 
         it('should enable a used token with the token player\'s name', function() {
-          expect(JoinGamePage.$token('top-hat')).to.have.prop('disabled', false);
-          expect(JoinGamePage.$token('automobile')).to.have.prop('disabled', true);
+          expect(JoinGamePage.tokens(6).isDisabled).to.be.false;
+          expect(JoinGamePage.tokens(0).isDisabled).to.be.true;
         });
 
         describe('and they are playing', function() {
@@ -166,9 +167,9 @@ describeApplication('JoinGameScreen', function() {
           });
 
           it('should not enable their token with their name', function() {
-            expect(JoinGamePage.$disabledTokens).to.have.lengthOf(2);
-            expect(JoinGamePage.$token('top-hat')).to.have.prop('disabled', true);
-            expect(JoinGamePage.$token('automobile')).to.have.prop('disabled', true);
+            expect(JoinGamePage.disabledTokens).to.equal(2);
+            expect(JoinGamePage.tokens(6).isDisabled).to.be.true;
+            expect(JoinGamePage.tokens(0).isDisabled).to.be.true;
           });
         });
       });
@@ -181,9 +182,12 @@ describeApplication('JoinGameScreen', function() {
 
           // join with the other player first...
           return this.room.constructor.connect(this.room.id)
-            .then((room) => room.join('Player 1', 'top-hat'))
+            .then((room) => room.join('Player 1', 'top-hat'));
+        });
+
+        beforeEach(function() {
           // ...then ask to join via the UI
-            .then(() => JoinGamePage.joinGame('Player 3', 'thimble'));
+          return JoinGamePage.joinGame('Player 3', 'thimble');
         });
 
         it('should indicate the other players are being asked', function() {
@@ -192,9 +196,9 @@ describeApplication('JoinGameScreen', function() {
 
         it('should disable inputs', function() {
           let tokenCount = this.state.config.playerTokens.length;
-          expect(JoinGamePage.$nameInput).to.have.prop('disabled', true);
-          expect(JoinGamePage.$disabledTokens).to.have.lengthOf(tokenCount);
-          expect(JoinGamePage.$submit).to.have.prop('disabled', true);
+          expect(JoinGamePage.$nameInput).to.have.property('disabled', true);
+          expect(JoinGamePage.disabledTokens).to.equal(tokenCount);
+          expect(JoinGamePage.$submit).to.have.property('disabled', true);
         });
 
         describe('and the other player votes yes', function() {
@@ -222,9 +226,9 @@ describeApplication('JoinGameScreen', function() {
 
           it.always('should leave inputs disabled', function() {
             let tokenCount = this.state.config.playerTokens.length;
-            expect(JoinGamePage.$nameInput).to.have.prop('disabled', true);
-            expect(JoinGamePage.$disabledTokens).to.have.lengthOf(tokenCount);
-            expect(JoinGamePage.$submit).to.have.prop('disabled', true);
+            expect(JoinGamePage.$nameInput).to.have.property('disabled', true);
+            expect(JoinGamePage.disabledTokens).to.equal(tokenCount);
+            expect(JoinGamePage.$submit).to.have.property('disabled', true);
           });
 
           it('should show an error', function() {

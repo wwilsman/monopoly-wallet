@@ -1,8 +1,9 @@
 import { expect } from 'chai';
-import { describe, beforeEach, it } from '../test-helpers';
+import { describe, beforeEach, it } from '@bigtest/mocha';
 import { describeApplication } from '../acceptance-helpers';
 
 import FindRoomPage from '../pages/find-room';
+import JoinGamePage from '../pages/join-game';
 
 describeApplication('FindRoomScreen', function() {
   beforeEach(function() {
@@ -22,7 +23,7 @@ describeApplication('FindRoomScreen', function() {
 
 
   it.always('should not show a back button', function() {
-    expect(FindRoomPage.$backButton).to.not.exist;
+    expect(FindRoomPage.hasBackBtn).to.be.false;
   });
 
   describe('and searching for an existing room', function() {
@@ -35,24 +36,24 @@ describeApplication('FindRoomScreen', function() {
     });
 
     it('should disable all inputs', function() {
-      expect(FindRoomPage.$roomInput).to.have.prop('disabled', true);
-      expect(FindRoomPage.$submit).to.have.prop('disabled', true);
+      expect(FindRoomPage.$roomInput).to.have.property('disabled', true);
+      expect(FindRoomPage.$submit).to.have.property('disabled', true);
     });
 
     it('should go to the join game route for a game', function() {
       expect(this.location.pathname).to.equal(`/${this.room.id}/join`);
       expect(this.state.app.room).to.equal(this.room.id);
+      expect(JoinGamePage.$root).to.exist;
     });
 
     describe('then navigating back', function() {
       beforeEach(function() {
-        return FindRoomPage.goBack(() => {
-          expect(FindRoomPage.$root).to.exist;
-        });
+        return JoinGamePage.clickBack();
       });
 
       it('should go back', function() {
         expect(this.location.pathname).to.equal('/join');
+        expect(FindRoomPage.$root).to.exist;
       });
 
       it('should clear the game room', function() {

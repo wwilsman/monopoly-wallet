@@ -62,13 +62,13 @@ module.exports = {
 
   entry: env({
     development: [
-      'babel-polyfill',
+      '@babel/polyfill',
       'react-hot-loader/patch',
       'webpack-hot-middleware/client',
       './app/index.js'
     ],
     production: [
-      'babel-polyfill',
+      '@babel/polyfill',
       './app/index.js'
     ]
   }),
@@ -116,12 +116,12 @@ module.exports = {
         options: {
           babelrc: false,
           presets: [
-            ['env', { modules: false }],
-            'stage-2',
-            'react'
+            '@babel/preset-env',
+            '@babel/preset-stage-2',
+            '@babel/preset-react'
           ],
           plugins: env({
-            base: ['transform-decorators-legacy'],
+            base: ['@babel/plugin-proposal-decorators'],
             development: ['react-hot-loader/babel']
           })
         }

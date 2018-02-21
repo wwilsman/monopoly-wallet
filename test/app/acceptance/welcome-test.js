@@ -1,8 +1,10 @@
 import { expect } from 'chai';
-import { describe, beforeEach, it } from '../test-helpers';
+import { describe, beforeEach, it } from '@bigtest/mocha';
 import { describeApplication } from '../acceptance-helpers';
 
 import WelcomePage from '../pages/welcome';
+import FindRoomPage from '../pages/find-room';
+import JoinGamePage from '../pages/join-game';
 
 describeApplication('WelcomeScreen', function() {
   beforeEach(function() {
@@ -35,9 +37,7 @@ describeApplication('WelcomeScreen', function() {
 
   describe('clicking the new game button', function() {
     beforeEach(function() {
-      return WelcomePage.clickNewGame(() => {
-        expect(WelcomePage.$root).to.not.exist;
-      });
+      return WelcomePage.clickNewGame();
     });
 
     it('should create a new game', function() {
@@ -46,17 +46,17 @@ describeApplication('WelcomeScreen', function() {
 
     it('should go to the join game route for a room', function() {
       expect(this.location.pathname).to.equal(`/${this.state.app.room}/join`);
+      expect(JoinGamePage.$root).to.exist;
     });
 
     describe('then navigating back', function() {
       beforeEach(function() {
-        return WelcomePage.goBack(() => {
-          expect(WelcomePage.$root).to.exist;
-        });
+        return JoinGamePage.clickBack();
       });
 
       it('should go back', function() {
         expect(this.location.pathname).to.equal('/');
+        expect(WelcomePage.$root).to.exist;
       });
 
       it('should disconnect from the game', function() {
@@ -68,24 +68,22 @@ describeApplication('WelcomeScreen', function() {
 
   describe('clicking the join game button', function() {
     beforeEach(function() {
-      return WelcomePage.clickJoinGame(() => {
-        expect(WelcomePage.$root).to.not.exist;
-      });
+      return WelcomePage.clickJoinGame();
     });
 
-    it('should go to the join game route', function() {
+    it('should go to the find room screen', function() {
       expect(this.location.pathname).to.equal('/join');
+      expect(FindRoomPage.$root).to.exist;
     });
 
     describe('then navigating back', function() {
       beforeEach(function() {
-        return WelcomePage.goBack(() => {
-          expect(WelcomePage.$root).to.exist;
-        });
+        return FindRoomPage.clickBack();
       });
 
       it('should go back', function() {
         expect(this.location.pathname).to.equal('/');
+        expect(WelcomePage.$root).to.exist;
       });
 
       it('should clear the game ', function() {

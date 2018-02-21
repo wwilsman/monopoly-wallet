@@ -1,39 +1,23 @@
-import $ from 'jquery';
-import { click } from './helpers';
+import {
+  page,
+  text,
+  attribute,
+  clickable,
+  isPresent,
+  collection
+} from '@bigtest/interaction';
 
-export default {
-  get $root() {
-    return $('[data-test-game-room]');
-  },
+@page class GameRoomPage {
+  room = text('[data-test-room-code]');
+  isLoading = isPresent('[data-test-spinner]');
 
-  get room() {
-    return $('[data-test-room-code]').text();
-  },
+  toast = collection('[data-test-toast]', {
+    type: attribute('data-test-toast'),
+    message: text('[data-test-toast-message]'),
+    hasActions: isPresent('[data-test-actions]'),
+    clickPrimary: clickable('[data-test-actions] button:first-child'),
+    clickSecondary: clickable('[data-test-actions] button:last-child')
+  });
+}
 
-  get isLoading() {
-    return $('[data-test-spinner]').length > 0;
-  },
-
-  toast(index) {
-    let selector = `[data-test-toast]:eq(${index})`;
-
-    return {
-      get type() {
-        return $(selector).data('test-toast');
-      },
-
-      get message() {
-        return $(`${selector} [data-test-toast-message]`).text();
-      },
-
-      get $actions() {
-        return $(`${selector} [data-test-actions]`);
-      },
-
-      click(i, assertion) {
-        let btn = `${selector} [data-test-actions] button:eq(${i})`;
-        return click(btn, assertion);
-      }
-    };
-  }
-};
+export default new GameRoomPage('[data-test-game-room]');

@@ -1,84 +1,39 @@
-import $ from 'jquery';
-import { Interaction, click, fill } from './helpers';
+import {
+  page,
+  find,
+  text,
+  count,
+  clickable,
+  fillable,
+  property,
+  isPresent,
+  collection
+} from '@bigtest/interaction';
 
-export default {
-  get $root() {
-    return $('[data-test-join-game]');
-  },
+@page class JoinGamePage {
+  isLoading = isPresent('[data-test-spinner]');
+  heading = text('[data-test-join-game-heading]');
+  room = text('[data-test-room-code]');
+  hasBackBtn = isPresent('[data-test-back]');
+  clickBack = clickable('[data-test-back]');
+  $nameInput = find('[data-test-join-game-name-input] [data-test-input]');
+  nameLabel = text('[data-test-join-game-name-input] [data-test-label]');
+  fillName = fillable('[data-test-join-game-name-input] [data-test-input]');
+  tokensLabel = text('[data-test-join-game-token-select] [data-test-label]');
 
-  get isLoading() {
-    return $('[data-test-spinner]').length > 0;
-  },
+  tokens = collection('[data-test-join-game-token-select] [data-test-radio-item]', {
+    isDisabled: property('disabled', 'input[type="radio"]')
+  });
 
-  get heading() {
-    return $('[data-test-join-game-heading]').text();
-  },
+  disabledTokens = count('[data-test-join-game-token-select] input[disabled]');
+  $submit = find('[data-test-join-game-btn]');
 
-  get room() {
-    return $('[data-test-room-code]').text();
-  },
-
-  get $backButton() {
-    return $('[data-test-back]');
-  },
-
-  goBack(assertion) {
-    return click('[data-test-back]', assertion);
-  },
-
-  get $nameInput() {
-    return $('[data-test-join-game-name-input] [data-test-input]');
-  },
-
-  get nameLabel() {
-    return $('[data-test-join-game-name-input] [data-test-label]').text();
-  },
-
-  fillName(value) {
-    return fill('[data-test-join-game-name-input] [data-test-input]', value);
-  },
-
-  get tokensLabel() {
-    return $('[data-test-join-game-token-select] [data-test-label]').text();
-  },
-
-  get $tokens() {
-    return $('[data-test-join-game-token-select] [data-test-radio-item]');
-  },
-
-  get $disabledTokens() {
-    return this.$tokens.find('input[type="radio"][disabled]');
-  },
-
-  $token(name) {
-    return $(`[data-test-radio-item="${name}"] input[type="radio"]`);
-  },
-
-  selectToken(name, assertion) {
-    return click(`[data-test-radio-item="${name}"]`, assertion);
-  },
-
-  get $submit() {
-    return $('[data-test-join-game-btn]');
-  },
-
-  joinGame(name, token, assertion) {
-    let join = new Interaction();
-
-    if (name) {
-      join = join.fill('[data-test-join-game-name-input] [data-test-input]', name);
-    }
-
-    if (token) {
-      join = join.click(`[data-test-radio-item="${token}"]`);
-    }
-
-    join = join.click('[data-test-join-game-btn]');
-
-    if (assertion) {
-      join = join.once(assertion);
-    }
-
-    return join.run();
+  joinGame(name, token) {
+    let join = this.interaction;
+    if (name) join = join.fillName(name);
+    if (token) join = join.click(`[data-test-radio-item="${token}"]`);
+    return join.click('[data-test-join-game-btn]');
   }
-};
+}
+
+export default new JoinGamePage('[data-test-join-game]');

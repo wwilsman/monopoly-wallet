@@ -1,5 +1,5 @@
 import { expect } from 'chai';
-import { describe, beforeEach, it } from '../test-helpers';
+import { describe, beforeEach, it } from '@bigtest/mocha';
 import { describeApplication, mockGame } from '../acceptance-helpers';
 
 import GameRoomPage from '../pages/game-room';
@@ -20,7 +20,7 @@ describeApplication('GameRoomScreen', function() {
       this.emit('room:connect', this.room.id);
       this.emit('game:join', 'Player 1', 'top-hat');
 
-      return this.visit(`/${this.room.id}`, () => {
+      return this.visit(`/${this.room.id}`).once(() => {
         expect(GameRoomPage.$root).to.exist;
       });
     });
@@ -51,7 +51,7 @@ describeApplication('GameRoomScreen', function() {
       });
 
       it('should show voting buttons', function() {
-        expect(GameRoomPage.toast(1).$actions).to.exist;
+        expect(GameRoomPage.toast(1).hasActions).to.be.true;
       });
 
       describe('when voting yes', function() {
@@ -60,7 +60,12 @@ describeApplication('GameRoomScreen', function() {
             this.room.join('Player 2', 'automobile')
           ));
 
-          return GameRoomPage.toast(1).click(0);
+          return GameRoomPage.interaction
+            .once(() => !!GameRoomPage.toast(1));
+        });
+
+        beforeEach(function() {
+          return GameRoomPage.toast(1).clickPrimary();
         });
 
         it('should let the other player join', function() {
@@ -75,7 +80,12 @@ describeApplication('GameRoomScreen', function() {
 
       describe('when voting no', function() {
         beforeEach(function() {
-          return GameRoomPage.toast(1).click(1);
+          return GameRoomPage.interaction
+            .once(() => !!GameRoomPage.toast(1));
+        });
+
+        beforeEach(function() {
+          return GameRoomPage.toast(1).clickSecondary();
         });
 
         it('should not let the other player join', function() {
@@ -96,7 +106,7 @@ describeApplication('GameRoomScreen', function() {
           }
         };
 
-        return this.visit(`/${this.room.id}`, () => {
+        return this.visit(`/${this.room.id}`).once(() => {
           expect(GameRoomPage.$root).to.exist;
         });
       });
@@ -133,7 +143,7 @@ describeApplication('GameRoomScreen', function() {
           }
         };
 
-        return this.visit(`/${this.room.id}`, function() {
+        return this.visit(`/${this.room.id}`).once(() => {
           expect(GameRoomPage.$root).to.exist;
         });
       });
