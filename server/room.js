@@ -7,6 +7,7 @@ import MonopolyError from './error';
 import createGame from './game';
 import actions from './actions';
 import { hydrate } from './actions/hydrate';
+import { getPlayerHistories } from './deducers';
 
 const { from:toArray } = Array;
 const isFn = (obj) => typeof obj === 'function';
@@ -152,8 +153,9 @@ export default class GameRoom {
 
     this.messages = this.constructor.load(theme, 'messages');
     this.store = createGame(game, config, this.messages);
-    this.game = this.store.getState();
     this.fresh = true;
+
+    this.deduceGame(this.store.getState());
 
     this.store.subscribe(() => {
       this.fresh = false;
@@ -278,7 +280,8 @@ export default class GameRoom {
    * to false if the room state is fresh, otherwise true
    */
   sync(save = !this.fresh) {
-    this.game = this.store.getState();
+    let gameState = this.store.getState();
+    this.deduceGame(gameState);
 
     const sync = () => {
       // no one to blame if we aren't saving
@@ -290,7 +293,7 @@ export default class GameRoom {
     if (save) {
       this.constructor.database.save({
         id: this.id,
-        game: this.game,
+        game: gameState,
         config: this.config
       }).then(() => {
         this.fresh = true;
@@ -299,6 +302,28 @@ export default class GameRoom {
     } else {
       sync();
     }
+  }
+
+  /**
+   * Transforms the game state to reflect any relevant history and
+   * removes the diff leaf from the state
+   * @param {Object} gameState - game state object with diff leaf
+   */
+  deduceGame(gameState) {
+    const { diff, ...game } = gameState;
+    const playerHistory = getPlayerHistories(gameState);
+
+    // add player history
+    const players = game.players._all
+      .reduce((players, token) => ({
+        ...players,
+        [token]: {
+          ...players[token],
+          history: playerHistory[token]
+        }
+      }), game.players);
+
+    this.game = { ...game, players };
   }
 
   /**

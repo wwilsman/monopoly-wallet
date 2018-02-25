@@ -28,9 +28,15 @@ describe('Room: joining', function() {
     let { room, game, players, player } = payload;
 
     expect(room).to.equal(this.room);
-    expect(game).to.have.nested.property('players.top-hat');
-    expect(player).to.deep.equal({ name: 'Player 1', token: 'top-hat' });
     expect(players).to.include('top-hat');
+    expect(player).to.deep.equal({ name: 'Player 1', token: 'top-hat' });
+    expect(game).to.have.nested.property('players.top-hat')
+      .that.deep.equals({
+        ...player,
+        balance: 1500,
+        history: [],
+        bankrupt: false
+      });
   });
 
   it('should let the player disconnect and rejoin', async function() {

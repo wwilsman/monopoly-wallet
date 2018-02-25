@@ -228,6 +228,7 @@ export async function createSocketAndJoinGame(room, token) {
   let { game, config } = await GameRoom.database.find(room);
 
   if (!game.players[token]) {
+    game.players._all.push(token);
     game.players[token] = {
       name: `Player ${game.players._all.length + 1}`,
       balance: config.playerStart,
