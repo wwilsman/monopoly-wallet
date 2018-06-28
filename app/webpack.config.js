@@ -4,7 +4,7 @@ const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const HTMLWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
-const ExtractTextPlugin = require('extract-text-webpack-plugin');
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 const htmlWebpackPlugin = new HTMLWebpackPlugin({
   title: 'Monopoly Wallet',
@@ -49,6 +49,11 @@ const cssLoaders = [{
 }];
 
 module.exports = {
+  mode: env({
+    development: 'development',
+    production: 'production'
+  }),
+
   stats: {
     assets: true,
     children: false
@@ -78,18 +83,15 @@ module.exports = {
   },
 
   plugins: env({
-    base: [
-      new webpack.EnvironmentPlugin({
-        NODE_ENV: 'development'
-      })
-    ],
     production: [
+      new webpack.DefinePlugin({ NODE_ENV: 'production' }),
       new UglifyJsPlugin(),
-      new ExtractTextPlugin('styles.css'),
+      new MiniCssExtractPlugin({ filename: 'styles.css' }),
       htmlWebpackPlugin,
       faviconsWebpackPlugin
     ],
     development: [
+      new webpack.DefinePlugin({ NODE_ENV: 'development' }),
       htmlWebpackPlugin,
       faviconsWebpackPlugin,
       new HTMLWebpackHarddiskPlugin(),
@@ -107,21 +109,19 @@ module.exports = {
           babelrc: false,
           presets: [
             '@babel/preset-env',
-            '@babel/preset-stage-2',
+            ['@babel/preset-stage-2', {
+              decoratorsLegacy: true
+            }],
             '@babel/preset-react'
           ],
           plugins: env({
-            base: ['@babel/plugin-proposal-decorators'],
             development: ['react-hot-loader/babel']
           })
         }
       }],
       production: [{
         test: /\.css$/,
-        use: ExtractTextPlugin.extract({
-          fallback: 'style-loader',
-          use: cssLoaders
-        })
+        use: [MiniCssExtractPlugin.loader].concat(cssLoaders)
       }],
       development: [{
         test: /\.css$/,

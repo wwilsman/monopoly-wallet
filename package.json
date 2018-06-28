@@ -6,7 +6,7 @@
   "license": "MIT",
   "private": true,
   "engines": {
-    "node": "8"
+    "node": "9"
   },
   "scripts": {
     "build": "yarn build:server && yarn build:app",
@@ -21,7 +21,7 @@
   "devDependencies": {
     "babel-eslint": "^8.2.2",
     "eslint": "^4.8.0",
-    "eslint-plugin-react": "^7.4.0"
+    "eslint-plugin-react": "~7.4.0"
   },
   "workspaces": [
     "app",
