@@ -5,7 +5,7 @@ references:
       - image: circleci/node:9-browsers
 
   cache_key: &cache_key
-    monopoly-wallet-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+    monopoly-wallet-{{ .Branch }}-{{ checksum "yarn.lock" }}-v1
 
   attach_workspace: &attach_workspace
     attach_workspace:
@@ -28,6 +28,8 @@ jobs:
           key: *cache_key
           paths:
             - node_modules
+            - app/node_modules
+            - server/node_modules
       - persist_to_workspace:
           root: ~/
           paths:
@@ -44,8 +46,6 @@ jobs:
 
   build:
     <<: *defaults
-    environment:
-      NODE_NEV: production
     steps:
       - *attach_workspace
       - run:
@@ -66,14 +66,20 @@ jobs:
           command: yarn test
 
   deploy:
-    docker:
-      - image: buildpack-deps:trusty
+    <<: *defaults
     steps:
-      - checkout
+      - *attach_workspace
+      - run:
+          name: Setup Git
+          command: |
+            git config user.name "Wil Wilsman"
+            git config user.email "hello@wilwilsman.com"
       - run:
           name: Deploy Master to Heroku
           command: |
-            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+            git add --force */dist
+            git commit --message release
+            git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
 
 workflows:
   version: 2

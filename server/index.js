@@ -7,7 +7,8 @@ const ENV = {
   host: process.env.HOST || 'localhost',
 
   mongodb: {
-    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/monopoly-wallet'
+    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/monopoly-wallet',
+    options: { useNewUrlParser: true }
   }
 };
 
@@ -31,7 +32,7 @@ if (ENV.env === 'development') {
   app.use(/\/[^.]*$/, middle);
 
   // setup mongodb and start the server
-  MongoClient.connect(ENV.mongodb.uri).then(app.setup);
+  MongoClient.connect(ENV.mongodb.uri, ENV.mongodb.options).then(app.setup);
   app.start(ENV.host, ENV.port);
 
 // use built assets
@@ -44,6 +45,6 @@ if (ENV.env === 'development') {
   });
 
   // setup mongodb and start the server
-  MongoClient.connect(ENV.mongodb.uri).then(app.setup);
+  MongoClient.connect(ENV.mongodb.uri, ENV.mongodb.options).then(app.setup);
   app.start(ENV.host, ENV.port);
 }

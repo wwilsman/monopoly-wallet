@@ -16,7 +16,7 @@
     "test:app": "yarn workspace app test",
     "test:server": "yarn workspace server test",
     "start": "yarn workspace server start",
-    "lint": "eslint ./"
+    "lint": "eslint --ignore-path .gitignore ./"
   },
   "devDependencies": {
     "babel-eslint": "^8.2.2",

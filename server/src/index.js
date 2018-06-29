@@ -32,7 +32,9 @@ GameRoom.set('loader', (theme, file = theme) => {
 });
 
 // sets up mongodb to work with the game room
-app.setup = function setup(db) {
+app.setup = function setup(client) {
+  const db = client.db();
+
   const resolveGame = (doc) => {
     if (!doc) {
       return Promise.reject(new MonopolyError('Game not found'));

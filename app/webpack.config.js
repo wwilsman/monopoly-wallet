@@ -2,7 +2,6 @@ const path = require('path');
 const webpack = require('webpack');
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
-const HTMLWebpackHarddiskPlugin = require('html-webpack-harddisk-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
@@ -63,18 +62,10 @@ module.exports = {
     development: 'inline-source-map'
   }),
 
-  entry: env({
-    development: [
-      '@babel/polyfill',
-      'react-hot-loader/patch',
-      'webpack-hot-middleware/client',
-      'app/src/index.js'
-    ],
-    production: [
-      '@babel/polyfill',
-      'app/src/index.js'
-    ]
-  }),
+  entry: [
+    '@babel/polyfill',
+    'app/src/index.js'
+  ],
 
   output: {
     filename: 'bundle-[hash].js',
@@ -85,17 +76,15 @@ module.exports = {
   plugins: env({
     production: [
       new webpack.DefinePlugin({ NODE_ENV: 'production' }),
-      new UglifyJsPlugin(),
       new MiniCssExtractPlugin({ filename: 'styles.css' }),
+      new UglifyJsPlugin(),
       htmlWebpackPlugin,
       faviconsWebpackPlugin
     ],
     development: [
       new webpack.DefinePlugin({ NODE_ENV: 'development' }),
       htmlWebpackPlugin,
-      faviconsWebpackPlugin,
-      new HTMLWebpackHarddiskPlugin(),
-      new webpack.HotModuleReplacementPlugin()
+      faviconsWebpackPlugin
     ]
   }),
 
