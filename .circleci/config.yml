@@ -1,0 +1,99 @@
+references:
+  defaults: &defaults
+    working_directory: ~/monopoly-wallet
+    docker:
+      - image: circleci/node:9-browsers
+
+  cache_key: &cache_key
+    monopoly-wallet-v1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+
+  attach_workspace: &attach_workspace
+    attach_workspace:
+      at: ~/
+
+version: 2
+jobs:
+  install:
+    <<: *defaults
+    steps:
+      - checkout
+      - restore_cache:
+          name: Restore cache
+          key: *cache_key
+      - run:
+          name: Install dependencies
+          command: yarn
+      - save_cache:
+          name: Save cache
+          key: *cache_key
+          paths:
+            - node_modules
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - monopoly-wallet
+            - .ssh
+
+  lint:
+    <<: *defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Lint
+          command: yarn lint
+
+  build:
+    <<: *defaults
+    environment:
+      NODE_NEV: production
+    steps:
+      - *attach_workspace
+      - run:
+          name: Build
+          command: yarn build
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - monopoly-wallet/server/dist
+            - monopoly-wallet/app/dist
+
+  test:
+    <<: *defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Run tests
+          command: yarn test
+
+  deploy:
+    docker:
+      - image: buildpack-deps:trusty
+    steps:
+      - checkout
+      - run:
+          name: Deploy Master to Heroku
+          command: |
+            git push https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+
+workflows:
+  version: 2
+  default:
+    jobs:
+      - install
+      - lint:
+          requires:
+            - install
+      - build:
+          requires:
+            - install
+      - test:
+          requires:
+            - install
+      - deploy:
+          requires:
+            - lint
+            - build
+            - test
+          filters:
+            branches:
+              only: master
