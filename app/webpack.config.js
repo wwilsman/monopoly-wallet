@@ -1,6 +1,5 @@
 const path = require('path');
 const webpack = require('webpack');
-const UglifyJsPlugin = require('uglifyjs-webpack-plugin');
 const HTMLWebpackPlugin = require('html-webpack-plugin');
 const FaviconsWebpackPlugin = require('favicons-webpack-plugin');
 const MiniCssExtractPlugin = require('mini-css-extract-plugin');
@@ -27,26 +26,6 @@ const faviconsWebpackPlugin = new FaviconsWebpackPlugin({
   }
 });
 
-const cssLoaders = [{
-  loader: 'css-loader',
-  options: {
-    modules: true,
-    sourceMap: true,
-    importLoaders: 2,
-    localIdentName: '[name]__[local]--[hash:base64:5]'
-  }
-}, {
-  loader: 'postcss-loader',
-  options: {
-    plugins() {
-      return [
-        require('precss'),
-        require('autoprefixer')
-      ];
-    }
-  }
-}];
-
 module.exports = {
   mode: env({
     development: 'development',
@@ -64,6 +43,7 @@ module.exports = {
 
   entry: [
     '@babel/polyfill',
+    'react-hot-loader/patch',
     'app/src/index.js'
   ],
 
@@ -77,12 +57,12 @@ module.exports = {
     production: [
       new webpack.DefinePlugin({ NODE_ENV: 'production' }),
       new MiniCssExtractPlugin({ filename: 'styles.css' }),
-      new UglifyJsPlugin(),
       htmlWebpackPlugin,
       faviconsWebpackPlugin
     ],
     development: [
       new webpack.DefinePlugin({ NODE_ENV: 'development' }),
+      new webpack.HotModuleReplacementPlugin(),
       htmlWebpackPlugin,
       faviconsWebpackPlugin
     ]
@@ -97,32 +77,61 @@ module.exports = {
         options: {
           babelrc: false,
           presets: [
-            '@babel/preset-env',
-            ['@babel/preset-stage-2', {
-              decoratorsLegacy: true
-            }],
-            '@babel/preset-react'
+            '@babel/env',
+            '@babel/react'
           ],
           plugins: env({
+            base: [
+              ['@babel/proposal-decorators', { legacy: true }],
+              ['@babel/proposal-class-properties', { loose: true }]
+            ],
             development: ['react-hot-loader/babel']
           })
         }
-      }],
-      production: [{
+      }, {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader].concat(cssLoaders)
-      }],
-      development: [{
-        test: /\.css$/,
-        use: ['style-loader'].concat(cssLoaders)
+        use: [env({
+          production: MiniCssExtractPlugin.loader,
+          development: {
+            loader: 'style-loader',
+            options: { sourceMap: true }
+          },
+          test: {
+            loader: 'style-loader',
+            options: { sourceMap: true }
+          }
+        }), {
+          loader: 'css-loader',
+          options: {
+            modules: true,
+            sourceMap: true,
+            importLoaders: 2,
+            localIdentName: '[name]__[local]--[hash:base64:5]'
+          }
+        }, {
+          loader: 'postcss-loader',
+          options: {
+            sourceMap: true,
+            plugins: [
+              require('postcss-import'),
+              require('precss'),
+              require('autoprefixer')
+            ]
+          }
+        }]
       }],
       test: [{
-        test: /\.css$/,
-        use: ['style-loader'].concat(cssLoaders)
-      }, {
         test: /\.yml/,
         use: ['js-yaml-loader']
       }]
+    })
+  },
+
+  resolve: {
+    alias: env({
+      development: {
+        'react-dom': '@hot-loader/react-dom'
+      }
     })
   }
 };
