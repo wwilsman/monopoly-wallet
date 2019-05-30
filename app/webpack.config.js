@@ -9,7 +9,7 @@ const htmlWebpackPlugin = new HTMLWebpackPlugin({
   title: 'Monopoly Wallet',
   inject: false,
   template: require('html-webpack-template'),
-  appMountId: 'react-root',
+  appMountId: 'root',
   hash: true,
   meta: [{
     name: 'viewport',
