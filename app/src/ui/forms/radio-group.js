@@ -76,12 +76,12 @@ class RadioGroup extends Component {
           key={i}
           htmlFor={elemId}
           className={itemClassName}
-          onClick={this._selectItem(i)}
           data-test-radio-item={id}>
         <input
             id={elemId}
             type="radio"
             disabled={attrs.disabled}
+            onChange={this._selectItem(i)}
             checked={attrs.selected}/>
         {renderItem(item, attrs)}
       </label>
