@@ -31,8 +31,17 @@ if (ENV.env === 'development') {
   app.use(webpackHotMiddleware(compiler));
   app.use(/\/[^.]*$/, middle);
 
-  // setup mongodb and start the server
-  MongoClient.connect(ENV.mongodb.uri, ENV.mongodb.options).then(app.setup);
+  // setup mongodb
+  MongoClient
+    .connect(ENV.mongodb.uri, ENV.mongodb.options)
+    .then(app.setup)
+    .catch((err) => {
+      // eslint-disable-next-line no-console
+      console.log('Unable to connect to mongodb: %s', err.name);
+      // console.error(err);
+    });
+
+  // start the server
   app.start(ENV.host, ENV.port);
 
 // use built assets
