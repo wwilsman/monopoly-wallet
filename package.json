@@ -5,9 +5,6 @@
   "author": "Wil Wilsman <hello@wilwilsman.com>",
   "license": "MIT",
   "private": true,
-  "engines": {
-    "node": "9"
-  },
   "scripts": {
     "build": "yarn build:server && yarn build:app",
     "build:app": "yarn workspace app build",
@@ -19,9 +16,9 @@
     "lint": "eslint --ignore-path .gitignore ./"
   },
   "devDependencies": {
-    "babel-eslint": "^8.2.2",
-    "eslint": "^4.8.0",
-    "eslint-plugin-react": "~7.4.0"
+    "babel-eslint": "^10.0.1",
+    "eslint": "^5.16.0",
+    "eslint-plugin-react": "^7.13.0"
   },
   "workspaces": [
     "app",
