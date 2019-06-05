@@ -194,6 +194,8 @@ export default class WebSocket extends EventEmitter {
       return this.server.clients.find((c) => (
         c.ws === this
       ));
+    } else {
+      return null;
     }
   }
 

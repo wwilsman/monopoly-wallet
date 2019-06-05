@@ -29,7 +29,8 @@ const faviconsWebpackPlugin = new FaviconsWebpackPlugin({
 module.exports = {
   mode: env({
     development: 'development',
-    production: 'production'
+    production: 'production',
+    testing: 'none'
   }),
 
   stats: {
@@ -38,14 +39,15 @@ module.exports = {
   },
 
   devtool: env({
-    development: 'inline-source-map'
+    development: 'inline-source-map',
+    testing: 'inline-source-map'
   }),
 
   entry: [
     '@babel/polyfill',
-    'react-hot-loader/patch',
+    env({ development: 'react-hot-loader/patch' }),
     'app/src/index.js'
-  ],
+  ].filter(Boolean),
 
   output: {
     filename: 'bundle-[hash].js',
@@ -54,14 +56,17 @@ module.exports = {
   },
 
   plugins: env({
+    base: [
+      new webpack.DefinePlugin({
+        NODE_ENV: process.env.NODE_ENV || 'development'
+      }),
+    ],
     production: [
-      new webpack.DefinePlugin({ NODE_ENV: 'production' }),
       new MiniCssExtractPlugin({ filename: 'styles.css' }),
       htmlWebpackPlugin,
       faviconsWebpackPlugin
     ],
     development: [
-      new webpack.DefinePlugin({ NODE_ENV: 'development' }),
       new webpack.HotModuleReplacementPlugin(),
       htmlWebpackPlugin,
       faviconsWebpackPlugin
@@ -77,7 +82,7 @@ module.exports = {
         options: {
           babelrc: false,
           presets: [
-            '@babel/env',
+            ['@babel/env', { targets: { browsers: 'last 1 version' }}],
             '@babel/react'
           ],
           plugins: env({
@@ -92,14 +97,8 @@ module.exports = {
         test: /\.css$/,
         use: [env({
           production: MiniCssExtractPlugin.loader,
-          development: {
-            loader: 'style-loader',
-            options: { sourceMap: true }
-          },
-          test: {
-            loader: 'style-loader',
-            options: { sourceMap: true }
-          }
+          development: { loader: 'style-loader', options: { sourceMap: true } },
+          testing: { loader: 'style-loader', options: { sourceMap: true } }
         }), {
           loader: 'css-loader',
           options: {
@@ -120,7 +119,7 @@ module.exports = {
           }
         }]
       }],
-      test: [{
+      testing: [{
         test: /\.yml/,
         use: ['js-yaml-loader']
       }]
