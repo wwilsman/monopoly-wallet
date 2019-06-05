@@ -6,13 +6,11 @@
   "license": "MIT",
   "private": true,
   "scripts": {
-    "build": "yarn build:server && yarn build:app",
-    "build:app": "yarn workspace app build",
-    "build:server": "yarn workspace server build",
-    "test": "yarn test:server && yarn test:app",
-    "test:app": "yarn workspace app test",
-    "test:server": "yarn workspace server test",
-    "start": "yarn workspace server start",
+    "app": "yarn workspace app",
+    "server": "yarn workspace server",
+    "build": "yarn server build && yarn app build",
+    "test": "yarn server test && yarn app test --single-run",
+    "start": "yarn server start",
     "lint": "eslint --ignore-path .gitignore ./"
   },
   "devDependencies": {
