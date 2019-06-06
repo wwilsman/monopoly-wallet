@@ -18,6 +18,7 @@ module.exports = {
 
   rules: {
     'indent': ['error', 2, { SwitchCase: 1, ignoredNodes: ['JSXElement *'] }],
+    'prefer-arrow-callback': ['error', { "allowNamedFunctions": true }],
     'no-console': 'warn',
     'no-extra-boolean-cast': 'off',
     'react/jsx-indent': ['error', 2],

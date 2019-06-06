@@ -1,13 +1,5 @@
 import YAML from 'yamljs';
 import WebSocket from 'ws';
-import {
-  before,
-  beforeEach,
-  afterEach
-} from 'mocha';
-
-import chai from 'chai';
-import chaiAsPromised from 'chai-as-promised';
 
 import {
   createGameState,
@@ -16,9 +8,6 @@ import {
 import GameRoom from '../../src/room';
 import MonopolyError from '../../src/error';
 import connectSocket from '../../src/socket';
-
-// use chai as promised
-chai.use(chaiAsPromised);
 
 // fixtures
 const CONFIG_FIXTURE = YAML.load('./themes/classic/config.yml');

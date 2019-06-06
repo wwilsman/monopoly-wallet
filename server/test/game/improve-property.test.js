@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+import expect from 'expect';
 
 import {
   setupGameForTesting,
@@ -9,7 +8,7 @@ import {
 import MonopolyError from '../../src/error';
 import { improveProperty } from '../../src/actions/properties';
 
-describe('Game: improving properties', function() {
+describe('Game: improving properties', () => {
   setupGameForTesting({ state: {
     players: [{
       token: 'top-hat',
@@ -27,39 +26,37 @@ describe('Game: improving properties', function() {
 
     this.dispatch(improveProperty('top-hat', property.id));
 
-    expect(this.getPlayer('top-hat').balance).to.equal(50 - property.cost);
-    expect(this.state.bank).to.equal(this.last.bank + property.cost);
-    expect(this.getProperty(property.id).buildings).to.equal(1);
-    expect(this.state.houses).to.equal(this.last.houses - 1);
+    expect(this.getPlayer('top-hat')).toHaveProperty('balance', 50 - property.cost);
+    expect(this.state.bank).toBe(this.last.bank + property.cost);
+    expect(this.getProperty(property.id)).toHaveProperty('buildings', 1);
+    expect(this.state.houses).toBe(this.last.houses - 1);
   });
 
   it('should not improve an unowned property', function() {
     expect(() => this.dispatch(improveProperty('top-hat', 'mediterranean-avenue')))
-      .to.throw(MonopolyError, /not own/i);
-    expect(this.getProperty('mediterranean-avenue').buildings).to.equal(0);
+      .toThrow(MonopolyError, /not own/i);
+    expect(this.getProperty('mediterranean-avenue')).toHaveProperty('buildings', 0);
   });
 
   it('should not improve with insufficient funds', function() {
     this.dispatch(improveProperty('top-hat', 'oriental-avenue'));
 
-    expect(this.getProperty('oriental-avenue').buildings).to.equal(1);
+    expect(this.getProperty('oriental-avenue')).toHaveProperty('buildings', 1);
     expect(() => this.dispatch(improveProperty('top-hat', 'connecticut-avenue')))
-      .to.throw(MonopolyError, /insufficient/i);
-    expect(this.getProperty('connecticut-avenue').buildings).to.equal(0);
+      .toThrow(MonopolyError, /insufficient/i);
+    expect(this.getProperty('connecticut-avenue')).toHaveProperty('buildings', 0);
   });
 
   it('should create a notice', function() {
     this.dispatch(improveProperty('top-hat', 'oriental-avenue'));
 
-    expect(this.state.notice.id).to.equal('property.improved');
-    expect(this.state.notice.message).to.match(/improved/);
-    expect(this.state.notice.meta).to.have.property('player')
-      .that.has.property('token', 'top-hat');
-    expect(this.state.notice.meta).to.have.property('property')
-      .that.has.property('id', 'oriental-avenue');
+    expect(this.state.notice.id).toBe('property.improved');
+    expect(this.state.notice.message).toMatch('improved');
+    expect(this.state.notice.meta).toHaveProperty('player.token', 'top-hat');
+    expect(this.state.notice.meta).toHaveProperty('property.id', 'oriental-avenue');
   });
 
-  describe('when the property needs a hotel', function() {
+  describe('when the property needs a hotel', () => {
     modifyGameInTesting({ state: {
       properties: [{
         group: 'lightblue',
@@ -70,13 +67,13 @@ describe('Game: improving properties', function() {
     it('should remove 4 houses and add a hotel', function() {
       this.dispatch(improveProperty('top-hat', 'oriental-avenue'));
 
-      expect(this.getProperty('oriental-avenue').buildings).to.equal(5);
-      expect(this.state.houses).to.equal(this.last.houses + 4);
-      expect(this.state.hotels).to.equal(this.last.hotels - 1);
+      expect(this.getProperty('oriental-avenue')).toHaveProperty('buildings', 5);
+      expect(this.state.houses).toBe(this.last.houses + 4);
+      expect(this.state.hotels).toBe(this.last.hotels - 1);
     });
   });
 
-  describe('when a property is a railroad or utility', function() {
+  describe('when a property is a railroad or utility', () => {
     modifyGameInTesting({ state: {
       properties: [{
         id: 'reading-railroad',
@@ -89,18 +86,18 @@ describe('Game: improving properties', function() {
 
     it('should not improve a railroad', function() {
       expect(() => this.dispatch(improveProperty('top-hat', 'reading-railroad')))
-        .to.throw(MonopolyError, /improve a railroad/i);
-      expect(this.getProperty('reading-railroad').buildings).to.equal(0);
+        .toThrow(MonopolyError, /improve a railroad/i);
+      expect(this.getProperty('reading-railroad')).toHaveProperty('buildings', 0);
     });
 
     it('should not improve a utility', function() {
       expect(() => this.dispatch(improveProperty('top-hat', 'electric-company')))
-        .to.throw(MonopolyError, /improve a utility/i);
-      expect(this.getProperty('electric-company').buildings).to.equal(0);
+        .toThrow(MonopolyError, /improve a utility/i);
+      expect(this.getProperty('electric-company')).toHaveProperty('buildings', 0);
     });
   });
 
-  describe('when the player does not own the monopoly', function() {
+  describe('when the player does not own the monopoly', () => {
     modifyGameInTesting({ state: {
       properties: [{
         group: 'lightblue',
@@ -113,12 +110,12 @@ describe('Game: improving properties', function() {
 
     it('should not improve the property', function() {
       expect(() => this.dispatch(improveProperty('top-hat', 'oriental-avenue')))
-        .to.throw(MonopolyError, /monopoly/);
-      expect(this.getProperty('oriental-avenue').buildings).to.equal(0);
+        .toThrow(MonopolyError, /monopoly/);
+      expect(this.getProperty('oriental-avenue')).toHaveProperty('buildings', 0);
     });
   });
 
-  describe('when the property is mortgaged', function() {
+  describe('when the property is mortgaged', () => {
     modifyGameInTesting({ state: {
       properties: [{
         id: 'oriental-avenue',
@@ -128,18 +125,18 @@ describe('Game: improving properties', function() {
 
     it('should not improve the property', function() {
       expect(() => this.dispatch(improveProperty('top-hat', 'oriental-avenue')))
-        .to.throw(MonopolyError, /mortgaged/i);
-      expect(this.getProperty('oriental-avenue').buildings).to.equal(0);
+        .toThrow(MonopolyError, /mortgaged/i);
+      expect(this.getProperty('oriental-avenue')).toHaveProperty('buildings', 0);
     });
 
     it('should not improve other properties in the same group', function() {
       expect(() => this.dispatch(improveProperty('top-hat', 'connecticut-avenue')))
-        .to.throw(MonopolyError, /mortgaged/i);
-      expect(this.getProperty('connecticut-avenue').buildings).to.equal(0);
+        .toThrow(MonopolyError, /mortgaged/i);
+      expect(this.getProperty('connecticut-avenue')).toHaveProperty('buildings', 0);
     });
   });
 
-  describe('when the property has an improvement', function() {
+  describe('when the property has an improvement', () => {
     modifyGameInTesting({ state: {
       properties: [{
         id: 'oriental-avenue',
@@ -149,12 +146,12 @@ describe('Game: improving properties', function() {
 
     it('should not improve unevenly', function() {
       expect(() => this.dispatch(improveProperty('top-hat', 'oriental-avenue')))
-        .to.throw(MonopolyError, /evenly/i);
-      expect(this.getProperty('oriental-avenue').buildings).to.equal(1);
+        .toThrow(MonopolyError, /evenly/i);
+      expect(this.getProperty('oriental-avenue')).toHaveProperty('buildings', 1);
     });
   });
 
-  describe('when the property is fully improved', function() {
+  describe('when the property is fully improved', () => {
     modifyGameInTesting({ state: {
       properties: [{
         group: 'lightblue',
@@ -167,17 +164,17 @@ describe('Game: improving properties', function() {
 
     it('should not improve the property', function() {
       expect(() => this.dispatch(improveProperty('top-hat', 'oriental-avenue')))
-        .to.throw(MonopolyError, /fully improved/i);
-      expect(this.getProperty('oriental-avenue').buildings).to.equal(5);
+        .toThrow(MonopolyError, /fully improved/i);
+      expect(this.getProperty('oriental-avenue')).toHaveProperty('buildings', 5);
     });
 
     it('should still improve other unimproved properties', function() {
       this.dispatch(improveProperty('top-hat', 'connecticut-avenue'));
-      expect(this.getProperty('connecticut-avenue').buildings).to.equal(5);
+      expect(this.getProperty('connecticut-avenue')).toHaveProperty('buildings', 5);
     });
   });
 
-  describe('when there are not enough houses', function() {
+  describe('when there are not enough houses', () => {
     modifyGameInTesting({ state: {
       houses: 0,
       properties: [{
@@ -190,17 +187,17 @@ describe('Game: improving properties', function() {
 
     it('should not improve the property when a house is needed', function() {
       expect(() => this.dispatch(improveProperty('top-hat', 'oriental-avenue')))
-        .to.throw(MonopolyError, /houses/i);
-      expect(this.getProperty('oriental-avenue').buildings).to.equal(0);
+        .toThrow(MonopolyError, /houses/i);
+      expect(this.getProperty('oriental-avenue')).toHaveProperty('buildings', 0);
     });
 
     it('should still improve the property when a hotel is needed', function() {
       this.dispatch(improveProperty('top-hat', 'baltic-avenue'));
-      expect(this.getProperty('baltic-avenue').buildings).to.equal(5);
+      expect(this.getProperty('baltic-avenue')).toHaveProperty('buildings', 5);
     });
   });
 
-  describe('when there are not enough hotels', function() {
+  describe('when there are not enough hotels', () => {
     modifyGameInTesting({ state: {
       hotels: 0,
       properties: [{
@@ -213,13 +210,13 @@ describe('Game: improving properties', function() {
 
     it('should not improve the property when a hotel is needed', function() {
       expect(() => this.dispatch(improveProperty('top-hat', 'baltic-avenue')))
-        .to.throw(MonopolyError, /hotels/i);
-      expect(this.getProperty('baltic-avenue').buildings).to.equal(4);
+        .toThrow(MonopolyError, /hotels/i);
+      expect(this.getProperty('baltic-avenue')).toHaveProperty('buildings', 4);
     });
 
     it('should still improve the property when a house is needed', function() {
       this.dispatch(improveProperty('top-hat', 'oriental-avenue'));
-      expect(this.getProperty('oriental-avenue').buildings).to.equal(1);
+      expect(this.getProperty('oriental-avenue')).toHaveProperty('buildings', 1);
     });
   });
 });

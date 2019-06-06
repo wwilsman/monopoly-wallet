@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+import expect from 'expect';
 
 import {
   getTradeId,
@@ -10,7 +9,7 @@ import {
 import MonopolyError from '../../src/error';
 import { makeOffer } from '../../src/actions/trades';
 
-describe('Game: making a trade offer', function() {
+describe('Game: making a trade offer', () => {
   setupGameForTesting({ state: {
     players: [
       { token: 'top-hat' },
@@ -30,7 +29,7 @@ describe('Game: making a trade offer', function() {
       amount: 500
     }));
 
-    expect(this.state.trades).to.deep.equal({
+    expect(this.state.trades).toEqual({
       [tradeId]: {
         id: tradeId,
         from: 'top-hat',
@@ -44,8 +43,8 @@ describe('Game: making a trade offer', function() {
   it('should not allow properties not owned by either player', function() {
     expect(() => this.dispatch(makeOffer('top-hat', 'automobile', {
       properties: ['st-james-place']
-    }))).to.throw(MonopolyError, /unowned/);
-    expect(this.state.trades).to.not.have.property(
+    }))).toThrow(MonopolyError, /unowned/);
+    expect(this.state.trades).not.toHaveProperty(
       getTradeId('top-hat', 'automobile')
     );
   });
@@ -53,8 +52,8 @@ describe('Game: making a trade offer', function() {
   it('should not allow amounts the player cannot afford', function() {
     expect(() => this.dispatch(makeOffer('top-hat', 'automobile', {
       amount: 2000
-    }))).to.throw(MonopolyError, /insufficient/i);
-    expect(this.state.trades).to.not.have.property(
+    }))).toThrow(MonopolyError, /insufficient/i);
+    expect(this.state.trades).not.toHaveProperty(
       getTradeId('top-hat', 'automobile')
     );
   });
@@ -64,16 +63,14 @@ describe('Game: making a trade offer', function() {
       properties: ['oriental-avenue']
     }));
 
-    expect(this.state.notice.id).to.equal('trade.new');
-    expect(this.state.notice.message).to.match(/offered/);
-    expect(this.state.notice.meta).to.have.property('player')
-      .that.has.property('token', 'top-hat');
-    expect(this.state.notice.meta).to.have.property('other')
-      .that.has.property('token', 'automobile');
-    expect(this.state.notice.meta).to.have.property('amount', 0);
+    expect(this.state.notice.id).toBe('trade.new');
+    expect(this.state.notice.message).toMatch('offered');
+    expect(this.state.notice.meta).toHaveProperty('player.token', 'top-hat');
+    expect(this.state.notice.meta).toHaveProperty('other.token', 'automobile');
+    expect(this.state.notice.meta).toHaveProperty('amount', 0);
   });
 
-  describe('with an existing offer', function() {
+  describe('with an existing offer', () => {
     modifyGameInTesting({ state: {
       trades: [{
         from: 'top-hat',
@@ -90,7 +87,7 @@ describe('Game: making a trade offer', function() {
         amount: 500
       }));
 
-      expect(this.state.trades).to.deep.equal({
+      expect(this.state.trades).toEqual({
         [tradeId]: {
           id: tradeId,
           from: 'automobile',
@@ -107,13 +104,11 @@ describe('Game: making a trade offer', function() {
         amount: 500
       }));
 
-      expect(this.state.notice.id).to.equal('trade.modified');
-      expect(this.state.notice.message).to.match(/counter/);
-      expect(this.state.notice.meta).to.have.property('player')
-        .that.has.property('token', 'automobile');
-      expect(this.state.notice.meta).to.have.property('other')
-        .that.has.property('token', 'top-hat');
-      expect(this.state.notice.meta).to.have.property('amount', 500);
+      expect(this.state.notice.id).toBe('trade.modified');
+      expect(this.state.notice.message).toMatch('counter');
+      expect(this.state.notice.meta).toHaveProperty('player.token', 'automobile');
+      expect(this.state.notice.meta).toHaveProperty('other.token', 'top-hat');
+      expect(this.state.notice.meta).toHaveProperty('amount', 500);
     });
   });
 });

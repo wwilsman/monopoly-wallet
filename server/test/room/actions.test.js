@@ -1,5 +1,4 @@
-import { describe, it, beforeEach } from 'mocha';
-import { expect } from 'chai';
+import expect from 'expect';
 
 import {
   setupRoomForTesting,
@@ -10,7 +9,7 @@ import {
 
 import MonopolyError from '../../src/error';
 
-describe('Room: actions', function() {
+describe('Room: actions', () => {
   let p1, p2;
 
   const promiseAction = (ws, event, ...args) => {
@@ -43,28 +42,29 @@ describe('Room: actions', function() {
    { event: 'trade:accept', args: ['automobile'] }
   /* eslint-enable indent */
   ].forEach(({ event, args }) => {
-    it(`should respond to "${event}"`, async function() {
+    it(`should respond to "${event}"`, async () => {
       await expect(promiseAction(p1, event, ...args).catch((error) => {
-        expect(error).to.be.an.instanceof(MonopolyError);
-      })).to.be.fulfilled;
+        expect(error).toBeInstanceOf(MonopolyError);
+        return error;
+      })).resolves.toBeDefined();
     });
   });
 
-  describe('actions that affect a player\'s balance', function() {
-    it('add to that player\'s balance history', async function() {
+  describe('actions that affect a player\'s balance', () => {
+    it('add to that player\'s balance history', async () => {
       let game;
 
       ({ game } = await promiseAction(p1, 'property:buy', 'boardwalk'));
       ({ game } = await promiseAction(p1, 'player:transfer', -200));
 
-      expect(game.players['top-hat'].balance).to.equal(1300);
-      expect(game.players['top-hat'].history).to.have.members([1500, 1100]);
-      expect(game.players['automobile'].history).to.be.empty;
+      expect(game.players['top-hat'].balance).toBe(1300);
+      expect(game.players['top-hat'].history).toEqual([1500, 1100]);
+      expect(game.players['automobile'].history).toHaveLength(0);
 
       ({ game } = await promiseAction(p2, 'property:pay-rent', 'boardwalk'));
 
-      expect(game.players['automobile'].balance).to.equal(1450);
-      expect(game.players['automobile'].history).to.have.members([1500]);
+      expect(game.players['automobile'].balance).toBe(1450);
+      expect(game.players['automobile'].history).toEqual([1500]);
     });
   });
 });

@@ -77,7 +77,7 @@ function setupGameStore() {
     this.getProperties = (group) => getProperties(this.state, group);
   });
 
-  afterEach(function() {
+  afterEach(() => {
     unsubscribe();
     unsubscribe = null;
     store = null;

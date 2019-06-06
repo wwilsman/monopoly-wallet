@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+import expect from 'expect';
 
 import {
   setupGameForTesting,
@@ -9,7 +8,7 @@ import {
 import MonopolyError from '../../src/error';
 import { unimproveGroup } from '../../src/actions/properties';
 
-describe('Game: unimproving groups', function() {
+describe('Game: unimproving groups', () => {
   setupGameForTesting({ state: {
     houses: 1,
     players: [
@@ -42,13 +41,13 @@ describe('Game: unimproving groups', function() {
 
     this.dispatch(unimproveGroup('top-hat', 'lightblue'));
 
-    expect(this.getPlayer('top-hat').balance).to.equal(1500 + value);
-    expect(this.state.bank).to.equal(this.last.bank - value);
-    expect(this.getProperty(group[0].id).buildings).to.equal(1);
-    expect(this.getProperty(group[1].id).buildings).to.equal(2);
-    expect(this.getProperty(group[2].id).buildings).to.equal(2);
-    expect(this.state.hotels).to.equal(this.last.hotels + 2);
-    expect(this.state.houses).to.equal(0);
+    expect(this.getPlayer('top-hat')).toHaveProperty('balance', 1500 + value);
+    expect(this.state.bank).toBe(this.last.bank - value);
+    expect(this.getProperty(group[0].id)).toHaveProperty('buildings', 1);
+    expect(this.getProperty(group[1].id)).toHaveProperty('buildings', 2);
+    expect(this.getProperty(group[2].id)).toHaveProperty('buildings', 2);
+    expect(this.state.hotels).toBe(this.last.hotels + 2);
+    expect(this.state.houses).toBe(0);
   });
 
   it('should always sell unavailable houses', function() {
@@ -58,22 +57,22 @@ describe('Game: unimproving groups', function() {
 
     this.dispatch(unimproveGroup('automobile', 'blue'));
 
-    expect(this.getPlayer('automobile').balance).to.equal(1500 + value);
-    expect(this.state.bank).to.equal(this.last.bank - value);
-    expect(this.getProperty(group[0].id).buildings).to.equal(0);
-    expect(this.getProperty(group[1].id).buildings).to.equal(1);
-    expect(this.state.hotels).to.equal(this.last.hotels + 2);
-    expect(this.state.houses).to.equal(0);
+    expect(this.getPlayer('automobile')).toHaveProperty('balance', 1500 + value);
+    expect(this.state.bank).toBe(this.last.bank - value);
+    expect(this.getProperty(group[0].id)).toHaveProperty('buildings', 0);
+    expect(this.getProperty(group[1].id)).toHaveProperty('buildings', 1);
+    expect(this.state.hotels).toBe(this.last.hotels + 2);
+    expect(this.state.houses).toBe(0);
   });
 
   it('should not unimprove an unowned group', function() {
     expect(() => this.dispatch(unimproveGroup('top-hat', 'blue')))
-      .to.throw(MonopolyError, /owned by/i);
+      .toThrow(MonopolyError, /owned by/i);
   });
 
   it('should not unimprove a partially owned group', function() {
     expect(() => this.dispatch(unimproveGroup('top-hat', 'brown')))
-      .to.throw(MonopolyError, /unowned/i);
+      .toThrow(MonopolyError, /unowned/i);
   });
 
   it('should create a notice', function() {
@@ -82,34 +81,32 @@ describe('Game: unimproving groups', function() {
 
     this.dispatch(unimproveGroup('top-hat', 'lightblue'));
 
-    expect(this.state.notice.id).to.equal('property.unimproved-group');
-    expect(this.state.notice.message).to.match(/unimproved 3 lightblue properties/);
-    expect(this.state.notice.meta).to.have.property('player')
-      .that.has.property('token', 'top-hat');
-    expect(this.state.notice.meta).to.have.property('properties')
-      .that.has.deep.members([
-        { id: 'oriental-avenue', buildings: 1 },
-        { id: 'connecticut-avenue', buildings: 2 },
-        { id: 'vermont-avenue', buildings: 2 }
-      ]);
-    expect(this.state.notice.meta).to.have.property('amount', value);
+    expect(this.state.notice.id).toBe('property.unimproved-group');
+    expect(this.state.notice.message).toMatch('unimproved 3 lightblue properties');
+    expect(this.state.notice.meta).toHaveProperty('player.token', 'top-hat');
+    expect(this.state.notice.meta).toHaveProperty('properties', [
+      { id: 'connecticut-avenue', buildings: 2 },
+      { id: 'vermont-avenue', buildings: 2 },
+      { id: 'oriental-avenue', buildings: 1 }
+    ]);
+    expect(this.state.notice.meta).toHaveProperty('amount', value);
   });
 
-  describe('when the bank is low', function() {
+  describe('when the bank is low', () => {
     modifyGameInTesting({ state: { bank: 0 }});
 
     it('should not unimprove the property', function() {
       let group = this.getProperties('lightblue');
 
       expect(() => this.dispatch(unimproveGroup('top-hat', 'lightblue')))
-        .to.throw(MonopolyError, /insufficient/i);
-      expect(group[0].buildings).to.equal(4);
-      expect(group[1].buildings).to.equal(5);
-      expect(group[2].buildings).to.equal(5);
+        .toThrow(MonopolyError, /insufficient/i);
+      expect(group[0].buildings).toBe(4);
+      expect(group[1].buildings).toBe(5);
+      expect(group[2].buildings).toBe(5);
     });
   });
 
-  describe('when the group is a railroad or utility', function() {
+  describe('when the group is a railroad or utility', () => {
     modifyGameInTesting({ state: {
       properties: [{
         group: 'railroad',
@@ -122,16 +119,16 @@ describe('Game: unimproving groups', function() {
 
     it('should not unimprove a railroad', function() {
       expect(() => this.dispatch(unimproveGroup('top-hat', 'railroad')))
-        .to.throw(MonopolyError, /improve a railroad/i);
+        .toThrow(MonopolyError, /improve a railroad/i);
     });
 
     it('should not unimprove a utility', function() {
       expect(() => this.dispatch(unimproveGroup('top-hat', 'utility')))
-        .to.throw(MonopolyError, /improve a utility/i);
+        .toThrow(MonopolyError, /improve a utility/i);
     });
   });
 
-  describe('when the property has no improvements', function() {
+  describe('when the property has no improvements', () => {
     modifyGameInTesting({ state: {
       properties: [{
         group: 'lightblue',
@@ -143,14 +140,14 @@ describe('Game: unimproving groups', function() {
       let group = this.getProperties('lightblue');
 
       expect(() => this.dispatch(unimproveGroup('top-hat', 'lightblue')))
-        .to.throw(MonopolyError, /unimproved/i);
-      expect(group[0].buildings).to.equal(0);
-      expect(group[1].buildings).to.equal(0);
-      expect(group[2].buildings).to.equal(0);
+        .toThrow(MonopolyError, /unimproved/i);
+      expect(group[0].buildings).toBe(0);
+      expect(group[1].buildings).toBe(0);
+      expect(group[2].buildings).toBe(0);
     });
   });
 
-  describe('when no houses are needed', function() {
+  describe('when no houses are needed', () => {
     modifyGameInTesting({ state: {
       properties: [{
         group: 'lightblue',
@@ -164,17 +161,17 @@ describe('Game: unimproving groups', function() {
 
       this.dispatch(unimproveGroup('top-hat', 'lightblue'));
 
-      expect(this.getPlayer('top-hat').balance).to.equal(1500 + value);
-      expect(this.state.bank).to.equal(this.last.bank - value);
-      expect(this.getProperty(group[0].id).buildings).to.equal(3);
-      expect(this.getProperty(group[1].id).buildings).to.equal(4);
-      expect(this.getProperty(group[2].id).buildings).to.equal(4);
-      expect(this.state.hotels).to.equal(this.last.hotels);
-      expect(this.state.houses).to.equal(this.last.houses + 1);
+      expect(this.getPlayer('top-hat')).toHaveProperty('balance', 1500 + value);
+      expect(this.state.bank).toBe(this.last.bank - value);
+      expect(this.getProperty(group[0].id)).toHaveProperty('buildings', 3);
+      expect(this.getProperty(group[1].id)).toHaveProperty('buildings', 4);
+      expect(this.getProperty(group[2].id)).toHaveProperty('buildings', 4);
+      expect(this.state.hotels).toBe(this.last.hotels);
+      expect(this.state.houses).toBe(this.last.houses + 1);
     });
   });
 
-  describe('when there are more than enough houses', function() {
+  describe('when there are more than enough houses', () => {
     modifyGameInTesting({ state: { houses: 5 }});
 
     it('should unimprove the first highest built property normally', function() {
@@ -183,13 +180,13 @@ describe('Game: unimproving groups', function() {
 
       this.dispatch(unimproveGroup('top-hat', 'lightblue'));
 
-      expect(this.getPlayer('top-hat').balance).to.equal(1500 + value);
-      expect(this.state.bank).to.equal(this.last.bank - value);
-      expect(this.getProperty(group[0].id).buildings).to.equal(4);
-      expect(this.getProperty(group[1].id).buildings).to.equal(4);
-      expect(this.getProperty(group[2].id).buildings).to.equal(5);
-      expect(this.state.hotels).to.equal(this.last.hotels + 1);
-      expect(this.state.houses).to.equal(this.last.houses - 4);
+      expect(this.getPlayer('top-hat')).toHaveProperty('balance', 1500 + value);
+      expect(this.state.bank).toBe(this.last.bank - value);
+      expect(this.getProperty(group[0].id)).toHaveProperty('buildings', 4);
+      expect(this.getProperty(group[1].id)).toHaveProperty('buildings', 4);
+      expect(this.getProperty(group[2].id)).toHaveProperty('buildings', 5);
+      expect(this.state.hotels).toBe(this.last.hotels + 1);
+      expect(this.state.houses).toBe(this.last.houses - 4);
     });
   });
 });

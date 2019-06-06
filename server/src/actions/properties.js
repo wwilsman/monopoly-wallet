@@ -88,7 +88,7 @@ export const unimproveProperty = (playerToken, propertyId) => {
 export const unimproveGroup = (playerToken, propertyGroup) => {
   return (select) => {
     let group = select.group(propertyGroup)
-      .sort((a, b) => b.price - a.price || 1);
+      .sort((a, b) => b.price - a.price || -1);
     let houses = select.state('houses');
 
     // current houses + available houses

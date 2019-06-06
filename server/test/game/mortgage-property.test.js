@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+import expect from 'expect';
 
 import {
   setupGameForTesting,
@@ -9,7 +8,7 @@ import {
 import MonopolyError from '../../src/error';
 import { mortgageProperty } from '../../src/actions/properties';
 
-describe('Game: mortgaging properties', function() {
+describe('Game: mortgaging properties', () => {
   setupGameForTesting({ state: {
     bank: 100,
     players: [{ token: 'top-hat' }],
@@ -25,15 +24,15 @@ describe('Game: mortgaging properties', function() {
 
     this.dispatch(mortgageProperty('top-hat', property.id));
 
-    expect(this.getProperty(property.id).mortgaged).to.be.true;
-    expect(this.getPlayer('top-hat').balance).to.equal(1500 + value);
-    expect(this.state.bank).to.equal(this.last.bank - value);
+    expect(this.getProperty(property.id)).toHaveProperty('mortgaged', true);
+    expect(this.getPlayer('top-hat')).toHaveProperty('balance', 1500 + value);
+    expect(this.state.bank).toBe(this.last.bank - value);
   });
 
   it('should not mortgage unowned properties', function() {
     expect(() => this.dispatch(mortgageProperty('top-hat', 'baltic-avenue')))
-      .to.throw(MonopolyError, /not own/);
-    expect(this.getProperty('baltic-avenue').mortgaged).to.be.false;
+      .toThrow(MonopolyError, /not own/);
+    expect(this.getProperty('baltic-avenue')).toHaveProperty('mortgaged', false);
   });
 
   it('should not mortgage a property more than once', function() {
@@ -42,38 +41,36 @@ describe('Game: mortgaging properties', function() {
 
     this.dispatch(mortgageProperty('top-hat', property.id));
 
-    expect(this.getProperty(property.id).mortgaged).to.be.true;
-    expect(this.getPlayer('top-hat').balance).to.equal(1500 + value);
-    expect(this.state.bank).to.equal(this.last.bank - value);
+    expect(this.getProperty(property.id)).toHaveProperty('mortgaged', true);
+    expect(this.getPlayer('top-hat')).toHaveProperty('balance', 1500 + value);
+    expect(this.state.bank).toBe(this.last.bank - value);
 
     expect(() => this.dispatch(mortgageProperty('top-hat', property.id)))
-      .to.throw(MonopolyError, /is mortgaged/);
-    expect(this.getPlayer('top-hat').balance).to.equal(1500 + value);
-    expect(this.state.bank).to.equal(this.last.bank - value);
+      .toThrow(MonopolyError, /is mortgaged/);
+    expect(this.getPlayer('top-hat')).toHaveProperty('balance', 1500 + value);
+    expect(this.state.bank).toBe(this.last.bank - value);
   });
 
   it('should create a notice', function() {
     this.dispatch(mortgageProperty('top-hat', 'oriental-avenue'));
 
-    expect(this.state.notice.id).to.equal('property.mortgaged');
-    expect(this.state.notice.message).to.match(/mortgaged/);
-    expect(this.state.notice.meta).to.have.property('player')
-      .that.has.property('token', 'top-hat');
-    expect(this.state.notice.meta).to.have.property('property')
-      .that.has.property('id', 'oriental-avenue');
+    expect(this.state.notice.id).toBe('property.mortgaged');
+    expect(this.state.notice.message).toMatch('mortgaged');
+    expect(this.state.notice.meta).toHaveProperty('player.token', 'top-hat');
+    expect(this.state.notice.meta).toHaveProperty('property.id', 'oriental-avenue');
   });
 
-  describe('when the bank is low', function() {
+  describe('when the bank is low', () => {
     modifyGameInTesting({ state: { bank: 0 }});
 
     it('should not mortgage the property', function() {
       expect(() => this.dispatch(mortgageProperty('top-hat', 'oriental-avenue')))
-        .to.throw(MonopolyError, /insufficient/);
-      expect(this.getProperty('oriental-avenue').mortgaged).to.be.false;
+        .toThrow(MonopolyError, /insufficient/);
+      expect(this.getProperty('oriental-avenue')).toHaveProperty('mortgaged', false);
     });
   });
 
-  describe('when the property has improvements', function() {
+  describe('when the property has improvements', () => {
     modifyGameInTesting({ state: {
       properties: [{
         id: 'connecticut-avenue',
@@ -83,12 +80,12 @@ describe('Game: mortgaging properties', function() {
 
     it('should not mortgage the property', function() {
       expect(() => this.dispatch(mortgageProperty('top-hat', 'oriental-avenue')))
-        .to.throw(MonopolyError, /improved/);
-      expect(this.getProperty('oriental-avenue').mortgaged).to.be.false;
+        .toThrow(MonopolyError, /improved/);
+      expect(this.getProperty('oriental-avenue')).toHaveProperty('mortgaged', false);
     });
   });
 
-  describe('with a custom mortgage rate', function() {
+  describe('with a custom mortgage rate', () => {
     modifyGameInTesting({ config: { mortgageRate: 1 }});
 
     it('should mortgage the property for the custom rate', function() {
@@ -96,9 +93,9 @@ describe('Game: mortgaging properties', function() {
 
       this.dispatch(mortgageProperty('top-hat', property.id));
 
-      expect(this.getProperty(property.id).mortgaged).to.be.true;
-      expect(this.getPlayer('top-hat').balance).to.equal(1500 + property.price);
-      expect(this.state.bank).to.equal(this.last.bank - property.price);
+      expect(this.getProperty(property.id)).toHaveProperty('mortgaged', true);
+      expect(this.getPlayer('top-hat')).toHaveProperty('balance', 1500 + property.price);
+      expect(this.state.bank).toBe(this.last.bank - property.price);
     });
   });
 });

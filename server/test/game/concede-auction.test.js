@@ -1,5 +1,4 @@
-import { describe, beforeEach, it } from 'mocha';
-import { expect } from 'chai';
+import expect from 'expect';
 
 import {
   setupGameForTesting,
@@ -9,7 +8,7 @@ import {
 import MonopolyError from '../../src/error';
 import { concedeAuction } from '../../src/actions/auction';
 
-describe('Game: conceding from auctions', function() {
+describe('Game: conceding from auctions', () => {
   setupGameForTesting({ state: {
     players: [
       { token: 'top-hat' },
@@ -26,31 +25,29 @@ describe('Game: conceding from auctions', function() {
   });
 
   it('should remove the player from the auction', function() {
-    expect(this.state.auction.players).to.not.include('top-hat');
-    expect(this.state.auction.players).to.include('automobile');
+    expect(this.state.auction.players).not.toContain('top-hat');
+    expect(this.state.auction.players).toContain('automobile');
   });
 
   it('should cancel the auction when all players concede', function() {
     this.dispatch(concedeAuction('automobile'));
-    expect(this.state.auction).to.be.false;
+    expect(this.state.auction).toBe(false);
   });
 
   it('should create a notice', function() {
-    expect(this.state.notice.id).to.equal('auction.conceded');
-    expect(this.state.notice.message).to.match(/conceded/);
-    expect(this.state.notice.meta).to.have.property('player')
-      .that.has.property('token', 'top-hat');
+    expect(this.state.notice.id).toEqual('auction.conceded');
+    expect(this.state.notice.message).toMatch('conceded');
+    expect(this.state.notice.meta).toHaveProperty('player.token', 'top-hat');
   });
 
   it('should create a different notice when the auction is cancelled', function() {
     this.dispatch(concedeAuction('automobile'));
-    expect(this.state.notice.id).to.equal('auction.cancelled');
-    expect(this.state.notice.message).to.match(/cancelled/);
-    expect(this.state.notice.meta).to.have.property('property')
-      .that.has.property('id', 'oriental-avenue');
+    expect(this.state.notice.id).toEqual('auction.cancelled');
+    expect(this.state.notice.message).toMatch('cancelled');
+    expect(this.state.notice.meta).toHaveProperty('property.id', 'oriental-avenue');
   });
 
-  describe('when winning', function() {
+  describe('when winning', () => {
     modifyGameInTesting({ state: {
       auction: {
         winning: 'top-hat',
@@ -60,18 +57,18 @@ describe('Game: conceding from auctions', function() {
 
     it('should not remove the winning player', function() {
       expect(() => this.dispatch(concedeAuction('top-hat')))
-        .to.throw(MonopolyError, /winning/);
-      expect(this.state.auction.players).to.include('top-hat');
-      expect(this.state.auction.players).to.include('automobile');
+        .toThrow(MonopolyError, /winning/);
+      expect(this.state.auction.players).toContain('top-hat');
+      expect(this.state.auction.players).toContain('automobile');
     });
   });
 
-  describe('with no auction', function() {
+  describe('with no auction', () => {
     modifyGameInTesting({ state: { auction: false }});
 
     it('should throw an error', function() {
       expect(() => this.dispatch(concedeAuction('top-hat')))
-        .to.throw(MonopolyError, /no/i);
+        .toThrow(MonopolyError, /no/i);
     });
   });
 });

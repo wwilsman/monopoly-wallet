@@ -1,5 +1,4 @@
-import { describe, it } from 'mocha';
-import { expect } from 'chai';
+import expect from 'expect';
 
 import {
   setupGameForTesting,
@@ -9,7 +8,7 @@ import {
 import MonopolyError from '../../src/error';
 import { buyProperty } from '../../src/actions/properties';
 
-describe('Game: buying properties', function() {
+describe('Game: buying properties', () => {
   setupGameForTesting({ state: {
     players: [
       { token: 'top-hat' },
@@ -29,61 +28,59 @@ describe('Game: buying properties', function() {
 
     this.dispatch(buyProperty('top-hat', 'baltic-avenue'));
 
-    expect(this.getProperty(property.id).owner).to.equal('top-hat');
-    expect(this.getPlayer('top-hat').balance).to.equal(this.config.playerStart - property.price);
-    expect(this.state.bank).to.equal(this.last.bank + property.price);
+    expect(this.getProperty(property.id)).toHaveProperty('owner', 'top-hat');
+    expect(this.getPlayer('top-hat')).toHaveProperty('balance', this.config.playerStart - property.price);
+    expect(this.state.bank).toBe(this.last.bank + property.price);
   });
 
   it('should buy the property for a specific price', function() {
     this.dispatch(buyProperty('top-hat', 'baltic-avenue', 10));
 
-    expect(this.getProperty('baltic-avenue').owner).to.equal('top-hat');
-    expect(this.getPlayer('top-hat').balance).to.equal(this.config.playerStart - 10);
-    expect(this.state.bank).to.equal(this.last.bank + 10);
+    expect(this.getProperty('baltic-avenue')).toHaveProperty('owner', 'top-hat');
+    expect(this.getPlayer('top-hat')).toHaveProperty('balance', this.config.playerStart - 10);
+    expect(this.state.bank).toBe(this.last.bank + 10);
   });
 
   it('should not buy the property for a non-existent player', function() {
     expect(() => this.dispatch(buyProperty('thimble', 'baltic-avenue', -10)))
-      .to.throw(MonopolyError, /player/);
-    expect(this.getProperty('baltic-avenue').owner).to.not.equal('thimble');
+      .toThrow(MonopolyError, /player/);
+    expect(this.getProperty('baltic-avenue')).not.toHaveProperty('owner', 'thimble');
   });
 
   it('should not buy the property for a negative price', function() {
     expect(() => this.dispatch(buyProperty('top-hat', 'baltic-avenue', -10)))
-      .to.throw(MonopolyError, /negative/);
-    expect(this.getProperty('baltic-avenue').owner).to.not.equal('top-hat');
+      .toThrow(MonopolyError, /negative/);
+    expect(this.getProperty('baltic-avenue')).not.toHaveProperty('owner', 'top-hat');
   });
 
   it('should not buy the property when already owned', function() {
     expect(() => this.dispatch(buyProperty('top-hat', 'oriental-avenue')))
-      .to.throw(MonopolyError, /owned/);
-    expect(this.getProperty('oriental-avenue').owner).to.equal('automobile');
+      .toThrow(MonopolyError, /owned/);
+    expect(this.getProperty('oriental-avenue')).toHaveProperty('owner', 'automobile');
   });
 
   it('should not buy the property when it is up for auction', function() {
     expect(() => this.dispatch(buyProperty('top-hat', 'connecticut-avenue')))
-      .to.throw(MonopolyError, /auction/);
-    expect(this.getProperty('connecticut-avenue').owner).to.not.equal('top-hat');
+      .toThrow(MonopolyError, /auction/);
+    expect(this.getProperty('connecticut-avenue')).not.toHaveProperty('owner', 'top-hat');
   });
 
   it('should not buy the property with insufficient funds', function() {
     expect(() => this.dispatch(buyProperty('top-hat', 'baltic-avenue', this.config.playerStart + 1)))
-      .to.throw(MonopolyError, /insufficient/i);
-    expect(this.getProperty('baltic-avenue').owner).to.not.equal('top-hat');
+      .toThrow(MonopolyError, /insufficient/i);
+    expect(this.getProperty('baltic-avenue')).not.toHaveProperty('owner', 'top-hat');
   });
 
   it('should create a notice', function() {
     this.dispatch(buyProperty('top-hat', 'baltic-avenue'));
 
-    expect(this.state.notice.id).to.equal('property.bought');
-    expect(this.state.notice.message).to.match(/purchased/);
-    expect(this.state.notice.meta).to.have.property('player')
-      .that.has.property('token', 'top-hat');
-    expect(this.state.notice.meta).to.have.property('property')
-      .that.has.property('id', 'baltic-avenue');
+    expect(this.state.notice.id).toBe('property.bought');
+    expect(this.state.notice.message).toMatch(/purchased/);
+    expect(this.state.notice.meta).toHaveProperty('player.token', 'top-hat');
+    expect(this.state.notice.meta).toHaveProperty('property.id', 'baltic-avenue');
   });
 
-  describe('when the player owns the other properties in the group', function() {
+  describe('when the player owns the other properties in the group', () => {
     modifyGameInTesting({ state: {
       properties: [{
         id: 'mediterranean-avenue',
@@ -94,9 +91,9 @@ describe('Game: buying properties', function() {
     it('should monopolize the other properties', function() {
       this.dispatch(buyProperty('top-hat', 'baltic-avenue'));
 
-      expect(this.getProperty('baltic-avenue').owner).to.equal('top-hat');
-      expect(this.getProperty('baltic-avenue').monopoly).to.be.true;
-      expect(this.getProperty('mediterranean-avenue').monopoly).to.be.true;
+      expect(this.getProperty('baltic-avenue')).toHaveProperty('owner', 'top-hat');
+      expect(this.getProperty('baltic-avenue')).toHaveProperty('monopoly', true);
+      expect(this.getProperty('mediterranean-avenue')).toHaveProperty('monopoly', true);
     });
   });
 });
