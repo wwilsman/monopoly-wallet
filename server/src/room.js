@@ -195,7 +195,8 @@ export default class GameRoom {
       this.trigger('sync', meta);
     }
 
-    if (this.connected.size === 0) {
+    // in testing, do not automatically clear cached rooms
+    if (this.connected.size === 0 && process.env.NODE_ENV !== 'testing') {
       delete this.constructor._cache[this.id];
     }
   }
