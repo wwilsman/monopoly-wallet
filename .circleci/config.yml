@@ -44,42 +44,45 @@ jobs:
           name: Lint
           command: yarn lint
 
-  build:
+  build-app:
     <<: *defaults
     steps:
       - *attach_workspace
       - run:
-          name: Build
-          command: yarn build
+          name: Build app
+          command: yarn app build
+      - persist_to_workspace:
+          root: ~/
+          paths:
+            - monopoly-wallet/app/dist
+
+  build-server:
+    <<: *defaults
+    steps:
+      - *attach_workspace
+      - run:
+          name: Build server
+          command: yarn server build
       - persist_to_workspace:
           root: ~/
           paths:
             - monopoly-wallet/server/dist
-            - monopoly-wallet/app/dist
 
-  test:
+  test-app:
     <<: *defaults
     steps:
       - *attach_workspace
       - run:
-          name: Run tests
-          command: yarn test
+          name: Run app tests
+          command: yarn app test --single-run
 
-  deploy:
+  test-server:
     <<: *defaults
     steps:
       - *attach_workspace
       - run:
-          name: Setup Git
-          command: |
-            git config user.name "Wil Wilsman"
-            git config user.email "hello@wilwilsman.com"
-      - run:
-          name: Deploy Master to Heroku
-          command: |
-            git add --force */dist
-            git commit --message release
-            git push --force https://heroku:$HEROKU_API_KEY@git.heroku.com/$HEROKU_APP_NAME.git master
+          name: Run server tests
+          command: yarn server test
 
 workflows:
   version: 2
@@ -89,17 +92,15 @@ workflows:
       - lint:
           requires:
             - install
-      - build:
+      - build-app:
           requires:
             - install
-      - test:
+      - build-server:
           requires:
             - install
-      - deploy:
+      - test-app:
           requires:
-            - lint
-            - build
-            - test
-          filters:
-            branches:
-              only: master
+            - build-app
+      - test-server:
+          requires:
+            - build-server
