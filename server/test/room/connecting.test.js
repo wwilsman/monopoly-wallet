@@ -3,6 +3,7 @@ import expect from 'expect';
 import {
   setupRoomForTesting,
   createSocket,
+  emitSocketEvent,
   createGame,
   connectToGameRoom
 } from './helpers';
@@ -47,5 +48,18 @@ describe('Room: connecting', () => {
   it('should emit an error when no game is found', async () => {
     await expect(connectToGameRoom(ws, 'F4K33'))
       .rejects.toThrow(MonopolyError, /not found/);
+  });
+
+  it('should allow disconnecting and connecting to another room', async function() {
+    let ws2 = await createSocket();
+    let { room } = await createGame(ws2);
+
+    await expect(connectToGameRoom(ws, room))
+      .resolves.toHaveProperty('room', room);
+
+    emitSocketEvent(ws, 'room:disconnect');
+
+    await expect(connectToGameRoom(ws, this.room))
+      .resolves.toHaveProperty('room', this.room);
   });
 });

@@ -79,8 +79,8 @@ export default function connectSocket(ws) {
           // unblock room-required actions
           room = r;
 
-          // on close, remove the socket from the room
-          ws.on('close', () => room.disconnect(ws));
+          // on close, disconnect from the room
+          ws.on('close', actions['room:disconnect']);
 
           // keep the room state in sync when other players make changes.
           // the sync event receives the meta that triggered it
@@ -99,6 +99,8 @@ export default function connectSocket(ws) {
     // disconnect from a game
     'room:disconnect': withRoom(() => {
       room.disconnect(ws);
+      room = false;
+      token = false;
     }),
 
     // join the game if available
