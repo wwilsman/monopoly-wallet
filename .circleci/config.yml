@@ -2,7 +2,7 @@ references:
   defaults: &defaults
     working_directory: ~/monopoly-wallet
     docker:
-      - image: circleci/node:9-browsers
+      - image: circleci/node:11-browsers
 
   cache_key: &cache_key
     monopoly-wallet-{{ .Branch }}-{{ checksum "yarn.lock" }}-v1
