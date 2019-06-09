@@ -14,7 +14,7 @@
   "dependencies": {
     "app": "*",
     "express": "^4.17.1",
-    "mongodb": "^3.2.6",
+    "mongodb": "^3.2.7",
     "redux": "^4.0.1",
     "redux-deep-diff": "^0.4.7",
     "reselect": "^4.0.0",
@@ -34,7 +34,7 @@
     "mocha": "^6.1.4",
     "nodemon": "^1.19.1",
     "postcss-import": "^12.0.1",
-    "webpack": "^4.32.2",
+    "webpack": "^4.33.0",
     "webpack-dev-middleware": "^3.7.0",
     "webpack-hot-middleware": "^2.25.0"
   }
