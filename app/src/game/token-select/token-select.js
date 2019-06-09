@@ -10,13 +10,19 @@ import Icon from '../../ui/icon';
 
 const cx = classNames.bind(styles);
 
+TokenSelectItem.propTypes = {
+  name: PropTypes.string.isRequired,
+  selected: PropTypes.bool,
+  disabled: PropTypes.bool
+};
+
 function TokenSelectItem({
   name,
   selected,
   disabled,
   ...props
 }) {
-  const className = cx('token', {
+  let className = cx('token', {
     'is-selected': selected,
     'is-disabled': disabled
   });
@@ -28,13 +34,15 @@ function TokenSelectItem({
   );
 }
 
-TokenSelectItem.propTypes = {
-  name: PropTypes.string.isRequired,
-  selected: PropTypes.bool,
-  disabled: PropTypes.bool
+TokenSelect.propTypes = {
+  tokens: PropTypes.arrayOf(PropTypes.string).isRequired,
+  disabled: PropTypes.arrayOf(PropTypes.string).isRequired,
+  selected: PropTypes.string.isRequired,
+  onSelect: PropTypes.func.isRequired,
+  disableAll: PropTypes.bool
 };
 
-function TokenSelect({
+export default function TokenSelect({
   tokens,
   selected,
   disabled,
@@ -44,27 +52,18 @@ function TokenSelect({
 }) {
   return (
     <RadioGroup
-        className={styles.root}
-        itemClassName={styles.item}
-        label="Select a token"
-        data={tokens}
-        selected={tokens.indexOf(selected)}
-        disabled={disabled.map((t) => tokens.indexOf(t))}
-        disableAll={disableAll}
-        onSelect={onSelect}
-        renderItem={(token, attrs) => (
-          <TokenSelectItem name={token} {...attrs}/>
-        )}
-        {...dataAttrs(props)}/>
+      className={styles.root}
+      itemClassName={styles.item}
+      label="Select a token"
+      data={tokens}
+      selected={tokens.indexOf(selected)}
+      disabled={disabled.map((t) => tokens.indexOf(t))}
+      disableAll={disableAll}
+      onSelect={onSelect}
+      renderItem={(token, attrs) => (
+        <TokenSelectItem name={token} {...attrs}/>
+      )}
+      {...dataAttrs(props)}
+    />
   );
 }
-
-TokenSelect.propTypes = {
-  tokens: PropTypes.arrayOf(PropTypes.string).isRequired,
-  disabled: PropTypes.arrayOf(PropTypes.string).isRequired,
-  selected: PropTypes.string.isRequired,
-  onSelect: PropTypes.func.isRequired,
-  disableAll: PropTypes.bool
-};
-
-export default TokenSelect;

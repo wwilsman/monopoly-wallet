@@ -1,42 +1,48 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './forms.css';
 
-import { uid, dataAttrs } from '../../utils';
+import { useUID, dataAttrs } from '../../utils';
 
 const cx = classNames.bind(styles);
 
-class Input extends Component {
-  static propTypes = {
-    label: PropTypes.string.isRequired,
-    value: PropTypes.string.isRequired,
-    onChangeText: PropTypes.func.isRequired,
-    placeholder: PropTypes.string,
-    disabled: PropTypes.bool,
-    error: PropTypes.string,
-    length: PropTypes.number,
-    alt: PropTypes.bool
-  };
+Input.propTypes = {
+  label: PropTypes.string.isRequired,
+  value: PropTypes.string.isRequired,
+  onChangeText: PropTypes.func.isRequired,
+  placeholder: PropTypes.string,
+  disabled: PropTypes.bool,
+  error: PropTypes.string,
+  length: PropTypes.number,
+  alt: PropTypes.bool
+};
 
-  state = {
-    focused: false,
-    empty: false
-  };
+export default function Input({
+  label,
+  value,
+  onChangeText,
+  placeholder,
+  disabled,
+  error,
+  length,
+  alt,
+  ...props
+}) {
+  let [focused, setFocused] = useState(false);
+  let [empty, setEmpty] = useState(false);
+  let elementId = useUID('input');
+  let inputId = `${elementId}-input`;
 
-  elementId = uid('Input');
-
-  handleChange = (e) => {
-    const { disabled, length, onChangeText } = this.props;
-    const { empty } = this.state;
-    let { value } = e.target;
-
+  let handleFocus = useCallback(() => setFocused(true), []);
+  let handleBlur = useCallback(() => setFocused(false), []);
+  let handleChange = useCallback(({ target: { value } }) => {
     if (disabled) return;
 
     if (empty && value) {
-      this.setState({ empty: false });
+      setEmpty(false);
     } else if (!empty && !value) {
-      this.setState({ empty: true });
+      setEmpty(true);
     }
 
     if (typeof length === 'number') {
@@ -44,73 +50,48 @@ class Input extends Component {
     }
 
     onChangeText(value);
-  };
+  }, [disabled, empty, length, onChangeText]);
 
-  handleFocus = () => {
-    this.setState({ focused: true });
-  };
+  return (
+    <div
+      id={elementId}
+      className={cx('root', {
+        'is-error': !!error,
+        'has-focus': focused,
+        'is-empty': empty,
+        'is-disabled': disabled,
+        alt
+      })}
+      {...dataAttrs(props)}
+    >
+      <label
+        className={styles.label}
+        htmlFor={inputId}
+        data-test-label
+      >
+        <span>{label}</span>
 
-  handleBlur = () => {
-    this.setState({ focused: false });
-  };
+        {!!error && (
+          <span
+            className={styles.error}
+            data-test-error
+          >
+            {error}
+          </span>
+        )}
+      </label>
 
-  render() {
-    const {
-      alt,
-      label,
-      value,
-      error,
-      placeholder,
-      disabled,
-      ...props
-    } = this.props;
-
-    const {
-      focused,
-      empty
-    } = this.state;
-
-    const inputId = `${this.elementId}-input`;
-    const rootClassName = cx('root', {
-      'is-error': !!error,
-      'has-focus': focused,
-      'is-empty': empty,
-      'is-disabled': disabled,
-      alt
-    });
-
-    return (
-      <div
-          id={this.elementId}
-          className={rootClassName}
-          {...dataAttrs(props)}>
-        <label
-            className={styles.label}
-            htmlFor={inputId}
-            data-test-label>
-          <span>{label}</span>
-
-          {!!error && (
-            <span
-                className={styles.error}
-                data-test-error>
-              {error}
-            </span>
-          )}
-        </label>
-        <input
-            id={inputId}
-            className={styles.input}
-            value={value}
-            placeholder={placeholder}
-            disabled={disabled}
-            onChange={this.handleChange}
-            onFocus={this.handleFocus}
-            onBlur={this.handleBlur}
-            data-test-input/>
-      </div>
-    );
-  }
+      <input
+        id={inputId}
+        className={styles.input}
+        value={value}
+        placeholder={placeholder}
+        disabled={disabled}
+        onChange={handleChange}
+        onFocus={handleFocus}
+        onBlur={handleBlur}
+        data-test-input
+      />
+    </div>
+  );
 }
-
-export default Input;

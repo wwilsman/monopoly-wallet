@@ -1,107 +1,70 @@
-import React, { Component, Children } from 'react';
+import React, { Children, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
+import { useSelector } from 'react-redux';
+import { createSelector } from 'reselect';
 import pathToRegexp from 'path-to-regexp';
 
-import { push, replace, goBack } from '../redux/router';
+import { useRouterActions } from '../redux/actions';
 
-export default (
-  mapStateToProps,
-  mapDispatchToProps
-) => (Wrapped) => {
-  class Route extends Component {
-    static propTypes = {
-      path: PropTypes.string.isRequired,
-      isMatch: PropTypes.bool.isRequired,
-      params: PropTypes.object.isRequired,
-      location: PropTypes.shape({
-        pathname: PropTypes.string.isRequired
-      }).isRequired,
-      redirect: PropTypes.string,
-      children: PropTypes.node,
-      replace: PropTypes.func
-    };
+const selectLocation = createSelector(
+  ({ router }) => router,
+  ({ location }) => location
+);
 
-    state = {
-      matched: this.getMatchingChild()
-    };
+function useLocation() {
+  return useSelector(selectLocation);
+}
 
-    componentWillMount() {
-      let { replace, redirect } = this.props;
+function usePath(path) {
+  let { pathname } = useLocation();
 
-      if (redirect && !this.state.matched) {
-        replace(redirect);
-      }
-    }
-
-    componentWillReceiveProps(nextProps) {
-      let matched = this.getMatchingChild(nextProps);
-
-      if (!matched && nextProps.redirect) {
-        this.props.replace(nextProps.redirect);
-      } else if (matched && matched !== this.state.matched) {
-        this.setState({ matched });
-      }
-    }
-
-    getMatchingChild({ location, children } = this.props) {
-      return Children.toArray(children).reduce((match, child) => {
-        if (!match) {
-          let re = pathToRegexp(child.props.path, [], { end: true });
-          if (re.exec(location.pathname)) return child;
-        }
-
-        return match;
-      }, null);
-    }
-
-    render() {
-      // eslint-disable-next-line no-unused-vars
-      let { path, isMatch, children, ...props } = this.props;
-      let { matched } = this.state;
-
-      return isMatch ? (
-        // eslint-disable-next-line react/no-children-prop
-        <Wrapped children={matched} {...props}/>
-      ) : null;
-    }
-  }
-
-  return connect((state, { path }) => {
+  return useMemo(() => {
     let tokens = [];
     let re = pathToRegexp(path, tokens);
-    let { location } = state.router;
-    let match = re.exec(location.pathname);
-    let isMatch = !!match;
-    let params = {};
+    let match = re.exec(pathname);
+    let params = match ? tokens.reduce((p, { name }, i) => (
+      !name ? p : { ...p, [name]: match[i + 1] }
+    ), {}) : {};
 
-    for (let i = 0, l = tokens.length; i < l; i++) {
-      let token = tokens[i];
+    return { match: !!match, params };
+  }, [path, pathname]);
+}
 
-      if (typeof token.name === 'string') {
-        params[token.name] = match && match[i + 1];
-      }
-    }
-
-    let props = mapStateToProps ? (
-      mapStateToProps(state, {
-        ...props,
-        location,
-        isMatch,
-        params
-      })
-    ) : {};
-
-    return {
-      params,
-      isMatch,
-      location,
-      ...props
-    };
-  }, {
-    push,
-    replace,
-    goBack,
-    ...(mapDispatchToProps || {})
-  })(Route);
+Route.propTypes = {
+  path: PropTypes.string.isRequired,
+  redirect: PropTypes.string,
+  render: PropTypes.func,
+  children: PropTypes.node
 };
+
+export default function Route({
+  path,
+  redirect,
+  render: Component,
+  children
+}) {
+  let location = useLocation();
+  let actions = useRouterActions();
+  let { match, params } = usePath(path);
+
+  let child = useMemo(() => (
+    Children.toArray(children).find(child => {
+      let re = pathToRegexp(child.props.path, [], { end: true });
+      return !!re.exec(location.pathname);
+    })
+  ), [children, location.pathname]);
+
+  if (!child && redirect) {
+    actions.replace(redirect);
+  }
+
+  return match ? (
+    <Component
+      params={params}
+      location={location}
+      {...actions}
+    >
+      {child}
+    </Component>
+  ) : null;
+}

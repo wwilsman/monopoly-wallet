@@ -5,30 +5,36 @@ import styles from './layout.css';
 
 const cx = classNames.bind(styles);
 
-const Container = ({
-  row,
-  align,
-  justify,
-  tagName,
-  ...props
-}) => {
-  const Component = tagName || 'div';
-  const className = cx('container', {
-    'row': !!row,
-    [`align-${align}`]: !!align,
-    [`justify-${justify}`]: !!justify
-  });
-
-  return (
-    <Component className={className} {...props}/>
-  );
-};
-
 Container.propTypes = {
   row: PropTypes.bool,
-  align: PropTypes.oneOf(['center', 'start']),
-  justify: PropTypes.oneOf(['center', 'start', 'between', 'stretch']),
+  align: PropTypes.oneOf([
+    'center',
+    'start'
+  ]),
+  justify: PropTypes.oneOf([
+    'center',
+    'start',
+    'between',
+    'stretch'
+  ]),
   tagName: PropTypes.string
 };
 
-export default Container;
+export default function Container({
+  row,
+  align,
+  justify,
+  tagName: Component = 'div',
+  ...props
+}) {
+  return (
+    <Component
+      className={cx('container', {
+        [`align-${align}`]: !!align,
+        [`justify-${justify}`]: !!justify,
+        row: !!row
+      })}
+      {...props}
+    />
+  );
+}

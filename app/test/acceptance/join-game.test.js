@@ -150,7 +150,7 @@ describe('JoinGameScreen', () => {
         it('should clear the persisted player from local storage', async () => {
           await joinGame.assert(() => {
             let { room, player } = localStorage.data.app;
-            expect(room).toBe(joinGame.room.id);
+            expect(room).toBe('');
             expect(player).toBeNull();
           });
         });

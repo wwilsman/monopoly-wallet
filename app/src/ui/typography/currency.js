@@ -4,7 +4,11 @@ import PropTypes from 'prop-types';
 import Text from './text';
 import Icon from '../icon';
 
-function Currency({ value, ...props }) {
+Currency.propTypes = {
+  value: PropTypes.number.isRequired
+};
+
+export default function Currency({ value, ...props }) {
   return (
     <Text {...props}>
       <Icon name="currency"/>
@@ -12,9 +16,3 @@ function Currency({ value, ...props }) {
     </Text>
   );
 }
-
-Currency.propTypes = {
-  value: PropTypes.number.isRequired
-};
-
-export default Currency;

@@ -5,20 +5,15 @@ import styles from './spinner.css';
 
 const cx = classNames.bind(styles);
 
-function Spinner({ xl }) {
-  const className = cx('root', {
-    'size--xl': xl
-  });
-
-  return (
-    <span
-        className={className}
-        data-test-spinner/>
-  );
-}
-
 Spinner.propTypes = {
   xl: PropTypes.bool
 };
 
-export default Spinner;
+export default function Spinner({ xl }) {
+  return (
+    <span
+      className={cx('root', { 'size--xl': xl })}
+      data-test-spinner
+    />
+  );
+}

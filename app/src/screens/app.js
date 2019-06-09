@@ -1,31 +1,24 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import route from './route';
 
+import { useWaitingFor } from '../utils';
 import { Container, Section } from '../ui/layout';
 import Spinner from '../ui/spinner';
 
-@route(({ app }) => ({
-  loading: app.waiting.includes('connected')
-}))
+AppScreen.propTypes = {
+  children: PropTypes.node
+};
 
-class AppScreen extends Component {
-  static propTypes = {
-    loading: PropTypes.bool.isRequired,
-    children: PropTypes.node
-  };
+export default function AppScreen({ children }) {
+  let loading = useWaitingFor('connected');
 
-  render() {
-    return this.props.loading ? (
-      <Container>
-        <Section align="center" justify="center">
-          <Spinner xl/>
-        </Section>
-      </Container>
-    ) : (
-      this.props.children
-    );
-  }
+  return loading ? (
+    <Container>
+      <Section align="center" justify="center">
+        <Spinner xl/>
+      </Section>
+    </Container>
+  ) : (
+    children
+  );
 }
-
-export default AppScreen;

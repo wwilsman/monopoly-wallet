@@ -8,54 +8,8 @@ import Link from '../link';
 
 const cx = classNames.bind(styles);
 
-const Button = ({
-  type,
-  disabled,
-  loading,
-  block,
-  onClick,
-  linkTo,
-  children,
-  ...props
-}) => {
-  let actuallyDisabled = loading || disabled;
-
-  let className = cx('button', {
-    [type]: !!type,
-    'is-disabled': actuallyDisabled,
-    'is-loading': loading,
-    'is-block': block
-  });
-
-  let handleClick = (e) => {
-    if (actuallyDisabled) {
-      e.preventDefault();
-    } else if (onClick) {
-      onClick(e);
-    }
-  };
-
-  return linkTo ? (
-    <Link
-        to={linkTo}
-        className={className}
-        onClick={handleClick}
-        {...props}>
-      {!loading ? children : <Spinner/>}
-    </Link>
-  ) : (
-    <button
-        className={className}
-        disabled={actuallyDisabled}
-        onClick={handleClick}
-        {...props}>
-      {!loading ? children : <Spinner/>}
-    </button>
-  );
-};
-
 Button.propTypes = {
-  type: PropTypes.oneOf([
+  style: PropTypes.oneOf([
     'primary',
     'secondary',
     'alert',
@@ -66,7 +20,53 @@ Button.propTypes = {
   block: PropTypes.bool,
   onClick: PropTypes.func,
   linkTo: PropTypes.string,
-  children: PropTypes.any
+  children: PropTypes.node
 };
 
-export default Button;
+export default function Button ({
+  style,
+  disabled,
+  loading,
+  block,
+  onClick,
+  linkTo,
+  children,
+  ...props
+}) {
+  disabled = loading || disabled;
+
+  let className = cx('button', {
+    [style]: !!style,
+    'is-disabled': disabled,
+    'is-loading': loading,
+    'is-block': block
+  });
+
+  let handleClick = e => {
+    if (disabled) {
+      e.preventDefault();
+    } else if (onClick) {
+      onClick(e);
+    }
+  };
+
+  return linkTo ? (
+    <Link
+      to={linkTo}
+      className={className}
+      onClick={handleClick}
+      {...props}
+    >
+      {!loading ? children : <Spinner/>}
+    </Link>
+  ) : (
+    <button
+      className={className}
+      disabled={disabled}
+      onClick={handleClick}
+      {...props}
+    >
+      {!loading ? children : <Spinner/>}
+    </button>
+  );
+}

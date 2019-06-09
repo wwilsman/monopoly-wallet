@@ -3,7 +3,7 @@ import interactor from 'interactor.js';
 @interactor class AppInteractor {
   static defaultPath = '/';
 
-  get app() {
+  get ctx() {
     throw new Error('no app context');
   }
 
@@ -12,7 +12,7 @@ import interactor from 'interactor.js';
   }
 
   get state() {
-    return this.app.store.getState();
+    return this.ctx.store.getState();
   }
 
   get location() {
@@ -20,16 +20,16 @@ import interactor from 'interactor.js';
   }
 
   visit(path = this.constructor.defaultPath) {
-    return this.do(() => this.app.history.push(path));
+    return this.do(() => this.ctx.history.push(path));
   }
 
   goBack() {
-    return this.do(() => this.app.history.goBack());
+    return this.do(() => this.ctx.history.goBack());
   }
 
   emit(event, ...args) {
     return this.do(() => {
-      let ws = this.app.socket;
+      let ws = this.ctx.socket;
 
       window.setTimeout(() => {
         if (ws.readyState === 1) {

@@ -1,6 +1,8 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { Provider } from 'react-redux';
+import {
+  Provider as ReduxProvider
+} from 'react-redux';
 import {
   createBrowserHistory,
   createMemoryHistory
@@ -9,6 +11,7 @@ import {
 import './styles/global.css';
 import createStore from './redux/store';
 
+import Route from './screens/route';
 import AppScreen from './screens/app';
 import WelcomeScreen from './screens/welcome';
 import FindRoomScreen from './screens/find-room';
@@ -17,45 +20,39 @@ import GameRoomScreen from './screens/game-room';
 import DashboardScreen from './screens/dashboard';
 import SandboxScreen from './screens/sandbox';
 
-class AppRoot extends Component {
-  static propTypes = {
-    test: PropTypes.bool
-  };
-
-  history = !this.props.test ?
-    createBrowserHistory() :
-    createMemoryHistory();
-
-  socket = new WebSocket(
-    `ws://${window.location.host}`
-  );
-
-  store = createStore({
-    socket: this.socket,
-    history: this.history
-  });
-
-  render() {
-    let roompath = ':room([^/]{5})';
-
-    return (
-      <Provider store={this.store}>
-        <AppScreen path="/(.*)" redirect="/">
-          <WelcomeScreen path="/"/>
-          <FindRoomScreen path="/join"/>
-          <JoinGameScreen path={`/${roompath}/join`}/>
-
-          <GameRoomScreen path={`/${roompath}`}>
-            <DashboardScreen path={`/${roompath}`}/>
-          </GameRoomScreen>
-
-          {process.env.NODE_ENV === 'development' && (
-            <SandboxScreen path="/sandbox"/>
-          )}
-        </AppScreen>
-      </Provider>
-    );
-  }
+export function createAppContext() {
+  let history = (process.env.NODE_ENV === 'testing')
+    ? createMemoryHistory() : createBrowserHistory();
+  let socket = new WebSocket(`ws://${window.location.host}`);
+  let store = createStore({ socket, history });
+  return { history, socket, store };
 }
 
-export default AppRoot;
+AppRoot.propTypes = {
+  context: PropTypes.shape({
+    store: PropTypes.object
+  })
+};
+
+export default function AppRoot({ context }) {
+  let roompath = ':room([^/]{5})';
+  let { store } = context || createAppContext();
+
+  return (
+    <ReduxProvider store={store}>
+      <Route path="/(.*)" redirect="/" render={AppScreen}>
+        <Route path="/" render={WelcomeScreen}/>
+        <Route path="/join" render={FindRoomScreen}/>
+        <Route path={`/${roompath}/join`} render={JoinGameScreen}/>
+
+        <Route path={`/${roompath}`} render={GameRoomScreen}>
+          <Route path={`/${roompath}`} render={DashboardScreen}/>
+        </Route>
+
+        {process.env.NODE_ENV === 'development' && (
+          <Route path="/sandbox" render={SandboxScreen}/>
+        )}
+      </Route>
+    </ReduxProvider>
+  );
+}

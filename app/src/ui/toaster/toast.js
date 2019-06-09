@@ -7,18 +7,32 @@ import Icon from '../icon';
 
 const cx = classNames.bind(styles);
 
-function Toast({
+Toast.propTypes = {
+  type: PropTypes.oneOf([
+    'alert',
+    'poll',
+    'default',
+    'message'
+  ]).isRequired,
+  message: PropTypes.string.isRequired,
+  dismiss: PropTypes.func,
+  actions: PropTypes.arrayOf(PropTypes.shape({
+    label: PropTypes.string.isRequired,
+    action: PropTypes.func.isRequired
+  }))
+};
+
+export default function Toast({
   type,
   message,
   dismiss,
   actions
 }) {
-  const className = cx('toast', {
-    [`is-${type}`]: !!type
-  });
-
   return (
-    <div className={className} data-test-toast={type}>
+    <div
+      className={cx('toast', { [`is-${type}`]: !!type })}
+      data-test-toast={type}
+    >
       <div className={styles.message}>
         <span data-test-toast-message>
           {message}
@@ -43,20 +57,3 @@ function Toast({
     </div>
   );
 }
-
-Toast.propTypes = {
-  type: PropTypes.oneOf([
-    'alert',
-    'poll',
-    'default',
-    'message'
-  ]).isRequired,
-  message: PropTypes.string.isRequired,
-  dismiss: PropTypes.func,
-  actions: PropTypes.arrayOf(PropTypes.shape({
-    label: PropTypes.string.isRequired,
-    action: PropTypes.func.isRequired
-  }))
-};
-
-export default Toast;

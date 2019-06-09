@@ -13,7 +13,7 @@ import MESSAGES_FIXTURE from 'server/themes/classic/messages.yml';
 
 import WebSocket from './mock-websocket';
 import AppInteractor from './interactors/app';
-import AppRoot from '../src/root';
+import AppRoot, { createAppContext } from '../src/root';
 
 const {
   defineProperty,
@@ -93,9 +93,9 @@ export function setupApplication(hook = () => {}) {
     await mockGame({ clear: true });
 
     // mount our app
-    let ref = React.createRef();
-    await mount(<AppRoot ref={ref} test />);
-    AppInteractor.define('app', () => ref.current);
+    let ctx = createAppContext();
+    await mount(<AppRoot context={ctx} />);
+    AppInteractor.define('ctx', () => ctx);
 
     // wait until ready
     await new AppInteractor().assert.state(({ app }) => {

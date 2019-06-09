@@ -1,19 +1,17 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import { connect } from 'react-redux';
 
-import { push } from '../redux/router';
+import { useRouterActions } from '../redux/actions';
 
-@connect(null, { push })
-class Link extends Component {
-  static propTypes = {
-    to: PropTypes.string.isRequired,
-    onClick: PropTypes.func,
-    push: PropTypes.func.isRequired
-  };
+Link.propTypes = {
+  to: PropTypes.string.isRequired,
+  onClick: PropTypes.func
+};
 
-  handleClick = (e) => {
-    let { to, onClick, push } = this.props;
+export default function Link({ to, onClick, ...props }) {
+  let { push } = useRouterActions();
+
+  let handleClick = (e) => {
     let bubble = onClick && onClick(e);
 
     if (bubble !== false && !e.defaultPrevented) {
@@ -24,14 +22,11 @@ class Link extends Component {
     return bubble;
   };
 
-  render() {
-    // eslint-disable-next-line no-unused-vars
-    let { to, onClick, push, ...props } = this.props;
-
-    return (
-      <a href={to} onClick={this.handleClick} {...props}/>
-    );
-  }
+  return (
+    <a
+      href={to}
+      onClick={handleClick}
+      {...props}
+    />
+  );
 }
-
-export default Link;

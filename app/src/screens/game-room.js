@@ -1,8 +1,8 @@
-import React, { Component } from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import route from './route';
 
-import { connectToGame, joinGame } from '../redux/game';
+import { useGameActions } from '../redux/actions';
+import { useApp, useWaitingFor } from '../utils';
 import { load } from '../redux/persist';
 
 import { Container, Section } from '../ui/layout';
@@ -11,96 +11,58 @@ import Text from '../ui/typography/text';
 import Toaster from '../ui/toaster';
 import Spinner from '../ui/spinner';
 
-@route(({ app, game, router }, { params }) => {
-  let { location } = router;
-  let persisted = load('app');
+GameRoomScreen.propTypes = {
+  replace: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      player: PropTypes.object
+    }).isRequired
+  }).isRequired,
+  params: PropTypes.shape({
+    room: PropTypes.string.isRequired
+  }).isRequired,
+  children: PropTypes.node.isRequired
+};
 
-  return {
-    room: app.room || persisted.room || params.room,
-    player: app.player || persisted.player || location.state.player,
-    error: app.error,
-    connected: !!game,
-    joined: !!app.player
-  };
-}, {
-  connectToGame,
-  joinGame
-})
+export default function GameRoomScreen({
+  replace,
+  location,
+  params,
+  children
+}) {
+  let { room, player, error } = useApp();
+  let { connectToGame, joinGame } = useGameActions();
+  let connecting = useWaitingFor('room:connected');
+  let joining = useWaitingFor('game:joined');
+  let joined = !!player;
 
-class GameRoomScreen extends Component {
-  static propTypes = {
-    room: PropTypes.string,
-    player: PropTypes.object,
-    error: PropTypes.string,
-    connected: PropTypes.bool.isRequired,
-    joined: PropTypes.bool.isRequired,
-    connectToGame: PropTypes.func.isRequired,
-    joinGame: PropTypes.func.isRequired,
-    replace: PropTypes.func.isRequired,
-    params: PropTypes.shape({
-      room: PropTypes.string.isRequired
-    }).isRequired,
-    children: PropTypes.node.isRequired
-  };
+  let persisted = useMemo(() => {
+    return location.state.player || load('app').player;
+  }, [location.state.player]);
 
-  // when the component updates during the connect event, we lose the
-  // current player in both the local and persisted state. Saving the
-  // initial player prop allows us to reference it later during the
-  // component update hook
-  state = {
-    player: this.props.player
-  };
-
-  componentWillMount() {
-    let {
-      room,
-      player,
-      connected,
-      joined,
-      connectToGame,
-      joinGame,
-      params,
-      replace
-    } = this.props;
-
-    if (!player || room !== params.room) {
-      replace(`/${params.room}/join`);
-    } else if (!connected) {
-      connectToGame(room);
-    } else if (!joined) {
-      joinGame(player.name, player.token);
-    }
+  if (!joined && persisted) {
+    player = persisted;
   }
 
-  componentWillReceiveProps(nextProps) {
-    let { player } = this.state;
-    let {
-      room,
-      error,
-      connected,
-      joinGame,
-      replace
-    } = nextProps;
-
-    // send any errors to the find game screen
-    if (error) {
-      replace(`/${room}/join`);
-    // if we just connected join the game
-    } else if (connected && !this.props.connected) {
-      joinGame(player.name, player.token);
-    }
+  if (error || !player || (room && room !== params.room)) {
+    // if there was an error, no persisted player, or a different room
+    replace(`/${params.room}/join`);
+  } else if (!connecting && !room) {
+    // if not connecting or connected to the room, connect
+    connectToGame(params.room);
+  } else if (room && !joining && !joined && player) {
+    // if connected, not joining or joined, and there is a player, join
+    joinGame(player.name, player.token);
   }
 
-  render() {
-    let { room, joined, children } = this.props;
-
-    return (
-      <Container data-test-game-room>
-        {!joined ? (
-          <Section align="center" justify="center">
-            <Spinner xl/>
-          </Section>
-        ) : [
+  return (
+    <Container data-test-game-room>
+      {!joined ? (
+        <Section align="center" justify="center">
+          <Spinner xl/>
+        </Section>
+      ) : (
+        <>
           <Section key="header" flex="none" row>
             <NavLeft/>
 
@@ -111,17 +73,15 @@ class GameRoomScreen extends Component {
                 </Text>
               )}
             </NavRight>
-          </Section>,
+          </Section>
 
           <Container key="content">
             {children}
-          </Container>,
+          </Container>
 
           <Toaster key="toaster"/>
-        ]}
-      </Container>
-    );
-  }
+        </>
+      )}
+    </Container>
+  );
 }
-
-export default GameRoomScreen;

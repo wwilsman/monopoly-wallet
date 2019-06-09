@@ -1,12 +1,14 @@
-import React, { Component } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
-import route from './route';
 
+import { useGameActions } from '../redux/actions';
 import {
-  connectToGame,
-  disconnectGame,
-  joinGame
-} from '../redux/game';
+  useApp,
+  useConfig,
+  usePlayers,
+  useWaitingFor,
+  usePrevious
+} from '../utils';
 
 import { Container, Section } from '../ui/layout';
 import { NavLeft, NavRight } from '../ui/nav';
@@ -17,118 +19,66 @@ import Icon from '../ui/icon';
 
 import JoinGameForm from '../game/join-game-form';
 
-@route(({ app, game, config }) => ({
-  room: app.room,
-  error: app.error,
-  player: app.player,
-  connected: !!game,
-  tokens: config.playerTokens,
-  joining: app.waiting.includes('game:joined'),
-  connecting: app.waiting.includes('room:connected'),
-  players: !game ? [] : game.players._all.map((token) => ({
-    active: app.players.includes(token),
-    ...game.players[token]
-  }))
-}), {
-  connectToGame,
-  disconnectGame,
-  joinGame
-})
-
-class JoinGameScreen extends Component {
-  static propTypes = {
-    room: PropTypes.string,
-    error: PropTypes.string,
-    tokens: PropTypes.array,
-    player: PropTypes.object,
-    connected: PropTypes.bool.isRequired,
-    joining: PropTypes.bool.isRequired,
-    connecting: PropTypes.bool.isRequired,
-    players: PropTypes.arrayOf(PropTypes.object),
-    connectToGame: PropTypes.func.isRequired,
-    disconnectGame: PropTypes.func.isRequired,
-    joinGame: PropTypes.func.isRequired,
-    push: PropTypes.func.isRequired,
-    replace: PropTypes.func.isRequired,
-    goBack: PropTypes.func.isRequired,
-    location: PropTypes.shape({
-      state: PropTypes.object.isRequired
-    }).isRequired,
-    params: PropTypes.shape({
-      room: PropTypes.string
+JoinGameScreen.propTypes = {
+  push: PropTypes.func.isRequired,
+  replace: PropTypes.func.isRequired,
+  goBack: PropTypes.func.isRequired,
+  location: PropTypes.shape({
+    state: PropTypes.shape({
+      internal: PropTypes.bool
     }).isRequired
-  };
+  }).isRequired,
+  params: PropTypes.shape({
+    room: PropTypes.string
+  }).isRequired
+};
 
-  componentWillMount() {
-    let {
-      room,
-      connected,
-      params,
-      connectToGame,
-      disconnectGame
-    } = this.props;
+export default function JoinGameScreen({
+  push,
+  replace,
+  goBack,
+  location,
+  params
+}) {
+  let { room, error, player } = useApp();
+  let { playerTokens: tokens } = useConfig();
+  let joining = useWaitingFor('game:joined');
+  let connecting = useWaitingFor('room:connected');
+  let prevJoining = usePrevious(joining);
+  let players = usePlayers();
 
-    // different room, different game
-    if (params.room !== room) {
-      connectToGame(params.room);
-    // make sure we always connect to a room
-    } else if (!connected) {
-      connectToGame(room);
-    // if we are connected to a room, disconnect
-    } else {
-      disconnectGame();
-    }
+  let {
+    connectToGame,
+    disconnectGame,
+    joinGame
+  } = useGameActions();
+
+  if (!joining && prevJoining && player) {
+    // if a player joined, send them to the game room
+    push(`/${room}`, { player });
+  } else if (room && (params.room !== room || prevJoining == null)) {
+    // if we were connected to a different room
+    disconnectGame();
+  } else if (!connecting && !room) {
+    // if not connecting or connected to the room, connect
+    connectToGame(params.room);
+  } else if (connecting && error) {
+    // if we have an issue connecting, send them to find a room
+    replace('/join');
   }
 
-  componentWillReceiveProps(nextProps) {
-    let {
-      room,
-      error,
-      player,
-      connected,
-      connecting,
-      connectToGame,
-      params,
-      push,
-      replace
-    } = nextProps;
-
-    // if we have a known player, send them to the game room
-    if (room && player) {
-      push(`/${room}`, { player });
-    // if we aren't connected and have an error, send them to find a room
-    } else if (!connected && error) {
-      replace(`/join`);
-    // if we aren't connected or connecting, connect
-    } else if (!connected && !connecting) {
-      connectToGame(params.room);
-    }
-  }
-
-  render() {
-    let {
-      error,
-      tokens,
-      joining,
-      connecting,
-      players,
-      joinGame,
-      location,
-      params,
-      goBack
-    } = this.props;
-
-    return (
-      <Container data-test-join-game>
-        {connecting ? (
-          <Section align="center" justify="center">
-            <Spinner xl/>
-          </Section>
-        ) : [
-          <Section key={0} flex="none" row>
+  return (
+    <Container data-test-join-game>
+      {connecting ? (
+        <Section align="center" justify="center">
+          <Spinner xl/>
+        </Section>
+      ) : (
+        <>
+          <Section flex="none" row>
             <NavLeft>
               {location.state.internal && (
-                <Button type="icon" onClick={goBack} data-test-back>
+                <Button style="icon" onClick={goBack} data-test-back>
                   <Icon name="larr"/>
                 </Button>
               )}
@@ -143,19 +93,18 @@ class JoinGameScreen extends Component {
                 {params.room}
               </Text>
             </NavRight>
-          </Section>,
+          </Section>
 
           <JoinGameForm
-              key={1}
-              error={error}
-              tokens={tokens}
-              players={players}
-              loading={joining}
-              onSubmit={joinGame}/>
-        ]}
-      </Container>
-    );
-  }
+            key={1}
+            error={error}
+            tokens={tokens}
+            players={players}
+            loading={joining}
+            onSubmit={joinGame}
+          />
+        </>
+      )}
+    </Container>
+  );
 }
-
-export default JoinGameScreen;

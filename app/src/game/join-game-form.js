@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
 import { Container, Section } from '../ui/layout';
@@ -7,108 +7,85 @@ import Button from '../ui/button';
 
 import TokenSelect from './token-select';
 
-class JoinGameForm extends Component {
-  static propTypes = {
-    tokens: PropTypes.arrayOf(PropTypes.string).isRequired,
-    players: PropTypes.arrayOf(PropTypes.object).isRequired,
-    onSubmit: PropTypes.func.isRequired,
-    loading: PropTypes.bool,
-    error: PropTypes.string
-  };
+JoinGameForm.propTypes = {
+  tokens: PropTypes.arrayOf(PropTypes.string).isRequired,
+  players: PropTypes.arrayOf(PropTypes.object).isRequired,
+  onSubmit: PropTypes.func.isRequired,
+  loading: PropTypes.bool,
+  error: PropTypes.string
+};
 
-  state = {
-    name: '',
-    token: '',
-    disabled: this.getDisabledTokens()
-  };
+export default function JoinGameForm({
+  tokens,
+  players,
+  onSubmit,
+  loading,
+  error
+}) {
+  let [name, setName] = useState('');
+  let [token, setToken] = useState('');
 
-  componentWillUpdate(nextProps, nextState) {
-    let { players } = nextProps;
-    let { name, token } = nextState;
-    let existing = players.find((pl) => pl.token === token);
-    let disabled = this.getDisabledTokens(name, players);
+  let disabled = players.reduce((acc, player) => (
+    (player.active || player.name.toUpperCase() !== name)
+      ? acc.concat(player.token)
+      : acc
+  ), []);
 
-    if (existing && name !== existing.name) {
-      this.setState({ token: '', disabled });
-    } else if (disabled !== this.state.disabled) {
-      this.setState({ disabled });
-    }
-  }
-
-  getDisabledTokens(name = '', players = this.props.players) {
-    let disabled = this.state && this.state.disabled;
-
-    if (!disabled || players !== this.props.players || name !== this.state.name) {
-      return players.map((player) => (player.active ? player.token : (
-        name.toLowerCase() !== player.name.toLowerCase() && player.token
-      ))).filter(Boolean);
-    } else {
-      return disabled;
-    }
-  }
-
-  changeName = (name) => {
-    this.setState({
-      disabled: this.getDisabledTokens(name),
-      name: name.toUpperCase()
-    });
-  };
-
-  selectToken = (token) => {
-    this.setState({ token });
-  };
-
-  handleSubmit = (e) => {
-    let { name, token } = this.state;
-    let { onSubmit } = this.props;
-
+  let handleSubmit = useCallback(e => {
     e.preventDefault();
 
     if (name && token) {
       onSubmit(name, token);
     }
-  };
+  }, [name, token, onSubmit]);
 
-  render() {
-    let { loading, tokens, error } = this.props;
-    let { name, token, disabled } = this.state;
+  let handleChangeName = useCallback(name => {
+    setName(name.toUpperCase());
+  }, [setName]);
 
-    return (
-      <Container
-          tagName="form"
-          onSubmit={this.handleSubmit}>
-        <Section collapse>
-          <Input
-              label="Your name"
-              value={name}
-              placeholder="MR. MONOPOLY"
-              disabled={!!error || loading}
-              onChangeText={this.changeName}
-              data-test-join-game-name-input/>
-          <TokenSelect
-              tokens={tokens}
-              selected={token}
-              disabled={disabled}
-              disableAll={!!error || loading}
-              onSelect={this.selectToken}
-              data-test-join-game-token-select/>
-        </Section>
-        <Section flex="none">
-          <Button
-              block
-              type={error ? 'alert' : 'primary'}
-              loading={loading && !disabled.length}
-              disabled={!!error || loading || !name || !token}
-              onClick={this.handleSubmit}
-              data-test-join-game-btn>
-            {error || (!!disabled.length
+  let handleTokenSelect = useCallback(token => {
+    setToken(token);
+  }, [setToken]);
+
+  return (
+    <Container
+      tagName="form"
+      onSubmit={handleSubmit}
+    >
+      <Section collapse>
+        <Input
+          label="Your name"
+          value={name}
+          placeholder="MR. MONOPOLY"
+          disabled={!!error || loading}
+          onChangeText={handleChangeName}
+          data-test-join-game-name-input
+        />
+        <TokenSelect
+          tokens={tokens}
+          selected={token}
+          disabled={disabled}
+          disableAll={!!error || loading}
+          onSelect={handleTokenSelect}
+          data-test-join-game-token-select
+        />
+      </Section>
+      <Section flex="none">
+        <Button
+          block
+          type="submit"
+          style={error ? 'alert' : 'primary'}
+          loading={loading && !disabled.length}
+          disabled={!!error || loading || !name || !token}
+          data-test-join-game-btn
+        >
+          {error || (
+            !!disabled.length
               ? (loading ? 'Asking...' : 'Ask to Join')
-              : 'Join Game')}
-          </Button>
-        </Section>
-      </Container>
-    );
-  }
+              : 'Join Game'
+          )}
+        </Button>
+      </Section>
+    </Container>
+  );
 }
-
-export default JoinGameForm;
