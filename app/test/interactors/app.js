@@ -1,7 +1,17 @@
 import interactor from 'interactor.js';
 
+const { defineProperty } = Object;
+
 @interactor class AppInteractor {
   static defaultPath = '/';
+
+  static defineContext(get) {
+    defineProperty(this.prototype, 'ctx', { get });
+  }
+
+  static defineRoom(get) {
+    defineProperty(this.prototype, 'room', { get });
+  }
 
   get ctx() {
     throw new Error('no app context');

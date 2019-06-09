@@ -80,7 +80,7 @@ export const mockGame = createTestingHook(({
 
   if (!GameRoom._cache[id] || clear) {
     GameRoom._cache[id] = new GameRoom(game);
-    AppInteractor.define('room', () => GameRoom._cache[id]);
+    AppInteractor.defineRoom(() => GameRoom._cache[id]);
   } else {
     GameRoom._cache[id].refresh();
   }
@@ -95,7 +95,7 @@ export function setupApplication(hook = () => {}) {
     // mount our app
     let ctx = createAppContext();
     await mount(<AppRoot context={ctx} />);
-    AppInteractor.define('ctx', () => ctx);
+    AppInteractor.defineContext(() => ctx);
 
     // wait until ready
     await new AppInteractor().assert.state(({ app }) => {
