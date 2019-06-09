@@ -9,7 +9,6 @@
     "lint": "eslint ./"
   },
   "dependencies": {
-    "react-redux": "7.1.0-alpha.0",
     "server": "*"
   },
   "devDependencies": {
@@ -47,7 +46,7 @@
     "react": "^16.8.6",
     "react-dom": "^16.8.6",
     "react-hot-loader": "^4.9.0",
-    "react-redux": "^7.0.3",
+    "react-redux": "7.1.0-alpha.0",
     "redux": "^4.0.1",
     "style-loader": "^0.23.1",
     "testing-hooks": "^0.1.0",
