@@ -7,11 +7,17 @@ import {
   disconnectGame,
   joinGame
 } from './game';
+
 import {
   push,
   replace,
   goBack
 } from './router';
+
+import {
+  removeToast,
+  voteInPoll
+} from './toasts';
 
 const {
   assign,
@@ -51,4 +57,13 @@ const routerActions = {
 
 export function useRouterActions() {
   return useBoundActions(routerActions);
+}
+
+const toastActions = {
+  removeToast,
+  voteInPoll
+};
+
+export function useToastActions() {
+  return useBoundActions(toastActions);
 }

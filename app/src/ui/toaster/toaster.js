@@ -1,18 +1,15 @@
 import React, { useCallback } from 'react';
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector } from 'react-redux';
 import styles from './toaster.css';
 
-import {
-  removeToast,
-  voteInPoll
-} from '../../redux/toasts';
-
+import { useToastActions } from '../../redux/actions';
+import { useApp } from '../../utils';
 import Toast from './toast';
 
 export default function Toaster() {
-  let player = useSelector(({ app: { player } }) => player);
+  let { player } = useApp();
   let toasts = useSelector(({ toasts }) => toasts);
-  let dispatch = useDispatch();
+  let { removeToast, voteInPoll } = useToastActions();
 
   let formatMessage = useCallback(message => {
     let nameReg = new RegExp(`(^|\\s+)${player.name}(\\s+|$)`);
@@ -20,8 +17,8 @@ export default function Toaster() {
   }, [player.name]);
 
   let vote = (id, v) => () => {
-    dispatch(voteInPoll(id, v));
-    dispatch(removeToast(id));
+    voteInPoll(id, v);
+    removeToast(id);
   };
 
   return (
@@ -46,7 +43,7 @@ export default function Toaster() {
               key={toast.id}
               type={toast.type}
               message={formatMessage(toast.message)}
-              dismiss={() => dispatch(removeToast(toast.id))}
+              dismiss={() => removeToast(toast.id)}
             />
           );
         }
