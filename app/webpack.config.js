@@ -39,8 +39,8 @@ module.exports = {
   },
 
   devtool: env({
-    development: 'inline-source-map',
-    testing: 'inline-source-map'
+    development: 'eval-source-map',
+    testing: 'eval-source-map'
   }),
 
   entry: [
