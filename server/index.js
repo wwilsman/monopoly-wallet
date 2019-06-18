@@ -23,8 +23,7 @@ if (ENV.env === 'development') {
   const middle = webpackDevMiddleware(compiler, {
     contentBase: path.resolve('./public'),
     publicPath: '/',
-    stats: 'minimal',
-    hot: true
+    stats: 'minimal'
   });
 
   app.use(middle);

@@ -46,6 +46,7 @@ module.exports = {
   entry: [
     '@babel/polyfill',
     env({ development: 'react-hot-loader/patch' }),
+    env({ development: 'webpack-hot-middleware/client' }),
     'app/src/index.js'
   ].filter(Boolean),
 

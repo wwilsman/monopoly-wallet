@@ -1,12 +1,8 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import {
-  Provider as ReduxProvider
-} from 'react-redux';
-import {
-  createBrowserHistory,
-  createMemoryHistory
-} from 'history';
+import { hot } from 'react-hot-loader/root';
+import { Provider as ReduxProvider } from 'react-redux';
+import { createBrowserHistory, createMemoryHistory } from 'history';
 
 import './styles/global.css';
 import createStore from './redux/store';
@@ -34,9 +30,9 @@ AppRoot.propTypes = {
   })
 };
 
-export default function AppRoot({ context }) {
+function AppRoot({ context }) {
+  let { store } = useMemo(() => context || createAppContext(), [context]);
   let roompath = ':room([^/]{5})';
-  let { store } = context || createAppContext();
 
   return (
     <ReduxProvider store={store}>
@@ -56,3 +52,5 @@ export default function AppRoot({ context }) {
     </ReduxProvider>
   );
 }
+
+export default hot(AppRoot);
