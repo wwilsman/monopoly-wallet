@@ -40,6 +40,7 @@
     "mini-css-extract-plugin": "^0.7.0",
     "mocha": "^6.1.4",
     "path-to-regexp": "^3.0.0",
+    "postcss-color-mod-function": "^3.0.3",
     "postcss-loader": "^3.0.0",
     "precss": "^4.0.0",
     "prop-types": "^15.7.2",

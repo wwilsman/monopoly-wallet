@@ -40,7 +40,7 @@
 
   &.is-selected,
   .item:active &:not(.is-disabled) {
-    background: color(black a(10%));
+    background: color-mod(black a(10%));
     color: white;
   }
 }

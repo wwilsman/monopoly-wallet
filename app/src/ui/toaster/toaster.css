@@ -47,7 +47,7 @@
     font-size: var(--pad-med);
 
     .is-default & {
-      color: color(black a(20%));
+      color: color-mod(black a(20%));
     }
   }
 }
@@ -59,7 +59,7 @@
   margin-top: calc(var(--pad-lg) / 2);
 
   button {
-    background: color(black a(20%));
+    background: color-mod(black a(20%));
     border-radius: var(--radius-med);
     color: black;
     flex: 1;
@@ -68,11 +68,11 @@
     text-align: center;
 
     &:focus {
-      background: color(black a(25%));
+      background: color-mod(black a(25%));
     }
 
     &:active {
-      background: color(black a(30%));
+      background: color-mod(black a(30%));
     }
   }
 }

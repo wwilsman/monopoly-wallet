@@ -41,8 +41,8 @@
   --radius-lg: 0.375rem;
 
   /* shadows */
-  --shadow-xs: 0 0.0625rem 0.125rem color(black a(20%));
-  --shadow-sm: 0 0.125rem 0.25rem color(black a(50%));
-  --shadow-med: 0 0.25rem 0.625rem color(black a(40%));
-  --shadow-lg: 0 0.375rem 1rem color(black a(30%));
+  --shadow-xs: 0 0.0625rem 0.125rem color-mod(black a(20%));
+  --shadow-sm: 0 0.125rem 0.25rem color-mod(black a(50%));
+  --shadow-med: 0 0.25rem 0.625rem color-mod(black a(40%));
+  --shadow-lg: 0 0.375rem 1rem color-mod(black a(30%));
 }
