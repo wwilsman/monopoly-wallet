@@ -2,13 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 
 import { useGameActions } from '../redux/actions';
-import {
-  useApp,
-  useConfig,
-  usePlayers,
-  useWaitingFor,
-  usePrevious
-} from '../utils';
+import { useApp, useWaitingFor, usePrevious } from '../utils';
 
 import { Container, Section } from '../ui/layout';
 import { NavLeft, NavRight } from '../ui/nav';
@@ -41,11 +35,9 @@ export default function JoinGameScreen({
   params
 }) {
   let { room, error, player } = useApp();
-  let { playerTokens: tokens } = useConfig();
   let joining = useWaitingFor('game:joined');
   let connecting = useWaitingFor('room:connected');
   let prevJoining = usePrevious(joining);
-  let players = usePlayers();
 
   let {
     connectToGame,
@@ -96,10 +88,7 @@ export default function JoinGameScreen({
           </Section>
 
           <JoinGameForm
-            key={1}
             error={error}
-            tokens={tokens}
-            players={players}
             loading={joining}
             onSubmit={joinGame}
           />

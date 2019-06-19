@@ -1,35 +1,47 @@
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import { createSelector } from 'reselect';
+import { useSelector } from 'react-redux';
 
+import { useConfig } from '../utils';
 import { Container, Section } from '../ui/layout';
 import Input from '../ui/forms/input';
 import Button from '../ui/button';
 
 import TokenSelect from './token-select';
 
+const selectPlayers = createSelector(
+  ({ app }) => app.players,
+  ({ game }) => game ? game.players : { _all: [] },
+  (active, players) => players._all.map(token => ({
+    active: active.includes(token),
+    ...players[token]
+  }))
+);
+
 JoinGameForm.propTypes = {
-  tokens: PropTypes.arrayOf(PropTypes.string).isRequired,
-  players: PropTypes.arrayOf(PropTypes.object).isRequired,
   onSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   error: PropTypes.string
 };
 
 export default function JoinGameForm({
-  tokens,
-  players,
   onSubmit,
   loading,
   error
 }) {
   let [name, setName] = useState('');
   let [token, setToken] = useState('');
+  let { playerTokens: tokens } = useConfig();
+  let players = useSelector(selectPlayers);
 
-  let disabled = players.reduce((acc, player) => (
-    (player.active || player.name.toUpperCase() !== name)
-      ? acc.concat(player.token)
-      : acc
-  ), []);
+  let disabled = useMemo(() => (
+    players.reduce((acc, player) => (
+      (player.active || player.name.toUpperCase() !== name)
+        ? acc.concat(player.token)
+        : acc
+    ), [])
+  ), [name, players]);
 
   let handleSubmit = useCallback(e => {
     e.preventDefault();
