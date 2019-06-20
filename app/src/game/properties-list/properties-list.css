@@ -1,0 +1,46 @@
+@import '../../styles/variables';
+
+.root {
+  display: flex;
+  justify-content: center;
+  height: 5rem;
+
+  &.is-empty {
+    align-items: center;
+    color: color-mod(white a(10%));
+  }
+}
+
+.message {
+  margin-bottom: var(--pad-sm);
+}
+
+.group {
+  margin: 0 0.125rem;
+  width: 1.5rem;
+}
+
+.property {
+  background-color: white;
+  box-shadow: var(--shadow-sm);
+  height: 2.25rem;
+  width: 100%;
+
+  &:not(:first-child) {
+    margin-top: -1.5rem;
+  }
+}
+
+.swatch {
+  width: calc(100% - 0.25rem);
+  margin: 0.125rem;
+  height: 0.625rem;
+  position: absolute;
+}
+
+.icon {
+  display: block;
+  margin: 0.25rem auto;
+  right: 0;
+  position: absolute;
+}

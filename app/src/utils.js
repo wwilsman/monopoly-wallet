@@ -18,6 +18,27 @@ export function useConfig() {
   return useSelector(({ config }) => config);
 }
 
+export function useGame() {
+  return useSelector(({ game }) => game);
+}
+
+export function usePlayer(token) {
+  let { players } = useGame();
+  return players[token];
+}
+
+export function useProperties(token) {
+  let { properties } = useGame();
+
+  return useMemo(() => (
+    properties._all.reduce((all, id) => (
+      properties[id].owner === token
+        ? all.concat(properties[id])
+        : all
+    ), [])
+  ), [token, properties]);
+}
+
 export function useWaitingFor(event) {
   let { waiting } = useApp();
 

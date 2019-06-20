@@ -1,0 +1,19 @@
+@import '../../styles/variables';
+
+.root {
+  border-radius: var(--radius-xl);
+  margin-bottom: var(--pad-med);
+  padding: var(--pad-sm) var(--pad-med);
+  background-color: var(--color-bg-dark);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--pad-sm);
+}
