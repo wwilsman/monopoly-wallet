@@ -66,6 +66,10 @@ export default function GameRoomScreen({
           <Section key="header" flex="none" row>
             <NavLeft/>
 
+            <Text color="lighter" icon={player.token}>
+              {player.name}
+            </Text>
+
             <NavRight>
               {!!room && (
                 <Text sm upper color="secondary" data-test-room-code>
