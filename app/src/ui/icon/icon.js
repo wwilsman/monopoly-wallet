@@ -12,14 +12,14 @@ Icon.propTypes = {
   className: PropTypes.string
 };
 
-export default function Icon({ name, themed, className }) {
+export default function Icon({ name, themed, className, ...props }) {
   let url = useSelector(({ app: { theme }, config: { playerTokens } }) => {
     let whitelist = (playerTokens || []).concat(['currency', 'building']);
     return (theme && (themed || whitelist.includes(name))) ? `/icons/${theme}.svg` : '/icons.svg';
   });
 
   return (
-    <span className={cx('root', className)} title={name}>
+    <span title={name} className={cx('root', className)} {...props}>
       <svg>
         <use xlinkHref={`${url}#${name}`}/>
       </svg>

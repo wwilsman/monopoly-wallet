@@ -66,7 +66,7 @@ export default function GameRoomScreen({
           <Section key="header" flex="none" row>
             <NavLeft/>
 
-            <Text color="lighter" icon={player.token}>
+            <Text color="lighter" icon={player.token} data-test-player-name>
               {player.name}
             </Text>
 

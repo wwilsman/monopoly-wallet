@@ -52,7 +52,7 @@ export default function Text({
     >
       {!icon ? children : (
         <>
-          <Icon name={icon} className={styles.icon}/>
+          <Icon name={icon} className={styles.icon} data-test-text-icon/>
           <span>{children}</span>
         </>
       )}

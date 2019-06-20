@@ -18,6 +18,10 @@ import AppInteractor from './app';
   roomId = text('[data-test-room-code]');
   loading = exists('[data-test-spinner]');
 
+  heading = scoped('[data-test-player-name]', {
+    icon: attribute('[data-test-text-icon]', 'title')
+  });
+
   toast = collection('[data-test-toast]', {
     type: attribute('data-test-toast'),
     message: text('[data-test-toast-message]'),

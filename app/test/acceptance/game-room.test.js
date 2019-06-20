@@ -36,6 +36,12 @@ describe('GameRoomScreen', () => {
         .assert.roomId(gameRoom.room.id.toUpperCase());
     });
 
+    it('should show the player name and token', async () => {
+      await gameRoom
+        .assert.heading.text('PLAYER 1')
+        .assert.heading.icon('top-hat');
+    });
+
     it('should tell the player they successfully joined', async () => {
       await gameRoom
         .assert.toast(0).type('message')
