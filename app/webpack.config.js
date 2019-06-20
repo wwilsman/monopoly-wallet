@@ -100,7 +100,7 @@ module.exports = {
         test: /\.css$/,
         use: [env({
           production: MiniCssExtractPlugin.loader,
-          development: { loader: 'style-loader', options: { sourceMap: true } },
+          development: { loader: 'style-loader', options: { sourceMap: true, hmr: true } },
           testing: { loader: 'style-loader', options: { sourceMap: true } }
         }), {
           loader: 'css-loader',

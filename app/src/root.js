@@ -1,4 +1,4 @@
-import React, { useMemo } from 'react';
+import React from 'react';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader/root';
 import { Provider as ReduxProvider } from 'react-redux';
@@ -26,12 +26,11 @@ export function createAppContext() {
 
 AppRoot.propTypes = {
   context: PropTypes.shape({
-    store: PropTypes.object
-  })
+    store: PropTypes.object.isRequired
+  }).isRequired
 };
 
-function AppRoot({ context }) {
-  let { store } = useMemo(() => context || createAppContext(), [context]);
+function AppRoot({ context: { store } }) {
   let roompath = ':room([^/]{5})';
 
   return (
