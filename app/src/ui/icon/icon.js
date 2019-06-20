@@ -1,20 +1,25 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { useSelector } from 'react-redux';
+import classNames from 'classnames/bind';
 import styles from './icon.css';
 
+const cx = classNames.bind(styles);
+
 Icon.propTypes = {
-  name: PropTypes.string.isRequired
+  name: PropTypes.string.isRequired,
+  themed: PropTypes.bool,
+  className: PropTypes.string
 };
 
-export default function Icon({ name }) {
+export default function Icon({ name, themed, className }) {
   let url = useSelector(({ app: { theme }, config: { playerTokens } }) => {
     let whitelist = (playerTokens || []).concat(['currency', 'building']);
-    return (theme && whitelist.includes(name)) ? `/icons/${theme}.svg` : '/icons.svg';
+    return (theme && (themed || whitelist.includes(name))) ? `/icons/${theme}.svg` : '/icons.svg';
   });
 
   return (
-    <span className={styles.root} title={name}>
+    <span className={cx('root', className)} title={name}>
       <svg>
         <use xlinkHref={`${url}#${name}`}/>
       </svg>
