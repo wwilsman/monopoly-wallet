@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "build": "NODE_ENV=production webpack",
-    "test": "NODE_ENV=testing karma start",
+    "test": "NODE_ENV=test karma start",
     "lint": "eslint ./"
   },
   "dependencies": {

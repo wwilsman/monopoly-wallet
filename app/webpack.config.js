@@ -30,7 +30,7 @@ module.exports = {
   mode: env({
     development: 'development',
     production: 'production',
-    testing: 'none'
+    test: 'none'
   }),
 
   stats: {
@@ -40,7 +40,7 @@ module.exports = {
 
   devtool: env({
     development: 'eval-source-map',
-    testing: 'eval-source-map'
+    test: 'eval-source-map'
   }),
 
   entry: [
@@ -101,7 +101,7 @@ module.exports = {
         use: [env({
           production: MiniCssExtractPlugin.loader,
           development: { loader: 'style-loader', options: { sourceMap: true, hmr: true } },
-          testing: { loader: 'style-loader', options: { sourceMap: true } }
+          test: { loader: 'style-loader', options: { sourceMap: true } }
         }), {
           loader: 'css-loader',
           options: {
@@ -123,7 +123,7 @@ module.exports = {
           }
         }]
       }],
-      testing: [{
+      test: [{
         test: /\.yml/,
         use: ['js-yaml-loader']
       }]

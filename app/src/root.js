@@ -17,7 +17,7 @@ import DashboardScreen from './screens/dashboard';
 import SandboxScreen from './screens/sandbox';
 
 export function createAppContext() {
-  let history = (process.env.NODE_ENV === 'testing')
+  let history = (process.env.NODE_ENV === 'test')
     ? createMemoryHistory() : createBrowserHistory();
   let socket = new WebSocket(`ws://${window.location.host}`);
   let store = createStore({ socket, history });
