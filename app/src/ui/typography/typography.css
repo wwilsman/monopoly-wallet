@@ -19,6 +19,16 @@
   line-height: var(--pad-xl);
 }
 
+.with-icon {
+  display: inline-flex;
+  align-items: center;
+
+  .icon {
+    margin-right: var(--pad-sm);
+    font-size: 1.25em;
+  }
+}
+
 .is-center {
   text-align: center;
 }
@@ -37,6 +47,14 @@
 
 .color--secondary {
   color: var(--color-secondary);
+}
+
+.color--light {
+  color: var(--color-text-light);
+}
+
+.color--lighter {
+  color: var(--color-text-lighter);
 }
 
 .size--sm {
