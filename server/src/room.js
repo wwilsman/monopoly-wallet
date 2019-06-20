@@ -294,8 +294,9 @@ export default class GameRoom {
     if (save) {
       this.constructor.database.save({
         id: this.id,
-        game: gameState,
-        config: this.config
+        theme: this.theme,
+        config: this.config,
+        game: gameState
       }).then(() => {
         this.fresh = true;
         sync();

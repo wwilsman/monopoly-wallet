@@ -24,13 +24,16 @@ describe('Room: joining', () => {
 
   it('should let the first player join', async function() {
     let payload = await joinGameRoom(ws1, 'Player 1', 'top-hat');
-    let { room, game, players, player } = payload;
+    let { room, theme, game, config, players, player } = payload;
 
     expect(room).toBe(this.room);
+    expect(theme).toBe('classic');
+    expect(config).toHaveProperty('themeName', 'Classic');
     expect(players).toContain('top-hat');
     expect(player).toEqual({ name: 'Player 1', token: 'top-hat' });
     expect(game).toHaveProperty('players.top-hat', {
-      ...player,
+      name: 'Player 1',
+      token: 'top-hat',
       balance: 1500,
       history: [],
       bankrupt: false
