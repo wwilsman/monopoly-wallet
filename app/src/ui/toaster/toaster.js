@@ -44,6 +44,7 @@ export default function Toaster() {
               type={toast.type}
               message={formatMessage(toast.message)}
               dismiss={() => removeToast(toast.id)}
+              timeout={10 * 1000}
             />
           );
         }
