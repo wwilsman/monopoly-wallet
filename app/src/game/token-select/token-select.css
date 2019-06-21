@@ -1,20 +1,21 @@
 @import '../../styles/variables';
 
 .root {
+  display: grid;
+  grid-gap: var(--pad-sm);
+  grid-template-columns: repeat(3, 1fr);
   margin-top: var(--pad-xs);
 }
 
 .item {
-  $size: calc((100% - (var(--pad-med) * 2)) / 3);
-
-  display: inline-block;
-  width: $size;
-  padding-top: $size;
-  margin-right: var(--pad-med);
-  margin-bottom: var(--pad-sm);
+  margin: 0 auto;
 
   &:nth-child(3n) {
     margin-right: 0;
+  }
+
+  &:nth-child(3n-2) {
+    margin-left: 0;
   }
 }
 
@@ -23,12 +24,11 @@
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  font-size: var(--pad-xxl);
+  font-size: var(--pad-xl);
   padding: var(--pad-med);
+  width: calc(var(--pad-xl) + var(--pad-xxl));
+  height: calc(var(--pad-xl) + var(--pad-xxl));
   cursor: pointer;
-  width: 100%;
-  height: 100%;
-  position: absolute;
 
   &.is-disabled {
     color: var(--color-bg-light);
