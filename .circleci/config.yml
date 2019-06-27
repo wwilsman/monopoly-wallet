@@ -74,7 +74,7 @@ jobs:
       - *attach_workspace
       - run:
           name: Run app tests
-          command: yarn app test --single-run
+          command: yarn app test:percy
 
   test-server:
     <<: *defaults

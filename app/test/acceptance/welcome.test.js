@@ -12,9 +12,14 @@ describe('WelcomeScreen', () => {
     await welcome.visit();
   });
 
-  it('shows the app name', async () => {
+  it('shows the welcome screen', async () => {
     await welcome
       .assert.exists()
+      .percySnapshot();
+  });
+
+  it('shows the app name', async () => {
+    await welcome
       .assert.title('MONOPOLY\nWALLET');
   });
 

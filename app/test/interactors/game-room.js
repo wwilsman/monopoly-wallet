@@ -10,6 +10,7 @@ import AppInteractor from './app';
 
 @interactor class GameRoomInteractor extends AppInteractor {
   static defaultScope = '[data-test-game-room]';
+  static snapshotTitle = 'Game Room';
   static defaultPath = '';
 
   visit(path = this.constructor.defaultPath) {

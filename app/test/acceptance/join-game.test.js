@@ -13,9 +13,14 @@ describe('JoinGameScreen', () => {
       await joinGame.visit();
     });
 
-    it('should display a join game heading', async () => {
+    it('should display the join game screen', async () => {
       await joinGame
         .assert.exists()
+        .percySnapshot();
+    });
+
+    it('should display a join game heading', async () => {
+      await joinGame
         .assert.heading('JOIN GAME');
     });
 
@@ -81,7 +86,8 @@ describe('JoinGameScreen', () => {
       it('should allow joining', async () => {
         await joinGame
           .assert.submitBtn.text('Join Game')
-          .assert.submitBtn.not.disabled();
+          .assert.submitBtn.not.disabled()
+          .percySnapshot('with name and token');
       });
 
       describe('and join game is clicked', () => {
@@ -92,7 +98,8 @@ describe('JoinGameScreen', () => {
             .assert.nameInput.disabled()
             .assert.tokens.disabled()
             .assert.submitBtn.disabled()
-            .assert.loading();
+            .assert.loading()
+            .percySnapshot('loading');
         });
 
         it('should join the game', async () => {
@@ -170,7 +177,8 @@ describe('JoinGameScreen', () => {
       it('should prevent selecting used tokens', async () => {
         await joinGame
           .assert.tokens.item('top-hat').disabled()
-          .assert.tokens.item('automobile').disabled();
+          .assert.tokens.item('automobile').disabled()
+          .percySnapshot('used tokens');
       });
 
       it('should show an "ask to join" message', async () => {
@@ -223,7 +231,8 @@ describe('JoinGameScreen', () => {
 
         it('should indicate the other players are being asked', async () => {
           await joinGame
-            .assert.submitBtn.text('Asking...');
+            .assert.submitBtn.text('Asking...')
+            .percySnapshot('asking to join');
         });
 
         it('should disable inputs', async () => {
@@ -267,7 +276,8 @@ describe('JoinGameScreen', () => {
 
           it('should show an error', async () => {
             await joinGame
-              .assert.submitBtn.text('Sorry, your friends hate you');
+              .assert.submitBtn.text('Sorry, your friends hate you')
+              .percySnapshot('not allowed to join');
           });
         });
       });

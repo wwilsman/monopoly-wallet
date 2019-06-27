@@ -45,7 +45,8 @@ describe('GameRoomScreen', () => {
     it('should tell the player they successfully joined', async () => {
       await gameRoom
         .assert.toast(0).type('message')
-        .assert.toast(0).message('YOU joined the game');
+        .assert.toast(0).message('YOU joined the game')
+        .percySnapshot('joined the game');
     });
 
     describe('when another player asks to join', () => {
@@ -64,6 +65,8 @@ describe('GameRoomScreen', () => {
           .assert.type('poll')
           .assert.message('PLAYER 2 would like to join')
           .assert.actions.exists();
+        await gameRoom
+          .percySnapshot('joining requested');
       });
 
       describe('when voting yes', () => {
@@ -83,6 +86,8 @@ describe('GameRoomScreen', () => {
           await gameRoom.toast(1).only()
             .assert.type('default')
             .assert.message('PLAYER 2 joined the game');
+          await gameRoom
+            .percySnapshot('others joined');
         });
       });
 

@@ -11,6 +11,7 @@ import AppInteractor from './app';
 @interactor class FindRoomInteractor extends AppInteractor {
   static defaultScope = '[data-test-find-room]';
   static defaultPath = '/join';
+  static snapshotTitle = 'Find Room';
 
   loading = exists('[data-test-spinner]');
   heading = text('[data-test-find-room-heading]');
