@@ -101,19 +101,19 @@ module.exports = {
         use: [env({
           production: MiniCssExtractPlugin.loader,
           development: { loader: 'style-loader', options: { sourceMap: true, hmr: true } },
-          test: { loader: 'style-loader', options: { sourceMap: true } }
+          test: { loader: 'style-loader' }
         }), {
           loader: 'css-loader',
           options: {
             modules: true,
-            sourceMap: true,
+            sourceMap: env({ development: true }),
             importLoaders: 2,
             localIdentName: '[name]__[local]--[hash:base64:5]'
           }
         }, {
           loader: 'postcss-loader',
           options: {
-            sourceMap: true,
+            sourceMap: env({ development: true }),
             plugins: [
               require('postcss-import'),
               require('precss'),
