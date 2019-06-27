@@ -11,6 +11,12 @@ describe('FindRoomScreen', () => {
     await findRoom.visit();
   });
 
+  it('shows the find room screen', async () => {
+    await findRoom
+      .assert.exists()
+      .percySnapshot();
+  });
+
   it('should display a join game heading', async () => {
     await findRoom
       .assert.exists()
@@ -30,6 +36,12 @@ describe('FindRoomScreen', () => {
       .assert.remains();
   });
 
+  it('should allow typing into the room input', async () => {
+    await findRoom
+      .roomInput.type(findRoom.room.id)
+      .percySnapshot('with a room');
+  });
+
   describe('and searching for an existing room', () => {
     const joinGame = new JoinGameInteractor();
 
@@ -44,7 +56,8 @@ describe('FindRoomScreen', () => {
         .submitBtn.click()
         .assert.roomInput.disabled()
         .assert.submitBtn.disabled()
-        .assert.loading();
+        .assert.loading()
+        .percySnapshot('loading');
     });
 
     it('should go to the join game route for a game', async () => {
@@ -97,7 +110,8 @@ describe('FindRoomScreen', () => {
 
     it('should show an error message', async () => {
       await findRoom
-        .assert.roomInput.error('Game Not Found');
+        .assert.roomInput.error('Game Not Found')
+        .percySnapshot('game not found');
     });
   });
 });

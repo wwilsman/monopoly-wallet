@@ -4,6 +4,7 @@ import AppInteractor from './app';
 @interactor
 class WelcomeInteractor extends AppInteractor {
   static defaultScope = '[data-test-welcome]';
+  static snapshotTitle = 'Welcome';
 
   title = text('[data-test-welcome-title]');
   newGameBtn = scoped('[data-test-welcome-new-game-btn]');

@@ -28,6 +28,7 @@ function rgb2hex(color) {
 
 @interactor class DashboardInteractor extends GameRoomInteractor {
   static defaultScope = '[data-test-dashboard]';
+  static snapshotTitle = 'Dashboard';
 
   summary = scoped('[data-test-summary]', SummaryInteractor);
   card = collection('[data-test-player-card]', SummaryInteractor);

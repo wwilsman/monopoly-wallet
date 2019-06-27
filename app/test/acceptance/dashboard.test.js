@@ -27,6 +27,12 @@ describe('DashboardScreen', () => {
       .assert.exists();
   });
 
+  it('shows the player dashboard', async () => {
+    await dashboard
+      .assert.exists()
+      .percySnapshot();
+  });
+
   it('shows the player balance', async () => {
     await dashboard
       .assert.summary.balance('1,290');

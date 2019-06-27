@@ -14,6 +14,7 @@ import AppInteractor from './app';
 
 @interactor class JoinGameInteractor extends AppInteractor {
   static defaultScope = '[data-test-join-game]';
+  static snapshotTitle = 'Join Game';
 
   visit(path = `/${this.room.id}/join`) {
     return super.visit(path);

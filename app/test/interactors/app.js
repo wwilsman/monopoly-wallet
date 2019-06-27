@@ -1,4 +1,5 @@
 import interactor from 'interactor.js';
+import percySnapshot from '@interactor/percy';
 
 const { defineProperty } = Object;
 
@@ -52,6 +53,16 @@ const { defineProperty } = Object;
   delaySocket(ms) {
     return this.do(() => {
       this.ctx.socket.client.delay(ms);
+    });
+  }
+
+  percySnapshot(name) {
+    let title = this.constructor.snapshotTitle;
+    name = name ? `${title} - ${name}` : title;
+
+    return percySnapshot(name, {
+      widths: [375],
+      minHeight: 812
     });
   }
 }

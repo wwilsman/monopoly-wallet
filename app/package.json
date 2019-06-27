@@ -6,6 +6,7 @@
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "test": "NODE_ENV=test karma start",
+    "test:percy": "percy exec -- yarn test --single-run",
     "lint": "eslint ./"
   },
   "dependencies": {
@@ -19,6 +20,7 @@
     "@babel/preset-env": "^7.4.5",
     "@babel/preset-react": "^7.0.0",
     "@hot-loader/react-dom": "^16.8.6",
+    "@interactor/percy": "^0.2.0",
     "autoprefixer": "^9.6.0",
     "babel-loader": "^8.0.6",
     "classnames": "^2.2.5",
