@@ -18,10 +18,10 @@ export default function PlayerCard({ player }) {
   let properties = useProperties(player);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-test-player-card>
       <div className={styles.header}>
-        <Text color="light" icon={token}>{name}</Text>
-        <Currency color="secondary" value={balance}/>
+        <Text color="light" icon={token} data-test-player-name>{name}</Text>
+        <Currency color="secondary" value={balance} data-test-player-balance/>
       </div>
 
       <PropertiesList properties={properties}/>

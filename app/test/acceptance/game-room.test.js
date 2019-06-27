@@ -1,5 +1,5 @@
 import expect from 'expect';
-import { setupApplication, mockGame } from '../helpers';
+import { setupApplication } from '../helpers';
 
 import GameRoomInteractor from '../interactors/game-room';
 import JoinGameInteractor from '../interactors/join-game';
@@ -115,6 +115,7 @@ describe('GameRoomScreen', () => {
 
       it('should automatically connect to and join a room', async () => {
         await gameRoom
+          .assert.exists()
           .assert.state(({ app }) => {
             expect(app.room).toBe(gameRoom.room.id);
             expect(app.player).toEqual({ name: 'PLAYER 1', token: 'top-hat' });
@@ -124,18 +125,14 @@ describe('GameRoomScreen', () => {
 
     describe('when reading incorrect persisted data', () => {
       beforeEach(async () => {
-        await mockGame({ state: {
-          players: [{ token: 'top-hat' }]
-        }});
-
         await gameRoom
           .room.constructor.connect(gameRoom.room.id)
-          .then(room => room.join('Player 1', 'top-hat'));
+          .then(room => room.join('PLAYER 1', 'top-hat'));
 
         localStorage.data.app = {
           room: gameRoom.room.id,
           player: {
-            name: 'Player 1',
+            name: 'PLAYER 2',
             token: 'top-hat'
           }
         };

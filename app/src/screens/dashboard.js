@@ -14,10 +14,8 @@ export default function DashboardScreen() {
   ), [token, players._all]);
 
   return (
-    <Container>
-      <Section flex="none" collapse>
-        <PlayerSummary player={token}/>
-      </Section>
+    <Container data-test-dashboard>
+      <PlayerSummary player={token}/>
 
       <Section>
         {players.map(token => (

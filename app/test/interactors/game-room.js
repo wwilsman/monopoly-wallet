@@ -10,9 +10,10 @@ import AppInteractor from './app';
 
 @interactor class GameRoomInteractor extends AppInteractor {
   static defaultScope = '[data-test-game-room]';
+  static defaultPath = '';
 
-  visit(path = `/${this.room.id}`) {
-    return super.visit(path);
+  visit(path = this.constructor.defaultPath) {
+    return super.visit(`/${this.room.id}${path}`);
   }
 
   roomId = text('[data-test-room-code]');

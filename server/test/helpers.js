@@ -35,7 +35,7 @@ export function transformGameState(state, transforms, config) {
         ...players[transform.token],
         ...transform
       } : {
-        name: transform.name || `Player ${players._all.length + 1}`,
+        name: transform.name || `PLAYER ${players._all.length + 1}`,
         balance: transform.balance || config.playerStart,
         bankrupt: transform.bankrupt || false,
         ...transform

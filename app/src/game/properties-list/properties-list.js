@@ -39,9 +39,9 @@ export default function PropertiesList({ properties }) {
         </Text>
       ) : (
         groups.map(group => (
-          <div key={group.name} className={styles.group}>
+          <div key={group.name} className={styles.group} data-test-property-list-group>
             {group.properties.map(property => (
-              <div key={property.id} className={styles.property}>
+              <div key={property.id} className={styles.property} data-test-property={property.id}>
                 {!group.color ? (
                   <Icon
                     name={property.group === 'railroad' ? 'railroad' : property.id}
@@ -50,8 +50,9 @@ export default function PropertiesList({ properties }) {
                   />
                 ) : (
                   <div
-                    style={{ backgroundColor: group.color }}
                     className={styles.swatch}
+                    style={{ backgroundColor: group.color }}
+                    data-test-property-swatch={group.name}
                   />
                 )}
               </div>

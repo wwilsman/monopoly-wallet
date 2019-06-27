@@ -193,7 +193,7 @@ describe('JoinGameScreen', () => {
           beforeEach(async () => {
             await joinGame
               .room.constructor.connect(joinGame.room.id)
-              .then(room => room.join('Player 1', 'top-hat'));
+              .then(room => room.join('PLAYER 1', 'top-hat'));
           });
 
           it('should not enable their token with their name', async () => {
@@ -213,7 +213,7 @@ describe('JoinGameScreen', () => {
 
           await joinGame
             .room.constructor.connect(joinGame.room.id)
-            .then(room => room.join('Player 1', 'top-hat'));
+            .then(room => room.join('PLAYER 1', 'top-hat'));
 
           await joinGame
             .nameInput.type('Player 3')

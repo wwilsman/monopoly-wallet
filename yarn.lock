@@ -3756,10 +3756,10 @@ inquirer@^6.2.2:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
-interactor.js@^1.4.1:
-  version "1.4.1"
-  resolved "https://registry.yarnpkg.com/interactor.js/-/interactor.js-1.4.1.tgz#ee6f6a3a8cbed8809306f7f34fa88ac9dbaafffa"
-  integrity sha512-+5LHhIdBGc7aADnvs4TPnN7+WjeG3UqdtexC1VEPVslhkZV7uDY+pruGmZOJ+IwzxEGuK28v11qn5fodz0gd+g==
+interactor.js@^1.4.3:
+  version "1.4.3"
+  resolved "https://registry.yarnpkg.com/interactor.js/-/interactor.js-1.4.3.tgz#c17724e34670006b38fcb3187aa3b6c3c2e17f5f"
+  integrity sha512-8h8Gg0+sTLIagPIOiDzqdl3Qex4AKWBsTYri0DZvWKMElhe6cXeILUVFVzNBgXowx3bC/U2Jl76eP5wrpLLVcw==
 
 interpret@^1.1.0:
   version "1.1.0"
