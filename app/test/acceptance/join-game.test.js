@@ -16,6 +16,7 @@ describe('JoinGameScreen', () => {
     it('should display the join game screen', async () => {
       await joinGame
         .assert.exists()
+        .assert.not.loading()
         .percySnapshot();
     });
 
