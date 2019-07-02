@@ -35,18 +35,21 @@ describe('FindRoomScreen', () => {
 
     beforeEach(async () => {
       await findRoom
-        .roomInput.type(findRoom.room.id)
-        .submitBtn.click();
+        .roomInput.type(findRoom.room.id);
     });
 
     it('should disable inputs and show a loading indicator', async () => {
       await findRoom
+        .delaySocket(50)
+        .submitBtn.click()
         .assert.roomInput.disabled()
         .assert.submitBtn.disabled()
         .assert.loading();
     });
 
     it('should go to the join game route for a game', async () => {
+      await findRoom
+        .submitBtn.click();
       await joinGame
         .assert.exists()
         .assert.location(`/${joinGame.room.id}/join`)
@@ -57,7 +60,10 @@ describe('FindRoomScreen', () => {
 
     describe('then navigating back', () => {
       beforeEach(async () => {
-        await joinGame.backBtn.click();
+        await findRoom
+          .submitBtn.click();
+        await joinGame
+          .backBtn.click();
       });
 
       it('should go back', async () => {

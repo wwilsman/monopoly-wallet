@@ -85,12 +85,10 @@ describe('JoinGameScreen', () => {
       });
 
       describe('and join game is clicked', () => {
-        beforeEach(async () => {
-          await joinGame.submitBtn.click();
-        });
-
         it('should disable all inputs', async () => {
           await joinGame
+            .delaySocket(50)
+            .submitBtn.click()
             .assert.nameInput.disabled()
             .assert.tokens.disabled()
             .assert.submitBtn.disabled()
@@ -99,6 +97,7 @@ describe('JoinGameScreen', () => {
 
         it('should join the game', async () => {
           await joinGame
+            .submitBtn.click()
             .assert.state(({ game, app }) => {
               expect(game.players).toHaveProperty('top-hat');
               expect(app.player).toEqual({ name: 'PLAYER 1', token: 'top-hat' });
@@ -107,6 +106,7 @@ describe('JoinGameScreen', () => {
 
         it('should go to the game\'s home screen', async () => {
           await joinGame
+            .submitBtn.click()
             .assert.location(`/${joinGame.room.id}`);
         });
       });
