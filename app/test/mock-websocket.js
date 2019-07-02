@@ -135,19 +135,28 @@ class Client extends EventEmitter {
     super();
     this.ws = ws;
     this.server = server;
+    this._delay = 1;
   }
 
   /**
-   * Sends data to the mock WebSocket via a `data` property of the
-   * mocked event. (This is the only event prop used in our app)
-   * Also introduces a 1ms lag so our convergent tests can check
-   * for any loading indicators
+   * Gets or sets the delay this client uses to send data
+   */
+  delay(ms) {
+    return typeof ms !== 'undefined'
+      ? (this._delay = ms)
+      : this._delay;
+  }
+
+  /**
+   * Sends data to the mock WebSocket via a `data` property of the mocked
+   * event. (This is the only event prop used in our app) Also introduces a
+   * delay so our convergent tests can check for any loading indicators
    * @param {String} data - data to send to the mock WebSocket
    */
   send(data) {
     setTimeout(() => {
       this.ws.trigger('message', { data });
-    }, 1);
+    }, this._delay);
   }
 
   /**

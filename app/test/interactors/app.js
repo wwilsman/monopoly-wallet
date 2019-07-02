@@ -48,6 +48,12 @@ const { defineProperty } = Object;
       }, 1);
     });
   }
+
+  delaySocket(ms) {
+    return this.do(() => {
+      this.ctx.socket.client.delay(ms);
+    });
+  }
 }
 
 export default AppInteractor;
