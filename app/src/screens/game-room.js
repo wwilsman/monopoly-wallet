@@ -6,8 +6,6 @@ import { useApp, useWaitingFor } from '../utils';
 import { load } from '../redux/persist';
 
 import { Container, Section } from '../ui/layout';
-import { NavLeft, NavRight } from '../ui/nav';
-import Text from '../ui/typography/text';
 import Toaster from '../ui/toaster';
 import Spinner from '../ui/spinner';
 
@@ -63,27 +61,8 @@ export default function GameRoomScreen({
         </Section>
       ) : (
         <>
-          <Section key="header" flex="none" row>
-            <NavLeft/>
-
-            <Text color="lighter" icon={player.token} data-test-player-name>
-              {player.name}
-            </Text>
-
-            <NavRight>
-              {!!room && (
-                <Text sm upper color="secondary" data-test-room-code>
-                  {room}
-                </Text>
-              )}
-            </NavRight>
-          </Section>
-
-          <Container key="content">
-            {children}
-          </Container>
-
-          <Toaster key="toaster"/>
+          {children}
+          <Toaster/>
         </>
       )}
     </Container>

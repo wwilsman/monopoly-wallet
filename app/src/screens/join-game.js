@@ -5,23 +5,15 @@ import { useGameActions } from '../redux/actions';
 import { useApp, useWaitingFor, usePrevious } from '../utils';
 
 import { Container, Section } from '../ui/layout';
-import { NavLeft, NavRight } from '../ui/nav';
-import { Heading, Text } from '../ui/typography';
+import { Heading } from '../ui/typography';
+import NavBar from '../ui/nav-bar';
 import Spinner from '../ui/spinner';
-import Button from '../ui/button';
-import Icon from '../ui/icon';
 
 import JoinGameForm from '../game/join-game-form';
 
 JoinGameScreen.propTypes = {
   push: PropTypes.func.isRequired,
   replace: PropTypes.func.isRequired,
-  goBack: PropTypes.func.isRequired,
-  location: PropTypes.shape({
-    state: PropTypes.shape({
-      internal: PropTypes.bool
-    }).isRequired
-  }).isRequired,
   params: PropTypes.shape({
     room: PropTypes.string
   }).isRequired
@@ -30,8 +22,6 @@ JoinGameScreen.propTypes = {
 export default function JoinGameScreen({
   push,
   replace,
-  goBack,
-  location,
   params
 }) {
   let { room, error, player } = useApp();
@@ -67,25 +57,11 @@ export default function JoinGameScreen({
         </Section>
       ) : (
         <>
-          <Section flex="none" row>
-            <NavLeft>
-              {location.state.internal && (
-                <Button style="icon" onClick={goBack} data-test-back>
-                  <Icon name="larr"/>
-                </Button>
-              )}
-            </NavLeft>
-
+          <NavBar showBack roomCode={params.room}>
             <Heading data-test-join-game-heading>
               Join Game
             </Heading>
-
-            <NavRight>
-              <Text sm upper color="secondary" data-test-room-code>
-                {params.room}
-              </Text>
-            </NavRight>
-          </Section>
+          </NavBar>
 
           <JoinGameForm
             error={error}

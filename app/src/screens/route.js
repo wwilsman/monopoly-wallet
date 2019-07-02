@@ -11,11 +11,11 @@ const selectLocation = createSelector(
   ({ location }) => location
 );
 
-function useLocation() {
+export function useLocation() {
   return useSelector(selectLocation);
 }
 
-function usePath(path) {
+export function usePath(path) {
   let { pathname } = useLocation();
 
   return useMemo(() => {
