@@ -82,7 +82,7 @@
   width: auto;
 
   & > span {
-    display: inline;
+    display: inline-block;
   }
 
   &:not(.is-disabled) {

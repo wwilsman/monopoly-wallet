@@ -14,7 +14,7 @@ Icon.propTypes = {
 
 export default function Icon({ name, themed, className, ...props }) {
   let url = useSelector(({ app: { theme }, config: { playerTokens } }) => {
-    let whitelist = (playerTokens || []).concat(['currency', 'building']);
+    let whitelist = (playerTokens || []).concat(['currency', 'building', 'bank']);
     return (theme && (themed || whitelist.includes(name))) ? `/icons/${theme}.svg` : '/icons.svg';
   });
 

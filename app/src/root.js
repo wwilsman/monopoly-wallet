@@ -14,6 +14,7 @@ import FindRoomScreen from './screens/find-room';
 import JoinGameScreen from './screens/join-game';
 import GameRoomScreen from './screens/game-room';
 import DashboardScreen from './screens/dashboard';
+import BankScreen from './screens/bank';
 import SandboxScreen from './screens/sandbox';
 
 export function createAppContext() {
@@ -40,8 +41,9 @@ function AppRoot({ context: { store } }) {
         <Route path="/join" render={FindRoomScreen}/>
         <Route path={`/${roompath}/join`} render={JoinGameScreen}/>
 
-        <Route path={`/${roompath}`} render={GameRoomScreen}>
+        <Route path={`/${roompath}/(.*)?`} render={GameRoomScreen}>
           <Route path={`/${roompath}`} render={DashboardScreen}/>
+          <Route path={`/${roompath}/bank`} render={BankScreen}/>
         </Route>
 
         {process.env.NODE_ENV === 'development' && (
