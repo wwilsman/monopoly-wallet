@@ -12,7 +12,10 @@ import Icon from '../icon';
 import styles from './nav-bar.css';
 
 NavBar.propTypes = {
-  showBack: PropTypes.bool,
+  showBack: PropTypes.oneOfType([
+    PropTypes.bool,
+    PropTypes.string
+  ]),
   roomCode: PropTypes.string,
   renderLeft: PropTypes.func,
   renderRight: PropTypes.func,
@@ -32,11 +35,15 @@ export default function NavBar({
   return (
     <Section flex="none" row>
       <div className={styles['left']}>
-        {renderLeft ? renderLeft() : (showBack && location.state.internal && (
+        {renderLeft ? renderLeft() : (showBack && location.state.internal ? (
           <Button style="icon" onClick={goBack} data-test-back>
             <Icon name="larr"/>
           </Button>
-        ))}
+        ) : typeof showBack === 'string' ? (
+          <Button style="icon" linkTo={showBack} data-test-back>
+            <Icon name="larr"/>
+          </Button>
+        ) : null)}
       </div>
 
       {children}

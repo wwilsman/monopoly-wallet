@@ -10,7 +10,10 @@ export default function BankScreen() {
 
   return (
     <Container data-test-bank>
-      <NavBar showBack roomCode={room}>
+      <NavBar
+        showBack={`/${room}`}
+        roomCode={room}
+      >
         <Text
           upper
           icon="bank"
