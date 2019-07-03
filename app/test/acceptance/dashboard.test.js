@@ -33,6 +33,17 @@ describe('DashboardScreen', () => {
       .percySnapshot();
   });
 
+  it('shows the room code', async () => {
+    await dashboard
+      .assert.roomId(dashboard.room.id.toUpperCase());
+  });
+
+  it('shows the player name and token', async () => {
+    await dashboard
+      .assert.heading.text('PLAYER 1')
+      .assert.heading.icon('top-hat');
+  });
+
   it('shows the player balance', async () => {
     await dashboard
       .assert.summary.balance('1,290');
