@@ -30,6 +30,7 @@ function rgb2hex(color) {
   static defaultScope = '[data-test-dashboard]';
   static snapshotTitle = 'Dashboard';
 
+  bankBtn = scoped('[data-test-bank-btn]');
   summary = scoped('[data-test-summary]', SummaryInteractor);
   card = collection('[data-test-player-card]', SummaryInteractor);
 }

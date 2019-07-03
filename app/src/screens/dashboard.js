@@ -22,7 +22,11 @@ export default function DashboardScreen() {
       <NavBar
         roomCode={room}
         renderLeft={() => (
-          <Button style="icon" linkTo={`/${room}/bank`}>
+          <Button
+            style="icon"
+            linkTo={`/${room}/bank`}
+            data-test-bank-btn
+          >
             <Icon name="bank"/>
           </Button>
         )}

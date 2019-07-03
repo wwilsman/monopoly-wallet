@@ -1,6 +1,7 @@
 import { setupApplication, mockGame } from '../helpers';
 
 import DashboardInteractor from '../interactors/dashboard';
+import BankInteractor from '../interactors/bank';
 
 describe('DashboardScreen', () => {
   const dashboard = new DashboardInteractor();
@@ -75,5 +76,34 @@ describe('DashboardScreen', () => {
       .assert.card(0).token('automobile')
       .assert.card(0).property('ventnor-avenue').group('yellow')
       .assert.card(0).property('ventnor-avenue').color(colors.yellow);
+  });
+
+  it('shows a bank button', async () => {
+    await dashboard
+      .assert.bankBtn.exists();
+  });
+
+  describe('clicking the bank button', async () => {
+    const bank = new BankInteractor();
+
+    beforeEach(async () => {
+      await dashboard
+        .bankBtn.click();
+    });
+
+    it('goes to the bank screen', async () => {
+      await bank
+        .assert.exists()
+        .assert.location(`/${bank.room.id}/bank`);
+    });
+
+    it('goes back to the dashboard after clicking back', async () => {
+      await bank
+        .assert.exists()
+        .backBtn.click();
+      await dashboard
+        .assert.exists()
+        .assert.location(`/${dashboard.room.id}`);
+    });
   });
 });
