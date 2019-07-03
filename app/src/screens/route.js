@@ -49,7 +49,7 @@ export default function Route({
 
   let child = useMemo(() => (
     Children.toArray(children).find(child => {
-      let re = pathToRegexp(child.props.path, [], { end: true });
+      let re = pathToRegexp(child.props.path, [], { strict: true });
       return !!re.exec(location.pathname);
     })
   ), [children, location.pathname]);
