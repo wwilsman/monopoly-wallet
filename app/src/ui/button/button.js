@@ -14,10 +14,11 @@ Button.propTypes = {
     'secondary',
     'alert',
     'icon'
-  ]).isRequired,
+  ]),
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
   block: PropTypes.bool,
+  inline: PropTypes.bool,
   onClick: PropTypes.func,
   linkTo: PropTypes.string,
   children: PropTypes.node
@@ -28,6 +29,7 @@ export default function Button ({
   disabled,
   loading,
   block,
+  inline,
   onClick,
   linkTo,
   children,
@@ -39,6 +41,7 @@ export default function Button ({
     [style]: !!style,
     'is-disabled': disabled,
     'is-loading': loading,
+    'is-inline': inline,
     'is-block': block
   });
 

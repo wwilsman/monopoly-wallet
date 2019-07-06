@@ -5,7 +5,8 @@
   border-radius: var(--radius-med);
   box-shadow: var(--shadow-sm);
   color: var(--color-text-lighter);
-  display: inline-block;
+  display: inline-flex;
+  justify-content: center;
   font-size: var(--size-med);
   height: var(--pad-xl);
   line-height: var(--pad-xl);
@@ -94,6 +95,19 @@
       background: transparent;
       color: var(--color-text-darker);
     }
+  }
+}
+
+.is-inline {
+  margin: 0 var(--pad-sm);
+  vertical-align: middle;
+
+  &:first-child {
+    margin-left: 0;
+  }
+
+  &:last-child {
+    margin-right: 0;
   }
 }
 
