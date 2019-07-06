@@ -14,7 +14,8 @@ const initialState = {
 const wait = {
   'game:new': 'game:created',
   'game:join': 'game:joined',
-  'room:connect': 'room:connected'
+  'room:connect': 'room:connected',
+  'player:transfer': 'game:update'
 };
 
 // app reducer
@@ -30,6 +31,7 @@ export const reducer = (state = initialState, action) => {
     case event('game:new'):
     case event('game:join'):
     case event('room:connect'):
+    case event('player:transfer'):
       return { ...state,
         waiting: [
           ...state.waiting,
@@ -40,6 +42,7 @@ export const reducer = (state = initialState, action) => {
     case event('connected'):
     case event('game:created'):
     case event('game:joined'):
+    case event('game:update'):
     case event('room:connected'):
     case event('room:sync'):
       return { ...state,

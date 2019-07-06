@@ -1,7 +1,7 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import { useApp } from '../utils';
+import { useApp, useWaitingFor, usePrevious } from '../utils';
 import { usePlayerActions } from '../redux/actions';
 
 import { Container, Section } from '../ui/layout';
@@ -14,14 +14,19 @@ BankScreen.propTypes = {
 };
 
 export default function BankScreen({ push }) {
-  let { room } = useApp();
+  let waiting = useWaitingFor('game:update');
+  let wasWaiting = usePrevious(waiting);
   let { makeTransfer } = usePlayerActions();
+  let { room } = useApp();
 
   let handleBankTransfer = useCallback((amount) => {
     makeTransfer(amount);
-    // TODO: wait for transfer finish
+  }, [makeTransfer]);
+
+  // go to dashboard after transferring
+  if (wasWaiting & !waiting) {
     push(`/${room}`);
-  }, [makeTransfer, push, room]);
+  }
 
   return (
     <Container data-test-bank>
