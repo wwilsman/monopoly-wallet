@@ -12,6 +12,7 @@ Text.propTypes = {
   color: PropTypes.oneOf([
     'primary',
     'secondary',
+    'alert',
     'light',
     'lighter'
   ]),

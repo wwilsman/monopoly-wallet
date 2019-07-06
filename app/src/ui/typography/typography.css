@@ -13,10 +13,22 @@
   text-transform: uppercase;
 }
 
-.heading {
+h1.heading {
   @extend .title;
   font-size: var(--size-lg);
   line-height: var(--pad-xl);
+}
+
+h2.heading {
+  @extend .title;
+  color: var(--color-text-light);
+  font-size: var(--size-big);
+  line-height: var(--pad-xl);
+  margin-bottom: var(--pad-sm);
+}
+
+.currency {
+  white-space: nowrap;
 }
 
 .with-icon {
@@ -33,7 +45,8 @@
   text-align: center;
 }
 
-.is-error {
+.is-error,
+.color--alert {
   color: var(--color-alert);
 }
 
