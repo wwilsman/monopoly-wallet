@@ -1,3 +1,5 @@
+@import '../../styles/variables';
+
 .root {
   display: inline-block;
   line-height: 1;
@@ -9,4 +11,16 @@
     fill: currentcolor;
     margin: auto;
   }
+}
+
+.color--primary {
+  color: var(--color-primary);
+}
+
+.color--secondary {
+  color: var(--color-secondary);
+}
+
+.color--alert {
+  color: var(--color-alert);
 }
