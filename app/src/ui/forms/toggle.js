@@ -23,8 +23,8 @@ export default function Toggle({
 
   return (
     <label
-      data-test-checkbox
       className={styles.checkbox}
+      data-test-toggle
     >
       <input
         type="checkbox"

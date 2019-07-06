@@ -30,6 +30,7 @@ export default function BankTransferForm({ onSubmit }) {
       tagName="form"
       onSubmit={handleSubmit}
       align="center"
+      data-test-bank-transfer-form
     >
       <Section row align="center" collapse>
         <CurrencyInput

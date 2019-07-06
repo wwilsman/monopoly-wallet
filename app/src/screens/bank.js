@@ -40,7 +40,7 @@ export default function BankScreen({ push }) {
       </NavBar>
 
       <Section flex="none" collapse>
-        <Heading h2>
+        <Heading h2 data-test-bank-heading>
           Transfer
         </Heading>
 
