@@ -7,17 +7,18 @@ import {
   disconnectGame,
   joinGame
 } from './game';
-
 import {
   push,
   replace,
   goBack
 } from './router';
-
 import {
   removeToast,
   voteInPoll
 } from './toasts';
+import {
+  makeTransfer
+} from './player';
 
 const {
   assign,
@@ -66,4 +67,12 @@ const toastActions = {
 
 export function useToastActions() {
   return useBoundActions(toastActions);
+}
+
+const playerActions = {
+  makeTransfer
+};
+
+export function usePlayerActions() {
+  return useBoundActions(playerActions);
 }

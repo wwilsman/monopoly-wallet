@@ -36,6 +36,13 @@ const toast = (state = {}, action) => {
         type: 'default'
       };
 
+    case event('game:update'):
+      return {
+        id: uid(),
+        message: action.game.notice.message,
+        type: 'default'
+      };
+
     default:
       return state;
   }
@@ -45,6 +52,7 @@ const toast = (state = {}, action) => {
 export const reducer = (state = [], action) => {
   switch (action.type) {
     case event('game:joined'):
+    case event('game:update'):
     case event('poll:new'):
     case event('notice:new'):
       return [...state,
