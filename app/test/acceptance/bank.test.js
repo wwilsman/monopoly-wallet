@@ -96,6 +96,7 @@ describe('BankScreen', () => {
       await dashboard
         .assert.exists()
         .assert.summary.balance('1,700');
+      await bank.percySnapshot('after withdrawl');
     });
 
     it('navigates to the dashbaord after depositing', async () => {
@@ -105,6 +106,7 @@ describe('BankScreen', () => {
       await dashboard
         .assert.exists()
         .assert.summary.balance('1,450');
+      await bank.percySnapshot('after deposit');
     });
 
     it('navigates to the dashbaord after transfering a custom amount', async () => {
