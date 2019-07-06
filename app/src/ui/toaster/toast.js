@@ -49,7 +49,7 @@ export default function Toast({
 
         {!!dismiss && (
           <button onClick={dismiss}>
-            <Icon name={type === 'message' ? 'check' : 'close'}/>
+            <Icon name={type === 'alert' ? 'close' : 'check'}/>
           </button>
         )}
       </div>

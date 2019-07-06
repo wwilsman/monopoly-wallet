@@ -20,13 +20,10 @@
   font-size: var(--size-sm);
   line-height: var(--pad-med);
   padding: calc(var(--pad-lg) / 2);
+  color: var(--color-primary);
 
   &.is-alert {
     color: var(--color-alert);
-  }
-
-  &.is-poll {
-    color: var(--color-primary);
   }
 
   &.is-message {
@@ -45,10 +42,6 @@
   button {
     margin-left: var(--pad-sm);
     font-size: var(--pad-med);
-
-    .is-default & {
-      color: color-mod(black a(20%));
-    }
   }
 }
 
