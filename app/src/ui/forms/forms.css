@@ -128,3 +128,9 @@
     background-color: var(--color-alert);
   }
 }
+
+.currency-input {
+  input[type="number"] {
+    @extend %visually-hidden;
+  }
+}
