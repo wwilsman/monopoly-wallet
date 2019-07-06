@@ -29,6 +29,8 @@ h2.heading {
 
 .currency {
   white-space: nowrap;
+  display: inline-block;
+  vertical-align: bottom;
 }
 
 .with-icon {

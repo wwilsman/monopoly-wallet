@@ -1,8 +1,9 @@
-import React, { useEffect } from 'react';
+import React, { useMemo, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './toaster.css';
 
+import { Currency } from '../typography';
 import Icon from '../icon';
 
 const cx = classNames.bind(styles);
@@ -30,6 +31,16 @@ export default function Toast({
   timeout,
   actions
 }) {
+  // replace currency text with currency component
+  let content = useMemo(() => (
+    message
+      .split(/\$(\d+)/)
+      .map((str, i) => (i % 2 > 0) ? (
+        <Currency key={i} value={parseInt(str)}/>
+      ) : str)
+  ), [message]);
+
+  // auto dismiss this toast
   useEffect(() => {
     if (timeout && dismiss) {
       let t = setTimeout(dismiss, timeout);
@@ -44,7 +55,7 @@ export default function Toast({
     >
       <div className={styles.message}>
         <span data-test-toast-message>
-          {message}
+          {content}
         </span>
 
         {!!dismiss && (

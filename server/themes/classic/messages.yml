@@ -2,9 +2,9 @@ notices:
   player:
     ask-to-join: '{{player.name}} would like to join'
     joined: '{{player.name}} joined the game'
-    paid-amount: '{{player.name}} paid the bank {{amount}}'
-    received-amount: '{{player.name}} received {{amount}}'
-    paid-other: '{{player.name}} paid {{other.name}} {{amount}}'
+    paid-amount: '{{player.name}} paid the bank ${{amount}}'
+    received-amount: '{{player.name}} received ${{amount}}'
+    paid-other: '{{player.name}} paid {{other.name}} ${{amount}}'
     bankrupt: '{{player.name}} went bankrupt'
     other-bankrupt: '{{other.name}} bankrupt {{player.name}}'
 
@@ -21,7 +21,7 @@ notices:
 
   auction:
     start: '{{property.name}} is up for auction'
-    bid: '{{player.name}} bid {{amount}}'
+    bid: '{{player.name}} bid ${{amount}}'
     conceded: '{{player.name}} conceded from the auction'
     cancelled: '{{property.name}} auction cancelled'
     won: '{{player.name}} won {{property.name}} at auction'
