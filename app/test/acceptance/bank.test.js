@@ -76,13 +76,49 @@ describe('BankScreen', () => {
 
     it('can enter a custom amount', async () => {
       await bank.transfer.only()
-        .type('250')
+        .input.type('250')
         .assert.deposit.not.checked()
         .assert.amount('250')
         .deposit.check()
         .assert.deposit.checked()
         .assert.amount('250');
       await bank.percySnapshot('custom transfer');
+    });
+
+    it('restores the default withdrawl on blur when the amount is 0', async () => {
+      await bank.transfer.only()
+        .input.focus()
+        .input.type('0')
+        .assert.amount('0')
+        .input.blur()
+        .assert.amount(`${bank.state.config.passGoAmount}`);
+    });
+
+    it('restores the default deposit on blur when the amount is 0', async () => {
+      await bank.transfer.only()
+        .deposit.check()
+        .input.focus()
+        .input.type('0')
+        .assert.deposit.checked()
+        .assert.amount('0')
+        .input.blur()
+        .assert.amount(`${bank.state.config.payJailAmount}`);
+    });
+
+    it('clears the default withdrawl amount after pressing backspace', async () => {
+      await bank.transfer.only()
+        .assert.amount(`${bank.state.config.passGoAmount}`)
+        .input.press('Backspace')
+        .assert.amount('0');
+    });
+
+    it('clears the default deposit amount after pressing backspace', async () => {
+      await bank.transfer.only()
+        .deposit.check()
+        .assert.amount(`${bank.state.config.payJailAmount}`)
+        .input.press('Backspace')
+        .assert.deposit.checked()
+        .assert.amount('0');
     });
 
     it('has a submit button', async () => {
@@ -111,7 +147,7 @@ describe('BankScreen', () => {
 
     it('navigates to the dashbaord after transfering a custom amount', async () => {
       await bank.transfer.only()
-        .type('500')
+        .input.type('500')
         .deposit.check()
         .submit.click();
       await dashboard

@@ -33,7 +33,7 @@ export default function CurrencyInput({
       data-test-currency-input
     >
       <input
-        value={value || ''}
+        value={value || '0'}
         onChange={handleChange}
         onFocus={onFocus}
         onBlur={onBlur}
