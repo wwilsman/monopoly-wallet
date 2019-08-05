@@ -1,4 +1,4 @@
-notices:
+notice:
   player:
     ask-to-join: '{{player.name}} would like to join'
     joined: '{{player.name}} joined the game'
@@ -10,6 +10,7 @@ notices:
 
   property:
     bought: '{{player.name}} purchased {{property.name}}'
+    transfer: '{{player.name}} received {{property.name}}'
     improved: '{{player.name}} improved {{property.name}}'
     unimproved: '{{player.name}} unimproved {{property.name}}'
     unimproved-group: >
@@ -19,20 +20,13 @@ notices:
     unmortgaged: '{{player.name}} unmortgaged {{property.name}}'
     paid-rent: '{{player.name}} paid {{other.name}} rent for {{property.name}}'
 
-  auction:
-    start: '{{property.name}} is up for auction'
-    bid: '{{player.name}} bid ${{amount}}'
-    conceded: '{{player.name}} conceded from the auction'
-    cancelled: '{{property.name}} auction cancelled'
-    won: '{{player.name}} won {{property.name}} at auction'
-
   trade:
     new: '{{player.name}} offered to trade'
     modified: '{{player.name}} made a counter offer'
     declined: '{{player.name}} declined to trade'
     accepted: '{{player.name}} accepted a trade with {{other.name}}'
 
-errors:
+error:
   common:
     bank-low: 'Bank funds are insufficient'
     negative-amount: 'Amount must not be negative'
@@ -42,7 +36,8 @@ errors:
     not-playing: 'You have not joined the game'
     missing-token: 'Invalid token'
     used-token: 'Token already in use'
-    not-found: 'Cannot find player with token {{player.token}}'
+    not-found: 'Cannot find player with token "{{player.token}}"'
+    not-connected: '{{player.name}} is not connected'
     denied: 'Sorry, your friends hate you'
     balance: 'Insufficient balance'
     other-balance: '{{other.name}} has an insufficient balance'
@@ -51,6 +46,7 @@ errors:
     unowned: '{{property.name}} is unowned'
     not-own: 'You do not own {{property.name}}'
     owned: '{{property.name}} is owned by {{owner.name}}'
+    own-self: 'You own {{property.name}}'
     no-monopoly: '{{property.name}} is not a monopoly'
     mortgaged: '{{property.name}} is mortgaged'
     unmortgaged: '{{property.name}} is not mortgaged'
@@ -63,14 +59,6 @@ errors:
     build-evenly: 'You must build evenly'
     no-houses: 'Not enough houses'
     no-hotels: 'Not enough hotels'
-
-  auction:
-    in-progress: 'An auction is in progress'
-    not-in-progress: 'No current auction in progress'
-    winning: 'You are already winning the auction'
-    property: '{{property.name}} is up for auction'
-    not-involved: 'You are not involved in the auction'
-    bid-higher: 'You must bid higher than the current bid'
 
   trade:
     not-found: 'Cannot find offer with {{other.name}}'
