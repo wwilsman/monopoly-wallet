@@ -1,434 +1,232 @@
-import {
-  randomString,
-  createGameState,
-  generateNotice
-} from './helpers';
-import MonopolyError from './error';
-import createGame from './game';
-import actions from './actions';
-import { hydrate } from './actions/hydrate';
-import { getPlayerHistories } from './deducers';
+import { reducers } from './state';
+import { pipe } from './state/utils';
+import { get, meta, randomString } from './helpers';
+import { error } from './error';
 
-const { from:toArray } = Array;
-const isFn = (obj) => typeof obj === 'function';
+import Poll from './poll';
 
-/**
- * The game room class
- */
-export default class GameRoom {
-  static _cache = {};
-  static _themes = {};
+const { from: toArray } = Array;
 
-  /**
-   * Default to in-memory persistance
-   */
-  static database = {
-    store: {},
+// used by the message formatter
+const FORMATTER = /{{([\w.]+?)}}/g;
 
-    find(id) {
-      return this.store[id] ? Promise.resolve(this.store[id]) :
-        Promise.reject(new MonopolyError('Game not found'));
-    },
-    save(doc) {
-      this.store[doc.id] = doc;
-      return Promise.resolve(doc);
+// creates a message formatter bound to a specific set of messages
+function createFormatter(messages) {
+  return (id, data) => {
+    let msg = get(id, messages);
+
+    if (msg && data) {
+      // replace "{{path.to.thing}}" with values from `data`
+      return msg.replace(FORMATTER, (_, k) => get(k, data));
+    } else {
+      // no data, return message; no message, return id
+      return msg || id;
     }
   };
+}
 
-  /**
-   * Loads and caches a theme
-   * @param {String} theme - Theme name
-   * @param {String} name - Data name
-   * @returns {Object} Theme data
-   */
-  static load(theme, name) {
-    this._themes[theme] = this._themes[theme] || {};
-
-    if (this.loader && !this._themes[theme][name]) {
-      this._themes[theme][name] = this.loader(theme, name);
-    }
-
-    return this._themes[theme][name];
-  }
-
-  /**
-   * Sets the loader and database for a game room to use
-   * @param {String} prop - "loader" or "database"
-   * @param {Mixed} value - Value of "loader" or "database"
-   */
-  static set(prop, value) {
-    if (prop === 'database') {
-      if (!value || !isFn(value.find) && !isFn(value.save)) {
-        throw new TypeError(`The ${prop} must implement find() & save()`);
-      }
-    } else if (prop === 'loader') {
-      if (!value || !isFn(value)) {
-        throw new TypeError(`The ${prop} must be a function`);
-      }
-    } else {
-      throw new TypeError(`Unknown property "${prop}"`);
-    }
-
-    this[prop] = value;
-  }
-
-  /**
-   * Creates a new game state based on a theme
-   * @param {String} [theme="classic"] - Theme name
-   * @param {Object} [options={}] - Custom game options
-   * @returns {Promise} A promise that resolves to the new game state
-   */
-  static new({ theme = 'classic', ...options } = {}) {
-    if (!this.database) {
-      return Promise.reject('No persistence layer found');
-    }
-
-    const config = { ...this.load(theme, 'config'), ...options };
-    const game = createGameState(this.load(theme, 'properties'), config);
-
-    const createGame = () => {
-      const id = randomString().toLowerCase();
-      return this.database.find(id).then(createGame)
-        .catch(() => this.database.save({ id, theme, game, config }));
-    };
-
-    return createGame();
-  }
-
-  /**
-   * Connects to an existing game room
-   * @param {String} id - Game room ID
-   * @param {Mixed} [meta] - Meta to connect to the game
-   * @returns {Promise} Resolves to the game room instance
-   */
-  static connect(id, meta) {
-    id = id.toLowerCase();
-
-    if (!this.database) {
-      return Promise.reject('No persistence layer found');
-    }
-
-    return this.database.find(id).then((game) => {
-      const room = this._cache[id] || new GameRoom(game);
-
-      if (meta && !room.connected.has(meta)) {
-        room.connected.add(meta);
-        room.trigger('sync', meta);
-      }
-
-      this._cache[id] = room;
-      return room;
-    });
-  }
-
-  /**
-   * Game id, state, config, and active players
-   * @returns {Object} - Overrall room state
-   */
-  get state() {
-    return {
-      room: this.id,
-      theme: this.theme,
-      game: this.game,
-      config: this.config,
-      players: toArray(this.players.keys())
-    };
-  }
-
-  /**
-   * Game room constructor
-   * @param {String} id - Game room ID
-   * @param {Object} theme - Game theme
-   * @param {Object} game - Game state
-   * @param {Object} config - Game config
-   */
-  constructor({ id, theme, game, config }) {
+// the game room brokers player events with state updates, player-to-player
+// interactions, and keeps players updated with the latest state
+export default class GameRoom {
+  // the room is pass the entire game, but only stores the id and uses the theme
+  // to load theme-specific messages for formatting notices and errors
+  constructor({ id, theme }, manager) {
     this.id = id;
-    this.theme = theme;
-    this.config = config;
-    this.connected = new Set();
+    this.manager = manager;
+
+    // used to track connected players
     this.players = new Map();
-    this.events = new Map();
-    this.polls = {};
 
-    this.messages = this.constructor.load(theme, 'messages');
-    this.store = createGame(game, config, this.messages);
-    this.fresh = true;
+    // used to track polls
+    this.polls = Object.create(null);
 
-    this.deduceGame(this.store.getState());
-
-    this.store.subscribe(() => {
-      this.fresh = false;
-      this.sync();
-    });
-
-    Object.keys(actions).forEach((name) => {
-      if (!this[name]) {
-        this[name] = (token, ...args) => new Promise((resolve) => {
-          if (!this.players.has(token)) {
-            throw this.error('player.not-playing');
-          }
-
-          this.store.dispatch(actions[name](token, ...args));
-          resolve();
-        });
-      }
-    });
-  }
-
-  /**
-   * Disconnects from a game room
-   * @param {Mixed} [meta] - Meta to remove from the room
-   */
-  disconnect(meta) {
-    if (meta) {
-      this.connected.delete(meta);
-
-      this.events.forEach((r, event) => {
-        this.off(event, meta);
-      });
-
-      this.players.forEach((value, token, players) => {
-        value === meta && players.delete(token);
-      });
-
-      this.trigger('sync', meta);
-    }
-
-    // in testing, do not automatically clear cached rooms
-    if (this.connected.size === 0 && process.env.NODE_ENV !== 'testing') {
-      delete this.constructor._cache[this.id];
-    }
-  }
-
-  /**
-   * Simple event registration
-   * @param {String} event - Event to register with
-   * @param {Function} callback - Function called on event
-   * @param {Mixed} [meta] - Additional meta to register with the callback
-   */
-  on(event, callback, meta) {
-    if (!this.events.has(event)) {
-      this.events.set(event, new Map());
-    }
-
-    this.events.get(event).set(callback, meta);
-  }
-
-  /**
-   * Simple event deregistration, if no callback is provided all callbacks
-   * for the event will be removed
-   * @param {String} event - Event to deregister from
-   * @param {Function} [callback] - Function to deregister
-   * @param {Mixed} [meta] - Meta to deregister
-   */
-  off(event, callback, meta = callback) {
-    if (this.events && this.events.has(event)) {
-      const registry = this.events.get(event);
-
-      if (registry.has(callback)) {
-        registry.delete(callback);
-
-      } else if (typeof meta !== 'undefined') {
-        registry.forEach((m, cb, reg) => {
-          if (meta === m && (meta === callback || cb === callback)) {
-            reg.delete(cb);
-          }
-        });
-
-      } else {
-        registry.clear();
-      }
-    }
-  }
-
-  /**
-   * Triggers registered events
-   * @param {String} event - Event to trigger
-   * @param {Mixed} [args] - Arguments to pass to the callbacks
-   */
-  trigger(event, ...args) {
-    if (this.events && this.events.has(event)) {
-      this.events.get(event).forEach((m, cb) => cb(...args));
-    }
-  }
-
-  /**
-   * Generates a notice
-   * @param {String} id - The notice ID
-   * @param {Object} [meta] - Meta used to generate the message
-   * @returns {String} The generated notice
-   */
-  notice(id, meta) {
-    return generateNotice(`notices.${id}`, meta, this.messages);
-  }
-
-  /**
-   * Generates a monopoly error
-   * @param {String} id - The error message ID
-   * @param {Object} [meta] - Meta used to generate the error message
-   * @returns {MonopolyError} A new monopoly error with the generated message
-   */
-  error(id, meta) {
-    return new MonopolyError(
-      generateNotice(`errors.${id}`, meta, this.messages)
+    // used to format notices and errors
+    this.format = createFormatter(
+      manager.loadTheme(theme, 'messages')
     );
   }
 
-  /**
-   * Syncs the game state with the store and emits a sync event
-   * @param {Boolean} [save] - Whether to save the game or not, defaults
-   * to false if the room state is fresh, otherwise true
-   */
-  sync(save = !this.fresh) {
-    let gameState = this.store.getState();
-    this.deduceGame(gameState);
+  // connects a player to the room; when connected with a token, allows the
+  // player to interact with the game
+  connect(player, token) {
+    // new player, no token and not connected
+    if (!token && !this.players.has(player)) {
+      this.players.set(player, '');
 
-    const sync = () => {
-      // no one to blame if we aren't saving
-      const blame = save && this.game.notice.meta.player;
-      const meta = blame && this.players.get(blame.token);
-      this.trigger('sync', meta);
-    };
+      // allow new players to join the game
+      player.on('game:join', (name, token) => (
+        this.join(player, name, token)
+      ));
 
-    if (save) {
-      this.constructor.database.save({
-        id: this.id,
-        theme: this.theme,
-        config: this.config,
-        game: gameState
-      }).then(() => {
-        this.fresh = true;
-        sync();
+      // new token, previously connected without
+    } else if (token && !this.players.get(player)) {
+      this.players.set(player, token);
+
+      // allow players to vote in polls
+      player.on('poll:vote', (pid, vote) => (
+        this.polls[pid]?.vote(player, vote)
+      ));
+
+      // allow players to communicate with other players
+      player.on('message:send', (to, message) => (
+        this.message(token, to, message)
+      ));
+
+      // allow players to interact with the game state
+      [ ['player:transfer', reducers.player.transfer],
+        ['player:bankrupt', reducers.player.bankrupt],
+        ['property:buy', reducers.property.buy],
+        ['property:transfer', reducers.property.transfer],
+        ['property:improve', reducers.property.improve],
+        ['property:unimprove', reducers.property.unimprove],
+        ['property:mortgage', reducers.property.mortgage],
+        ['property:unmortgage', reducers.property.unmortgage],
+        ['property:rent', reducers.property.rent]
+      ].forEach(([event, reducer]) => {
+        player.on(event, async (...args) => {
+          let state = await this.update(true, reducer(token, ...args));
+          player.broadcast('game:update', state);
+          return state;
+        });
       });
-    } else {
-      sync();
     }
   }
 
-  /**
-   * Transforms the game state to reflect any relevant history and
-   * removes the diff leaf from the state
-   * @param {Object} gameState - game state object with diff leaf
-   */
-  deduceGame(gameState) {
-    // eslint-disable-next-line no-unused-vars
-    const { diff, ...game } = gameState;
-    const playerHistory = getPlayerHistories(gameState);
-
-    // add player history
-    const players = game.players._all
-      .reduce((players, token) => ({
-        ...players,
-        [token]: {
-          ...players[token],
-          history: playerHistory[token]
-        }
-      }), game.players);
-
-    this.game = { ...game, players };
+  // removes a player from the room
+  disconnect(player) {
+    this.players.delete(player);
   }
 
-  /**
-   * Reloads the game from the database and syncs it with the room
-   */
-  refresh() {
-    this.constructor.database.find(this.id)
-      .then(({ config, game }) => {
-        this.fresh = true;
-        this.config = config;
-        // this will trigger a sync which sets `this.game`
-        this.store.dispatch(hydrate(game));
-      });
+  // returns the tokens of players that have joined the game
+  get active() {
+    return toArray(this.players.values()).filter(Boolean);
   }
 
-  /**
-   * Joins the game and adds the player meta to the room
-   * @param {String} name - Player name
-   * @param {String} token - Player token
-   * @param {Mixed} [meta] - Player meta
-   * @returns {Promsie} Resolves after adding the player
-   */
-  join(name, token, meta) {
-    return new Promise((resolve, reject) => {
-      const player = this.game.players[token];
+  // loads this game from the manager
+  async load() {
+    return this.manager.loadGame(this.id);
+  }
 
-      if (player && player.name !== name) {
-        return reject(this.error('player.used-token'));
-      } else if (player && this.players.has(token)) {
-        return reject(this.error('player.playing'));
+  // saves the game using the manager
+  async save(state) {
+    return this.manager.saveGame(state);
+  }
+
+  // generates a notice message, saves a game with the manager, and alerts
+  // active players of a game update; returns the saved game
+  async update(state, reducer) {
+    if (state === true) {
+      state = await this.load();
+    }
+
+    state = reducer(state);
+    let { notice } = state;
+
+    if (notice?.id && !notice?.message) {
+      let message = this.format(`notice.${notice.id}`, meta(state, notice.meta));
+      state = { ...state, notice: { ...state.notice, message } };
+    }
+
+    state = await this.save(state);
+    return state;
+  }
+
+  // sends an event to all players that have joined the game; room events are
+  // sent to all connected player; the `ignore` event option will skip sending
+  // an event to the specified player
+  broadcast(event, ...args) {
+    let ignore = false;
+    let isRoomEvent = false;
+
+    if (typeof event !== 'string') ({ event, ignore } = event);
+    isRoomEvent = event.split(':')[0] === 'room';
+
+    this.players.forEach((token, player) => {
+      if ((isRoomEvent || !!token) && (!ignore || player !== ignore)) {
+        player.send(event, ...args);
       }
-
-      this.players.set(token, meta);
-
-      if (!player) {
-        this.store.dispatch(actions.join(name, token));
-        this.trigger('notice', this.notice('player.joined', { player: { name } }));
-      } else {
-        this.trigger('sync', meta);
-      }
-
-      return resolve();
     });
   }
 
-  /**
-   * Polls current active players
-   * @param {String} message - Message to send to players about the poll
-   * @returns {Promise} Resolves once all active players have votes or
-   * after timing out
-   */
-  poll(message) {
-    const { pollTimeout } = this.config;
+  // allows a player to join the game, or asks active players to let the player
+  // join the game, then gives the player access to all room and game events
+  async join(player, name, token) {
+    let game = await this.load();
+    let existing = game.players[token];
+    let active = this.active;
 
-    return new Promise((resolve) => {
-      const id = randomString();
-      const poll = this.polls[id] = {
-        votes: toArray(this.players.keys()).reduce(
-          (map, token) => map.set(token, 0),
-          new Map()
-        ),
+    // player has joined or selected token is being used
+    if (this.players.get(player) || active.includes(token)) {
+      throw error('player.playing');
+      // the token was selected by a previous player
+    } else if (existing && existing.name !== name) {
+      throw error('player.used-token');
+    }
 
-        reset: () => {
-          clearTimeout(poll._timeout);
-          poll._timeout = setTimeout(() => {
-            poll.done(false);
-          }, pollTimeout);
-        },
+    // new player
+    if (!existing) {
+      // poll other players to join
+      if (active.length) {
+        let result = await this.poll('player.ask-to-join', { player: { name } });
+        if (!result) throw error('player.denied');
+      }
 
-        done: (res) => {
-          this.trigger('poll:end', { id });
-          clearTimeout(poll._timeout);
-          delete this.polls[id];
-          resolve(res);
-        }
-      };
+      game = await this.update(game, reducers.player.join(name, token));
+      player.broadcast('game:update', game);
+    }
 
-      this.trigger('poll:new', { id, message });
-      poll.reset();
-    });
+    // player is considered joined when there is an associated token
+    this.connect(player, token);
+
+    // update other players of the new active players
+    active = active.concat(token);
+    player.broadcast('room:sync', active);
+
+    // return new active players and all game information
+    return { active, ...game };
   }
 
-  /**
-   * Places a vote in an ongoing poll
-   * @param {String} token - Player to vote
-   * @param {String} id - Poll ID
-   * @param {Boolean} vote - Whether to vote yes or no
-   */
-  vote(token, id, vote) {
-    const poll = this.polls[id];
+  // send a poll to all active players
+  async poll(msg, data) {
+    // the poll timeout needs to be loaded from the game config
+    let { config: { pollTimeout } } = await this.load();
+    // no need to check existing ids because multiple polls is uncommon
+    let id = randomString();
 
-    if (poll && poll.votes.has(token)) {
-      poll.votes.set(token, vote ? 1 : -1);
-      const votes = toArray(poll.votes.values());
-      const total = votes.reduce((t, v) => t += v ? 1 : 0, 0);
-      const tally = votes.reduce((t, v) => t += v, 0);
+    // store the poll for voting
+    this.polls[id] = new Poll(this.players, pollTimeout);
 
-      if (total === votes.length) {
-        poll.done(tally > 0);
+    // tell all active players about the poll
+    let message = this.format(`notice.${msg}`, data);
+    this.broadcast('poll:new', id, message);
+
+    // tell all active players about the poll results, the returned promise
+    // resolves once all players have voted, or the timeout has elapsed
+    let results = await this.polls[id].run();
+    this.broadcast('poll:end', id, results);
+
+    // remove the poll when done
+    delete this.polls[id];
+    return results;
+  }
+
+  // send a message from one player to another
+  async message(from, to, message) {
+    // find the connected player token pair
+    let found = toArray(this.players.entries()).find(([,t]) => t === to);
+
+    // not found, check if player has joined, or is just not connected
+    if (!found) {
+      let { players } = await this.load();
+
+      if (!players[to]) {
+        throw error('player.not-found', { player: { token: to } });
       } else {
-        poll.reset();
+        throw error('player.not-connected', { player: players[to] });
       }
     }
+
+    // the other player receives a message event
+    found[0].send('message:receive', from, message);
   }
 }
