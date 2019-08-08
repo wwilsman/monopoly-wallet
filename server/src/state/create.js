@@ -2,13 +2,13 @@ import slug from 'slug';
 
 // creates a brand new game state
 export default function create({
-  id,
+  room,
   theme,
   config,
   properties
 }) {
   return {
-    id,
+    room,
     theme,
     config,
 

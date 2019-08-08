@@ -6,7 +6,7 @@ describe('claiming bankruptcy', () => {
 
   setupForTesting(async function () {
     game = await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       players: [
         { token: 'top-hat' },
         { token: 'automobile' }
@@ -65,7 +65,7 @@ describe('claiming bankruptcy', () => {
     expect(game).toHaveProperty('properties.vermont-avenue.monopoly', true);
   });
 
-  it('responds with a notice describing the action', async function () {
+  it('responds with a notice describing the action', async () => {
     expect(game).toHaveProperty('notice', null);
     [game] = await socket1.send('player:bankrupt', 'automobile');
     expect(game).toHaveProperty('notice.id', 'player.other-bankrupt');

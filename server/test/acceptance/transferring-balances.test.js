@@ -6,7 +6,7 @@ describe('transferring balances', () => {
 
   setupForTesting(async function () {
     game = await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       players: [
         { token: 'top-hat' },
         { token: 'automobile' }

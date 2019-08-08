@@ -6,7 +6,7 @@ describe('buying properties', () => {
 
   setupForTesting(async function () {
     game = await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       config: {
         bankStart: 10000
       },

@@ -6,7 +6,7 @@ describe('unmortgaging properties', () => {
 
   setupForTesting(async function () {
     game = await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       config: {
         bankStart: 10000
       },
@@ -82,7 +82,7 @@ describe('unmortgaging properties', () => {
   });
 
   it('receives an error when the player balance is insufficient', async function () {
-    await this.grm.mock({ id: 't35tt', players: [{ token: 'top-hat', balance: 10 }] });
+    await this.grm.mock({ room: 't35tt', players: [{ token: 'top-hat', balance: 10 }] });
     await expect(socket1.send('property:unmortgage', 'baltic-avenue'))
       .rejects.toThrow('Insufficient balance');
   });

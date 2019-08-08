@@ -6,7 +6,7 @@ describe('improving properties', () => {
 
   setupForTesting(async function () {
     game = await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       config: {
         bankStart: 10000
       },
@@ -119,13 +119,13 @@ describe('improving properties', () => {
   });
 
   it('receives an error when the player balance is insufficient', async function () {
-    await this.grm.mock({ id: 't35tt', players: [{ token: 'automobile', balance: 50 }] });
+    await this.grm.mock({ room: 't35tt', players: [{ token: 'automobile', balance: 50 }] });
     await expect(socket2.send('property:improve', 'states-avenue'))
       .rejects.toThrow('Insufficient balance');
   });
 
   it('receives an error when there is not enough houses or hotels', async function () {
-    await this.grm.mock({ id: 't35tt', houses: 0, hotels: 0 });
+    await this.grm.mock({ room: 't35tt', houses: 0, hotels: 0 });
     await expect(socket2.send('property:improve', 'states-avenue'))
       .rejects.toThrow('Not enough houses');
     await expect(socket1.send('property:improve', 'kentucky-avenue'))

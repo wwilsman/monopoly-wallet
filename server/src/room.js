@@ -1,5 +1,4 @@
 import { reducers } from './state';
-import { pipe } from './state/utils';
 import { get, meta, randomString } from './helpers';
 import { error } from './error';
 
@@ -30,8 +29,8 @@ function createFormatter(messages) {
 export default class GameRoom {
   // the room is pass the entire game, but only stores the id and uses the theme
   // to load theme-specific messages for formatting notices and errors
-  constructor({ id, theme }, manager) {
-    this.id = id;
+  constructor({ room, theme }, manager) {
+    this.id = room;
     this.manager = manager;
 
     // used to track connected players

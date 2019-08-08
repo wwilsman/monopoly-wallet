@@ -26,13 +26,13 @@ export default class Manager {
 
       // allow any player to create a new room
       player.on('room:create', async (options) => {
-        let { id } = await this.create(options);
-        return await this.connect(id, player);
+        let { room } = await this.create(options);
+        return await this.connect(room, player);
       });
 
       // allow any player to connect to an existing room
-      player.on('room:connect', async (id) => {
-        return await this.connect(id, player);
+      player.on('room:connect', async (room) => {
+        return await this.connect(room, player);
       });
 
       // let the player know the socket has connected
@@ -55,52 +55,52 @@ export default class Manager {
   }
 
   // should return a game's state or throw an error; defaults to ephemeral store
-  async loadGame(id) {
-    return (this.__store && this.__store[id])
-      ? Promise.resolve(this.__store[id])
+  async loadGame(room) {
+    return this.__store?.[room]
+      ? Promise.resolve(this.__store[room])
       : Promise.reject(new Error('Game not found'));
   }
 
   // should save and return a game's state; defaults to ephemeral store
   async saveGame(game) {
     this.__store = this.__store || Object.create(null);
-    return Promise.resolve(this.__store[game.id] = game);
+    return Promise.resolve(this.__store[game.room] = game);
   }
 
   // creates, saves, and returns a new game state based on a theme
   async create({ theme = 'classic' }) {
-    const id = randomString().toLowerCase();
+    const room = randomString().toLowerCase();
 
     try {
       // if this succeeds there is an existing game, try again
-      await this.loadGame(id);
+      await this.loadGame(room);
       await this.create({ theme });
     } catch (e) {
       // the real happy path, when the game does not exist
       let config = this.theme(theme, 'config');
       let properties = this.theme(theme, 'properties');
-      let state = create({ id, theme, config, properties });
+      let state = create({ room, theme, config, properties });
       return this.saveGame(state);
     }
   }
 
   // connects a player to a game room; if the room doesn't exist it is created
-  async connect(id, player) {
+  async connect(room, player) {
     // player is already connected
     if (this.players.has(player)) {
       throw error('player.playing');
     }
 
     // load a game, get or create the room, and connect it to the player
-    let game = await this.loadGame(id);
-    let room = this.rooms[id] = (this.rooms[id] || new GameRoom(game, this));
-    this.players.set(player, room);
-    room.connect(player);
+    let game = await this.loadGame(room);
+    let instance = this.rooms[room] = (this.rooms[room] || new GameRoom(game, this));
+    this.players.set(player, instance);
+    instance.connect(player);
 
     // respond with minimal information about the room
     let active = room.active;
     let { theme, config } = game;
-    return { id, theme, config, active };
+    return { room, theme, config, active };
   }
 
   // disconnects a player from the manager and any connected room; cleans up
