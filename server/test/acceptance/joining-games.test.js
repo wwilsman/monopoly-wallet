@@ -6,7 +6,7 @@ describe('joining a room', () => {
 
   setupForTesting(async function () {
     game = await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       config: {
         bankStart: 10000,
         playerStart: 1000,
@@ -29,7 +29,7 @@ describe('joining a room', () => {
     expect(game).not.toHaveProperty('players.top-hat');
     [game] = await socket1.send('game:join', 'PLAYER 1', 'top-hat');
     expect(game).toHaveProperty('active', ['top-hat']);
-    expect(game).toHaveProperty('id', 't35tt');
+    expect(game).toHaveProperty('room', 't35tt');
     expect(game).toHaveProperty('players.all', ['top-hat']);
     expect(game).toHaveProperty('players.top-hat', {
       name: 'PLAYER 1',
@@ -62,7 +62,7 @@ describe('joining a room', () => {
     });
 
     let [response] = await socket2.send('game:join', 'PLAYER 2', 'automobile');
-    expect(response).toHaveProperty('id', 't35tt');
+    expect(response).toHaveProperty('room', 't35tt');
   });
 
   it('responds with an error when existing players vote no', async () => {
@@ -107,7 +107,7 @@ describe('joining a room', () => {
   });
 
   it('responds with an error when the bank is insufficient', async function () {
-    await this.grm.mock({ id: 't35tt', bank: 500 });
+    await this.grm.mock({ room: 't35tt', bank: 500 });
     await expect(socket1.send('game:join', 'PLAYER 1', 'top-hat'))
       .rejects.toThrow('Bank funds are insufficient');
   });

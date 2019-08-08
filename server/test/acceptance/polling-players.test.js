@@ -6,7 +6,7 @@ describe('polling a room', () => {
 
   setupForTesting(async function () {
     await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       config: {
         pollTimeout: 50
       },

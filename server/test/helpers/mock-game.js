@@ -2,7 +2,7 @@ import { create } from '../../src/state';
 
 // set up a mock game in the game room manager
 export default async function mockGame({
-  id,
+  room,
   theme,
   config = {},
   players = [],
@@ -13,8 +13,8 @@ export default async function mockGame({
 } = {}) {
   let state;
 
-  if (id && !theme) {
-    state = await this.loadGame(id)
+  if (room && !theme) {
+    state = await this.loadGame(room)
       .then(s => ({ ...s, config: { ...s.config, ...config } }))
       .catch(() => {});
   }
@@ -23,7 +23,7 @@ export default async function mockGame({
     theme = theme || 'classic';
 
     state = create({
-      id, theme,
+      room, theme,
       config: { ...this.loadTheme(theme, 'config'), ...config },
       properties: this.loadTheme(theme, 'properties')
     });

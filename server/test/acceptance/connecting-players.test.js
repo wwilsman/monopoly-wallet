@@ -6,7 +6,7 @@ describe('connecting to a room', () => {
 
   setupForTesting(async function () {
     await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       players: [
         { token: 'top-hat' },
         { token: 'automobile' }
@@ -27,7 +27,7 @@ describe('connecting to a room', () => {
   it('receives basic room and game info', async () => {
     let [response] = await socket1.send('room:connect', 't35tt');
     expect(response).toHaveProperty('active', ['top-hat']);
-    expect(response).toHaveProperty('id', 't35tt');
+    expect(response).toHaveProperty('room', 't35tt');
     expect(response).toHaveProperty('theme', 'classic');
     expect(response).toHaveProperty('config', expect.objectContaining({
       playerTokens: expect.any(Array)

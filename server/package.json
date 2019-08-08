@@ -8,7 +8,7 @@
     "start": "[ \"$NODE_ENV\" = \"production\" ] && yarn start:prod || yarn start:dev",
     "start:dev": "nodemon --watch src --exec babel-node index.js",
     "start:prod": "node index.js",
-    "test": "mocha --recursive ./tests",
+    "test": "mocha --recursive ./test",
     "lint": "eslint ./"
   },
   "dependencies": {

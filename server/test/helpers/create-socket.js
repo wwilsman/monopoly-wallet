@@ -1,8 +1,6 @@
 import EventEmitter from 'events';
 import WebSocket from 'ws';
 
-const { isArray } = Array;
-
 // create a websocket that emits events to the returned emitter
 export default async function createSocket(initevents = []) {
   let socket = new WebSocket('ws://localhost:8080');

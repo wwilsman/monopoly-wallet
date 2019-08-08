@@ -6,7 +6,7 @@ describe('mortgaging properties', () => {
 
   setupForTesting(async function () {
     game = await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       config: {
         bankStart: 10000
       },
@@ -83,7 +83,7 @@ describe('mortgaging properties', () => {
   });
 
   it('receives an error when the bank is insufficient', async function () {
-    await this.grm.mock({ id: 't35tt', bank: 10 });
+    await this.grm.mock({ room: 't35tt', bank: 10 });
     await expect(socket2.send('property:mortgage', 'atlantic-avenue'))
       .rejects.toThrow('Bank funds are insufficient');
   });

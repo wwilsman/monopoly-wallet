@@ -6,7 +6,7 @@ describe('unimproving properties', () => {
 
   setupForTesting(async function () {
     game = await this.grm.mock({
-      id: 't35tt',
+      room: 't35tt',
       config: {
         bankStart: 10000
       },
@@ -108,13 +108,13 @@ describe('unimproving properties', () => {
   });
 
   it('receives an error when the bank is insufficient', async function () {
-    await this.grm.mock({ id: 't35tt', bank: 10 });
+    await this.grm.mock({ room: 't35tt', bank: 10 });
     await expect(socket1.send('property:unimprove', 'connecticut-avenue'))
       .rejects.toThrow('Bank funds are insufficient');
   });
 
   it('receives an error when there is not enough houses', async function () {
-    await this.grm.mock({ id: 't35tt', houses: 0 });
+    await this.grm.mock({ room: 't35tt', houses: 0 });
     await expect(socket1.send('property:unimprove', 'connecticut-avenue'))
       .rejects.toThrow('Not enough houses');
   });
