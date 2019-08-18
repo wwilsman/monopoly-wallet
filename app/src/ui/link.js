@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useRouterActions } from '../redux/actions';
+import { useRouter } from '../router';
 
 Link.propTypes = {
   to: PropTypes.string.isRequired,
@@ -9,7 +9,7 @@ Link.propTypes = {
 };
 
 export default function Link({ to, onClick, ...props }) {
-  let { push } = useRouterActions();
+  let { push } = useRouter();
 
   let handleClick = (e) => {
     let bubble = onClick && onClick(e);

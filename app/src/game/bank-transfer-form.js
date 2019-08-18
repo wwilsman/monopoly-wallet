@@ -1,7 +1,7 @@
 import React, { useState, useCallback } from 'react';
 import PropTypes from 'prop-types';
 
-import { useConfig } from '../utils';
+import { useConfig } from '../helpers/hooks';
 
 import { Container, Section } from '../ui/layout';
 import { Text } from '../ui/typography';
@@ -14,8 +14,8 @@ BankTransferForm.propTypes = {
 };
 
 export default function BankTransferForm({ onSubmit }) {
-  let [value, setValue] = useState(null);
-  let [deposit, setDeposit] = useState(false);
+  let [ value, setValue ] = useState(null);
+  let [ deposit, setDeposit ] = useState(false);
   let { passGoAmount, payJailAmount } = useConfig();
   let defaultValue = deposit ? payJailAmount : passGoAmount;
 

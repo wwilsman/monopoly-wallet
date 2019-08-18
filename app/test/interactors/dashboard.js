@@ -29,6 +29,7 @@ function rgb2hex(color) {
 @interactor class DashboardInteractor extends GameRoomInteractor {
   static defaultScope = '[data-test-dashboard]';
   static snapshotTitle = 'Dashboard';
+  static defaultPath = '/t35tt';
 
   bankBtn = scoped('[data-test-bank-btn]');
   summary = scoped('[data-test-summary]', SummaryInteractor);

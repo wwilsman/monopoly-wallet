@@ -16,7 +16,7 @@ export default function FindGameForm({
   error,
   onSubmit
 }) {
-  let [room, setRoom] = useState('');
+  let [ room, setRoom ] = useState('');
 
   let changeRoom = useCallback(room => {
     setRoom(room.toUpperCase());

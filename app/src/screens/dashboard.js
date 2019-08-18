@@ -1,6 +1,6 @@
 import React, { useMemo } from 'react';
 
-import { useApp, useGame } from '../utils';
+import { useGame } from '../api';
 import { Container, Section } from '../ui/layout';
 import { Text } from '../ui/typography';
 import Icon from '../ui/icon';
@@ -10,12 +10,11 @@ import PlayerSummary from '../game/player-summary';
 import PlayerCard from '../game/player-card';
 
 export default function DashboardScreen() {
-  let { room, player } = useApp();
-  let { players } = useGame();
+  let { room, player, players } = useGame();
 
   players = useMemo(() => (
-    players._all.filter(token => token !== player.token)
-  ), [player.token, players._all]);
+    players.all.filter(token => token !== player.token)
+  ), [player.token, players.all]);
 
   return (
     <Container data-test-dashboard>

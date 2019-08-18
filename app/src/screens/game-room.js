@@ -1,9 +1,8 @@
-import React, { useMemo } from 'react';
+import React, { useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { useGameActions } from '../redux/actions';
-import { useApp, useWaitingFor } from '../utils';
-import { load } from '../redux/persist';
+import { useGame, useGameEffect, useEmit } from '../api';
+import ls from '../helpers/storage';
 
 import { Container, Section } from '../ui/layout';
 import Toaster from '../ui/toaster';
@@ -14,7 +13,7 @@ GameRoomScreen.propTypes = {
   location: PropTypes.shape({
     state: PropTypes.shape({
       player: PropTypes.object
-    }).isRequired
+    })
   }).isRequired,
   params: PropTypes.shape({
     room: PropTypes.string.isRequired
@@ -28,34 +27,29 @@ export default function GameRoomScreen({
   params,
   children
 }) {
-  let { room, player, error } = useApp();
-  let { connectToGame, joinGame } = useGameActions();
-  let connecting = useWaitingFor('room:connected');
-  let joining = useWaitingFor('game:joined');
-  let joined = !!player;
+  let { room, player } = useGame();
+  let [ connect, connected ] = useEmit('room:connect');
+  let [ join, joined ] = useEmit('game:join');
+  let error = connected.error || joined.error;
 
-  let persisted = useMemo(() => {
-    return location.state.player || load('app').player;
-  }, [location.state.player]);
+  useGameEffect(({ room, player }) => player && ls.save({ room, player }));
+  useEffect(() => () => ls.save({ room: '', player: null }), []);
 
-  if (!joined && persisted) {
-    player = persisted;
-  }
+  useEffect(() => {
+    let persisted = player || location.state?.player || ls.load('player');
 
-  if (error || !player || (room && room !== params.room)) {
-    // if there was an error, no persisted player, or a different room
-    replace(`/${params.room}/join`);
-  } else if (!connecting && !room) {
-    // if not connecting or connected to the room, connect
-    connectToGame(params.room);
-  } else if (room && !joining && !joined && player) {
-    // if connected, not joining or joined, and there is a player, join
-    joinGame(player.name, player.token);
-  }
+    if (error || !persisted || (room && room !== params.room)) {
+      replace(`/${params.room}/join`);
+    } else if (room && !joined.pending && !player && persisted) {
+      join(persisted.name, persisted.token);
+    } else if (!room && !connected.pending) {
+      connect(params.room);
+    }
+  }, [room, player, error]);
 
   return (
     <Container data-test-game-room>
-      {!joined ? (
+      {!player ? (
         <Section align="center" justify="center">
           <Spinner xl/>
         </Section>

@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './forms.css';
 
-import { useUID, dataAttrs } from '../../utils';
+import {
+  useUID,
+  useDataAttrs
+} from '../../helpers/hooks';
 
 const cx = classNames.bind(styles);
 
@@ -41,6 +44,7 @@ export default function RadioGroup({
   let [focused, setFocused] = useState(false);
   let handleFocus = useCallback(() => setFocused(true), [setFocused]);
   let handleBlur = useCallback(() => setFocused(false), [setFocused]);
+  let dataAttrs = useDataAttrs(props);
 
   return (
     <fieldset
@@ -51,7 +55,7 @@ export default function RadioGroup({
       })}
       onFocus={handleFocus}
       onBlur={handleBlur}
-      {...dataAttrs(props)}
+      {...dataAttrs}
     >
       <legend
         className={styles.label}

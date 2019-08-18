@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { useSelector } from 'react-redux';
 import classNames from 'classnames/bind';
 import styles from './icon.css';
+
+import { useGame } from '../../api';
 
 const cx = classNames.bind(styles);
 
@@ -20,10 +21,12 @@ export default function Icon({
   className,
   ...props
 }) {
-  let url = useSelector(({ app: { theme }, config: { playerTokens } }) => {
-    let whitelist = (playerTokens || []).concat(['currency', 'building', 'bank']);
+  let { theme, config: { playerTokens = [] } = {} } = useGame();
+
+  let url = useMemo(() => {
+    let whitelist = playerTokens.concat(['currency', 'building', 'bank']);
     return (theme && (themed || whitelist.includes(name))) ? `/icons/${theme}.svg` : '/icons.svg';
-  });
+  }, [name, themed, theme, playerTokens]);
 
   return (
     <span

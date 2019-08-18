@@ -1,7 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { usePlayer, useProperties } from '../../utils';
+import { usePlayer, useProperties } from '../../helpers/hooks';
 
 import { Section } from '../../ui/layout';
 import Currency from '../../ui/typography/currency';

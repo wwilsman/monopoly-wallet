@@ -8,24 +8,26 @@ describe('GameRoomScreen', () => {
   const joinGame = new JoinGameInteractor();
   const gameRoom = new GameRoomInteractor();
 
-  setupApplication();
+  setupApplication(async function () {
+    await this.grm.mock({ room: 't35tt' });
+  });
 
   describe('without joining', () => {
     beforeEach(async () => {
-      await gameRoom.visit();
+      await gameRoom.visit('/t35tt');
     });
 
     it('should redirect to the join game screen', async () => {
       await joinGame
         .assert.exists()
-        .assert.location(`/${joinGame.room.id}/join`)
+        .assert.location('/t35tt/join')
         .assert.remains();
     });
   });
 
   describe('after joining', () => {
     beforeEach(async () => {
-      await joinGame.visit()
+      await joinGame.visit('/t35tt')
         .nameInput.type('Player 1')
         .tokens.item('top-hat').click()
         .submitBtn.click();
@@ -39,14 +41,15 @@ describe('GameRoomScreen', () => {
     });
 
     describe('when another player asks to join', () => {
-      let poll;
+      let join;
 
-      beforeEach(async () => {
-        poll = gameRoom.room.poll(
-          gameRoom.room.notice('player.ask-to-join', {
-            player: { name: 'PLAYER 2' }
-          })
-        );
+      beforeEach(async function () {
+        await gameRoom.assert.exists();
+
+        join = this.socket([
+          ['room:connect', 't35tt'],
+          ['game:join', 'PLAYER 2', 'automobile']
+        ]);
       });
 
       it('should show the player a poll with voting buttons', async () => {
@@ -60,15 +63,11 @@ describe('GameRoomScreen', () => {
 
       describe('when voting yes', () => {
         beforeEach(async () => {
-          poll.then((result) => result && (
-            gameRoom.room.join('PLAYER 2', 'automobile')
-          ));
-
           await gameRoom.toast(1).actions.primary.click();
         });
 
         it('should let the other player join', async () => {
-          await expect(poll).resolves.toBe(true);
+          await expect(join).resolves.toBeDefined();
         });
 
         it('should tell the player that the other player has joined', async () => {
@@ -86,21 +85,21 @@ describe('GameRoomScreen', () => {
         });
 
         it('should not let the other player join', async () => {
-          await expect(poll).resolves.toBe(false);
+          await expect(join).rejects.toThrow('Sorry, your friends hate you');
         });
       });
     });
   });
 
   describe('automatically connecting and joining', () => {
+    beforeEach(async function () {
+      this.ls.data.room = 't35tt';
+      this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
+    });
+
     describe('when reading persisted data', () => {
       beforeEach(async () => {
-        localStorage.data.app = {
-          room: gameRoom.room.id,
-          player: { name: 'PLAYER 1', token: 'top-hat' }
-        };
-
-        await gameRoom.visit();
+        await gameRoom.visit('/t35tt');
       });
 
       it('should show a loading indicator', async () => {
@@ -110,34 +109,28 @@ describe('GameRoomScreen', () => {
       it('should automatically connect to and join a room', async () => {
         await gameRoom
           .assert.exists()
-          .assert.state(({ app }) => {
-            expect(app.room).toBe(gameRoom.room.id);
-            expect(app.player).toEqual({ name: 'PLAYER 1', token: 'top-hat' });
+          .assert.state(state => {
+            expect(state).toHaveProperty('room', 't35tt');
+            expect(state).toHaveProperty('player', { name: 'PLAYER 1', token: 'top-hat' });
           });
       });
     });
 
     describe('when reading incorrect persisted data', () => {
-      beforeEach(async () => {
-        await gameRoom
-          .room.constructor.connect(gameRoom.room.id)
-          .then(room => room.join('PLAYER 1', 'top-hat'));
+      beforeEach(async function () {
+        await this.socket([
+          ['room:connect', 't35tt'],
+          ['game:join', 'PLAYER 1', 'top-hat']
+        ]);
 
-        localStorage.data.app = {
-          room: gameRoom.room.id,
-          player: {
-            name: 'PLAYER 2',
-            token: 'top-hat'
-          }
-        };
-
-        await gameRoom.visit();
+        this.ls.data.player.name = 'PLAYER 2';
+        await gameRoom.visit('/t35tt');
       });
 
       it('should redirect to the join game screen', async () => {
         await joinGame
           .assert.exists()
-          .assert.location(`/${joinGame.room.id}/join`)
+          .assert.location('/t35tt/join')
           .assert.remains();
       });
     });

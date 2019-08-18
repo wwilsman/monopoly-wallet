@@ -55,18 +55,15 @@ describe('WelcomeScreen', () => {
       await welcome.newGameBtn.click();
     });
 
-    it('should create a new game', async () => {
-      await joinGame
-        .assert.state(({ app }) => {
-          expect(app.room).toBeDefined();
-        });
-    });
+    it('should create and connect to a new game', async () => {
+      let room = await welcome.get('state.room');
 
-    it('should go to the join game route for a room', async () => {
       await joinGame
         .assert.exists()
-        .assert.location(path => {
-          expect(path).toEqual(`/${joinGame.state.app.room}/join`);
+        .assert.location(`/${room}/join`)
+        .assert.roomCode(room.toUpperCase())
+        .assert.state(state => {
+          expect(state).toHaveProperty('connected', true);
         });
     });
 
@@ -83,9 +80,8 @@ describe('WelcomeScreen', () => {
 
       it('should disconnect from the game', async () => {
         await welcome
-          .assert.state(({ app, game }) => {
-            expect(app.room).toBe('');
-            expect(game).toBeNull();
+          .assert.state(state => {
+            expect(state).not.toHaveProperty('room');
           });
       });
     });
@@ -113,14 +109,6 @@ describe('WelcomeScreen', () => {
         await welcome
           .assert.exists()
           .assert.location('/');
-      });
-
-      it('should clear the game ', async () => {
-        await welcome
-          .assert.state(({ app, game }) => {
-            expect(app.room).toBe('');
-            expect(game).toBeNull();
-          });
       });
     });
   });

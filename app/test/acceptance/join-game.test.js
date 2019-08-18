@@ -1,12 +1,15 @@
 import expect from 'expect';
-import { setupApplication, mockGame } from '../helpers';
+import { setupApplication } from '../helpers';
 
 import JoinGameInteractor from '../interactors/join-game';
+import GameRoomInteractor from '../interactors/game-room';
 
 describe('JoinGameScreen', () => {
   const joinGame = new JoinGameInteractor();
 
-  setupApplication();
+  setupApplication(async function () {
+    await this.grm.mock({ room: 't35tt' });
+  });
 
   describe('with a specific room', () => {
     beforeEach(async () => {
@@ -27,7 +30,7 @@ describe('JoinGameScreen', () => {
 
     it('should display the room code', async () => {
       await joinGame
-        .assert.roomId(joinGame.room.id.toUpperCase());
+        .assert.roomCode('T35TT');
     });
 
     it('should display a name input field', async () => {
@@ -37,11 +40,11 @@ describe('JoinGameScreen', () => {
     });
 
     it('should display a token select field', async () => {
+      let { playerTokens } = await joinGame.get('state.config');
+
       await joinGame
         .assert.tokens.label('Select A Token')
-        .assert.tokens.count(count => {
-          expect(count).toBe(joinGame.state.config.playerTokens.length);
-        });
+        .assert.tokens.count(playerTokens.length);
     });
 
     it('should not show a back button', async () => {
@@ -92,9 +95,10 @@ describe('JoinGameScreen', () => {
       });
 
       describe('and join game is clicked', () => {
-        it('should disable all inputs', async () => {
+        it('should disable all inputs', async function () {
+          this.grm.wss.timing(50);
+
           await joinGame
-            .delaySocket(50)
             .submitBtn.click()
             .assert.nameInput.disabled()
             .assert.tokens.disabled()
@@ -106,21 +110,25 @@ describe('JoinGameScreen', () => {
         it('should join the game', async () => {
           await joinGame
             .submitBtn.click()
-            .assert.state(({ game, app }) => {
-              expect(game.players).toHaveProperty('top-hat');
-              expect(app.player).toEqual({ name: 'PLAYER 1', token: 'top-hat' });
+            .assert.state(state => {
+              expect(state).toHaveProperty('player', { name: 'PLAYER 1', token: 'top-hat' });
+              expect(state).toHaveProperty('players.top-hat', (
+                expect.objectContaining({ name: 'PLAYER 1' })
+              ));
             });
         });
 
         it('should go to the game\'s home screen', async () => {
           await joinGame
             .submitBtn.click()
-            .assert.location(`/${joinGame.room.id}`);
+            .assert.location('/t35tt');
         });
       });
     });
 
     describe('after joining a game', () => {
+      let gameRoom = new GameRoomInteractor();
+
       beforeEach(async () => {
         await joinGame
           .nameInput.type('Player 1')
@@ -128,51 +136,64 @@ describe('JoinGameScreen', () => {
           .submitBtn.click();
       });
 
-      it('should persist app data to local storage', async () => {
-        await joinGame.assert(() => {
-          let { room, player } = localStorage.data.app;
-          expect(room).toBe(joinGame.room.id);
-          expect(player).toEqual({ name: 'PLAYER 1', token: 'top-hat' });
+      it('should go to the game room screen', async () => {
+        await gameRoom
+          .assert.exists()
+          .assert.roomCode('T35TT')
+          .assert.heading.text('PLAYER 1');
+      });
+
+      it('should persist app data to local storage', async function () {
+        await gameRoom.assert(() => {
+          expect(this.ls.data).toHaveProperty('room', 't35tt');
+          expect(this.ls.data).toHaveProperty('player', { name: 'PLAYER 1', token: 'top-hat' });
         });
       });
 
       it('should persist player data to the location state', async () => {
-        await joinGame
-          .assert.state(({ router: { location: { state } } }) => {
-            expect(state.player).toEqual({ name: 'PLAYER 1', token: 'top-hat' });
-          });
+        await gameRoom.assert.history(({ location: { state } }) => {
+          expect(state).toHaveProperty('player', { name: 'PLAYER 1', token: 'top-hat' });
+        });
       });
 
       describe('then navigating back', () => {
         beforeEach(async () => {
-          await joinGame.goBack();
+          await gameRoom
+            .assert.exists()
+            .assert.location('/t35tt')
+            .goBack();
         });
 
-        it('should disconnect the player', async () => {
+        it('should go back to the join game screen', async () => {
           await joinGame
-            .assert.state(({ app }) => {
-              expect(app.player).toBeNull();
-            });
+            .assert.location('/t35tt/join');
         });
 
-        it('should clear the persisted player from local storage', async () => {
+        it('should disconnect the player, but remain connected to the game', async () => {
+          await joinGame.assert.state(state => {
+            expect(state).toHaveProperty('room', 't35tt');
+            expect(state).not.toHaveProperty('player');
+          });
+        });
+
+        it('should clear the persisted player from local storage', async function () {
           await joinGame.assert(() => {
-            let { room, player } = localStorage.data.app;
-            expect(room).toBe('');
-            expect(player).toBeNull();
+            expect(this.ls.data).toHaveProperty('room', '');
+            expect(this.ls.data).toHaveProperty('player', null);
           });
         });
       });
     });
 
     describe('with other players', () => {
-      beforeEach(async () => {
-        await mockGame({ state: {
+      beforeEach(async function () {
+        await this.grm.mock({
+          room: 't35tt',
           players: [
             { token: 'top-hat' },
             { token: 'automobile' }
           ]
-        }});
+        });
       });
 
       it('should prevent selecting used tokens', async () => {
@@ -199,10 +220,11 @@ describe('JoinGameScreen', () => {
         });
 
         describe('and they are playing', () => {
-          beforeEach(async () => {
-            await joinGame
-              .room.constructor.connect(joinGame.room.id)
-              .then(room => room.join('PLAYER 1', 'top-hat'));
+          beforeEach(async function () {
+            await this.socket([
+              ['room:connect', 't35tt'],
+              ['game:join', 'PLAYER 1', 'top-hat']
+            ]);
           });
 
           it('should not enable their token with their name', async () => {
@@ -215,19 +237,20 @@ describe('JoinGameScreen', () => {
       });
 
       describe('when asking to join', () => {
-        let pollId;
+        let socket, pollId;
 
-        beforeEach(async () => {
-          joinGame.room.on('poll:new', ({ id }) => pollId = id);
-
-          await joinGame
-            .room.constructor.connect(joinGame.room.id)
-            .then(room => room.join('PLAYER 1', 'top-hat'));
+        beforeEach(async function () {
+          socket = await this.socket([
+            ['room:connect', 't35tt'],
+            ['game:join', 'PLAYER 1', 'top-hat']
+          ]);
 
           await joinGame
             .nameInput.type('Player 3')
             .tokens.item('thimble').click()
             .submitBtn.click();
+
+          [pollId] = await socket.expect('poll:new');
         });
 
         it('should indicate the other players are being asked', async () => {
@@ -245,26 +268,25 @@ describe('JoinGameScreen', () => {
 
         describe('and the other player votes yes', () => {
           beforeEach(async () => {
-            await joinGame.room.vote('top-hat', pollId, true);
+            await socket.send('poll:vote', pollId, true);
           });
 
           it('should join the game', async () => {
-            await joinGame
-              .assert.state(({ app, game }) => {
-                expect(game.players).toHaveProperty('thimble');
-                expect(app.player).toEqual({ name: 'PLAYER 3', token: 'thimble' });
-              });
+            await joinGame.assert.state(state => {
+              expect(state).toHaveProperty('players.thimble');
+              expect(state).toHaveProperty('player', { name: 'PLAYER 3', token: 'thimble' });
+            });
           });
 
           it('should go to the game\'s home screen', async () => {
             await joinGame
-              .assert.location(`/${joinGame.room.id}`);
+              .assert.location('/t35tt');
           });
         });
 
         describe('and the other player votes no', () => {
           beforeEach(async () => {
-            await joinGame.room.vote('top-hat', pollId, false);
+            await socket.send('poll:vote', pollId, false);
           });
 
           it('should leave inputs disabled', async () => {

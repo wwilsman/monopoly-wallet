@@ -1,5 +1,6 @@
-import interactor from 'interactor.js';
+import interactor, { Interactor, when } from 'interactor.js';
 import percySnapshot from '@interactor/percy';
+import { act } from 'react-dom/test-utils';
 
 const { defineProperty } = Object;
 
@@ -10,50 +11,36 @@ const { defineProperty } = Object;
     defineProperty(this.prototype, 'ctx', { get });
   }
 
-  static defineRoom(get) {
-    defineProperty(this.prototype, 'room', { get });
-  }
-
   get ctx() {
-    throw new Error('no app context');
-  }
-
-  get room() {
-    throw new Error('no room context');
+    throw new Error('App context is not defined');
   }
 
   get state() {
-    return this.ctx.store.getState();
+    return this.ctx.state;
+  }
+
+  get history() {
+    return this.ctx.history;
   }
 
   get location() {
-    return this.state.router.location.pathname;
+    return this.history.location.pathname;
   }
 
   visit(path = this.constructor.defaultPath) {
-    return this.do(() => this.ctx.history.push(path));
+    return this.do(() => this.history.push(path));
   }
 
   goBack() {
-    return this.do(() => this.ctx.history.goBack());
+    return this.do(() => this.history.goBack());
   }
 
-  emit(event, ...args) {
-    return this.do(() => {
-      let ws = this.ctx.socket;
+  async get(path) {
+    let { value } = await when(() => (
+      path.split('.').reduce((parent, key) => parent?.[key], this)
+    ) ?? false);
 
-      window.setTimeout(() => {
-        if (ws.readyState === 1) {
-          ws.send(JSON.stringify({ event, args }));
-        }
-      }, 1);
-    });
-  }
-
-  delaySocket(ms) {
-    return this.do(() => {
-      this.ctx.socket.client.delay(ms);
-    });
+    return value;
   }
 
   percySnapshot(name) {
@@ -66,5 +53,13 @@ const { defineProperty } = Object;
     });
   }
 }
+
+defineProperty(AppInteractor.prototype, 'do', {
+  value(callback) {
+    return Interactor.prototype.do.call(this, async function () {
+      return await act(async () => callback.apply(this, arguments));
+    });
+  }
+});
 
 export default AppInteractor;
