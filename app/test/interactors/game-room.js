@@ -13,11 +13,7 @@ import AppInteractor from './app';
   static snapshotTitle = 'Game Room';
   static defaultPath = '';
 
-  visit(path = this.constructor.defaultPath) {
-    return super.visit(`/${this.room.id}${path}`);
-  }
-
-  roomId = text('[data-test-room-code]');
+  roomCode = text('[data-test-room-code]');
   loading = exists('[data-test-spinner]');
 
   heading = scoped('[data-test-player-name]', {

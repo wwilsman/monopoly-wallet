@@ -9,7 +9,7 @@ import GameRoomInteractor from './game-room';
 @interactor class BankInteractor extends GameRoomInteractor {
   static defaultScope = '[data-test-bank]';
   static snapshotTitle = 'Bank';
-  static defaultPath = '/bank';
+  static defaultPath = '/t35tt/bank';
 
   backBtn = scoped('[data-test-back]');
   headings = collection('[data-test-bank-heading]');

@@ -1,25 +1,23 @@
-import { setupApplication, mockGame } from '../helpers';
+import { setupApplication } from '../helpers';
 
 import BankInteractor from '../interactors/bank';
 import DashboardInteractor from '../interactors/dashboard';
 
 describe('BankScreen', () => {
   const bank = new BankInteractor();
+  let config;
 
-  setupApplication(async () => {
-    await mockGame({ state: {
+  setupApplication(async function () {
+    ({ config } = await this.grm.mock({
+      room: 't35tt',
       players: [
         { token: 'top-hat' }
       ]
-    }});
+    }));
 
-    localStorage.data.app = {
-      room: bank.room.id,
-      player: { name: 'PLAYER 1', token: 'top-hat' }
-    };
-
-    await bank.visit()
-      .assert.exists();
+    this.ls.data.room = 't35tt',
+    this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
+    await bank.visit();
   });
 
   it('shows the bank screen', async () => {
@@ -30,7 +28,7 @@ describe('BankScreen', () => {
 
   it('shows the room code', async () => {
     await bank
-      .assert.roomId(bank.room.id.toUpperCase());
+      .assert.roomCode('T35TT');
   });
 
   it('shows a bank icon and heading', async () => {
@@ -42,13 +40,13 @@ describe('BankScreen', () => {
   it('shows a back button linked to the dashboard', async () => {
     await bank
       .assert.backBtn.exists()
-      .assert.backBtn.attribute('href', `/${bank.room.id}`);
+      .assert.backBtn.attribute('href', '/t35tt');
   });
 
   it('goes to the dashboard when clicking the back button', async () => {
     await bank
       .backBtn.click()
-      .assert.location(`/${bank.room.id}`)
+      .assert.location('/t35tt')
       .assert.not.exists();
   });
 
@@ -63,14 +61,14 @@ describe('BankScreen', () => {
     it('shows a default withdrawl amount for passing go', async () => {
       await bank.transfer.only()
         .assert.deposit.not.checked()
-        .assert.amount(`${bank.state.config.passGoAmount}`);
+        .assert.amount(`${config.passGoAmount}`);
     });
 
     it('shows a default deposit amount for paying to get out a jail', async () => {
       await bank.transfer.only()
         .deposit.check()
         .assert.deposit.checked()
-        .assert.amount(`${bank.state.config.payJailAmount}`);
+        .assert.amount(`${config.payJailAmount}`);
       await bank.percySnapshot('deposit');
     });
 
@@ -91,7 +89,7 @@ describe('BankScreen', () => {
         .input.type('0')
         .assert.amount('0')
         .input.blur()
-        .assert.amount(`${bank.state.config.passGoAmount}`);
+        .assert.amount(`${config.passGoAmount}`);
     });
 
     it('restores the default deposit on blur when the amount is 0', async () => {
@@ -102,12 +100,12 @@ describe('BankScreen', () => {
         .assert.deposit.checked()
         .assert.amount('0')
         .input.blur()
-        .assert.amount(`${bank.state.config.payJailAmount}`);
+        .assert.amount(`${config.payJailAmount}`);
     });
 
     it('clears the default withdrawl amount after pressing backspace', async () => {
       await bank.transfer.only()
-        .assert.amount(`${bank.state.config.passGoAmount}`)
+        .assert.amount(`${config.passGoAmount}`)
         .input.press('Backspace')
         .assert.amount('0');
     });
@@ -115,7 +113,7 @@ describe('BankScreen', () => {
     it('clears the default deposit amount after pressing backspace', async () => {
       await bank.transfer.only()
         .deposit.check()
-        .assert.amount(`${bank.state.config.payJailAmount}`)
+        .assert.amount(`${config.payJailAmount}`)
         .input.press('Backspace')
         .assert.deposit.checked()
         .assert.amount('0');

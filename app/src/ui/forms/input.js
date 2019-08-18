@@ -3,7 +3,10 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './forms.css';
 
-import { useUID, dataAttrs } from '../../utils';
+import {
+  useUID,
+  useDataAttrs
+} from '../../helpers/hooks';
 
 const cx = classNames.bind(styles);
 
@@ -31,6 +34,7 @@ export default function Input({
 }) {
   let [focused, setFocused] = useState(false);
   let [empty, setEmpty] = useState(false);
+  let dataAttrs = useDataAttrs(props);
   let elementId = useUID('input');
   let inputId = `${elementId}-input`;
 
@@ -62,7 +66,7 @@ export default function Input({
         'is-disabled': disabled,
         alt
       })}
-      {...dataAttrs(props)}
+      {...dataAttrs}
     >
       <label
         className={styles.label}

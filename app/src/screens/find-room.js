@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { useApp, useWaitingFor, usePrevious } from '../utils';
-import { useGameActions } from '../redux/actions';
+import { useGame, useEmitter, useEmit } from '../api';
 
 import { Container } from '../ui/layout';
 import { Heading } from '../ui/typography';
@@ -15,18 +14,16 @@ FindRoomScreen.propTypes = {
 };
 
 export default function FindRoomScreen({ push }) {
-  let { room, error } = useApp();
-  let { connectToGame, disconnectGame } = useGameActions();
-  let connecting = useWaitingFor('room:connected');
-  let prevRoom = usePrevious(room);
+  let { room } = useGame();
+  let { disconnect } = useEmitter();
+  let [ connect, { pending, ok, error }] = useEmit('room:connect');
 
-  if (room && prevRoom === '') {
-    // successfully connected to a new room
-    push(`/${room}/join`);
-  } else if (room) {
-    // already connected to a room
-    disconnectGame(room);
-  }
+  let handleFindGame = useCallback(room => {
+    if (!pending) connect(room.toLowerCase());
+  }, [pending]);
+
+  useEffect(() => room && disconnect(), []);
+  useEffect(() => { ok && push(`/${room}/join`); }, [ok]);
 
   return (
     <Container data-test-find-room>
@@ -37,9 +34,9 @@ export default function FindRoomScreen({ push }) {
       </NavBar>
 
       <FindGameForm
-        error={error}
-        loading={connecting}
-        onSubmit={connectToGame}
+        loading={pending}
+        error={error?.message}
+        onSubmit={handleFindGame}
       />
     </Container>
   );

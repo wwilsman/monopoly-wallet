@@ -1,8 +1,7 @@
-import React from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { useGameActions } from '../redux/actions';
-import { useApp, useWaitingFor, usePrevious } from '../utils';
+import { useGame, useEmitter, useEmit } from '../api';
 
 import { Container, Section } from '../ui/layout';
 import { Heading } from '../ui/typography';
@@ -24,34 +23,37 @@ export default function JoinGameScreen({
   replace,
   params
 }) {
-  let { room, error, player } = useApp();
-  let joining = useWaitingFor('game:joined');
-  let connecting = useWaitingFor('room:connected');
-  let prevJoining = usePrevious(joining);
+  let { room, player } = useGame();
+  let { disconnect } = useEmitter();
+  let [ connect, connected ] = useEmit('room:connect');
+  let [ join, joined ] = useEmit('game:join');
 
-  let {
-    connectToGame,
-    disconnectGame,
-    joinGame
-  } = useGameActions();
+  let handleJoinGame = useCallback((name, token) => {
+    if (!joined.pending) join(name, token);
+  }, [joined.pending]);
 
-  if (!joining && prevJoining && player) {
-    // if a player joined, send them to the game room
-    push(`/${room}`, { player });
-  } else if (room && (params.room !== room || prevJoining == null)) {
-    // if we were connected to a different room
-    disconnectGame();
-  } else if (!connecting && !room) {
-    // if not connecting or connected to the room, connect
-    connectToGame(params.room);
-  } else if (connecting && error) {
-    // if we have an issue connecting, send them to find a room
-    replace('/join');
-  }
+  useEffect(() => {
+    if (connected.error) replace('/join');
+  }, [connected.error]);
+
+  useEffect(() => {
+    if (joined.ok) {
+      let { room, player } = joined.data[0];
+      push(`/${room}`, { player });
+    }
+  }, [joined.ok]);
+
+  useEffect(() => {
+    if (!room && !connected.pending) {
+      connect(params.room);
+    } else if (player || (room && room !== params.room)) {
+      disconnect();
+    }
+  }, []);
 
   return (
     <Container data-test-join-game>
-      {connecting ? (
+      {!room || connected.pending ? (
         <Section align="center" justify="center">
           <Spinner xl/>
         </Section>
@@ -64,9 +66,9 @@ export default function JoinGameScreen({
           </NavBar>
 
           <JoinGameForm
-            error={error}
-            loading={joining}
-            onSubmit={joinGame}
+            loading={joined.pending}
+            error={joined.error?.message}
+            onSubmit={handleJoinGame}
           />
         </>
       )}

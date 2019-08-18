@@ -1,13 +1,11 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 import { hot } from 'react-hot-loader/root';
-import { Provider as ReduxProvider } from 'react-redux';
-import { createBrowserHistory, createMemoryHistory } from 'history';
 
 import './styles/global.css';
-import createStore from './redux/store';
+import Router, { Route } from './router';
+import ApiProvider from './api';
 
-import Route from './screens/route';
 import AppScreen from './screens/app';
 import WelcomeScreen from './screens/welcome';
 import FindRoomScreen from './screens/find-room';
@@ -17,40 +15,36 @@ import DashboardScreen from './screens/dashboard';
 import BankScreen from './screens/bank';
 import SandboxScreen from './screens/sandbox';
 
-export function createAppContext() {
-  let history = (process.env.NODE_ENV === 'test')
-    ? createMemoryHistory() : createBrowserHistory();
-  let socket = new WebSocket(`ws://${window.location.host}`);
-  let store = createStore({ socket, history });
-  return { history, socket, store };
-}
-
 AppRoot.propTypes = {
-  context: PropTypes.shape({
-    store: PropTypes.object.isRequired
-  }).isRequired
+  history: PropTypes.object.isRequired,
+  onGameUpdate: PropTypes.func
 };
 
-function AppRoot({ context: { store } }) {
+function AppRoot({
+  onGameUpdate,
+  history
+}) {
   let roompath = ':room([^/]{5})';
 
   return (
-    <ReduxProvider store={store}>
-      <Route path="/(.*)" redirect="/" render={AppScreen}>
-        <Route path="/" render={WelcomeScreen}/>
-        <Route path="/join" render={FindRoomScreen}/>
-        <Route path={`/${roompath}/join`} render={JoinGameScreen}/>
+    <ApiProvider onUpdate={onGameUpdate}>
+      <Router history={history}>
+        <Route path="/(.*)" redirect="/" render={AppScreen}>
+          <Route path="/" render={WelcomeScreen}/>
+          <Route path="/join" render={FindRoomScreen}/>
+          <Route path={`/${roompath}/join`} render={JoinGameScreen}/>
 
-        <Route path={`/${roompath}/(.*)?`} render={GameRoomScreen}>
-          <Route path={`/${roompath}`} render={DashboardScreen}/>
-          <Route path={`/${roompath}/bank`} render={BankScreen}/>
+          <Route path={`/${roompath}/(.*)?`} render={GameRoomScreen}>
+            <Route path={`/${roompath}`} render={DashboardScreen}/>
+            <Route path={`/${roompath}/bank`} render={BankScreen}/>
+          </Route>
+
+          {process.env.NODE_ENV === 'development' && (
+            <Route path="/sandbox" render={SandboxScreen}/>
+          )}
         </Route>
-
-        {process.env.NODE_ENV === 'development' && (
-          <Route path="/sandbox" render={SandboxScreen}/>
-        )}
-      </Route>
-    </ReduxProvider>
+      </Router>
+    </ApiProvider>
   );
 }
 

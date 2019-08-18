@@ -1,8 +1,7 @@
-import React, { useCallback } from 'react';
+import React, { useCallback, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
-import { useGameActions } from '../redux/actions';
-import { useApp, useWaitingFor, usePrevious } from '../utils';
+import { useGame, useEmitter, useEmit } from '../api';
 
 import { Container, Section } from '../ui/layout';
 import Title from '../ui/typography/title';
@@ -14,22 +13,13 @@ WelcomeScreen.propTypes = {
 };
 
 export default function WelcomeScreen({ push }) {
-  let { room } = useApp();
-  let prevRoom = usePrevious(room);
-  let loading = useWaitingFor('game:created');
-  let { newGame, disconnectGame } = useGameActions();
+  let { room } = useGame();
+  let { disconnect } = useEmitter();
+  let [ newGame, { pending, ok, data } ] = useEmit('room:create');
+  let handleNewGame = useCallback(() => !pending && newGame(), [pending]);
 
-  let handleNewGame = useCallback(() => {
-    if (!loading) newGame();
-  }, [loading, newGame]);
-
-  if (room && prevRoom === '') {
-    // successfully connected to a new room
-    push(`/${room}/join`);
-  } else if (room) {
-    // already connected to a room
-    disconnectGame(room);
-  }
+  useEffect(() => room && disconnect(), []);
+  useEffect(() => ok && push(`/${data[0].room}/join`), [ok]);
 
   return (
     <Container data-test-welcome>
@@ -44,7 +34,7 @@ export default function WelcomeScreen({ push }) {
       <Section align="center" justify="center">
         <Button
           style="secondary"
-          loading={loading}
+          loading={pending}
           onClick={handleNewGame}
           data-test-welcome-new-game-btn
         >
@@ -53,7 +43,7 @@ export default function WelcomeScreen({ push }) {
 
         <Button
           style="primary"
-          disabled={loading}
+          disabled={pending}
           linkTo="/join"
           data-test-welcome-join-game-btn
         >

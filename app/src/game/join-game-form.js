@@ -1,23 +1,12 @@
 import React, { useState, useCallback, useMemo } from 'react';
 import PropTypes from 'prop-types';
-import { createSelector } from 'reselect';
-import { useSelector } from 'react-redux';
 
-import { useConfig } from '../utils';
+import { useConfig, usePlayers } from '../helpers/hooks';
 import { Container, Section } from '../ui/layout';
 import Input from '../ui/forms/input';
 import Button from '../ui/button';
 
 import TokenSelect from './token-select';
-
-const selectPlayers = createSelector(
-  ({ app }) => app.players,
-  ({ game }) => game ? game.players : { _all: [] },
-  (active, players) => players._all.map(token => ({
-    active: active.includes(token),
-    ...players[token]
-  }))
-);
 
 JoinGameForm.propTypes = {
   onSubmit: PropTypes.func.isRequired,
@@ -30,10 +19,10 @@ export default function JoinGameForm({
   loading,
   error
 }) {
-  let [name, setName] = useState('');
-  let [token, setToken] = useState('');
-  let { playerTokens: tokens } = useConfig();
-  let players = useSelector(selectPlayers);
+  let players = usePlayers();
+  let { playerTokens: tokens = [] } = useConfig();
+  let [ name, setName ] = useState('');
+  let [ token, setToken ] = useState('');
 
   let disabled = useMemo(() => (
     players.reduce((acc, player) => (

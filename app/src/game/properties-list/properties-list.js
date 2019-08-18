@@ -2,7 +2,7 @@ import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 
-import { useConfig } from '../../utils';
+import { useConfig } from '../../helpers/hooks';
 
 import Icon from '../../ui/icon';
 import Text from '../../ui/typography/text';

@@ -1,8 +1,9 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { createBrowserHistory } from 'history';
 
-import AppRoot, { createAppContext } from './root';
+import AppRoot from './root';
 
-const context = createAppContext();
+const history = createBrowserHistory();
 const $root = document.getElementById('root');
-ReactDOM.render(<AppRoot context={context}/>, $root);
+ReactDOM.render(<AppRoot history={history}/>, $root);

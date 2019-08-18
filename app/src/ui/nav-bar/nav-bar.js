@@ -1,8 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
-import { useLocation } from '../../screens/route';
-import { useRouterActions } from '../../redux/actions';
+import { useRouter } from '../../router';
 
 import { Section } from '../layout';
 import { Text } from '../typography';
@@ -29,13 +28,12 @@ export default function NavBar({
   renderRight,
   children
 }) {
-  let location = useLocation();
-  let { goBack } = useRouterActions();
+  let { location, goBack } = useRouter();
 
   return (
     <Section flex="none" row>
       <div className={styles['left']}>
-        {renderLeft ? renderLeft() : (showBack && location.state.internal ? (
+        {renderLeft ? renderLeft() : (showBack && location.state?.internal ? (
           <Button style="icon" onClick={goBack} data-test-back>
             <Icon name="larr"/>
           </Button>

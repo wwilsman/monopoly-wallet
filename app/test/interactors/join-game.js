@@ -15,14 +15,11 @@ import AppInteractor from './app';
 @interactor class JoinGameInteractor extends AppInteractor {
   static defaultScope = '[data-test-join-game]';
   static snapshotTitle = 'Join Game';
-
-  visit(path = `/${this.room.id}/join`) {
-    return super.visit(path);
-  }
+  static defaultPath = '/t35tt/join';
 
   loading = exists('[data-test-spinner]');
   heading = text('[data-test-join-game-heading]');
-  roomId = text('[data-test-room-code]');
+  roomCode = text('[data-test-room-code]');
   backBtn = scoped('[data-test-back]');
 
   nameInput = scoped('[data-test-join-game-name-input]', {

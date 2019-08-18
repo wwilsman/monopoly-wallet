@@ -38,21 +38,22 @@ describe('FindRoomScreen', () => {
 
   it('should allow typing into the room input', async () => {
     await findRoom
-      .roomInput.type(findRoom.room.id)
+      .roomInput.type('g4m33')
       .percySnapshot('with a room');
   });
 
   describe('and searching for an existing room', () => {
     const joinGame = new JoinGameInteractor();
 
-    beforeEach(async () => {
-      await findRoom
-        .roomInput.type(findRoom.room.id);
+    beforeEach(async function () {
+      await this.grm.mock({ room: 't35tt' });
+      await findRoom.roomInput.type('t35tt');
     });
 
-    it('should disable inputs and show a loading indicator', async () => {
+    it('should disable inputs and show a loading indicator', async function () {
+      this.grm.wss.timing(50);
+
       await findRoom
-        .delaySocket(50)
         .submitBtn.click()
         .assert.roomInput.disabled()
         .assert.submitBtn.disabled()
@@ -65,9 +66,10 @@ describe('FindRoomScreen', () => {
         .submitBtn.click();
       await joinGame
         .assert.exists()
-        .assert.location(`/${joinGame.room.id}/join`)
-        .assert.state(({ app }) => {
-          expect(app.room).toBe(joinGame.room.id);
+        .assert.location('/t35tt/join')
+        .assert.roomCode('T35TT')
+        .assert.state(state => {
+          expect(state).toHaveProperty('connected', true);
         });
     });
 
@@ -85,11 +87,10 @@ describe('FindRoomScreen', () => {
           .assert.location('/join');
       });
 
-      it('should clear the game room', async () => {
-        await findRoom
-          .assert.state(({ app }) => {
-            expect(app.room).toBe('');
-          });
+      it('should disconnect from the game', async () => {
+        await findRoom.assert.state(state => {
+          expect(state).not.toHaveProperty('connected');
+        });
       });
     });
   });

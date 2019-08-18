@@ -3,7 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './token-select.css';
 
-import { dataAttrs } from '../../utils';
+import { useDataAttrs } from '../../helpers/hooks';
 
 import RadioGroup from '../../ui/forms/radio-group';
 import Icon from '../../ui/icon';
@@ -63,7 +63,7 @@ export default function TokenSelect({
       renderItem={(token, attrs) => (
         <TokenSelectItem name={token} {...attrs}/>
       )}
-      {...dataAttrs(props)}
+      {...useDataAttrs(props)}
     />
   );
 }

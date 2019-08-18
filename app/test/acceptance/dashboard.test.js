@@ -1,4 +1,4 @@
-import { setupApplication, mockGame } from '../helpers';
+import { setupApplication } from '../helpers';
 
 import DashboardInteractor from '../interactors/dashboard';
 import BankInteractor from '../interactors/bank';
@@ -6,8 +6,9 @@ import BankInteractor from '../interactors/bank';
 describe('DashboardScreen', () => {
   const dashboard = new DashboardInteractor();
 
-  setupApplication(async () => {
-    await mockGame({ state: {
+  setupApplication(async function () {
+    await this.grm.mock({
+      room: 't35tt',
       players: [
         { token: 'top-hat', balance: 1290 },
         { token: 'automobile', balance: 1300 }
@@ -17,15 +18,12 @@ describe('DashboardScreen', () => {
         { id: 'kentucky-avenue', owner: 'top-hat' },
         { group: 'yellow', owner: 'automobile' }
       ]
-    }});
+    });
 
-    localStorage.data.app = {
-      room: dashboard.room.id,
-      player: { name: 'PLAYER 1', token: 'top-hat' }
-    };
+    this.ls.data.room = 't35tt';
+    this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
 
-    await dashboard.visit()
-      .assert.exists();
+    await dashboard.visit();
   });
 
   it('shows the player dashboard', async () => {
@@ -36,7 +34,7 @@ describe('DashboardScreen', () => {
 
   it('shows the room code', async () => {
     await dashboard
-      .assert.roomId(dashboard.room.id.toUpperCase());
+      .assert.roomCode('T35TT');
   });
 
   it('shows the player name and token', async () => {
@@ -57,7 +55,7 @@ describe('DashboardScreen', () => {
   });
 
   it('shows the correct property group color', async () => {
-    let colors = dashboard.state.config.groupColors;
+    let colors = await dashboard.get('state.config.groupColors');
 
     await dashboard.summary.only()
       .assert.property('oriental-avenue').group('lightblue')
@@ -67,7 +65,7 @@ describe('DashboardScreen', () => {
   });
 
   it('shows other players\' summaries', async () => {
-    let colors = dashboard.state.config.groupColors;
+    let colors = await dashboard.get('state.config.groupColors');
 
     await dashboard
       .assert.card().count(1)
@@ -94,7 +92,7 @@ describe('DashboardScreen', () => {
     it('goes to the bank screen', async () => {
       await bank
         .assert.exists()
-        .assert.location(`/${bank.room.id}/bank`);
+        .assert.location('/t35tt/bank');
     });
 
     it('goes back to the dashboard after clicking back', async () => {
@@ -103,7 +101,7 @@ describe('DashboardScreen', () => {
         .backBtn.click();
       await dashboard
         .assert.exists()
-        .assert.location(`/${dashboard.room.id}`);
+        .assert.location('/t35tt');
     });
   });
 });
