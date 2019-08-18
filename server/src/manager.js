@@ -12,7 +12,7 @@ export default class Manager {
   // the websocket server is the only option, but is required
   constructor({ wss }) {
     // used to track rooms
-    this.rooms = Object.create(null);
+    this.rooms = new Map();
 
     // used to track players connected to rooms
     this.players = new Map();
@@ -41,10 +41,12 @@ export default class Manager {
   }
 
   // override specific methods by assignment
-  use({ loadTheme, loadGame, saveGame } = {}) {
+  use({ loadTheme, loadGame, saveGame, mockGame } = {}) {
     if (loadTheme) assign(this, { loadTheme });
     // load and save need to be specified at the same time
     if (loadGame && saveGame) assign(this, { loadGame, saveGame });
+    // defined in testing
+    if (mockGame) assign(this, { mock: mockGame });
     // for chaining
     return this;
   }
@@ -68,7 +70,7 @@ export default class Manager {
   }
 
   // creates, saves, and returns a new game state based on a theme
-  async create({ theme = 'classic' }) {
+  async create({ theme = 'classic' } = {}) {
     const room = randomString().toLowerCase();
 
     try {
@@ -77,8 +79,8 @@ export default class Manager {
       await this.create({ theme });
     } catch (e) {
       // the real happy path, when the game does not exist
-      let config = this.theme(theme, 'config');
-      let properties = this.theme(theme, 'properties');
+      let config = this.loadTheme(theme, 'config');
+      let properties = this.loadTheme(theme, 'properties');
       let state = create({ room, theme, config, properties });
       return this.saveGame(state);
     }
@@ -91,16 +93,19 @@ export default class Manager {
       throw error('player.playing');
     }
 
-    // load a game, get or create the room, and connect it to the player
+    // load a game and get or create the room
     let game = await this.loadGame(room);
-    let instance = this.rooms[room] = (this.rooms[room] || new GameRoom(game, this));
+    let instance = this.rooms.get(room) ?? new GameRoom(game, this);
+
+    // associate and connect the room and player
+    this.rooms.set(room, instance);
     this.players.set(player, instance);
     instance.connect(player);
 
     // respond with minimal information about the room
-    let active = room.active;
-    let { theme, config } = game;
-    return { room, theme, config, active };
+    let { active } = instance;
+    let { theme, config, players } = game;
+    return { room, theme, config, active, players };
   }
 
   // disconnects a player from the manager and any connected room; cleans up
@@ -113,7 +118,7 @@ export default class Manager {
       this.players.delete(player);
 
       if (!room.players.size) {
-        delete this.rooms[room.id];
+        this.rooms.delete(room.id);
       } else {
         room.broadcast('room:sync', room.playing);
       }

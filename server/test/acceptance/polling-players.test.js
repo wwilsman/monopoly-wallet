@@ -30,7 +30,7 @@ describe('polling a room', () => {
       ['room:connect', 't35tt']
     ]);
 
-    poll = this.grm.rooms['t35tt'].poll('test');
+    poll = this.grm.rooms.get('t35tt').poll('test');
   });
 
   it('polls only players that have joined the game', async () => {

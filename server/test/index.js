@@ -1,5 +1,2 @@
-require('@babel/register')({
-  ignore: [/node_modules/]
-});
-
-require('@babel/polyfill');
+require('@babel/register')({ ignore: [/node_modules/] });
+require('regenerator-runtime/runtime');

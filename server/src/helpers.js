@@ -23,9 +23,7 @@ export function meta(state, data) {
 // returns the value of a path within an object, or undefined if any ancestor of
 // the path is falsey
 export function get(path, object) {
-  return path.split('.').reduce((parent, key) => {
-    return parent ? parent[key] : undefined;
-  }, object);
+  return path.split('.').reduce((parent, key) => parent?.[key], object);
 }
 
 // returns a random string defaulting to a length of 5 characters

@@ -62,9 +62,10 @@ export default class GameRoom {
       this.players.set(player, token);
 
       // allow players to vote in polls
-      player.on('poll:vote', (pid, vote) => (
-        this.polls[pid]?.vote(player, vote)
-      ));
+      player.on('poll:vote', (pid, vote) => {
+        this.polls[pid]?.vote(player, vote);
+        return pid;
+      });
 
       // allow players to communicate with other players
       player.on('message:send', (to, message) => (
@@ -111,14 +112,14 @@ export default class GameRoom {
     return this.manager.saveGame(state);
   }
 
-  // generates a notice message, saves a game with the manager, and alerts
-  // active players of a game update; returns the saved game
-  async update(state, reducer) {
+  // generates a notice message and saves a game with the manager, when `state`
+  // is `true`, the state will be automatically loaded
+  async update(state, reduce) {
     if (state === true) {
       state = await this.load();
     }
 
-    state = reducer(state);
+    state = reduce(state);
     let { notice } = state;
 
     if (notice?.id && !notice?.message) {
@@ -176,13 +177,20 @@ export default class GameRoom {
 
     // player is considered joined when there is an associated token
     this.connect(player, token);
-
-    // update other players of the new active players
     active = active.concat(token);
-    player.broadcast('room:sync', active);
 
-    // return new active players and all game information
-    return { active, ...game };
+    // update other players of the new players
+    player.broadcast('room:sync', {
+      players: game.players,
+      active
+    });
+
+    // return new active players with game and player info
+    return {
+      active,
+      player: { name, token },
+      ...game
+    };
   }
 
   // send a poll to all active players
