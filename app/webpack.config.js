@@ -44,7 +44,7 @@ module.exports = {
   }),
 
   entry: [
-    '@babel/polyfill',
+    'regenerator-runtime/runtime',
     env({ development: 'react-hot-loader/patch' }),
     env({ development: 'webpack-hot-middleware/client' }),
     'app/src/index.js'
@@ -91,7 +91,9 @@ module.exports = {
           plugins: env({
             base: [
               ['@babel/proposal-decorators', { legacy: true }],
-              ['@babel/proposal-class-properties', { loose: true }]
+              ['@babel/proposal-class-properties', { loose: true }],
+              '@babel/proposal-optional-chaining',
+              '@babel/proposal-nullish-coalescing-operator'
             ],
             development: ['react-hot-loader/babel']
           })
