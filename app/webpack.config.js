@@ -101,16 +101,14 @@ module.exports = {
       }, {
         test: /\.css$/,
         use: [env({
-          production: MiniCssExtractPlugin.loader,
-          development: { loader: 'style-loader', options: { sourceMap: true, hmr: true } },
-          test: { loader: 'style-loader' }
+          base: { loader: 'style-loader' },
+          production: MiniCssExtractPlugin.loader
         }), {
           loader: 'css-loader',
           options: {
-            modules: true,
+            modules: { localIdentName: '[name]__[local]--[hash:base64:5]' },
             sourceMap: env({ development: true }),
             importLoaders: 2,
-            localIdentName: '[name]__[local]--[hash:base64:5]'
           }
         }, {
           loader: 'postcss-loader',
