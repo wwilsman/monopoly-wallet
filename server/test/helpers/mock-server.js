@@ -4,7 +4,7 @@ import { create } from '../../src/state';
 import GameRoom from '../../src';
 
 // set up a mock game in the game room manager
-async function mockGame({
+export async function mockGame({
   room,
   theme,
   config = {},
