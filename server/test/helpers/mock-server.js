@@ -16,12 +16,14 @@ async function mockGame({
 } = {}) {
   let state;
 
+  // load an existing game
   if (room && !theme) {
     state = await this.loadGame(room)
       .then(s => ({ ...s, config: { ...s.config, ...config } }))
       .catch(() => {});
   }
 
+  // create a brand new new state
   if (!state) {
     theme = theme || 'classic';
 
@@ -32,12 +34,15 @@ async function mockGame({
     });
   }
 
+  // make any transforms defined by mock options
   state = await this.saveGame({
     ...state,
     bank: bank ?? state.bank,
     houses: houses ?? state.houses,
     hotels: hotels ?? state.hotels,
+    timestamp: Date.now(),
 
+    // automatically create players with a starting balance and name
     players: players.reduce((players, transform) => ({
       ...players,
 
@@ -57,6 +62,7 @@ async function mockGame({
 
     properties: properties.reduce((properties, transform) => {
       if (transform.group) {
+        // transform a group of properties
         return properties.all.reduce((properties, id) => ({
           ...properties,
 
@@ -65,6 +71,7 @@ async function mockGame({
             : properties[id]
         }), properties);
       } else if (transform.id) {
+        // transform a single property
         return {
           ...properties,
 
@@ -79,10 +86,12 @@ async function mockGame({
     }, state.properties)
   });
 
+  // update existing players
   if (this.rooms.has(room)) {
     let instance = this.rooms.get(room);
     instance.broadcast('game:update', state);
     instance.broadcast('room:sync', {
+      timestamp: state.timestamp,
       players: state.players,
       active: instance.active
     });

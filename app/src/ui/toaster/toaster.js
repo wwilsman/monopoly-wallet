@@ -23,12 +23,12 @@ function toastReducer(state, action) {
 export default function Toaster() {
   let [ toasts, updateToasts ] = useReducer(toastReducer, []);
   let [ vote, voted ] = useEmit('poll:vote');
-  let { player, notice } = useGame();
   let emitter = useEmitter();
+  let game = useGame();
 
   let nameReg = useMemo(() => (
-    new RegExp(`(^|\\s+)${player.name}(\\s+|$)`)
-  ), [player.name]);
+    new RegExp(`(^|\\s+)${game.player.name}(\\s+|$)`)
+  ), [game.player.name]);
 
   let formatMessage = useCallback(message => (
     message.replace(nameReg, '$1YOU$2')
@@ -37,24 +37,26 @@ export default function Toaster() {
   useEffect(() => {
     let last = 0;
 
-    let handleNotice = (type, notice) => {
-      if (notice?.timestamp > last) {
-        last = notice.timestamp;
+    let handleNotice = (type, state) => {
+      let { timestamp, notice } = state ?? {};
+
+      if (notice && timestamp > last) {
+        last = timestamp;
 
         updateToasts({
           add: type,
-          id: notice.timestamp,
+          id: timestamp,
           message: notice.message
         });
       }
     };
 
-    let onUpdate = ({ notice }) => {
-      handleNotice('default', notice);
+    let onUpdate = state => {
+      handleNotice('default', state);
     };
 
-    let onResponse = (_, { notice } = {}) => {
-      handleNotice('message', notice);
+    let onResponse = (_, response) => {
+      handleNotice('message', response);
     };
 
     let onError = (_, { message }) => {
@@ -69,8 +71,8 @@ export default function Toaster() {
       updateToasts({ remove: id });
     };
 
-    if (notice) {
-      handleNotice('message', notice);
+    if (game.timestamp) {
+      handleNotice('message', game);
     }
 
     emitter.on('game:update', onUpdate);

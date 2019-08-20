@@ -29,6 +29,7 @@ describe('connecting to a room', () => {
     expect(response).toHaveProperty('room', 't35tt');
     expect(response).toHaveProperty('theme', 'classic');
     expect(response).toHaveProperty('active', ['top-hat']);
+    expect(response).toHaveProperty('timestamp', expect.any(Number));
     expect(response).toHaveProperty('players', expect.objectContaining({
       'top-hat': expect.objectContaining({ name: 'PLAYER 1', token: 'top-hat' })
     }));
@@ -43,6 +44,7 @@ describe('connecting to a room', () => {
 
     let [response] = await socket1.expect('room:sync');
     expect(response).toHaveProperty('active', ['top-hat', 'automobile']);
+    expect(response).toHaveProperty('timestamp', expect.any(Number));
     expect(response).toHaveProperty('players', expect.objectContaining({
       'top-hat': expect.objectContaining({ name: 'PLAYER 1', token: 'top-hat' }),
       'automobile': expect.objectContaining({ name: 'PLAYER 2', token: 'automobile' })

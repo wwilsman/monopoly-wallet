@@ -104,8 +104,8 @@ export default class Manager {
 
     // respond with minimal information about the room
     let { active } = instance;
-    let { theme, config, players } = game;
-    return { room, theme, config, active, players };
+    let { theme, config, players, timestamp } = game;
+    return { room, theme, config, active, players, timestamp };
   }
 
   // disconnects a player from the manager and any connected room; cleans up
@@ -120,7 +120,10 @@ export default class Manager {
       if (!room.players.size) {
         this.rooms.delete(room.id);
       } else {
-        room.broadcast('room:sync', room.playing);
+        room.broadcast('room:sync', {
+          timestamp: Date.now(),
+          active: room.active
+        });
       }
     }
   }

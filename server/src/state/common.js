@@ -30,9 +30,5 @@ export function transferProperty(id, owner) {
 
 // adds a new notice object to the state
 export function notice(id, meta) {
-  return reduce('notice', () => ({
-    timestamp: Date.now(),
-    meta,
-    id
-  }));
+  return reduce('notice', () => ({ meta, id }));
 }
