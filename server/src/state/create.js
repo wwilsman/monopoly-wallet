@@ -16,6 +16,7 @@ export default function create({
     houses: config.houseCount,
     hotels: config.hotelCount,
     players: { all: [] },
+    timestamp: Date.now(),
     notice: null,
 
     properties: properties.reduce((map, property) => {

@@ -67,10 +67,12 @@ export default function ApiProvider({
   children
 }) {
   let [game, update] = useReducer((state, incoming) => {
-    if (incoming === null) {
+    if (incoming) {
+      return (incoming.timestamp ?? 0) >= (state.timestamp ?? 0)
+        ? { ...state, ...incoming }
+        : { ...incoming, ...state };
+    } else if (incoming === null) {
       return {};
-    } else if (incoming) {
-      return { ...state, ...incoming };
     } else {
       return state;
     }

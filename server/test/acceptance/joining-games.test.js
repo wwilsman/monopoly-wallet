@@ -28,6 +28,7 @@ describe('joining a room', () => {
     expect(game).toHaveProperty('players.all', []);
     expect(game).not.toHaveProperty('players.top-hat');
     [game] = await socket1.send('game:join', 'PLAYER 1', 'top-hat');
+    expect(game).toHaveProperty('timestamp', expect.any(Number));
     expect(game).toHaveProperty('active', ['top-hat']);
     expect(game).toHaveProperty('room', 't35tt');
     expect(game).toHaveProperty('players.all', ['top-hat']);

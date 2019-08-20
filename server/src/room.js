@@ -127,7 +127,7 @@ export default class GameRoom {
       state = { ...state, notice: { ...state.notice, message } };
     }
 
-    state = await this.save(state);
+    state = await this.save({ ...state, timestamp: Date.now() });
     return state;
   }
 
@@ -181,16 +181,13 @@ export default class GameRoom {
 
     // update other players of the new players
     player.broadcast('room:sync', {
+      timestamp: Date.now(),
       players: game.players,
       active
     });
 
     // return new active players with game and player info
-    return {
-      active,
-      player: { name, token },
-      ...game
-    };
+    return { active, player: { name, token }, ...game };
   }
 
   // send a poll to all active players
