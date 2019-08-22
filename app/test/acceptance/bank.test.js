@@ -50,7 +50,7 @@ describe('BankScreen', () => {
       .assert.not.exists();
   });
 
-  describe('transfering funds', () => {
+  describe.skip('transfering funds', () => {
     let dashboard = new DashboardInteractor();
 
     it('shows a transfer heading', async () => {

@@ -33,7 +33,7 @@ export default function DashboardScreen() {
         <Text
           color="lighter"
           icon={player.token}
-          data-test-player-name
+          data-test-screen-title
         >
           {player.name}
         </Text>
