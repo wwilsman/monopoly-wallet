@@ -91,6 +91,15 @@
 }
 
 .toggle {
+  display: flex;
+  flex-direction: row;
+
+  &.is-disabled {
+    opacity: 0.6;
+  }
+}
+
+.inline-toggle {
   background-color: var(--color-bg-light);
   border-radius: calc(var(--pad-sm) / 2);
   height: var(--pad-sm);
@@ -111,7 +120,7 @@
     width: var(--pad-med);
   }
 
-  &.is-active::before {
+  .is-active &::before {
     margin-left: auto;
     background-color: var(--color-primary);
   }
