@@ -6,6 +6,7 @@ import { usePlayer, useProperties } from '../../helpers/hooks';
 import Currency from '../../ui/typography/currency';
 import Text from '../../ui/typography/text';
 import PropertiesList from '../properties-list';
+import Card from '../../ui/card';
 
 import styles from './player-card.css';
 
@@ -18,13 +19,13 @@ export default function PlayerCard({ player }) {
   let properties = useProperties(player);
 
   return (
-    <div className={styles.root} data-test-player-card>
+    <Card linkTo={''}>
       <div className={styles.header}>
         <Text color="light" icon={token} data-test-player-name>{name}</Text>
         <Currency color="secondary" value={balance} data-test-player-balance/>
       </div>
 
       <PropertiesList properties={properties}/>
-    </div>
+    </Card>
   );
 }

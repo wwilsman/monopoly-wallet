@@ -33,7 +33,7 @@ function rgb2hex(color) {
 
   bankBtn = scoped('[data-test-bank-btn]');
   summary = scoped('[data-test-summary]', SummaryInteractor);
-  card = collection('[data-test-player-card]', SummaryInteractor);
+  card = collection('[data-test-card]', SummaryInteractor);
 }
 
 export default DashboardInteractor;

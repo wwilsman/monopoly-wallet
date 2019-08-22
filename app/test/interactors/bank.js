@@ -7,7 +7,7 @@ import GameRoomInteractor from './game-room';
   static defaultPath = '/t35tt/bank';
 
   backBtn = scoped('[data-test-back]');
-  links = collection('[data-test-page-link]', {
+  links = collection('[data-test-card]', {
     icon: attribute('[data-test-text-icon]', 'title')
   });
 }
