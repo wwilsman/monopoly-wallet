@@ -12,7 +12,7 @@ const cx = classNames.bind(styles);
 
 RadioGroup.propTypes = {
   data: PropTypes.array.isRequired,
-  label: PropTypes.string.isRequired,
+  label: PropTypes.oneOfType([PropTypes.string, PropTypes.func]).isRequired,
   selected: PropTypes.number.isRequired,
   disabled: PropTypes.arrayOf(PropTypes.number),
   renderItem: PropTypes.func.isRequired,
@@ -47,7 +47,7 @@ export default function RadioGroup({
   let dataAttrs = useDataAttrs(props);
 
   return (
-    <fieldset
+    <div
       className={cx('root', {
         'is-error': !!error,
         'has-focus': focused,
@@ -55,23 +55,26 @@ export default function RadioGroup({
       })}
       onFocus={handleFocus}
       onBlur={handleBlur}
+      tabIndex={0}
       {...dataAttrs}
     >
-      <legend
-        className={styles.label}
-        data-test-label
-      >
-        <span>{label}</span>
+      {typeof label === 'function' ? label() : (
+        <div
+          className={styles.label}
+          data-test-label
+        >
+          <span>{label}</span>
 
-        {!!error && (
-          <span
-            className={styles.error}
-            data-test-error
-          >
-            {error}
-          </span>
-        )}
-      </legend>
+          {!!error && (
+            <span
+              className={styles.error}
+              data-test-error
+            >
+              {error}
+            </span>
+          )}
+        </div>
+      )}
 
       <div className={className}>
         {data.map((item, i) => {
@@ -110,6 +113,6 @@ export default function RadioGroup({
           );
         })}
       </div>
-    </fieldset>
+    </div>
   );
 }
