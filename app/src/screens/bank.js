@@ -5,7 +5,7 @@ import { useGame } from '../api';
 import { Container, Section } from '../ui/layout';
 import { Text } from '../ui/typography';
 import NavBar from '../ui/nav-bar';
-import Link from '../ui/link';
+import Card from '../ui/card';
 
 export default function BankScreen() {
   let { room } = useGame();
@@ -26,12 +26,12 @@ export default function BankScreen() {
         </Text>
       </NavBar>
 
-      <Section align="center" justify="center">
-        <Link to={`/${room}/transfer`} data-test-page-link>
+      <Section>
+        <Card linkTo={`/${room}/transfer`}>
           <Text upper icon="transfer">
             Transfer
           </Text>
-        </Link>
+        </Card>
       </Section>
     </Container>
   );
