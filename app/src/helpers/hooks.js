@@ -29,15 +29,17 @@ export function usePlayer(token) {
   return players?.[token] || {};
 }
 
-export function usePlayers() {
+export function usePlayers({ exclude = [] } = {}) {
   let { active, players } = useGame();
 
   return useMemo(() => (
-    players?.all.map(token => ({
-      active: active.includes(token),
-      ...players[token]
-    })) ?? []
-  ), [active, players]);
+    players?.all.reduce((all, token) => (
+      exclude.includes(token) ? all : all.concat({
+        active: active.includes(token),
+        ...players[token]
+      })
+    ), []) ?? []
+  ), [active, players, ...exclude]);
 }
 
 export function useProperties(token) {
