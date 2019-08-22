@@ -13,6 +13,7 @@ import JoinGameScreen from './screens/join-game';
 import GameRoomScreen from './screens/game-room';
 import DashboardScreen from './screens/dashboard';
 import BankScreen from './screens/bank';
+import TransferScreen from './screens/transfer';
 import SandboxScreen from './screens/sandbox';
 
 AppRoot.propTypes = {
@@ -37,6 +38,7 @@ function AppRoot({
           <Route path={`/${roompath}/(.*)?`} render={GameRoomScreen}>
             <Route path={`/${roompath}`} render={DashboardScreen}/>
             <Route path={`/${roompath}/bank`} render={BankScreen}/>
+            <Route path={`/${roompath}/transfer`} render={TransferScreen}/>
           </Route>
 
           {process.env.NODE_ENV === 'development' && (

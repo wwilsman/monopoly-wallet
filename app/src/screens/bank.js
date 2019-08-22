@@ -1,25 +1,14 @@
-import React, { useCallback, useEffect } from 'react';
-import PropTypes from 'prop-types';
+import React from 'react';
 
-import { useGame, useEmit } from '../api';
+import { useGame } from '../api';
+
 import { Container, Section } from '../ui/layout';
-import { Text, Heading } from '../ui/typography';
+import { Text } from '../ui/typography';
 import NavBar from '../ui/nav-bar';
-import BankTransferForm from '../game/bank-transfer-form';
+import Link from '../ui/link';
 
-BankScreen.propTypes = {
-  push: PropTypes.func.isRequired
-};
-
-export default function BankScreen({ push }) {
-  let [ transfer, { pending, ok }] = useEmit('player:transfer');
+export default function BankScreen() {
   let { room } = useGame();
-
-  let handleBankTransfer = useCallback(amount => {
-    if (!pending) transfer('bank', amount);
-  }, [pending]);
-
-  useEffect(() => ok && push(`/${room}`), [ok]);
 
   return (
     <Container data-test-bank>
@@ -31,20 +20,18 @@ export default function BankScreen({ push }) {
           upper
           icon="bank"
           color="lighter"
-          data-test-player-name
+          data-test-screen-title
         >
           Bank
         </Text>
       </NavBar>
 
-      <Section flex="none" collapse>
-        <Heading h2 data-test-bank-heading>
-          Transfer
-        </Heading>
-
-        <BankTransferForm
-          onSubmit={handleBankTransfer}
-        />
+      <Section align="center" justify="center">
+        <Link to={`/${room}/transfer`}>
+          <Text upper icon="transfer">
+            Transfer
+          </Text>
+        </Link>
       </Section>
     </Container>
   );

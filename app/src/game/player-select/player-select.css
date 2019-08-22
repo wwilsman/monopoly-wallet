@@ -1,0 +1,46 @@
+@import '../../styles/variables';
+
+.root {
+  width: 100%;
+  position: relative;
+}
+
+.combobox {
+  display: flex;
+  margin: 0 auto var(--size-lg);
+  font-size: var(--size-med);
+  color: var(--color-text-lighter);
+
+  .label {
+    color: var(--color-text);
+    margin-right: var(--pad-sm);
+  }
+}
+
+.group {
+  display: grid;
+  grid-gap: var(--pad-sm);
+  grid-template-columns: repeat(3, 1fr);
+}
+
+.item {
+  flex: 0 0 33.333%;
+}
+
+.token {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: var(--pad-med);
+  font-size: var(--size-lg);
+  white-space: nowrap;
+  cursor: pointer;
+
+  svg {
+    margin-bottom: var(--pad-xs);
+  }
+
+  &.is-selected {
+    color: var(--color-text-lighter);
+  }
+}
