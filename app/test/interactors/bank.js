@@ -1,9 +1,4 @@
-import interactor, {
-  collection,
-  text,
-  scoped
-} from 'interactor.js';
-
+import interactor, { attribute, collection, scoped } from 'interactor.js';
 import GameRoomInteractor from './game-room';
 
 @interactor class BankInteractor extends GameRoomInteractor {
@@ -12,12 +7,8 @@ import GameRoomInteractor from './game-room';
   static defaultPath = '/t35tt/bank';
 
   backBtn = scoped('[data-test-back]');
-  headings = collection('[data-test-bank-heading]');
-  transfer = scoped('[data-test-bank-transfer-form]', {
-    amount: text('[data-test-currency-input]'),
-    input: scoped('[data-test-currency-input] input'),
-    deposit: scoped('[data-test-toggle] input[type="checkbox"]'),
-    submit: scoped('button[type="submit"]')
+  links = collection('[data-test-page-link]', {
+    icon: attribute('[data-test-text-icon]', 'title')
   });
 }
 

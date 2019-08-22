@@ -27,7 +27,7 @@ export default function BankScreen() {
       </NavBar>
 
       <Section align="center" justify="center">
-        <Link to={`/${room}/transfer`}>
+        <Link to={`/${room}/transfer`} data-test-page-link>
           <Text upper icon="transfer">
             Transfer
           </Text>
