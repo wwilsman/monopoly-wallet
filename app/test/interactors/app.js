@@ -4,7 +4,15 @@ import { act } from 'react-dom/test-utils';
 
 const { defineProperty } = Object;
 
-@interactor class AppInteractor {
+class ReactInteractor extends Interactor {
+  do(callback) {
+    return super.do(function() {
+      return act(async () => callback.apply(this, arguments));
+    });
+  }
+}
+
+@interactor class AppInteractor extends ReactInteractor {
   static defaultPath = '/';
 
   static defineContext(get) {
@@ -53,13 +61,5 @@ const { defineProperty } = Object;
     });
   }
 }
-
-defineProperty(AppInteractor.prototype, 'do', {
-  value(callback) {
-    return Interactor.prototype.do.call(this, async function () {
-      return await act(async () => callback.apply(this, arguments));
-    });
-  }
-});
 
 export default AppInteractor;
