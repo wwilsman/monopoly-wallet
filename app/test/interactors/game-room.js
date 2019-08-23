@@ -8,6 +8,28 @@ import interactor, {
 
 import AppInteractor from './app';
 
+@interactor class ToastInteractor {
+  static defaultScope = '[data-test-toast]';
+
+  type = attribute('data-test-toast');
+  message = text('[data-test-toast-message]');
+  actions = scoped('[data-test-actions]', {
+    primary: scoped('button:first-child'),
+    secondary: scoped('button:last-child')
+  });
+}
+
+@interactor class ToasterInteractor {
+  static defaultScope = '[data-test-toaster]';
+
+  get type() { return this.last.type; }
+  get message() { return this.last.message; }
+  get actions() { return this.last.actions; }
+
+  last = scoped('[data-test-toast]:last-of-type', ToastInteractor);
+  all = collection('[data-test-toast]', ToastInteractor);
+}
+
 @interactor class GameRoomInteractor extends AppInteractor {
   static defaultScope = '[data-test-game-room]';
   static snapshotTitle = 'Game Room';
@@ -20,13 +42,8 @@ import AppInteractor from './app';
     icon: attribute('[data-test-text-icon]', 'title')
   });
 
-  toast = collection('[data-test-toast]', {
-    type: attribute('data-test-toast'),
-    message: text('[data-test-toast-message]'),
-    actions: scoped('[data-test-actions]', {
-      primary: scoped('button:first-child'),
-      secondary: scoped('button:last-child')
-    })
+  toast = new ToasterInteractor({
+    detached: true
   });
 }
 
