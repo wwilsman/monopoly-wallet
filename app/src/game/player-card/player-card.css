@@ -4,5 +4,5 @@
   display: flex;
   align-items: center;
   justify-content: space-between;
-  margin-bottom: var(--pad-sm);
+  margin-bottom: var(--pad-med);
 }
