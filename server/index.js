@@ -73,14 +73,14 @@ MongoClient
   .connect(ENV.mongodb.uri, ENV.mongodb.options)
   .then(client => {
     let db = client.db().collection('games');
-    let resolveGame = ({ _id: id, ...game } = {}) => !id
+    let resolveGame = ({ _id, ...game } = {}) => !_id
       ? Promise.reject(new Error('Game not found'))
-      : Promise.resolve({ id, ...game });
+      : Promise.resolve(game);
 
     grm.use({
       loadGame: _id => db.findOne({ _id }).then(resolveGame),
-      saveGame: ({ id: _id, ...game }) => db.findOneAndUpdate(
-        { _id }, { $set: game }, { returnOriginal: false, upsert: true }
+      saveGame: game => db.findOneAndUpdate(
+        { _id: game.room }, { $set: game }, { returnOriginal: false, upsert: true }
       ).then(doc => resolveGame(doc.ok && doc.value))
     });
   })
