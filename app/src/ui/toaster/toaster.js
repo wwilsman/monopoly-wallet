@@ -98,7 +98,7 @@ export default function Toaster() {
   }, [voted.pending]);
 
   return (
-    <div className={styles.root}>
+    <div className={styles.root} data-test-toaster>
       {toasts.map(({ id, type, message }) => {
         if (type === 'poll') {
           return (

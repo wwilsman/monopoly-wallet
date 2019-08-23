@@ -3,8 +3,6 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './player-select.css';
 
-import { useDataAttrs } from '../../helpers/hooks';
-
 import Icon from '../../ui/icon';
 import { Text } from '../../ui/typography';
 import RadioGroup from '../../ui/forms/radio-group';
@@ -28,29 +26,33 @@ export default function PlayerSelect({
   players,
   selected,
   onSelect,
-  ...props
 }) {
   return (
     <div
       className={styles.root}
-      {...useDataAttrs(props)}
+      data-test-player-select
     >
       <RadioGroup
         className={styles.group}
         itemClassName={styles.item}
         label={() => (
-          <span className={styles.combobox}>
+          <span
+            className={styles.combobox}
+            data-test-player-select-label
+          >
             <Text className={styles.label} upper>
               {label}
             </Text>
+
             <Text icon={selected?.token || 'bank'} upper>
               {selected?.name ?? 'Bank'}
             </Text>
           </span>
         )}
         data={players}
-        selected={players.indexOf(selected)}
+        itemIdKey="token"
         onSelect={onSelect}
+        selected={players.indexOf(selected)}
         renderItem={(player, { selected }) => (
           <div className={cx('token', { 'is-selected': selected })}>
             <Icon name={player.token}/>

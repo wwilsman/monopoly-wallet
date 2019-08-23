@@ -35,8 +35,8 @@ describe('GameRoomScreen', () => {
 
     it('should tell the player they successfully joined', async () => {
       await gameRoom
-        .assert.toast(0).type('message')
-        .assert.toast(0).message('YOU joined the game')
+        .assert.toast.type('message')
+        .assert.toast.message('YOU joined the game')
         .percySnapshot('joined the game');
     });
 
@@ -53,17 +53,16 @@ describe('GameRoomScreen', () => {
       });
 
       it('should show the player a poll with voting buttons', async () => {
-        await gameRoom.toast(1).only()
-          .assert.type('poll')
-          .assert.message('PLAYER 2 would like to join')
-          .assert.actions.exists();
         await gameRoom
+          .assert.toast.type('poll')
+          .assert.toast.message('PLAYER 2 would like to join')
+          .assert.toast.last.actions.exists()
           .percySnapshot('joining requested');
       });
 
       describe('when voting yes', () => {
         beforeEach(async () => {
-          await gameRoom.toast(1).actions.primary.click();
+          await gameRoom.toast.actions.primary.click();
         });
 
         it('should let the other player join', async () => {
@@ -71,17 +70,16 @@ describe('GameRoomScreen', () => {
         });
 
         it('should tell the player that the other player has joined', async () => {
-          await gameRoom.toast(1).only()
-            .assert.type('default')
-            .assert.message('PLAYER 2 joined the game');
           await gameRoom
+            .assert.toast.type('default')
+            .assert.toast.message('PLAYER 2 joined the game')
             .percySnapshot('others joined');
         });
       });
 
       describe('when voting no', () => {
         beforeEach(async () => {
-          await gameRoom.toast(1).actions.secondary.click();
+          await gameRoom.toast.actions.secondary.click();
         });
 
         it('should not let the other player join', async () => {

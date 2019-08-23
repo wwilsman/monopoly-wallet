@@ -70,10 +70,9 @@ export default function TransferForm({
       <Section row collapse flex={2}>
         <PlayerSelect
           label={pay ? 'To:' : 'From:'}
-          players={recipients}
+          players={players.length ? recipients : players}
           selected={recipient}
           onSelect={setRecipient}
-          data-test-transfer-player-select
         />
       </Section>
 

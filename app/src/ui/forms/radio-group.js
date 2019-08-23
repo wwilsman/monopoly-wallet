@@ -20,7 +20,8 @@ RadioGroup.propTypes = {
   disableAll: PropTypes.bool,
   error: PropTypes.string,
   className: PropTypes.string,
-  itemClassName: PropTypes.string
+  itemClassName: PropTypes.string,
+  itemIdKey: PropTypes.string
 };
 
 RadioGroup.defaultProps = {
@@ -38,6 +39,7 @@ export default function RadioGroup({
   error,
   className,
   itemClassName,
+  itemIdKey = 'id',
   ...props
 }) {
   let elementId = useUID('radio-group');
@@ -79,7 +81,7 @@ export default function RadioGroup({
       <div className={className}>
         {data.map((item, i) => {
           // attempt to get an identifier for this item
-          let id = typeof item === 'string' ? item : (item.id || i);
+          let id = typeof item === 'string' ? item : (item[itemIdKey] || i);
           let elemId = `${elementId}-${id}`;
 
           let attrs = {
