@@ -14,22 +14,28 @@ Input.propTypes = {
   label: PropTypes.string.isRequired,
   value: PropTypes.string.isRequired,
   onChangeText: PropTypes.func.isRequired,
+  onFocus: PropTypes.func,
+  onBlur: PropTypes.func,
   placeholder: PropTypes.string,
   disabled: PropTypes.bool,
   error: PropTypes.string,
   length: PropTypes.number,
-  alt: PropTypes.bool
+  alt: PropTypes.bool,
+  className: PropTypes.string
 };
 
 export default function Input({
   label,
   value,
   onChangeText,
+  onFocus,
+  onBlur,
   placeholder,
   disabled,
   error,
   length,
   alt,
+  className,
   ...props
 }) {
   let [focused, setFocused] = useState(false);
@@ -38,8 +44,16 @@ export default function Input({
   let elementId = useUID('input');
   let inputId = `${elementId}-input`;
 
-  let handleFocus = useCallback(() => setFocused(true), []);
-  let handleBlur = useCallback(() => setFocused(false), []);
+  let handleFocus = useCallback(() => {
+    setFocused(true);
+    onFocus?.();
+  }, []);
+
+  let handleBlur = useCallback(() => {
+    setFocused(false);
+    onBlur?.();
+  }, []);
+
   let handleChange = useCallback(({ target: { value } }) => {
     if (disabled) return;
 
@@ -65,7 +79,7 @@ export default function Input({
         'is-empty': empty,
         'is-disabled': disabled,
         alt
-      })}
+      }, className)}
       {...dataAttrs}
     >
       <label
