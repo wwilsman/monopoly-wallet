@@ -17,7 +17,8 @@ Container.propTypes = {
     'between',
     'stretch'
   ]),
-  tagName: PropTypes.string
+  tagName: PropTypes.string,
+  className: PropTypes.string
 };
 
 export default function Container({
@@ -25,6 +26,7 @@ export default function Container({
   align,
   justify,
   tagName: Component = 'div',
+  className,
   ...props
 }) {
   return (
@@ -33,7 +35,7 @@ export default function Container({
         [`align-${align}`]: !!align,
         [`justify-${justify}`]: !!justify,
         row: !!row
-      })}
+      }, className)}
       {...props}
     />
   );
