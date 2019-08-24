@@ -99,8 +99,13 @@
 }
 
 .is-inline {
-  margin: 0 var(--pad-sm);
+  margin: 0 0 0 var(--pad-sm);
   vertical-align: middle;
+  width: auto;
+
+  &:not(.icon) {
+    padding: 0 var(--pad-sm);
+  }
 
   &:first-child {
     margin-left: 0;
