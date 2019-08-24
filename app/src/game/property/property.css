@@ -1,0 +1,83 @@
+@import '../../styles/variables';
+
+.root {
+  width: 280px;
+  margin: 0 auto;
+}
+
+.info {
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: var(--pad-xs);
+  position: absolute;
+  bottom: 100%;
+  top: auto;
+  right: 0;
+  left: 0;
+
+  & > :only-child {
+    margin-left: auto;
+  }
+}
+
+.content {
+  display: grid;
+  grid-gap: var(--pad-sm);
+  grid-template-columns: 2fr 1fr;
+  font-size: var(--size-sm);
+  line-height: 1;
+  color: black;
+
+  dd {
+    text-align: right;
+  }
+
+  hr {
+    border: none;
+    border-top: 1px solid black;
+    grid-column: 1 / span 2;
+    margin: var(--pad-sm) 0;
+  }
+}
+
+.card {
+  background: white;
+  box-shadow: var(--shadow-sm);
+  padding: var(--pad-med);
+  height: 400px;
+  width: 100%;
+}
+
+.actions {
+  margin-top: var(--pad-med);
+}
+
+.swatch {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid black;
+  margin-bottom: var(--pad-med);
+  font-size: var(--size-big);
+  padding: var(--pad-sm);
+  text-align: center;
+  height: 100px;
+  color: black;
+}
+
+.house {
+  color: var(--color-secondary);
+  font-size: var(--size-med);
+}
+
+.hotel {
+  color: var(--color-alert);
+  font-size: var(--size-med);
+}
+
+.actions {
+  display: flex;
+  justify-content: center;
+}
