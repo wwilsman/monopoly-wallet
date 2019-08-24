@@ -1,0 +1,14 @@
+@import '../../styles/variables';
+
+.root {
+  .input {
+    flex: 1;
+    margin-bottom: var(--pad-med);
+  }
+}
+
+.property {
+  &:not(:first-child) {
+    margin-top: -360px;
+  }
+}

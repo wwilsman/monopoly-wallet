@@ -32,6 +32,12 @@ export default function BankScreen() {
             Transfer
           </Text>
         </Card>
+
+        <Card linkTo={`/${room}/properties`}>
+          <Text upper icon="bank">
+            Properties
+          </Text>
+        </Card>
       </Section>
     </Container>
   );
