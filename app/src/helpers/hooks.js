@@ -21,12 +21,12 @@ export function useDataAttrs(props) {
 
 export function useConfig() {
   let { config } = useGame();
-  return config || {};
+  return config ?? {};
 }
 
 export function usePlayer(token) {
   let { players } = useGame();
-  return players?.[token] || {};
+  return players?.[token] ?? {};
 }
 
 export function usePlayers({ exclude = [] } = {}) {
@@ -40,6 +40,11 @@ export function usePlayers({ exclude = [] } = {}) {
       })
     ), []) ?? []
   ), [active, players, ...exclude]);
+}
+
+export function useProperty(id) {
+  let { properties } = useGame();
+  return properties?.[id] ?? {};
 }
 
 export function useProperties(token) {
