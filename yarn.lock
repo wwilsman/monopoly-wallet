@@ -4111,6 +4111,11 @@ functional-red-black-tree@^1.0.1:
   resolved "https://registry.yarnpkg.com/functional-red-black-tree/-/functional-red-black-tree-1.0.1.tgz#1b0ab3bd553b2a0d6399d29c0e3ea0b252078327"
   integrity sha1-GwqzvVU7Kg1jmdKcDj6gslIHgyc=
 
+fuse.js@^3.4.5:
+  version "3.4.5"
+  resolved "https://registry.yarnpkg.com/fuse.js/-/fuse.js-3.4.5.tgz#8954fb43f9729bd5dbcb8c08f251db552595a7a6"
+  integrity sha512-s9PGTaQIkT69HaeoTVjwGsLfb8V8ScJLx5XGFcKHg0MqLUH/UZ4EKOtqtXX9k7AFqCGxD1aJmYb8Q5VYDibVRQ==
+
 gauge@~2.7.3:
   version "2.7.4"
   resolved "https://registry.yarnpkg.com/gauge/-/gauge-2.7.4.tgz#2c03405c7538c39d7eb37b317022e325fb018bf7"
@@ -4749,10 +4754,10 @@ inquirer@^6.4.1:
     strip-ansi "^5.1.0"
     through "^2.3.6"
 
-interactor.js@^1.4.5:
-  version "1.4.5"
-  resolved "https://registry.yarnpkg.com/interactor.js/-/interactor.js-1.4.5.tgz#ad19baa5fa2d3ad2596642aac3049fb353bb03c1"
-  integrity sha512-6g0AKvq6+ROvC6iMHqennmBddtoWHhgbVzs5RX0vMQPXNnpTfPRH8UJ7y2i4fke7ftHV3xz1ooUX10UrKOvOVg==
+interactor.js@^1.4.6:
+  version "1.4.6"
+  resolved "https://registry.yarnpkg.com/interactor.js/-/interactor.js-1.4.6.tgz#d1a1fe22acee7cb0f8a7fec0fa85457409807aad"
+  integrity sha512-2mLmBrFQxAQK1DmoBSyD/hv4rBUf1/aVUZ2zY/tTk23/BAWHpKzGe4QzPoek8O3CjnpjHW5eD9azBTcB5u3pmQ==
 
 interpret@1.2.0:
   version "1.2.0"
