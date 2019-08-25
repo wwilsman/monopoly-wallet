@@ -18,21 +18,18 @@ Property.propTypes = {
     group: PropTypes.string.isRequired,
     rent: PropTypes.arrayOf(PropTypes.number).isRequired,
     price: PropTypes.number.isRequired,
-    cost: PropTypes.number.isRequired,
-    owner: PropTypes.string.isRequired
+    cost: PropTypes.number.isRequired
   }).isRequired,
-  showDetails: PropTypes.bool,
   onPurchase: PropTypes.func,
   className: PropTypes.string
 };
 
 export default function Property({
   property,
-  showDetails,
   onPurchase,
   className
 }) {
-  let { id, name, group, rent, price, cost, owner } = property;
+  let { id, name, group, rent, price, cost } = property;
   let { mortgageRate, groupColors } = useConfig();
 
   // TODO: implement these

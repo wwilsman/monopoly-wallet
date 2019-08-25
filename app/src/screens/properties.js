@@ -1,4 +1,5 @@
 import React, { useCallback, useEffect } from 'react';
+import PropTypes from 'prop-types';
 
 import { useGame, useEmit } from '../api';
 import { useProperties } from '../helpers/hooks';
@@ -7,6 +8,10 @@ import { Container } from '../ui/layout';
 import { Text } from '../ui/typography';
 import NavBar from '../ui/nav-bar';
 import PropertySearch from '../game/property-search';
+
+PropertiesScreen.propTypes = {
+  push: PropTypes.func.isRequired
+};
 
 export default function PropertiesScreen({ push }) {
   let { room } = useGame();
