@@ -93,6 +93,13 @@ describe('GameRoomScreen', () => {
     beforeEach(async function () {
       this.ls.data.room = 't35tt';
       this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
+
+      await this.grm.mock({
+        room: 't35tt',
+        players: [
+          { token: 'top-hat' }
+        ]
+      });
     });
 
     describe('when reading persisted data', () => {
@@ -114,14 +121,41 @@ describe('GameRoomScreen', () => {
       });
     });
 
-    describe('when reading incorrect persisted data', () => {
+    describe('when the player has already joined', () => {
       beforeEach(async function () {
         await this.socket([
           ['room:connect', 't35tt'],
           ['game:join', 'PLAYER 1', 'top-hat']
         ]);
 
+        await gameRoom.visit('/t35tt');
+      });
+
+      it('should redirect to the join game screen', async () => {
+        await joinGame
+          .assert.exists()
+          .assert.location('/t35tt/join')
+          .assert.remains();
+      });
+    });
+
+    describe('when the player name is incorrect', () => {
+      beforeEach(async function () {
         this.ls.data.player.name = 'PLAYER 2';
+        await gameRoom.visit('/t35tt');
+      });
+
+      it('should redirect to the join game screen', async () => {
+        await joinGame
+          .assert.exists()
+          .assert.location('/t35tt/join')
+          .assert.remains();
+      });
+    });
+
+    describe('when the room code is incorrect', () => {
+      beforeEach(async function () {
+        this.ls.data.room = 'wr0n6';
         await gameRoom.visit('/t35tt');
       });
 

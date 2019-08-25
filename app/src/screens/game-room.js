@@ -36,7 +36,9 @@ export default function GameRoomScreen({
   useEffect(() => () => ls.save({ room: '', player: null }), []);
 
   useEffect(() => {
-    let persisted = player || location.state?.player || ls.load('player');
+    let persisted = player || location.state?.player || (
+      ls.load('room') === params.room && ls.load('player')
+    );
 
     if (error || !persisted || (room && room !== params.room)) {
       replace(`/${params.room}/join`);
