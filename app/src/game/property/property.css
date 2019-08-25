@@ -46,12 +46,16 @@
   background: white;
   box-shadow: var(--shadow-sm);
   padding: var(--pad-med);
-  height: 400px;
+  padding-bottom: var(--pad-sm);
   width: 100%;
 }
 
 .actions {
-  margin-top: var(--pad-med);
+  margin-top: var(--pad-sm);
+
+  button > span:first-child {
+    margin-right: 0.25em;
+  }
 }
 
 .swatch {

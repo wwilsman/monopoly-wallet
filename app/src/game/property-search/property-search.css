@@ -8,7 +8,9 @@
 }
 
 .property {
+  height: 100vh;
+
   &:not(:first-child) {
-    margin-top: -360px;
+    margin-top: -95vh;
   }
 }
