@@ -45,14 +45,6 @@ export default function Property({
       className={cx('root', className)}
       data-test-property={id}
     >
-      {showDetails && (
-        <div className={cx('info')}>
-          {owner === 'bank' && (
-            <Currency value={price}/>
-          )}
-        </div>
-      )}
-
       <div
         className={cx('card', group)}
         data-test-property-group={group}
@@ -123,21 +115,22 @@ export default function Property({
             <Currency value={cost}/>
           </dd>
         </dl>
-      </div>
 
-      {showDetails && (
-        <div className={cx('actions')}>
+        <div className={styles.actions}>
           {onPurchase && (
             <Button
+              block
+              hollow
               style="primary"
-              onClick={onPurchase}
+              onClick={() => onPurchase(price)}
               data-test-property-buy-btn
             >
-              Purchase
+              <span>Buy for</span>
+              <Currency value={price} data-test-property-price/>
             </Button>
           )}
         </div>
-      )}
+      </div>
     </div>
   );
 }
