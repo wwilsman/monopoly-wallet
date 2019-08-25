@@ -1,31 +1,19 @@
 @import '../../styles/variables';
 
 .button {
-  background: var(--color-bg-lighter);
   border-radius: var(--radius-med);
-  box-shadow: var(--shadow-sm);
-  color: var(--color-text-lighter);
   display: inline-flex;
   justify-content: center;
+  align-items: center;
   font-size: var(--size-med);
   height: var(--pad-xl);
-  line-height: var(--pad-xl);
   padding: 0 var(--pad-med);
   text-align: center;
-  text-shadow: var(--shadow-xs);
   width: calc(50% - (var(--pad-sm) / 2));
   cursor: pointer;
-
-  &:not(.is-disabled) {
-    &:hover, &:focus {
-      background: var(--color-bg-light);
-    }
-
-    &:active {
-      background: var(--color-bg);
-      box-shadow: none;
-    }
-  }
+  color: var(--color-text-lighter);
+  box-shadow: var(--shadow-sm);
+  text-shadow: var(--shadow-xs);
 
   &:not(:last-child) {
     margin-bottom: var(--pad-med);
@@ -34,6 +22,10 @@
 
 .primary {
   background: var(--color-primary);
+
+  &.is-hollow {
+    color: var(--color-primary);
+  }
 
   &:not(.is-disabled) {
     &:hover, &:focus {
@@ -49,6 +41,10 @@
 .secondary {
   background: var(--color-secondary);
 
+  &.is-hollow {
+    color: var(--color-secondary);
+  }
+
   &:not(.is-disabled) {
     &:hover, &:focus {
       background: var(--color-secondary-focus);
@@ -63,6 +59,10 @@
 .alert {
   background: var(--color-alert);
 
+  &.is-hollow {
+    color: var(--color-alert);
+  }
+
   &:not(.is-disabled) {
     &:hover, &:focus {
       background: var(--color-alert-focus);
@@ -75,8 +75,9 @@
 }
 
 .icon {
-  background: transparent;
+  background: none;
   box-shadow: none;
+  align-items: center;
   color: var(--color-text);
   font-size: var(--size-lg);
   padding: 0;
@@ -94,6 +95,18 @@
     &:active {
       background: transparent;
       color: var(--color-text-darker);
+    }
+  }
+}
+
+.is-hollow {
+  background: none;
+  box-shadow: none;
+  text-shadow: none;
+
+  &:not(.is-disabled) {
+    &:hover, &:focus, &:active {
+      background: none;
     }
   }
 }

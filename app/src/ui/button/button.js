@@ -18,6 +18,7 @@ Button.propTypes = {
   disabled: PropTypes.bool,
   loading: PropTypes.bool,
   block: PropTypes.bool,
+  hollow: PropTypes.bool,
   inline: PropTypes.bool,
   onClick: PropTypes.func,
   linkTo: PropTypes.string,
@@ -29,6 +30,7 @@ export default function Button ({
   disabled,
   loading,
   block,
+  hollow,
   inline,
   onClick,
   linkTo,
@@ -41,6 +43,7 @@ export default function Button ({
     [style]: !!style,
     'is-disabled': disabled,
     'is-loading': loading,
+    'is-hollow': hollow,
     'is-inline': inline,
     'is-block': block
   });
