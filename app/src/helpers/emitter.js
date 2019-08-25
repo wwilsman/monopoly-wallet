@@ -35,9 +35,11 @@ export class EventEmitter {
   }
 }
 
-export function createPlayerEmitter(
-  socket = new WebSocket(`ws://${window.location.host}`)
-) {
+function defaultSocket() {
+  return new WebSocket(`${location.protocol === 'https:' ? 'wss:' : 'ws:'}//${location.host}`);
+}
+
+export function createPlayerEmitter(socket = defaultSocket()) {
   let emitter = new EventEmitter();
   let tracked = Object.create(null);
   let timeout = 10000;
