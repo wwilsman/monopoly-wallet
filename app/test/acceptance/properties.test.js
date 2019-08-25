@@ -1,9 +1,11 @@
 import { setupApplication } from '../helpers';
 
 import SearchInteractor from '../interactors/search';
+import DashboardInteractor from '../interactors/dashboard';
 
 describe('PropertiesScreen', () => {
   const search = new SearchInteractor();
+  const dashboard = new DashboardInteractor();
 
   setupApplication(async function () {
     await this.grm.mock({
@@ -117,5 +119,27 @@ describe('PropertiesScreen', () => {
       .assert.property.price('200')
       .assert.property.mortgage('100')
       .assert.property.cost('100');
+  });
+
+  it('shows a buy button', async () => {
+    await search
+      .input.type('penn')
+      .assert.property.name('PENNSYLVANIA AVENUE')
+      .assert.property.price('320')
+      .assert.property.buyBtn.exists();
+  });
+
+  it('navigates to the dashboard after buying a property', async () => {
+    await search
+      .input.type('pac')
+      .assert.property.name('PACIFIC AVENUE')
+      .assert.property.price('300')
+      .property.buyBtn.click();
+    await dashboard
+      .assert.exists()
+      .assert.toast.message('YOU purchased Pacific Avenue')
+      .assert.summary.balance('1,200');
+    await search
+      .percySnapshot('after buying');
   });
 });

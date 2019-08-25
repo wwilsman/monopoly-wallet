@@ -18,7 +18,8 @@ import GameRoomInteractor from './game-room';
     rentLabels: collection('[data-test-property-content] dt'),
     rent: collection('[data-test-property-content] dd'),
     mortgage: text('[data-test-property-mortgage-value]'),
-    cost: collection('[data-test-property-build-cost]')
+    cost: collection('[data-test-property-build-cost]'),
+    buyBtn: scoped('[data-test-property-buy-btn]')
   });
 }
 
