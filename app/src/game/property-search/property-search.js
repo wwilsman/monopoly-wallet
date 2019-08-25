@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from 'react';
+import React, { useCallback, useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 
@@ -16,11 +16,13 @@ PropertySearch.propTypes = {
       name: PropTypes.string,
       group: PropTypes.string
     })
-  ).isRequired
+  ).isRequired,
+  onPurchase: PropTypes.func
 };
 
 export default function PropertySearch({
-  properties
+  properties,
+  onPurchase
 }) {
   let [search, setSearch] = useState('');
   let [focused, setFocused] = useState(false);
@@ -35,6 +37,10 @@ export default function PropertySearch({
     let res = search && fuse.search(search);
     return !!res && !!res.length && res[0];
   }, [fuse, search]);
+
+  let handlePurchase = onPurchase && (amount => {
+    if (result) onPurchase(result.id, amount);
+  });
 
   return (
     <Container className={styles.root}>
@@ -66,6 +72,7 @@ export default function PropertySearch({
           <Property
             property={result}
             className={styles.property}
+            onPurchase={handlePurchase}
             showDetails
           />
         ) : properties.map(prop => (
