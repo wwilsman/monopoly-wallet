@@ -15,7 +15,7 @@ describe('PropertiesScreen', () => {
         { token: 'automobile' }
       ],
       properties: [
-        { id: 'marvin-gardens', owner: 'automobile' },
+        { id: 'baltic-avenue', owner: 'automobile', mortgaged: true },
         { group: 'green', owner: 'automobile', monopoly: true, buildings: 4 },
         { id: 'pennsylvania-avenue', buildings: 5 }
       ]
@@ -174,6 +174,31 @@ describe('PropertiesScreen', () => {
         .assert.not.exists();
     });
 
+    it('shows when a property has houses', async () => {
+      await search
+        .input.type('paf')
+        .assert.property.name('PACIFIC AVENUE')
+        .assert.property.houses(4)
+        .percySnapshot('with houses');
+    });
+
+    it('shows when a property has a hotel', async () => {
+      await search
+        .input.type('pev')
+        .assert.property.name('PENNSYLVANIA AVENUE')
+        .assert.property.houses(0)
+        .assert.property.hotels(1)
+        .percySnapshot('with hotel');
+    });
+
+    it('shows when a property is mortgaged', async () => {
+      await search
+        .input.type('bal')
+        .assert.property.name('BALTIC AVENUE')
+        .assert.property.mortgaged()
+        .percySnapshot('mortgaged');
+    });
+
     it('shows a rent button', async () => {
       await search
         .input.type('penn')
@@ -181,6 +206,13 @@ describe('PropertiesScreen', () => {
         .assert.property.rentBtn.exists()
         .assert.property.rentBtn.text('Pay Rent —\n1,400')
         .percySnapshot('with a rent button');
+    });
+
+    it('does not show a rent button when mortgaged', async () => {
+      await search
+        .input.type('bal')
+        .assert.property.name('BALTIC AVENUE')
+        .assert.property.rentBtn.not.exists();
     });
 
     it('navigates to the dashboard after renting a property', async () => {
