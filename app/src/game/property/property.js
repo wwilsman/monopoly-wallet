@@ -24,6 +24,7 @@ Property.propTypes = {
     cost: PropTypes.number.isRequired,
     owner: PropTypes.string.isRequired
   }).isRequired,
+  showDetails: PropTypes.bool,
   onPurchase: PropTypes.func,
   onRent: PropTypes.func
 };
@@ -41,6 +42,7 @@ export default function Property({
     cost,
     owner
   },
+  showDetails,
   onPurchase,
   onRent
 }) {
@@ -139,33 +141,33 @@ export default function Property({
             <Currency value={cost}/>
           </dd>
         </dl>
+      </div>
 
-        <div className={styles.actions}>
-          {owner === 'bank' && onPurchase && (
-            <Button
-              block
-              hollow
-              style="primary"
-              onClick={() => onPurchase(id, price)}
-              data-test-property-buy-btn
-            >
-              <span>Buy for</span>
-              <Currency value={price} data-test-property-price/>
-            </Button>
-          )}
-          {owner !== 'bank' && !isOwn && onRent && (
-            <Button
-              block
-              hollow
-              style="alert"
-              onClick={() => onRent(id, rentAmount)}
-              data-test-property-rent-btn
-            >
-              <span>Pay Rent &mdash;</span>
-              <Currency value={rentAmount} data-test-property-rent/>
-            </Button>
-          )}
-        </div>
+      <div className={styles.actions}>
+        {owner === 'bank' && onPurchase && (
+          <Button
+            block
+            hollow
+            style="primary"
+            onClick={() => onPurchase(id, price)}
+            data-test-property-buy-btn
+          >
+            <span>Buy for</span>
+            <Currency value={price} data-test-property-price/>
+          </Button>
+        )}
+        {owner !== 'bank' && !isOwn && onRent && (
+          <Button
+            block
+            hollow
+            style="alert"
+            onClick={() => onRent(id, rentAmount)}
+            data-test-property-rent-btn
+          >
+            <span>Pay Rent &mdash;</span>
+            <Currency value={rentAmount} data-test-property-rent/>
+          </Button>
+        )}
       </div>
     </div>
   );
