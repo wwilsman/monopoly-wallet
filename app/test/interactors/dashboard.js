@@ -16,6 +16,7 @@ function rgb2hex(color) {
 }
 
 @interactor class SummaryInteractor {
+  linkTo = attribute('href');
   name = text('[data-test-player-name]');
   token = attribute('[data-test-player-name] [data-test-text-icon]', 'title');
   balance = text('[data-test-player-balance]');

@@ -76,6 +76,13 @@ describe('DashboardScreen', () => {
       .assert.card(0).property('ventnor-avenue').color(colors.yellow);
   });
 
+  it('links to other players\' properties', async () => {
+    await dashboard
+      .assert.card(0).name('PLAYER 2')
+      .assert.card(0).token('automobile')
+      .assert.card(0).linkTo('/t35tt/automobile/properties');
+  });
+
   it('shows a bank button', async () => {
     await dashboard
       .assert.bankBtn.exists();
