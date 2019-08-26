@@ -110,10 +110,21 @@ export default function Property({
 
           <dt>
             {'Rent with '}
-            <Icon name="building" className={cx('hotel')}/>
+            <Icon name="building" className={cx('house')}/>
+            <Icon name="building" className={cx('house')}/>
+            <Icon name="building" className={cx('house')}/>
+            <Icon name="building" className={cx('house')}/>
           </dt>
           <dd>
             <Currency value={rent[4]}/>
+          </dd>
+
+          <dt>
+            {'Rent with '}
+            <Icon name="building" className={cx('hotel')}/>
+          </dt>
+          <dd>
+            <Currency value={rent[5]}/>
           </dd>
 
           <hr/>
