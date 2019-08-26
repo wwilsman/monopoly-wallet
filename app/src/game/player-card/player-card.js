@@ -1,6 +1,7 @@
 import React from 'react';
 import PropTypes from 'prop-types';
 
+import { useGame } from '../../api';
 import { usePlayer, useProperties } from '../../helpers/hooks';
 
 import Currency from '../../ui/typography/currency';
@@ -17,9 +18,10 @@ PlayerCard.propTypes = {
 export default function PlayerCard({ player }) {
   let { token, name, balance } = usePlayer(player);
   let properties = useProperties(player);
+  let { room } = useGame();
 
   return (
-    <Card linkTo={''}>
+    <Card linkTo={`/${room}/${token}/properties`}>
       <div className={styles.header}>
         <Text color="light" icon={token} data-test-player-name>{name}</Text>
         <Currency color="secondary" value={balance} data-test-player-balance/>
