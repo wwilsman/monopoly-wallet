@@ -88,7 +88,9 @@ describe('PropertiesScreen', () => {
       .assert.property.rentLabels(3).text('Rent with ')
       .assert.property.rentAmounts(3).text('250')
       .assert.property.rentLabels(4).text('Rent with ')
-      .assert.property.rentAmounts(4).text('700');
+      .assert.property.rentAmounts(4).text('700')
+      .assert.property.rentLabels(5).text('Rent with ')
+      .assert.property.rentAmounts(5).text('875');
   });
 
   it('shows a property\'s mortgage value, and build costs', async () => {
