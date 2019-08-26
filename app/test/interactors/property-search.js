@@ -1,4 +1,11 @@
-import interactor, { attribute, collection, scoped, text } from 'interactor.js';
+import interactor, {
+  attribute,
+  collection,
+  count,
+  exists,
+  scoped,
+  text
+} from 'interactor.js';
 
 import GameRoomInteractor from './game-room';
 
@@ -14,6 +21,9 @@ import GameRoomInteractor from './game-room';
   property = scoped('[data-test-property]', {
     name: text('[data-test-property-name]'),
     group: attribute('[data-test-property-group]', 'data-test-property-group'),
+    houses: count('[data-test-property-house]'),
+    hotels: count('[data-test-property-hotel]'),
+    mortgaged: exists('[data-test-property-mortgaged]'),
     rentLabels: collection('[data-test-property-content] dt'),
     rentAmounts: collection('[data-test-property-content] dd'),
     mortgage: text('[data-test-property-mortgage-value]'),

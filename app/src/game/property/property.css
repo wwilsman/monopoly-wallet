@@ -5,20 +5,34 @@
   margin: 0 auto;
 }
 
-.info {
-  color: white;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  margin-bottom: var(--pad-xs);
-  position: absolute;
-  bottom: 100%;
-  top: auto;
-  right: 0;
-  left: 0;
+.details {
+  height: var(--pad-med);
+  margin-bottom: var(--pad-sm);
 
-  & > :only-child {
-    margin-left: auto;
+  .is-mortgaged & {
+    text-align: center;
+  }
+
+  .house, .hotel {
+    font-size: var(--pad-med);
+    margin-right: var(--pad-xs);
+    filter: drop-shadow(var(--shadow-sm));
+  }
+}
+
+.card {
+  background: white;
+  box-shadow: var(--shadow-sm);
+  padding: var(--pad-med);
+  width: 100%;
+
+  .is-mortgaged & {
+    box-shadow: none;
+    opacity: 0.3;
+  }
+
+  .house, .hotel {
+    font-size: var(--size-med);
   }
 }
 
@@ -40,13 +54,6 @@
     grid-column: 1 / span 2;
     margin: var(--pad-sm) 0;
   }
-}
-
-.card {
-  background: white;
-  box-shadow: var(--shadow-sm);
-  padding: var(--pad-med);
-  width: 100%;
 }
 
 .actions {
@@ -72,12 +79,10 @@
 
 .house {
   color: var(--color-secondary);
-  font-size: var(--size-med);
 }
 
 .hotel {
   color: var(--color-alert);
-  font-size: var(--size-med);
 }
 
 .actions {

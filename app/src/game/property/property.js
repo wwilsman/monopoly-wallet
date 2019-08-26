@@ -19,6 +19,7 @@ Property.propTypes = {
     group: PropTypes.string.isRequired,
     rent: PropTypes.arrayOf(PropTypes.number).isRequired,
     monopoly: PropTypes.bool.isRequired,
+    mortgaged: PropTypes.bool.isRequired,
     buildings: PropTypes.number.isRequired,
     price: PropTypes.number.isRequired,
     cost: PropTypes.number.isRequired,
@@ -37,6 +38,7 @@ export default function Property({
     group,
     rent,
     monopoly,
+    mortgaged,
     buildings,
     price,
     cost,
@@ -57,9 +59,27 @@ export default function Property({
 
   return (
     <div
-      className={cx('root', className)}
+      className={cx('root', {
+        'is-mortgaged': showDetails && !isOwn && mortgaged
+      }, className)}
       data-test-property={id}
     >
+      {showDetails && (
+        <div className={styles.details}>
+          {mortgaged && (
+            <Text upper color="alert" data-test-property-mortgaged>
+              Mortgaged
+            </Text>
+          )}
+
+          {buildings === 5 ? (
+            <Icon name="building" className={cx('hotel')} data-test-property-hotel/>
+          ) : Array(buildings).fill().map((_, i) => (
+            <Icon name="building" className={cx('house')} key={i} data-test-property-house/>
+          ))}
+        </div>
+      )}
+
       <div
         className={cx('card', group)}
         data-test-property-group={group}
@@ -156,7 +176,7 @@ export default function Property({
             <Currency value={price} data-test-property-price/>
           </Button>
         )}
-        {owner !== 'bank' && !isOwn && onRent && (
+        {owner !== 'bank' && !isOwn && !mortgaged && onRent && (
           <Button
             block
             hollow
