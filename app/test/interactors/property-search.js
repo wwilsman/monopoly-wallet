@@ -17,6 +17,8 @@ import GameRoomInteractor from './game-room';
   backBtn = scoped('[data-test-back]');
   input = scoped('[data-test-input]');
   clearBtn = scoped('[data-test-property-search-clear]');
+  empty = scoped('[data-test-property-empty]');
+  notFound = scoped('[data-test-property-not-found]');
 
   property = scoped('[data-test-property]', {
     name: text('[data-test-property-name]'),
