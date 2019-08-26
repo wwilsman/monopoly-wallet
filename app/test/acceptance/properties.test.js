@@ -1,17 +1,23 @@
 import { setupApplication } from '../helpers';
 
-import SearchInteractor from '../interactors/search';
+import PropertySearchInteractor from '../interactors/property-search';
 import DashboardInteractor from '../interactors/dashboard';
 
 describe('PropertiesScreen', () => {
-  const search = new SearchInteractor();
+  const search = new PropertySearchInteractor();
   const dashboard = new DashboardInteractor();
 
   setupApplication(async function () {
     await this.grm.mock({
       room: 't35tt',
       players: [
-        { token: 'top-hat' }
+        { token: 'top-hat' },
+        { token: 'automobile' }
+      ],
+      properties: [
+        { id: 'marvin-gardens', owner: 'automobile' },
+        { group: 'green', owner: 'automobile', monopoly: true, buildings: 4 },
+        { id: 'pennsylvania-avenue', buildings: 5 }
       ]
     });
 
@@ -20,34 +26,9 @@ describe('PropertiesScreen', () => {
     await search.visit();
   });
 
-  it('shows the properties screen', async () => {
-    await search
-      .assert.exists()
-      .percySnapshot();
-  });
-
   it('shows the room code', async () => {
     await search
       .assert.roomCode('T35TT');
-  });
-
-  it('shows a properties icon and heading', async () => {
-    await search
-      .assert.heading.text('PROPERTIES')
-      .assert.heading.icon('bank');
-  });
-
-  it('shows a back button linked to the bank', async () => {
-    await search
-      .assert.backBtn.exists()
-      .assert.backBtn.attribute('href', '/t35tt/bank');
-  });
-
-  it('goes to the bank when clicking the back button', async () => {
-    await search
-      .backBtn.click()
-      .assert.location('/t35tt/bank')
-      .assert.not.exists();
   });
 
   it('shows a property search box', async () => {
@@ -76,8 +57,7 @@ describe('PropertiesScreen', () => {
       .input.type('ori')
       .input.blur()
       .assert.clearBtn.exists()
-      .assert.remains()
-      .percySnapshot('with a search');
+      .assert.remains();
   });
 
   it('shows a property after typing part of the property name', async () => {
@@ -100,46 +80,119 @@ describe('PropertiesScreen', () => {
       .assert.property.name('KENTUCKY AVENUE')
       .assert.property.group('red')
       .assert.property.rentLabels(0).text('Rent')
-      .assert.property.rent(0).text('18')
+      .assert.property.rentAmounts(0).text('18')
       .assert.property.rentLabels(1).text('Rent with Monopoly')
-      .assert.property.rent(1).text('36')
+      .assert.property.rentAmounts(1).text('36')
       .assert.property.rentLabels(2).text('Rent with ')
-      .assert.property.rent(2).text('90')
+      .assert.property.rentAmounts(2).text('90')
       .assert.property.rentLabels(3).text('Rent with ')
-      .assert.property.rent(3).text('250')
+      .assert.property.rentAmounts(3).text('250')
       .assert.property.rentLabels(4).text('Rent with ')
-      .assert.property.rent(4).text('700');
+      .assert.property.rentAmounts(4).text('700');
   });
 
-  it('shows a property\'s price, mortgage value, and build costs', async () => {
+  it('shows a property\'s mortgage value, and build costs', async () => {
     await search
       .input.type('park')
       .assert.property.name('PARK PLACE')
       .assert.property.group('blue')
-      .assert.property.price('200')
       .assert.property.mortgage('100')
       .assert.property.cost('100');
   });
 
-  it('shows a buy button', async () => {
-    await search
-      .input.type('penn')
-      .assert.property.name('PENNSYLVANIA AVENUE')
-      .assert.property.price('320')
-      .assert.property.buyBtn.exists();
+  describe('bank properties', () => {
+    it('shows the bank properties screen', async () => {
+      await search
+        .assert.exists()
+        .assert.heading.text('PROPERTIES')
+        .assert.heading.icon('bank')
+        .percySnapshot();
+    });
+
+    it('shows a back button linked to the bank', async () => {
+      await search
+        .assert.backBtn.exists()
+        .assert.backBtn.attribute('href', '/t35tt/bank');
+    });
+
+    it('goes to the bank when clicking the back button', async () => {
+      await search
+        .backBtn.click()
+        .assert.location('/t35tt/bank')
+        .assert.not.exists();
+    });
+
+    it('shows a buy button', async () => {
+      await search
+        .input.type('board')
+        .assert.property.name('BOARDWALK')
+        .assert.property.buyBtn.exists()
+        .assert.property.buyBtn.text('Buy for\n400')
+        .percySnapshot('with a buy button');
+    });
+
+    it('navigates to the dashboard after buying a property', async () => {
+      await search
+        .input.type('ill')
+        .assert.property.name('ILLINOIS AVENUE')
+        .assert.property.buyBtn.text('Buy for\n240')
+        .property.buyBtn.click();
+      await dashboard
+        .assert.exists()
+        .assert.toast.message('YOU purchased Illinois Avenue')
+        .assert.summary.balance('1,260');
+      await search
+        .percySnapshot('after buying');
+    });
   });
 
-  it('navigates to the dashboard after buying a property', async () => {
-    await search
-      .input.type('pac')
-      .assert.property.name('PACIFIC AVENUE')
-      .assert.property.price('300')
-      .property.buyBtn.click();
-    await dashboard
-      .assert.exists()
-      .assert.toast.message('YOU purchased Pacific Avenue')
-      .assert.summary.balance('1,200');
-    await search
-      .percySnapshot('after buying');
+  describe('other player properties', async () => {
+    beforeEach(async () => {
+      await search.visit('/t35tt/automobile/properties');
+    });
+
+    it('shows the player properties screen', async () => {
+      await search
+        .assert.exists()
+        .assert.heading.text('PLAYER 2')
+        .assert.heading.icon('automobile')
+        .percySnapshot('other player');
+    });
+
+    it('shows a back button linked to the dashboard', async () => {
+      await search
+        .assert.backBtn.exists()
+        .assert.backBtn.attribute('href', '/t35tt');
+    });
+
+    it('goes to the dashboard when clicking the back button', async () => {
+      await search
+        .backBtn.click()
+        .assert.location('/t35tt')
+        .assert.not.exists();
+    });
+
+    it('shows a rent button', async () => {
+      await search
+        .input.type('penn')
+        .assert.property.name('PENNSYLVANIA AVENUE')
+        .assert.property.rentBtn.exists()
+        .assert.property.rentBtn.text('Pay Rent —\n1,400')
+        .percySnapshot('with a rent button');
+    });
+
+    it('navigates to the dashboard after renting a property', async () => {
+      await search
+        .input.type('pac')
+        .assert.property.name('PACIFIC AVENUE')
+        .assert.property.rentBtn.text('Pay Rent —\n1,100')
+        .property.rentBtn.click();
+      await dashboard
+        .assert.exists()
+        .assert.toast.message('YOU paid PLAYER 2 rent for Pacific Avenue')
+        .assert.summary.balance('400');
+      await search
+        .percySnapshot('after renting');
+    });
   });
 });

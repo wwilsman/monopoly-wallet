@@ -45,7 +45,7 @@ export default function Property({
   onRent
 }) {
   let { player, config: { mortgageRate, groupColors } } = useGame();
-  let rentAmount = monopoly ? rent[0] * 2 : rent[buildings];
+  let rentAmount = (!buildings && monopoly) ? rent[0] * 2 : rent[buildings];
   let isOwn = owner === player.token;
 
   // TODO: implement these

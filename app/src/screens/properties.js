@@ -39,16 +39,16 @@ export default function PropertiesScreen({ push, params }) {
   return (
     <Container data-test-properties-search>
       <NavBar
-        showBack={`/${room}/bank`}
+        showBack={`/${room}${player.token ? '' : '/bank'}`}
         roomCode={room}
       >
         <Text
           upper
           color="lighter"
-          icon={player?.token ?? 'bank'}
+          icon={player.token ?? 'bank'}
           data-test-screen-title
         >
-          {player?.name ?? 'Properties'}
+          {player.name ?? 'Properties'}
         </Text>
       </NavBar>
 
