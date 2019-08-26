@@ -2,7 +2,7 @@ import React from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 
-import { useConfig } from '../../helpers/hooks';
+import { useGame } from '../../api';
 import { Text, Currency } from '../../ui/typography';
 import Icon from '../../ui/icon';
 import Button from '../../ui/button';
@@ -12,25 +12,41 @@ import styles from './property.css';
 const cx = classNames.bind(styles);
 
 Property.propTypes = {
+  className: PropTypes.string,
   property: PropTypes.shape({
     id: PropTypes.string.isRequired,
     name: PropTypes.string.isRequired,
     group: PropTypes.string.isRequired,
     rent: PropTypes.arrayOf(PropTypes.number).isRequired,
+    monopoly: PropTypes.bool.isRequired,
+    buildings: PropTypes.number.isRequired,
     price: PropTypes.number.isRequired,
-    cost: PropTypes.number.isRequired
+    cost: PropTypes.number.isRequired,
+    owner: PropTypes.string.isRequired
   }).isRequired,
   onPurchase: PropTypes.func,
-  className: PropTypes.string
+  onRent: PropTypes.func
 };
 
 export default function Property({
-  property,
+  className,
+  property: {
+    id,
+    name,
+    group,
+    rent,
+    monopoly,
+    buildings,
+    price,
+    cost,
+    owner
+  },
   onPurchase,
-  className
+  onRent
 }) {
-  let { id, name, group, rent, price, cost } = property;
-  let { mortgageRate, groupColors } = useConfig();
+  let { player, config: { mortgageRate, groupColors } } = useGame();
+  let rentAmount = monopoly ? rent[0] * 2 : rent[buildings];
+  let isOwn = owner === player.token;
 
   // TODO: implement these
   if (group === 'railroad' || group === 'utility') {
@@ -114,16 +130,28 @@ export default function Property({
         </dl>
 
         <div className={styles.actions}>
-          {onPurchase && (
+          {owner === 'bank' && onPurchase && (
             <Button
               block
               hollow
               style="primary"
-              onClick={() => onPurchase(price)}
+              onClick={() => onPurchase(id, price)}
               data-test-property-buy-btn
             >
               <span>Buy for</span>
               <Currency value={price} data-test-property-price/>
+            </Button>
+          )}
+          {owner !== 'bank' && !isOwn && onRent && (
+            <Button
+              block
+              hollow
+              style="alert"
+              onClick={() => onRent(id, rentAmount)}
+              data-test-property-rent-btn
+            >
+              <span>Pay Rent &mdash;</span>
+              <Currency value={rentAmount} data-test-property-rent/>
             </Button>
           )}
         </div>

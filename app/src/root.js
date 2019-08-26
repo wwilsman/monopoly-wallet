@@ -41,6 +41,7 @@ function AppRoot({
             <Route path={`/${roompath}/bank`} render={BankScreen}/>
             <Route path={`/${roompath}/transfer`} render={TransferScreen}/>
             <Route path={`/${roompath}/properties`} render={PropertiesScreen}/>
+            <Route path={`/${roompath}/:token/properties`} render={PropertiesScreen}/>
           </Route>
 
           {process.env.NODE_ENV === 'development' && (

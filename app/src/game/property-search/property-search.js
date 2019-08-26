@@ -2,6 +2,8 @@ import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
 import Fuse from 'fuse.js';
 
+import { useProperties } from '../../helpers/hooks';
+
 import { Container, Section } from '../../ui/layout';
 import { Input } from '../../ui/forms';
 import Button from '../../ui/button';
@@ -10,22 +12,21 @@ import Property from '../property';
 import styles from './property-search.css';
 
 PropertySearch.propTypes = {
-  properties: PropTypes.arrayOf(
-    PropTypes.shape({
-      id: PropTypes.string,
-      name: PropTypes.string,
-      group: PropTypes.string
-    })
-  ).isRequired,
-  onPurchase: PropTypes.func
+  player: PropTypes.shape({
+    token: PropTypes.string
+  }),
+  onPurchase: PropTypes.func,
+  onRent: PropTypes.func
 };
 
 export default function PropertySearch({
-  properties,
-  onPurchase
+  player,
+  onPurchase,
+  onRent
 }) {
-  let [search, setSearch] = useState('');
-  let [focused, setFocused] = useState(false);
+  let [ search, setSearch ] = useState('');
+  let [ focused, setFocused ] = useState(false);
+  let properties = useProperties(player?.token ?? 'bank');
 
   let fuse = useMemo(() => (
     new Fuse(properties, {
@@ -37,10 +38,6 @@ export default function PropertySearch({
     let res = search && fuse.search(search);
     return !!res && !!res.length && res[0];
   }, [fuse, search]);
-
-  let handlePurchase = onPurchase && (amount => {
-    if (result) onPurchase(result.id, amount);
-  });
 
   return (
     <Container className={styles.root}>
@@ -72,7 +69,8 @@ export default function PropertySearch({
           <Property
             property={result}
             className={styles.property}
-            onPurchase={handlePurchase}
+            onPurchase={onPurchase}
+            onRent={onRent}
             showDetails
           />
         ) : properties.map(prop => (
