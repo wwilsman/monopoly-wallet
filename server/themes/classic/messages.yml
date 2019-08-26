@@ -13,18 +13,9 @@ notice:
     transfer: '{{player.name}} received {{property.name}}'
     improved: '{{player.name}} improved {{property.name}}'
     unimproved: '{{player.name}} unimproved {{property.name}}'
-    unimproved-group: >
-      {{player.name}} unimproved {{properties.length}}
-      {{property.group}} properties
     mortgaged: '{{player.name}} mortgaged {{property.name}}'
     unmortgaged: '{{player.name}} unmortgaged {{property.name}}'
     paid-rent: '{{player.name}} paid {{other.name}} rent for {{property.name}}'
-
-  trade:
-    new: '{{player.name}} offered to trade'
-    modified: '{{player.name}} made a counter offer'
-    declined: '{{player.name}} declined to trade'
-    accepted: '{{player.name}} accepted a trade with {{other.name}}'
 
 error:
   common:
@@ -33,7 +24,6 @@ error:
 
   player:
     playing: 'Player already joined'
-    not-playing: 'You have not joined the game'
     missing-token: 'Invalid token'
     used-token: 'Token already in use'
     not-found: 'Cannot find player with token "{{player.token}}"'
@@ -41,7 +31,6 @@ error:
     denied: 'Sorry, your friends hate you'
     empty-room: 'Nobody is in the room'
     balance: 'Insufficient balance'
-    other-balance: '{{other.name}} has an insufficient balance'
 
   property:
     unowned: '{{property.name}} is unowned'
@@ -51,16 +40,10 @@ error:
     no-monopoly: '{{property.name}} is not a monopoly'
     mortgaged: '{{property.name}} is mortgaged'
     unmortgaged: '{{property.name}} is not mortgaged'
-    multi-unmortgaged: 'You have unmortgaged properties'
     improved: '{{property.name}} is improved'
     fully-improved: '{{property.name}} is fully improved'
     unimproved: '{{property.name}} is unimproved'
-    multi-unimproved: 'You have unimproved properties'
     cannot-improve: 'Cannot improve a {{property.group}}'
     build-evenly: 'You must build evenly'
     no-houses: 'Not enough houses'
     no-hotels: 'Not enough hotels'
-
-  trade:
-    not-found: 'Cannot find offer with {{other.name}}'
-    other-trade: 'Cannot accept other offers'
