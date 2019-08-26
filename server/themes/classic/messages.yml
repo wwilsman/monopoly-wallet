@@ -39,6 +39,7 @@ error:
     not-found: 'Cannot find player with token "{{player.token}}"'
     not-connected: '{{player.name}} is not connected'
     denied: 'Sorry, your friends hate you'
+    empty-room: 'Nobody is in the room'
     balance: 'Insufficient balance'
     other-balance: '{{other.name}} has an insufficient balance'
 

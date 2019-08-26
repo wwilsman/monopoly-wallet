@@ -112,4 +112,10 @@ describe('joining a room', () => {
     await expect(socket1.send('game:join', 'PLAYER 1', 'top-hat'))
       .rejects.toThrow('Bank funds are insufficient');
   });
+
+  it('responds with an error when other players are not connected', async function() {
+    await this.grm.mock({ room: 't35tt', players: [{ token: 'top-hat' }]});
+    await expect(socket1.send('game:join', 'PLAYER 2', 'automobile'))
+      .rejects.toThrow('Nobody is in the room');
+  });
 });

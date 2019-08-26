@@ -169,6 +169,8 @@ export default class GameRoom {
       if (active.length) {
         let result = await this.poll('player.ask-to-join', { player: { name } });
         if (!result) throw error('player.denied');
+      } else if (game.players.all.length) {
+        throw error('player.empty-room');
       }
 
       game = await this.update(game, reducers.player.join(name, token));
