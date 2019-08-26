@@ -46,7 +46,6 @@
   background: white;
   box-shadow: var(--shadow-sm);
   padding: var(--pad-med);
-  padding-bottom: var(--pad-sm);
   width: 100%;
 }
 

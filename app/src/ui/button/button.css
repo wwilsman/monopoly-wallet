@@ -102,7 +102,6 @@
 .is-hollow {
   background: none;
   box-shadow: none;
-  text-shadow: none;
 
   &:not(.is-disabled) {
     &:hover, &:focus, &:active {
