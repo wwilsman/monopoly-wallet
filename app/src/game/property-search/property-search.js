@@ -5,6 +5,7 @@ import Fuse from 'fuse.js';
 import { useProperties } from '../../helpers/hooks';
 
 import { Container, Section } from '../../ui/layout';
+import { Text } from '../../ui/typography';
 import { Input } from '../../ui/forms';
 import Button from '../../ui/button';
 import Icon from '../../ui/icon';
@@ -39,7 +40,18 @@ export default function PropertySearch({
     return !!res && !!res.length && res[0];
   }, [fuse, search]);
 
-  return (
+  return properties.length === 0 ? (
+    <Section justify="center">
+      <Text
+        upper
+        color="darker"
+        className={styles['not-found']}
+        data-test-property-empty
+      >
+        No owned properties
+      </Text>
+    </Section>
+  ) : (
     <Container className={styles.root}>
       <Section flex="none" row collapse>
         <Input
@@ -65,14 +77,25 @@ export default function PropertySearch({
       </Section>
 
       <Section justify="center">
-        {search ? result && (
-          <Property
-            property={result}
-            className={styles.property}
-            onPurchase={onPurchase}
-            onRent={onRent}
-            showDetails
-          />
+        {search ? (
+          result ? (
+            <Property
+              property={result}
+              className={styles.property}
+              onPurchase={onPurchase}
+              onRent={onRent}
+              showDetails
+            />
+          ) : (
+            <Text
+              upper
+              color="darker"
+              className={styles['not-found']}
+              data-test-property-not-found
+            >
+              {'No matching'}<br/>{'properties'}
+            </Text>
+          )
         ) : properties.map(prop => (
           <Property
             key={prop.id}

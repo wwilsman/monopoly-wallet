@@ -12,7 +12,8 @@ describe('PropertiesScreen', () => {
       room: 't35tt',
       players: [
         { token: 'top-hat' },
-        { token: 'automobile' }
+        { token: 'automobile' },
+        { token: 'thimble' }
       ],
       properties: [
         { id: 'baltic-avenue', owner: 'automobile', mortgaged: true },
@@ -102,6 +103,15 @@ describe('PropertiesScreen', () => {
       .assert.property.cost('100');
   });
 
+  it('shows a not-found message when there is no matching property', async () => {
+    await search
+      .input.type('old kent rd')
+      .assert.property.not.exists()
+      .assert.notFound.exists()
+      .assert.notFound.text('NO MATCHING\nPROPERTIES')
+      .percySnapshot('not found');
+  });
+
   describe('bank properties', () => {
     it('shows the bank properties screen', async () => {
       await search
@@ -172,6 +182,16 @@ describe('PropertiesScreen', () => {
         .backBtn.click()
         .assert.location('/t35tt')
         .assert.not.exists();
+    });
+
+    it('shows a message when there are no properties', async () => {
+      await search
+        .visit('/t35tt/thimble/properties')
+        .assert.input.not.exists()
+        .assert.property.not.exists()
+        .assert.empty.exists()
+        .assert.empty.text('NO OWNED PROPERTIES')
+        .percySnapshot('empty');
     });
 
     it('shows when a property has houses', async () => {
