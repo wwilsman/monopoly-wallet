@@ -13,6 +13,8 @@ Text.propTypes = {
     'primary',
     'secondary',
     'alert',
+    'dark',
+    'darker',
     'light',
     'lighter'
   ]),

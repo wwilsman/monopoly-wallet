@@ -64,6 +64,14 @@ h2.heading {
   color: var(--color-secondary);
 }
 
+.color--dark {
+  color: var(--color-text-dark);
+}
+
+.color--darker {
+  color: var(--color-text-darker);
+}
+
 .color--light {
   color: var(--color-text-light);
 }
