@@ -24,13 +24,15 @@ export default function JoinGameForm({
   let [ name, setName ] = useState('');
   let [ token, setToken ] = useState('');
 
-  let disabled = useMemo(() => (
-    players.reduce((acc, player) => (
-      (player.active || player.name.toUpperCase() !== name)
-        ? acc.concat(player.token)
-        : acc
-    ), [])
-  ), [name, players]);
+  let existing = useMemo(() => players.find(player => (
+    !player.active && player.name.toUpperCase() === name
+  )), [name, players]);
+
+  let disabled = useMemo(() => players.reduce((acc, player) => (
+    (player.active || player !== existing)
+      ? acc.concat(player.token)
+      : acc
+  ), []), [existing, players]);
 
   let handleSubmit = useCallback(e => {
     e.preventDefault();
@@ -81,7 +83,7 @@ export default function JoinGameForm({
           data-test-join-game-btn
         >
           {error || (
-            !!disabled.length
+            (!!disabled.length && (!token || existing?.token !== token))
               ? (loading ? 'Asking...' : 'Ask to Join')
               : 'Join Game'
           )}

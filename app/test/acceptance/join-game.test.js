@@ -219,6 +219,12 @@ describe('JoinGameScreen', () => {
             .assert.tokens.item('automobile').disabled();
         });
 
+        it('still shows an "ask to join" message', async () => {
+          await joinGame
+            .assert.submitBtn.text('Ask to Join')
+            .assert.remains();
+        });
+
         describe('and they are playing', () => {
           beforeEach(async function () {
             await this.socket([
@@ -232,6 +238,19 @@ describe('JoinGameScreen', () => {
               .assert.tokens.item('top-hat').disabled()
               .assert.tokens.item('automobile').disabled()
               .assert.remains();
+          });
+        });
+
+        describe('and selecting their token', () => {
+          beforeEach(async () => {
+            await joinGame
+              .tokens.item('top-hat').click();
+          });
+
+          it('does not show an "ask to join" message', async () => {
+            await joinGame
+              .assert.submitBtn.not.text('Ask to Join')
+              .assert.submitBtn.text('Join Game');
           });
         });
       });
@@ -302,6 +321,21 @@ describe('JoinGameScreen', () => {
               .assert.submitBtn.text('Sorry, your friends hate you')
               .percySnapshot('not allowed to join');
           });
+        });
+      });
+
+      describe('when asking to join and nobody is connected', () => {
+        beforeEach(async () => {
+          await joinGame
+            .nameInput.type('Player 3')
+            .tokens.item('thimble').click()
+            .submitBtn.click();
+        });
+
+        it('should show an error', async () => {
+          await joinGame
+            .assert.submitBtn.text('Nobody is in the room')
+            .percySnapshot('empty room');
         });
       });
     });
