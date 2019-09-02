@@ -100,13 +100,11 @@
 }
 
 .is-hollow {
-  background: none;
-  box-shadow: none;
+  background: none !important;
+  box-shadow: none !important;
 
-  &:not(.is-disabled) {
-    &:hover, &:focus, &:active {
-      background: none;
-    }
+  &.is-disabled {
+    color: var(--color-text-darker);
   }
 }
 
