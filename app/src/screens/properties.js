@@ -19,6 +19,10 @@ PropertiesScreen.propTypes = {
 export default function PropertiesScreen({ push, params }) {
   let [ buyProperty, buyResponse ] = useEmit('property:buy');
   let [ rentProperty, rentResponse ] = useEmit('property:rent');
+  let [ improveProperty, improveResponse ] = useEmit('property:improve');
+  let [ unimproveProperty, unimproveResponse ] = useEmit('property:unimprove');
+  let [ mortgageProperty, mortgageResponse ] = useEmit('property:mortgage');
+  let [ unmortgageProperty, unmortgageResponse ] = useEmit('property:unmortgage');
   let player = usePlayer(params.token);
   let { room } = useGame();
 
@@ -30,10 +34,24 @@ export default function PropertiesScreen({ push, params }) {
     if (!rentResponse.pending) rentProperty(id, amount);
   }, [rentProperty]);
 
+  let handleImprove = useCallback(id => {
+    if (!improveResponse.pending) improveProperty(id);
+  }, [improveProperty]);
+
+  let handleUnimprove = useCallback(id => {
+    if (!unimproveResponse.pending) unimproveProperty(id);
+  }, [unimproveProperty]);
+
+  let handleMortgage = useCallback(id => {
+    if (!mortgageResponse.pending) mortgageProperty(id);
+  }, [mortgageProperty]);
+
+  let handleUnmortgage = useCallback(id => {
+    if (!unmortgageResponse.pending) unmortgageProperty(id);
+  }, [unimproveProperty]);
+
   useEffect(() => {
-    if (buyResponse.ok || rentResponse.ok) {
-      push(`/${room}`);
-    }
+    if (buyResponse.ok || rentResponse.ok) push(`/${room}`);
   }, [buyResponse.ok, rentResponse.ok]);
 
   return (
@@ -56,6 +74,10 @@ export default function PropertiesScreen({ push, params }) {
         player={player}
         onPurchase={handlePurchase}
         onRent={handleRent}
+        onImprove={handleImprove}
+        onUnimprove={handleUnimprove}
+        onMortgage={handleMortgage}
+        onUnmortgage={handleUnmortgage}
       />
     </Container>
   );

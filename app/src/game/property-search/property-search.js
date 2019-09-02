@@ -17,13 +17,21 @@ PropertySearch.propTypes = {
     token: PropTypes.string
   }),
   onPurchase: PropTypes.func,
-  onRent: PropTypes.func
+  onRent: PropTypes.func,
+  onImprove: PropTypes.func,
+  onUnimprove: PropTypes.func,
+  onMortgage: PropTypes.func,
+  onUnmortgage: PropTypes.func
 };
 
 export default function PropertySearch({
   player,
   onPurchase,
-  onRent
+  onRent,
+  onImprove,
+  onUnimprove,
+  onMortgage,
+  onUnmortgage
 }) {
   let [ search, setSearch ] = useState('');
   let [ focused, setFocused ] = useState(false);
@@ -84,6 +92,10 @@ export default function PropertySearch({
               className={styles.property}
               onPurchase={onPurchase}
               onRent={onRent}
+              onImprove={onImprove}
+              onUnimprove={onUnimprove}
+              onMortgage={onMortgage}
+              onUnmortgage={onUnmortgage}
               showDetails
             />
           ) : (

@@ -27,7 +27,11 @@ Property.propTypes = {
   }).isRequired,
   showDetails: PropTypes.bool,
   onPurchase: PropTypes.func,
-  onRent: PropTypes.func
+  onRent: PropTypes.func,
+  onImprove: PropTypes.func,
+  onUnimprove: PropTypes.func,
+  onMortgage: PropTypes.func,
+  onUnmortgage: PropTypes.func
 };
 
 export default function Property({
@@ -46,7 +50,11 @@ export default function Property({
   },
   showDetails,
   onPurchase,
-  onRent
+  onRent,
+  onImprove,
+  onUnimprove,
+  onMortgage,
+  onUnmortgage
 }) {
   let { player, config: { mortgageRate, groupColors } } = useGame();
   let rentAmount = (!buildings && monopoly) ? rent[0] * 2 : rent[buildings];
@@ -60,7 +68,7 @@ export default function Property({
   return (
     <div
       className={cx('root', {
-        'is-mortgaged': showDetails && !isOwn && mortgaged
+        'is-mortgaged': showDetails && mortgaged
       }, className)}
       data-test-property={id}
     >
@@ -186,6 +194,46 @@ export default function Property({
           >
             <span>Pay Rent &mdash;</span>
             <Currency value={rentAmount} data-test-property-rent/>
+          </Button>
+        )}
+        {isOwn && mortgaged && onUnmortgage && (
+          <Button
+            hollow
+            style="secondary"
+            onClick={() => onUnmortgage(id)}
+            data-test-property-improve-btn
+          >
+            Unmortgage
+          </Button>
+        )}
+        {isOwn && !mortgaged && !buildings && onMortgage && (
+          <Button
+            hollow
+            style="alert"
+            onClick={() => onMortgage(id)}
+            data-test-property-improve-btn
+          >
+            Mortgage
+          </Button>
+        )}
+        {isOwn && buildings > 1 && onUnimprove && (
+          <Button
+            hollow
+            style="alert"
+            onClick={() => onUnimprove(id)}
+            data-test-property-unimprove-btn
+          >
+            Unimprove
+          </Button>
+        )}
+        {isOwn && monopoly && buildings < 5 && onImprove && (
+          <Button
+            hollow
+            style="secondary"
+            onClick={() => onImprove(id)}
+            data-test-property-improve-btn
+          >
+            Improve
           </Button>
         )}
       </div>
