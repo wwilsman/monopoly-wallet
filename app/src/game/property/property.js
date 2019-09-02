@@ -58,13 +58,26 @@ export default function Property({
   onMortgage,
   onUnmortgage
 }) {
-  let { player, config: { mortgageRate, groupColors } } = useGame();
-  let rentAmount = (!buildings && monopoly) ? rent[0] * 2 : rent[buildings];
-  let isOwn = owner === player.token;
+  let {
+    player,
+    config: {
+      mortgageRate,
+      interestRate,
+      groupColors
+    }
+  } = useGame();
 
-  // TODO: implement these
-  if (group === 'railroad' || group === 'utility') {
-    return null;
+  let isRailroad = group === 'railroad';
+  let isUtility = group === 'utility';
+  let isOwn = owner === player.token;
+  let mortgageValue = price * mortgageRate;
+  let rentAmount;
+
+  // TODO: railroad & utility
+  if (!(isRailroad || isUtility)) {
+    rentAmount = (!buildings && monopoly)
+      ? rent[0] * 2
+      : rent[buildings];
   }
 
   return (
@@ -95,11 +108,23 @@ export default function Property({
         className={cx('card', group)}
         data-test-property-group={group}
       >
+        {(isRailroad || isUtility) && (
+          <Icon
+            themed
+            name={isRailroad ? group : id}
+            className={cx('icon')}
+          />
+        )}
+
         <div
           className={cx('swatch')}
           style={{ backgroundColor: groupColors[group] }}
         >
-          <Text upper data-test-property-name>
+          <Text
+            upper
+            className={cx('name')}
+            data-test-property-name
+          >
             {name}
           </Text>
         </div>
@@ -108,69 +133,105 @@ export default function Property({
           className={cx('content')}
           data-test-property-content
         >
-          <dt>Rent</dt>
-          <dd><Currency value={rent[0]}/></dd>
+          {isRailroad ? (
+            <>
+              <dt>Rent</dt>
+              <dd><Currency value={rent[0]}/></dd>
 
-          <dt>Rent with Monopoly</dt>
-          <dd><Currency value={rent[0] * 2}/></dd>
+              <dt>Rent with 2</dt>
+              <dd><Currency value={rent[1]}/></dd>
 
-          <dt>
-            {'Rent with '}
-            <Icon name="building" className={cx('house')}/>
-          </dt>
-          <dd>
-            <Currency value={rent[1]}/>
-          </dd>
+              <dt>Rent with 3</dt>
+              <dd><Currency value={rent[2]}/></dd>
 
-          <dt>
-            {'Rent with '}
-            <Icon name="building" className={cx('house')}/>
-            <Icon name="building" className={cx('house')}/>
-          </dt>
-          <dd>
-            <Currency value={rent[2]}/>
-          </dd>
+              <dt>Rent with 4</dt>
+              <dd><Currency value={rent[3]}/></dd>
+            </>
+          ) : isUtility ? (
+            <>
+              <Text className={cx('description')}>
+                If one Utility is owned,<br/>
+                rent is 4 times amount<br/>
+                shown on dice.
+              </Text>
 
-          <dt>
-            {'Rent with '}
-            <Icon name="building" className={cx('house')}/>
-            <Icon name="building" className={cx('house')}/>
-            <Icon name="building" className={cx('house')}/>
-          </dt>
-          <dd>
-            <Currency value={rent[3]}/>
-          </dd>
+              <Text className={cx('description')}>
+                If both Utilities are owned,<br/>
+                rent is 10 times amount<br/>
+                shown on dice.
+              </Text>
+            </>
+          ) : (
+            <>
+              <dt>Rent</dt>
+              <dd><Currency value={rent[0]}/></dd>
 
-          <dt>
-            {'Rent with '}
-            <Icon name="building" className={cx('house')}/>
-            <Icon name="building" className={cx('house')}/>
-            <Icon name="building" className={cx('house')}/>
-            <Icon name="building" className={cx('house')}/>
-          </dt>
-          <dd>
-            <Currency value={rent[4]}/>
-          </dd>
+              <dt>Rent with Monopoly</dt>
+              <dd><Currency value={rent[0] * 2}/></dd>
 
-          <dt>
-            {'Rent with '}
-            <Icon name="building" className={cx('hotel')}/>
-          </dt>
-          <dd>
-            <Currency value={rent[5]}/>
-          </dd>
+              <dt>
+                {'Rent with '}
+                <Icon name="building" className={cx('house')}/>
+              </dt>
+              <dd>
+                <Currency value={rent[1]}/>
+              </dd>
+
+              <dt>
+                {'Rent with '}
+                <Icon name="building" className={cx('house')}/>
+                <Icon name="building" className={cx('house')}/>
+              </dt>
+              <dd>
+                <Currency value={rent[2]}/>
+              </dd>
+
+              <dt>
+                {'Rent with '}
+                <Icon name="building" className={cx('house')}/>
+                <Icon name="building" className={cx('house')}/>
+                <Icon name="building" className={cx('house')}/>
+              </dt>
+              <dd>
+                <Currency value={rent[3]}/>
+              </dd>
+
+              <dt>
+                {'Rent with '}
+                <Icon name="building" className={cx('house')}/>
+                <Icon name="building" className={cx('house')}/>
+                <Icon name="building" className={cx('house')}/>
+                <Icon name="building" className={cx('house')}/>
+              </dt>
+              <dd>
+                <Currency value={rent[4]}/>
+              </dd>
+
+              <dt>
+                {'Rent with '}
+                <Icon name="building" className={cx('hotel')}/>
+              </dt>
+              <dd>
+                <Currency value={rent[5]}/>
+              </dd>
+            </>
+          )}
 
           <hr/>
 
           <dt>Mortgage Value</dt>
           <dd data-test-property-mortgage-value>
-            <Currency value={price * mortgageRate}/>
+            <Currency value={mortgageValue}/>
           </dd>
 
-          <dt>Building Cost</dt>
-          <dd data-test-property-build-cost>
-            <Currency value={cost}/>
-          </dd>
+          {!(isRailroad || isUtility) && (
+            <>
+              <dt>Building Cost</dt>
+              <dd data-test-property-build-cost>
+                <Currency value={cost}/>
+              </dd>
+            </>
+          )}
         </dl>
       </div>
 
@@ -192,21 +253,26 @@ export default function Property({
             block
             hollow
             style="alert"
-            onClick={() => onRent(id, rentAmount)}
+            disabled={isUtility} // TODO
+            onClick={() => onRent(id)}
             data-test-property-rent-btn
           >
-            Pay Rent
-            (<Currency value={rentAmount} data-test-property-rent/>)
+            Pay Rent &zwj;
+            {rentAmount && (
+              <>(<Currency value={rentAmount} data-test-property-rent/>)</>
+            )}
           </Button>
         )}
         {isOwn && mortgaged && onUnmortgage && (
           <Button
+            block
             hollow
-            style="secondary"
+            style="primary"
             onClick={() => onUnmortgage(id)}
-            data-test-property-improve-btn
+            data-test-property-unmortgage-btn
           >
             Unmortgage
+            (<Currency value={mortgageValue + (mortgageValue * interestRate)} data-test-property-unmortgage/>)
           </Button>
         )}
         {isOwn && !mortgaged && !buildings && onMortgage && (
@@ -214,12 +280,12 @@ export default function Property({
             hollow
             style="alert"
             onClick={() => onMortgage(id)}
-            data-test-property-improve-btn
+            data-test-property-mortgage-btn
           >
             Mortgage
           </Button>
         )}
-        {isOwn && buildings > 1 && onUnimprove && (
+        {isOwn && !isRailroad && !isUtility && buildings > 1 && onUnimprove && (
           <Button
             hollow
             style="alert"
@@ -229,7 +295,7 @@ export default function Property({
             Unimprove
           </Button>
         )}
-        {isOwn && monopoly && buildings < 5 && onImprove && (
+        {isOwn && !isRailroad && !isUtility && monopoly && !mortgaged && buildings < 5 && onImprove && (
           <Button
             hollow
             style="secondary"
