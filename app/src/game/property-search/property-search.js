@@ -48,6 +48,11 @@ export default function PropertySearch({
     return !!res && !!res.length && res[0];
   }, [fuse, search]);
 
+  if (properties.length === 1) {
+    [result] = properties;
+    search = result.name;
+  }
+
   return properties.length === 0 ? (
     <Section justify="center">
       <Text
@@ -68,11 +73,12 @@ export default function PropertySearch({
           onFocus={() => setFocused(true)}
           onBlur={() => setFocused(false)}
           className={styles.input}
+          disabled={properties.length <= 1}
           placeholder="property or group name"
           label="Search properties"
         />
 
-        {(focused || search) && (
+        {(focused || search) && properties.length > 1 && (
           <Button
             inline
             style="icon"
@@ -113,6 +119,7 @@ export default function PropertySearch({
             key={prop.id}
             property={prop}
             className={styles.property}
+            onClick={() => setSearch(prop.name)}
           />
         ))}
       </Section>

@@ -26,6 +26,7 @@ Property.propTypes = {
     owner: PropTypes.string.isRequired
   }).isRequired,
   showDetails: PropTypes.bool,
+  onClick: PropTypes.func,
   onPurchase: PropTypes.func,
   onRent: PropTypes.func,
   onImprove: PropTypes.func,
@@ -49,6 +50,7 @@ export default function Property({
     owner
   },
   showDetails,
+  onClick,
   onPurchase,
   onRent,
   onImprove,
@@ -89,6 +91,7 @@ export default function Property({
       )}
 
       <div
+        onClick={onClick}
         className={cx('card', group)}
         data-test-property-group={group}
       >
@@ -180,7 +183,7 @@ export default function Property({
             onClick={() => onPurchase(id, price)}
             data-test-property-buy-btn
           >
-            <span>Buy for</span>
+            Buy for &zwj;
             <Currency value={price} data-test-property-price/>
           </Button>
         )}
@@ -192,8 +195,8 @@ export default function Property({
             onClick={() => onRent(id, rentAmount)}
             data-test-property-rent-btn
           >
-            <span>Pay Rent &mdash;</span>
-            <Currency value={rentAmount} data-test-property-rent/>
+            Pay Rent
+            (<Currency value={rentAmount} data-test-property-rent/>)
           </Button>
         )}
         {isOwn && mortgaged && onUnmortgage && (
