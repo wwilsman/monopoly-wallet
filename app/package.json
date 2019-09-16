@@ -31,7 +31,7 @@
     "history": "^4.9.0",
     "html-webpack-plugin": "^3.2.0",
     "html-webpack-template": "^6.1.0",
-    "interactor.js": "^1.4.6",
+    "interactor.js": "^1.5.0",
     "js-yaml-loader": "^1.2.0",
     "json-loader": "^0.5.4",
     "karma": "^4.1.0",
