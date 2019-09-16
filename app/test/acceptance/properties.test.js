@@ -3,7 +3,7 @@ import { setupApplication } from '../helpers';
 import PropertySearchInteractor from '../interactors/property-search';
 import DashboardInteractor from '../interactors/dashboard';
 
-describe.skip('PropertiesScreen', () => {
+describe('PropertiesScreen', () => {
   const search = new PropertySearchInteractor();
   const dashboard = new DashboardInteractor();
 
@@ -16,6 +16,8 @@ describe.skip('PropertiesScreen', () => {
         { token: 'thimble' }
       ],
       properties: [
+        { id: 'mediterranean-avenue', owner: 'top-hat' },
+        { group: 'blue', owner: 'top-hat', monopoly: true },
         { id: 'baltic-avenue', owner: 'automobile', mortgaged: true },
         { group: 'green', owner: 'automobile', monopoly: true, buildings: 4 },
         { id: 'pennsylvania-avenue', buildings: 5 }
@@ -136,10 +138,10 @@ describe.skip('PropertiesScreen', () => {
 
     it('shows a buy button', async () => {
       await search
-        .input.type('board')
-        .assert.property.name('BOARDWALK')
+        .input.type('read')
+        .assert.property.name('READING RAILROAD')
         .assert.property.buyBtn.exists()
-        .assert.property.buyBtn.text('Buy for\n400')
+        .assert.property.buyBtn.text(/Buy for ..200/s)
         .percySnapshot('with a buy button');
     });
 
@@ -147,7 +149,7 @@ describe.skip('PropertiesScreen', () => {
       await search
         .input.type('ill')
         .assert.property.name('ILLINOIS AVENUE')
-        .assert.property.buyBtn.text('Buy for\n240')
+        .assert.property.buyBtn.text(/Buy for ..240/s)
         .property.buyBtn.click();
       await dashboard
         .assert.exists()
@@ -158,7 +160,47 @@ describe.skip('PropertiesScreen', () => {
     });
   });
 
-  describe('other player properties', async () => {
+  describe('own properties', () => {
+    beforeEach(async () => {
+      await search.visit('/t35tt/top-hat/properties');
+    });
+
+    it('shows your own properties screen', async () => {
+      await search
+        .assert.exists()
+        .assert.heading.text('PLAYER 1')
+        .assert.heading.icon('top-hat')
+        .percySnapshot('own');
+    });
+
+    it('shows a back button linked to the dashboard', async () => {
+      await search
+        .assert.backBtn.exists()
+        .assert.backBtn.attribute('href', '/t35tt');
+    });
+
+    it('goes to the dashboard when clicking the back button', async () => {
+      await search
+        .backBtn.click()
+        .assert.location('/t35tt')
+        .assert.not.exists();
+    });
+
+    it('shows a mortgage button that mortgages the property');
+    it('does not show an improve button');
+    it('does not show an unimprove button');
+    it('shows an improve button for monopolies');
+    it('improves a property after clicking the improve button');
+    it('does not show an improve button when fully improved');
+    it('does not show an improve button when mortgaged');
+    it('shows an unimprove button with improvements');
+    it('unimproves a property after clicking the unimprove button');
+    it('does not show a mortgage button with improvements');
+    it('shows an unmortgage button when mortgaged');
+    it('unmortgages a property after clicking the unmortgage button');
+  });
+
+  describe('other player properties', () => {
     beforeEach(async () => {
       await search.visit('/t35tt/automobile/properties');
     });
@@ -224,7 +266,7 @@ describe.skip('PropertiesScreen', () => {
         .input.type('penn')
         .assert.property.name('PENNSYLVANIA AVENUE')
         .assert.property.rentBtn.exists()
-        .assert.property.rentBtn.text('Pay Rent —\n1,400')
+        .assert.property.rentBtn.text(/Pay Rent .\(.1,400.\)/s)
         .percySnapshot('with a rent button');
     });
 
@@ -239,7 +281,7 @@ describe.skip('PropertiesScreen', () => {
       await search
         .input.type('pac')
         .assert.property.name('PACIFIC AVENUE')
-        .assert.property.rentBtn.text('Pay Rent —\n1,100')
+        .assert.property.rentBtn.text(/Pay Rent .\(.1,100.\)/s)
         .property.rentBtn.click();
       await dashboard
         .assert.exists()
