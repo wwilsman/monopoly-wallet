@@ -285,7 +285,7 @@ export default function Property({
             Mortgage
           </Button>
         )}
-        {isOwn && !isRailroad && !isUtility && buildings > 1 && onUnimprove && (
+        {isOwn && !isRailroad && !isUtility && buildings > 0 && onUnimprove && (
           <Button
             hollow
             style="alert"
