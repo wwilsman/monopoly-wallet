@@ -25,13 +25,18 @@ import GameRoomInteractor from './game-room';
     group: attribute('[data-test-property-group]', 'data-test-property-group'),
     houses: count('[data-test-property-house]'),
     hotels: count('[data-test-property-hotel]'),
+    get improved() { return !!(this.houses || this.hotels); },
     mortgaged: exists('[data-test-property-mortgaged]'),
     rentLabels: collection('[data-test-property-content] dt'),
     rentAmounts: collection('[data-test-property-content] dd'),
     mortgage: text('[data-test-property-mortgage-value]'),
     cost: collection('[data-test-property-build-cost]'),
     buyBtn: scoped('[data-test-property-buy-btn]'),
-    rentBtn: scoped('[data-test-property-rent-btn]')
+    rentBtn: scoped('[data-test-property-rent-btn]'),
+    mortgageBtn: scoped('[data-test-property-mortgage-btn]'),
+    unmortgageBtn: scoped('[data-test-property-unmortgage-btn]'),
+    improveBtn: scoped('[data-test-property-improve-btn]'),
+    unimproveBtn: scoped('[data-test-property-unimprove-btn]')
   });
 }
 

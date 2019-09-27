@@ -18,6 +18,7 @@ describe('PropertiesScreen', () => {
       properties: [
         { id: 'mediterranean-avenue', owner: 'top-hat' },
         { group: 'blue', owner: 'top-hat', monopoly: true },
+        { id: 'boardwalk', buildings: 1 },
         { id: 'baltic-avenue', owner: 'automobile', mortgaged: true },
         { group: 'green', owner: 'automobile', monopoly: true, buildings: 4 },
         { id: 'pennsylvania-avenue', buildings: 5 }
@@ -186,18 +187,104 @@ describe('PropertiesScreen', () => {
         .assert.not.exists();
     });
 
-    it('shows a mortgage button that mortgages the property');
-    it('does not show an improve button');
-    it('does not show an unimprove button');
-    it('shows an improve button for monopolies');
-    it('improves a property after clicking the improve button');
-    it('does not show an improve button when fully improved');
-    it('does not show an improve button when mortgaged');
-    it('shows an unimprove button with improvements');
-    it('unimproves a property after clicking the unimprove button');
-    it('does not show a mortgage button with improvements');
-    it('shows an unmortgage button when mortgaged');
-    it('unmortgages a property after clicking the unmortgage button');
+    it('shows a mortgage button that mortgages a property', async () => {
+      await search
+        .input.type('med')
+        .assert.property.name('MEDITERRANEAN AVENUE')
+        .assert.property.not.mortgaged()
+        .assert.property.mortgageBtn.exists()
+        .assert.property.mortgageBtn.text('Mortgage')
+        .percySnapshot('own with a mortgage button')
+        .property.mortgageBtn.click()
+        .assert.property.mortgaged()
+        .percySnapshot('own after mortgaging');
+    });
+
+    it('does not show an improve or unimprove button', async () => {
+      await search
+        .input.type('med')
+        .assert.property.name('MEDITERRANEAN AVENUE')
+        .assert.property.improveBtn.not.exists()
+        .assert.property.unimproveBtn.not.exists();
+    });
+
+    it('shows an improve button that unimproves a property of a monopoly', async () => {
+      await search
+        .input.type('blue')
+        .assert.property.name('PARK PLACE')
+        .assert.property.not.improved()
+        .assert.property.improveBtn.exists()
+        .assert.property.improveBtn.text('Improve')
+        .percySnapshot('own with an improve button')
+        .property.improveBtn.click()
+        .assert.property.improved()
+        .percySnapshot('own after improving');
+    });
+
+    it('does not show an improve button when fully improved or mortgaged', async function() {
+      await this.grm.mock({
+        room: 't35tt',
+        properties: [
+          { id: 'baltic-avenue', owner: 'top-hat' },
+          { group: 'blue', buildings: 5 }
+        ]
+      });
+
+      await search
+        .input.type('blue')
+        .assert.property.name('PARK PLACE')
+        .assert.property.hotels(1)
+        .assert.property.improveBtn.not.exists()
+        .percySnapshot('own fully improved');
+
+      await search
+        .input.type('bal', { range: [0, -1] })
+        .assert.property.name('BALTIC AVENUE')
+        .assert.property.mortgaged()
+        .assert.property.improveBtn.not.exists()
+        .percySnapshot('own mortgaged');
+    });
+
+    it('shows an unimprove button that unimproves an improved property', async () => {
+      await search
+        .input.type('board')
+        .assert.property.name('BOARDWALK')
+        .assert.property.improved()
+        .assert.property.unimproveBtn.exists()
+        .assert.property.unimproveBtn.text('Unimprove')
+        .percySnapshot('own with an unimprove button')
+        .property.unimproveBtn.click()
+        .assert.property.not.improved()
+        .percySnapshot('own after unimproving');
+    });
+
+    it('does not show a mortgage button with improvements', async () => {
+      await search
+        .input.type('board')
+        .assert.property.name('BOARDWALK')
+        .assert.property.improved()
+        .assert.property.mortgageBtn.not.exists();
+    });
+
+    it('shows an unmortgage button that unmortgages a mortgaged property', async function() {
+      await this.grm.mock({
+        room: 't35tt',
+        properties: [
+          { id: 'mediterranean-avenue', mortgaged: true }
+        ]
+      });
+
+      await search
+        .input.type('med')
+        .assert.property.name('MEDITERRANEAN AVENUE')
+        .assert.property.mortgaged()
+        .assert.property.unmortgageBtn.exists()
+        .assert.property.unmortgageBtn.text(/Unmortgage ..33/s)
+        .percySnapshot('own with an unmortgage button')
+        .property.unmortgageBtn.click()
+        .assert.property.not.mortgaged()
+        .percySnapshot('own after unmortgaging');
+    });
   });
 
   describe('other player properties', () => {
