@@ -28,27 +28,27 @@ export default function PropertiesScreen({ push, params }) {
 
   let handlePurchase = useCallback((id, amount) => {
     if (!buyResponse.pending) buyProperty(id, amount);
-  }, [buyProperty]);
+  }, [buyResponse.pending, buyProperty]);
 
   let handleRent = useCallback((id, amount) => {
     if (!rentResponse.pending) rentProperty(id, amount);
-  }, [rentProperty]);
+  }, [rentResponse.pending, rentProperty]);
 
   let handleImprove = useCallback(id => {
     if (!improveResponse.pending) improveProperty(id);
-  }, [improveProperty]);
+  }, [improveResponse.pending, improveProperty]);
 
   let handleUnimprove = useCallback(id => {
     if (!unimproveResponse.pending) unimproveProperty(id);
-  }, [unimproveProperty]);
+  }, [unimproveResponse.pending, unimproveProperty]);
 
   let handleMortgage = useCallback(id => {
     if (!mortgageResponse.pending) mortgageProperty(id);
-  }, [mortgageProperty]);
+  }, [mortgageResponse.pending, mortgageProperty]);
 
   let handleUnmortgage = useCallback(id => {
     if (!unmortgageResponse.pending) unmortgageProperty(id);
-  }, [unimproveProperty]);
+  }, [unmortgageResponse.pending, unmortgageProperty]);
 
   useEffect(() => {
     if (buyResponse.ok || rentResponse.ok) push(`/${room}`);
