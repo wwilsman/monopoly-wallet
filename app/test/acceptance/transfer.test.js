@@ -168,7 +168,7 @@ describe('TransferScreen', () => {
         room: 't35tt',
         players: [
           { token: 'automobile' },
-          { token: 'scottish-terrior' },
+          { token: 'scottish-terrier' },
           { token: 'thimble' }
         ]
       });
@@ -187,7 +187,7 @@ describe('TransferScreen', () => {
         .assert.recipient.count(4)
         .assert.recipient.token('bank').exists()
         .assert.recipient.token('automobile').exists()
-        .assert.recipient.token('scottish-terrior').exists()
+        .assert.recipient.token('scottish-terrier').exists()
         .assert.recipient.token('thimble').exists();
     });
 
