@@ -59,6 +59,7 @@ export default function Property({
   onUnmortgage
 }) {
   let {
+    room,
     player,
     config: {
       mortgageRate,
@@ -237,16 +238,28 @@ export default function Property({
 
       <div className={styles.actions}>
         {owner === 'bank' && onPurchase && (
-          <Button
-            block
-            hollow
-            style="primary"
-            onClick={() => onPurchase(id, price)}
-            data-test-property-buy-btn
-          >
-            Buy for &zwj;
-            <Currency value={price} data-test-property-price/>
-          </Button>
+          <>
+            <Button
+              block
+              hollow
+              style="primary"
+              onClick={() => onPurchase(id, price)}
+              data-test-property-buy-btn
+            >
+              Buy for &zwj;
+              <Currency value={price} data-test-property-price/>
+            </Button>
+
+            <Button
+              block
+              hollow
+              className={styles['buy-other']}
+              linkTo={`/${room}/${id}/buy`}
+              data-test-property-buy-other-btn
+            >
+              enter other amount
+            </Button>
+          </>
         )}
         {owner !== 'bank' && !isOwn && !mortgaged && onRent && (
           <Button
