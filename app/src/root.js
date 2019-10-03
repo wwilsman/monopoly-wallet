@@ -15,6 +15,7 @@ import DashboardScreen from './screens/dashboard';
 import BankScreen from './screens/bank';
 import TransferScreen from './screens/transfer';
 import PropertiesScreen from './screens/properties';
+import BuyPropertyScreen from './screens/buy-property';
 import SandboxScreen from './screens/sandbox';
 
 AppRoot.propTypes = {
@@ -42,6 +43,7 @@ function AppRoot({
             <Route path={`/${roompath}/transfer`} render={TransferScreen}/>
             <Route path={`/${roompath}/properties`} render={PropertiesScreen}/>
             <Route path={`/${roompath}/:token/properties`} render={PropertiesScreen}/>
+            <Route path={`/${roompath}/:id/buy`} render={BuyPropertyScreen}/>
           </Route>
 
           {process.env.NODE_ENV === 'development' && (
