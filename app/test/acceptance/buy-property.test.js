@@ -76,7 +76,7 @@ describe('BuyPropertyScreen', () => {
       .assert.amount('100');
   });
 
-  it('clears the default withdrawl amount after pressing backspace', async () => {
+  it('clears the default amount after pressing backspace', async () => {
     await transfer
       .assert.amount('100')
       .input.press('Backspace')

@@ -2,7 +2,7 @@ import interactor, { text, scoped } from 'interactor.js';
 import GameRoomInteractor from './game-room';
 
 @interactor class TransferPropertyInteractor extends GameRoomInteractor {
-  static defaultScope = '[data-test-transfer]';
+  static defaultScope = '[data-test-property-transfer]';
   static snapshotTitle = 'Transfer Property';
 
   backBtn = scoped('[data-test-back]');

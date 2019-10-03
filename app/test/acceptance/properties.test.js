@@ -146,6 +146,15 @@ describe('PropertiesScreen', () => {
         .percySnapshot('with a buy button');
     });
 
+    it('shows an "enter other amount" button', async () => {
+      await search
+        .input.type('ill')
+        .assert.property.name('ILLINOIS AVENUE')
+        .assert.property.otherBtn.exists()
+        .assert.property.otherBtn.text('enter other amount')
+        .assert.property.otherBtn.attribute('href', '/t35tt/illinois-avenue/buy');
+    });
+
     it('navigates to the dashboard after buying a property', async () => {
       await search
         .input.type('ill')

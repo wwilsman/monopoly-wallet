@@ -31,7 +31,7 @@ export default function BuyPropertyScreen({ push, params }) {
   }, [ok]);
 
   return (
-    <Container data-test-transfer>
+    <Container data-test-property-transfer>
       <NavBar
         showBack={`/${room}/properties`}
         roomCode={room}
