@@ -76,6 +76,16 @@
   button > span:first-child {
     margin-right: 0.25em;
   }
+
+  .buy-other {
+    position: absolute;
+    font-size: var(--size-sm);
+    color: var(--color-text-dark);
+    top: auto;
+    bottom: 0;
+    left: 50%;
+    transform: translatex(-50%);
+  }
 }
 
 .swatch {
