@@ -146,4 +146,8 @@
   input[type="number"] {
     @extend %visually-hidden;
   }
+
+  .label {
+    justify-content: center;
+  }
 }
