@@ -10,6 +10,7 @@ const cx = classNames.bind(styles);
 CurrencyInput.propTypes = {
   value: PropTypes.number,
   defaultValue: PropTypes.number,
+  label: PropTypes.string,
   onChange: PropTypes.func.isRequired,
   onFocus: PropTypes.func,
   onBlur: PropTypes.func
@@ -18,6 +19,7 @@ CurrencyInput.propTypes = {
 export default function CurrencyInput({
   value,
   defaultValue,
+  label,
   onChange,
   onFocus,
   onBlur,
@@ -32,6 +34,12 @@ export default function CurrencyInput({
       className={cx('currency-input')}
       data-test-currency-input
     >
+      {label && (
+        <span className={cx('label')}>
+          {label}
+        </span>
+      )}
+
       <input
         value={value || '0'}
         onChange={handleChange}
@@ -42,6 +50,7 @@ export default function CurrencyInput({
 
       <Currency
         value={value == null ? defaultValue : value}
+        data-test-currency-value
         {...props}
       />
     </label>
