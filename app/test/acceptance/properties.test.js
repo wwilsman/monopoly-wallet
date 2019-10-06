@@ -294,6 +294,16 @@ describe('PropertiesScreen', () => {
         .assert.property.not.mortgaged()
         .percySnapshot('own after unmortgaging');
     });
+
+    it('shows a transfer button when not mortgaged nor a monopoly', async () => {
+      await search
+        .input.type('med')
+        .assert.property.name('MEDITERRANEAN AVENUE')
+        .assert.property.not.mortgaged()
+        .assert.property.improveBtn.not.exists()
+        .assert.property.transferBtn.exists()
+        .assert.property.transferBtn.attribute('href', '/t35tt/mediterranean-avenue/transfer');
+    });
   });
 
   describe('other player properties', () => {
