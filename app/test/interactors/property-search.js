@@ -33,6 +33,7 @@ import GameRoomInteractor from './game-room';
     cost: collection('[data-test-property-build-cost]'),
     buyBtn: scoped('[data-test-property-buy-btn]'),
     otherBtn: scoped('[data-test-property-buy-other-btn]'),
+    transferBtn: scoped('[data-test-property-transfer-btn]'),
     rentBtn: scoped('[data-test-property-rent-btn]'),
     mortgageBtn: scoped('[data-test-property-mortgage-btn]'),
     unmortgageBtn: scoped('[data-test-property-unmortgage-btn]'),
