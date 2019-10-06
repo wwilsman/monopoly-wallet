@@ -18,6 +18,12 @@
     margin-right: var(--pad-xs);
     filter: drop-shadow(var(--shadow-sm));
   }
+
+  .transfer-btn {
+    float: right;
+    font-size: var(--size-sm);
+    color: var(--color-text-dark);
+  }
 }
 
 .card {
