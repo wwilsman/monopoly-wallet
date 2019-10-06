@@ -101,6 +101,17 @@ export default function Property({
           ) : Array(buildings).fill().map((_, i) => (
             <Icon name="building" className={cx('house')} key={i} data-test-property-house/>
           ))}
+
+          {isOwn && !monopoly && !mortgaged && (
+            <Button
+              hollow
+              linkTo={`/${room}/${id}/transfer`}
+              className={cx('transfer-btn')}
+              data-test-property-transfer-btn
+            >
+              Transfer
+            </Button>
+          )}
         </div>
       )}
 
