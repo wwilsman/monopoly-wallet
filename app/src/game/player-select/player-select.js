@@ -44,15 +44,15 @@ export default function PlayerSelect({
               {label}
             </Text>
 
-            <Text icon={selected?.token || 'bank'} upper>
-              {selected?.name ?? 'Bank'}
+            <Text icon={selected?.token || players[0]?.token || 'bank'} upper>
+              {selected?.name ?? players[0]?.name ?? 'Bank'}
             </Text>
           </span>
         )}
         data={players}
         itemIdKey="token"
         onSelect={onSelect}
-        selected={players.indexOf(selected)}
+        selected={selected ? players.indexOf(selected) : 0}
         renderItem={(player, { selected }) => (
           <div className={cx('token', { 'is-selected': selected })}>
             <Icon name={player.token}/>
