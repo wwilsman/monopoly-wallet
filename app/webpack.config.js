@@ -17,12 +17,16 @@ const htmlWebpackPlugin = new HTMLWebpackPlugin({
 });
 
 const faviconsWebpackPlugin = new FaviconsWebpackPlugin({
-  title: 'Monopoly Wallet',
   logo: path.resolve('../server/public/logo.png'),
-  background: '#033343',
-  icons: {
-    appleIcon: true,
-    appleStartup: { offset: 20 }
+  inject: 'force',
+  favicons: {
+    appName: 'Monopoly Wallet',
+    appDescription: 'Easily manage your assets during a game of Monopoly',
+    background: '#033343',
+    icons: {
+      appleIcon: true,
+      appleStartup: { offset: 20 },
+    }
   }
 });
 
