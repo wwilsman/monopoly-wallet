@@ -1,4 +1,4 @@
-import { useMemo } from 'react';
+import { useCallback, useMemo } from 'react';
 import { useGame } from '../api';
 
 const { keys } = Object;
@@ -48,13 +48,25 @@ export function useProperty(id) {
 }
 
 export function useProperties(token) {
+  return useFilteredProperties(p => p.owner === token, [token]);
+}
+
+export function useGroup(group, owner) {
+  let all = useFilteredProperties(p => p.group === group, [group]);
+  let owned = useMemo(() => all.filter(p => p.owner === owner), [all, owner]);
+  let improvements = useMemo(() => all.reduce((m, p) => Math.max(m, p.buildings), 0), [all]);
+  return { all, owned, improvements, length: all.length };
+}
+
+function useFilteredProperties(filterFn, deps) {
+  let filter = useCallback(filterFn, deps);
   let { properties } = useGame();
 
   return useMemo(() => (
     properties?.all.reduce((all, id) => (
-      properties[id].owner === token
+      filter(properties[id])
         ? all.concat(properties[id])
         : all
     ), []) ?? []
-  ), [token, properties]);
+  ), [filter, properties]);
 }
