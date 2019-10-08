@@ -3,6 +3,7 @@ import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 
 import { useGame } from '../../api';
+import { useGroup } from '../../helpers/hooks';
 import { Text, Currency } from '../../ui/typography';
 import Icon from '../../ui/icon';
 import Button from '../../ui/button';
@@ -40,7 +41,7 @@ export default function Property({
   property: {
     id,
     name,
-    group,
+    group: groupName,
     rent,
     monopoly,
     mortgaged,
@@ -68,17 +69,19 @@ export default function Property({
     }
   } = useGame();
 
-  let isRailroad = group === 'railroad';
-  let isUtility = group === 'utility';
+  let group = useGroup(groupName, player.token);
+  let isRailroad = groupName === 'railroad';
+  let isUtility = groupName === 'utility';
   let isOwn = owner === player.token;
   let mortgageValue = price * mortgageRate;
   let rentAmount;
 
-  // TODO: railroad & utility
-  if (!(isRailroad || isUtility)) {
-    rentAmount = (!buildings && monopoly)
-      ? rent[0] * 2
-      : rent[buildings];
+  if (isRailroad || isUtility) {
+    rentAmount = rent[group.owned.length - 1];
+  } else if (!buildings && monopoly) {
+    rentAmount = rent[0] * 2;
+  } else {
+    rentAmount = rent[buildings];
   }
 
   return (
@@ -117,20 +120,20 @@ export default function Property({
 
       <div
         onClick={onClick}
-        className={cx('card', group)}
-        data-test-property-group={group}
+        className={cx('card', groupName)}
+        data-test-property-group={groupName}
       >
         {(isRailroad || isUtility) && (
           <Icon
             themed
-            name={isRailroad ? group : id}
+            name={isRailroad ? 'railroad' : id}
             className={cx('icon')}
           />
         )}
 
         <div
           className={cx('swatch')}
-          style={{ backgroundColor: groupColors[group] }}
+          style={{ backgroundColor: groupColors[groupName] }}
         >
           <Text
             upper
@@ -282,7 +285,9 @@ export default function Property({
             data-test-property-rent-btn
           >
             Pay Rent &zwj;
-            {rentAmount && (
+            {isUtility ? (
+              <>(x{rentAmount})</>
+            ) : (
               <>(<Currency value={rentAmount} data-test-property-rent/>)</>
             )}
           </Button>
