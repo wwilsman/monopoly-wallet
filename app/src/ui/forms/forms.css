@@ -142,8 +142,8 @@
   }
 }
 
-.currency-input {
-  input[type="number"] {
+.big-input {
+  input {
     @extend %visually-hidden;
   }
 
