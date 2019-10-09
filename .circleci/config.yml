@@ -11,7 +11,7 @@ references:
     attach_workspace:
       at: ~/
 
-version: 2
+version: 2.1
 jobs:
   install:
     <<: *defaults
