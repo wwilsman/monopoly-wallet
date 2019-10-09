@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import PropTypes from 'prop-types';
 
 import { useGame, useEmit } from '../api';
@@ -7,7 +7,9 @@ import { usePlayer } from '../helpers/hooks';
 import { Container } from '../ui/layout';
 import { Text } from '../ui/typography';
 import NavBar from '../ui/nav-bar';
+import Modal from '../ui/modal';
 import PropertySearch from '../game/property-search';
+import UtilityRentForm from '../game/utility-rent-form';
 
 PropertiesScreen.propTypes = {
   push: PropTypes.func.isRequired,
@@ -23,6 +25,7 @@ export default function PropertiesScreen({ push, params }) {
   let [ unimproveProperty, unimproveResponse ] = useEmit('property:unimprove');
   let [ mortgageProperty, mortgageResponse ] = useEmit('property:mortgage');
   let [ unmortgageProperty, unmortgageResponse ] = useEmit('property:unmortgage');
+  let [ showDiceForm, toggleDiceForm ] = useState(null);
   let player = usePlayer(params.token);
   let { room } = useGame();
 
@@ -30,8 +33,9 @@ export default function PropertiesScreen({ push, params }) {
     if (!buyResponse.pending) buyProperty(id, amount);
   }, [buyResponse.pending, buyProperty]);
 
-  let handleRent = useCallback((id, amount) => {
-    if (!rentResponse.pending) rentProperty(id, amount);
+  let handleRent = useCallback((id, dice) => {
+    if (dice === true) toggleDiceForm(id);
+    else if (!rentResponse.pending) rentProperty(id, dice);
   }, [rentResponse.pending, rentProperty]);
 
   let handleImprove = useCallback(id => {
@@ -79,6 +83,19 @@ export default function PropertiesScreen({ push, params }) {
         onMortgage={handleMortgage}
         onUnmortgage={handleUnmortgage}
       />
+
+      {showDiceForm && (
+        <Modal
+          title="Roll Dice"
+          titleIcon="currency"
+          onClose={() => toggleDiceForm(null)}
+        >
+          <UtilityRentForm
+            utility={showDiceForm}
+            onSubmit={handleRent}
+          />
+        </Modal>
+      )}
     </Container>
   );
 }
