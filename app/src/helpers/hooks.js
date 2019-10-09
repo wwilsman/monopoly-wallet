@@ -13,10 +13,15 @@ export function useUID(prefix) {
 }
 
 export function useDataAttrs(props) {
-  return keys(props).reduce((data, key) => {
+  return useDataAttrProps(props)[0];
+}
+
+export function useDataAttrProps(props) {
+  return keys(props).reduce(([data, rest], key) => {
     if (key.indexOf('data-') === 0) data[key] = props[key];
-    return data;
-  }, {});
+    else rest[key] = props[key];
+    return [data, rest];
+  }, [{}, {}]);
 }
 
 export function useConfig() {
