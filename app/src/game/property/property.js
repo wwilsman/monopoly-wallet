@@ -69,7 +69,7 @@ export default function Property({
     }
   } = useGame();
 
-  let group = useGroup(groupName, player.token);
+  let group = useGroup(groupName, owner);
   let isRailroad = groupName === 'railroad';
   let isUtility = groupName === 'utility';
   let isOwn = owner === player.token;
@@ -280,8 +280,7 @@ export default function Property({
             block
             hollow
             style="alert"
-            disabled={isUtility} // TODO
-            onClick={() => onRent(id)}
+            onClick={() => onRent(id, isUtility)}
             data-test-property-rent-btn
           >
             Pay Rent &zwj;
