@@ -1,11 +1,8 @@
 import React, { useCallback } from 'react';
 import PropTypes from 'prop-types';
-import classNames from 'classnames/bind';
 
 import { Currency } from '../typography';
-import styles from './forms.css';
-
-const cx = classNames.bind(styles);
+import BigInput from './big-input';
 
 CurrencyInput.propTypes = {
   value: PropTypes.number,
@@ -25,34 +22,25 @@ export default function CurrencyInput({
   onBlur,
   ...props
 }) {
-  let handleChange = useCallback(({ target }) => {
-    onChange(target.value ? parseInt(target.value, 10) : 0);
+  let handleChange = useCallback((value) => {
+    onChange(value ? parseInt(value, 10) : 0);
   }, [onChange]);
 
   return (
-    <label
-      className={cx('currency-input')}
+    <BigInput
+      type="number"
+      label={label}
+      value={value || '0'}
+      onChange={handleChange}
+      onFocus={onFocus}
+      onBlur={onBlur}
       data-test-currency-input
     >
-      {label && (
-        <span className={cx('label')}>
-          {label}
-        </span>
-      )}
-
-      <input
-        value={value || '0'}
-        onChange={handleChange}
-        onFocus={onFocus}
-        onBlur={onBlur}
-        type="number"
-      />
-
       <Currency
         value={value == null ? defaultValue : value}
         data-test-currency-value
         {...props}
       />
-    </label>
+    </BigInput>
   );
 }
