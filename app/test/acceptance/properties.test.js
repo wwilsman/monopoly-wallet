@@ -21,7 +21,8 @@ describe('PropertiesScreen', () => {
         { id: 'boardwalk', buildings: 1 },
         { id: 'baltic-avenue', owner: 'automobile', mortgaged: true },
         { group: 'green', owner: 'automobile', monopoly: true, buildings: 4 },
-        { id: 'pennsylvania-avenue', buildings: 5 }
+        { id: 'pennsylvania-avenue', buildings: 5 },
+        { id: 'water-works', owner: 'automobile' }
       ]
     });
 
@@ -395,6 +396,79 @@ describe('PropertiesScreen', () => {
         .assert.summary.balance('400');
       await search
         .percySnapshot('after renting');
+    });
+
+    describe('renting utilities', () => {
+      beforeEach(async () => {
+        await search
+          .input.type('wat')
+          .assert.property.name('WATER WORKS')
+          .assert.property.rentBtn.text(/Pay Rent .\(x4\)/s)
+          .property.rentBtn.click();
+      });
+
+      it('shows a utility rent form', async () => {
+        await search
+          .assert.utilForm.exists()
+          .assert.utilForm.value('2')
+          .percySnapshot('utility rent');
+      });
+
+      it('can enter a custom dice roll', async () => {
+        await search.utilForm.only()
+          .assert.value('2')
+          .input.press('Backspace')
+          .input.type('10')
+          .assert.value('10');
+      });
+
+      it('can click for a random dice roll', async () => {
+        await search.utilForm.only()
+          .assert.value('2')
+          .rollBtn.click()
+          .assert.not.value('2');
+      });
+
+      it('disables the submit button when the roll is outside of the range', async () => {
+        await search.utilForm.only()
+          .assert.value('2')
+          .assert.submitBtn.not.disabled()
+          .input.press('Backspace')
+          .input.type('15')
+          .assert.value('15')
+          .assert.submitBtn.disabled();
+      });
+
+      it('clamps the roll amount after blurring when outside of the range', async () => {
+        await search.utilForm.only()
+          .input.focus()
+          .input.press('Backspace')
+          .input.type('0')
+          .assert.value('0')
+          .assert.submitBtn.disabled()
+          .input.blur()
+          .assert.value('2')
+          .assert.submitBtn.not.disabled();
+
+        await search.utilForm.only()
+          .input.focus()
+          .input.press('Backspace')
+          .input.type('20')
+          .assert.value('20')
+          .assert.submitBtn.disabled()
+          .input.blur()
+          .assert.value('12')
+          .assert.submitBtn.not.disabled();
+      });
+
+      it('navigates to the dashboard after renting', async () => {
+        await search.utilForm.only()
+          .submitBtn.click();
+        await dashboard
+          .assert.exists()
+          .assert.toast.message('YOU paid PLAYER 2 rent for Water Works')
+          .assert.summary.balance('1,492');
+      });
     });
   });
 });

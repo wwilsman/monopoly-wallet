@@ -40,6 +40,13 @@ import GameRoomInteractor from './game-room';
     improveBtn: scoped('[data-test-property-improve-btn]'),
     unimproveBtn: scoped('[data-test-property-unimprove-btn]')
   });
+
+  utilForm = scoped('[data-test-utility-rent-form]', {
+    input: scoped('[data-test-utility-rent-roll-amount] input'),
+    value: text('[data-test-utility-rent-roll-amount] [data-test-value]'),
+    rollBtn: scoped('[data-test-utility-rent-roll-btn]'),
+    submitBtn: scoped('[type="submit"]')
+  })
 }
 
 export default PropertySearchInteractor;
