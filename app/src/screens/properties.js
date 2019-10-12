@@ -87,7 +87,7 @@ export default function PropertiesScreen({ push, params }) {
       {showDiceForm && (
         <Modal
           title="Roll Dice"
-          titleIcon="currency"
+          titleIcon="dice"
           onClose={() => toggleDiceForm(null)}
         >
           <UtilityRentForm
