@@ -18,7 +18,7 @@ export default function UtilityRentForm({
   utility,
   onSubmit
 }) {
-  let [ roll, setRoll ] = useState(2);
+  let [ roll, setRoll ] = useState(null);
   let { rent, owner } = useProperty(utility);
   let group = useGroup('utility', owner);
   // eslint-disable-next-line
@@ -38,31 +38,32 @@ export default function UtilityRentForm({
 
   let handleSubmit = useCallback(e => {
     e.preventDefault();
-    onSubmit(utility, roll);
+    onSubmit(utility, roll ?? 2);
   }, [onSubmit, roll]);
 
   return (
     <Container
       tagName="form"
       onSubmit={handleSubmit}
-      data-test-utililty-rent-form
+      data-test-utility-rent-form
     >
       <Section collapse row justify="center" align="center">
         <BigInput
           xl
           center
-          value={roll}
           color="primary"
+          value={roll ?? 2}
           onChange={setRoll}
           onBlur={handleBlur}
-          data-test-utility-rent-roll
+          data-test-utility-rent-roll-amount
         />
 
         <Button
           inline
           style="icon"
-          onClick={handleRoll}
           type="button"
+          onClick={handleRoll}
+          data-test-utility-rent-roll-btn
         >
           <Icon name="transfer"/>
         </Button>
@@ -73,7 +74,7 @@ export default function UtilityRentForm({
           block
           type="submit"
           style="alert"
-          disabled={roll < 2 || roll > 12}
+          disabled={!!roll && (roll < 2 || roll > 12)}
         >
           Pay Rent (x{multiplier})
         </Button>
