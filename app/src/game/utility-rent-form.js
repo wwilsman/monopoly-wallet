@@ -65,7 +65,7 @@ export default function UtilityRentForm({
           onClick={handleRoll}
           data-test-utility-rent-roll-btn
         >
-          <Icon name="transfer"/>
+          <Icon name="refresh"/>
         </Button>
       </Section>
 
