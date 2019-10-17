@@ -5,7 +5,6 @@ import { useGame, useEmit } from '../api';
 import { usePlayers } from '../helpers/hooks';
 
 import { Container } from '../ui/layout';
-import { Text } from '../ui/typography';
 import NavBar from '../ui/nav-bar';
 
 import TransferForm from '../game/transfer-form';
@@ -28,18 +27,11 @@ export default function TransferScreen({ push }) {
   return (
     <Container data-test-transfer>
       <NavBar
+        title="Transfer"
+        titleIcon="transfer"
         showBack={`/${room}/bank`}
         roomCode={room}
-      >
-        <Text
-          upper
-          icon="transfer"
-          color="lighter"
-          data-test-screen-title
-        >
-          Transfer
-        </Text>
-      </NavBar>
+      />
 
       <TransferForm
         players={players}

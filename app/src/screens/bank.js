@@ -13,18 +13,11 @@ export default function BankScreen() {
   return (
     <Container data-test-bank>
       <NavBar
+        title="Bank"
+        titleIcon="bank"
         showBack={`/${room}`}
         roomCode={room}
-      >
-        <Text
-          upper
-          icon="bank"
-          color="lighter"
-          data-test-screen-title
-        >
-          Bank
-        </Text>
-      </NavBar>
+      />
 
       <Section>
         <Card linkTo={`/${room}/transfer`}>

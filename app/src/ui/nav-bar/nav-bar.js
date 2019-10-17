@@ -18,6 +18,8 @@ NavBar.propTypes = {
   roomCode: PropTypes.string,
   renderLeft: PropTypes.func,
   renderRight: PropTypes.func,
+  title: PropTypes.string,
+  titleIcon: PropTypes.string,
   children: PropTypes.node
 };
 
@@ -26,6 +28,8 @@ export default function NavBar({
   roomCode,
   renderLeft,
   renderRight,
+  title,
+  titleIcon,
   children
 }) {
   let { location, goBack } = useRouter();
@@ -44,7 +48,16 @@ export default function NavBar({
         ) : null)}
       </div>
 
-      {children}
+      {children || (
+        <Text
+          upper
+          color="lighter"
+          icon={titleIcon}
+          data-test-nav-title
+        >
+          {title}
+        </Text>
+      )}
 
       <div className={styles['right']}>
         {renderRight ? renderRight() : (!!roomCode && (
