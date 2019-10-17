@@ -1,5 +1,6 @@
 import { reducers } from './state';
 import { get, meta, randomString } from './helpers';
+import { recordHistory } from './history';
 import { error } from './error';
 
 import Poll from './poll';
@@ -112,23 +113,22 @@ export default class GameRoom {
     return this.manager.saveGame(state);
   }
 
-  // generates a notice message and saves a game with the manager, when `state`
-  // is `true`, the state will be automatically loaded
+  // generates a notice message, adds diff history, and saves a game with the
+  // manager; when `state` is `true`, the state will be automatically loaded
   async update(state, reduce) {
     if (state === true) {
       state = await this.load();
     }
 
-    state = reduce(state);
-    let { notice } = state;
+    let next = reduce(state);
 
-    if (notice?.id && !notice?.message) {
-      let message = this.format(`notice.${notice.id}`, meta(state, notice.meta));
-      state = { ...state, notice: { ...state.notice, message } };
+    if (next.notice?.id && !next.notice?.message) {
+      let message = this.format(`notice.${next.notice.id}`, meta(next, next.notice.meta));
+      next = { ...next, notice: { ...next.notice, message } };
     }
 
-    state = await this.save({ ...state, timestamp: Date.now() });
-    return state;
+    next = recordHistory(state, next);
+    return await this.save(next);
   }
 
   // sends an event to all players that have joined the game; room events are
