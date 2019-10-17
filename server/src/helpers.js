@@ -1,4 +1,4 @@
-const { assign, entries } = Object;
+const { assign, entries, getPrototypeOf } = Object;
 
 // computes common meta information from the state
 export function meta(state, data) {
@@ -37,4 +37,9 @@ export function randomString(length = 5) {
   }
 
   return result;
+}
+
+// returns true if an object is a plain object
+export function isPojo(obj) {
+  return !!obj && getPrototypeOf(obj) === Object.prototype;
 }

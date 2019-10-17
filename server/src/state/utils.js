@@ -1,3 +1,7 @@
+import { isPojo } from '../helpers';
+
+const { isArray } = Array;
+
 // pipe helper; accepts an array or list of functions and skips non truthy functions
 export function pipe(...fns) {
   if (fns.length === 1 && Array.isArray(fns[0])) fns = fns[0];
@@ -9,11 +13,11 @@ export function reduce(path, reducer) {
   // creates a middleware-like pattern that recurses the provided path inwards
   // towards the inner-most value and builds new state outwards
   return path.split('.').reduceRight((next, key) => state => {
-    if (state && Object.getPrototypeOf(state) === Object.prototype) {
+    if (state && isPojo(state)) {
       // create a new object
       return { ...state, [key]: next(state[key]) };
 
-    } else if (Array.isArray(state)) {
+    } else if (isArray(state)) {
       // create a new array
       return [...state.slice(0, key), next(state[key]), ...state.slice(key + 1)];
 
