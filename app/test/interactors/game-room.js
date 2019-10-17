@@ -38,7 +38,7 @@ import AppInteractor from './app';
   roomCode = text('[data-test-room-code]');
   loading = exists('[data-test-spinner]');
 
-  heading = scoped('[data-test-screen-title]', {
+  heading = scoped('[data-test-nav-title]', {
     icon: attribute('[data-test-text-icon]', 'title')
   });
 

@@ -5,7 +5,6 @@ import { useGame, useEmit } from '../api';
 import { usePlayer } from '../helpers/hooks';
 
 import { Container } from '../ui/layout';
-import { Text } from '../ui/typography';
 import NavBar from '../ui/nav-bar';
 import Modal from '../ui/modal';
 import PropertySearch from '../game/property-search';
@@ -61,18 +60,11 @@ export default function PropertiesScreen({ push, params }) {
   return (
     <Container data-test-properties-search>
       <NavBar
+        title={player.name ?? 'Properties'}
+        titleIcon={player.token ?? 'bank'}
         showBack={`/${room}${player.token ? '' : '/bank'}`}
         roomCode={room}
-      >
-        <Text
-          upper
-          color="lighter"
-          icon={player.token ?? 'bank'}
-          data-test-screen-title
-        >
-          {player.name ?? 'Properties'}
-        </Text>
-      </NavBar>
+      />
 
       <PropertySearch
         player={player}

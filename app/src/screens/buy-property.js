@@ -5,7 +5,6 @@ import { useGame, useEmit } from '../api';
 import { useProperty } from '../helpers/hooks';
 
 import { Container } from '../ui/layout';
-import { Text } from '../ui/typography';
 import NavBar from '../ui/nav-bar';
 
 import PropertyTransferForm from '../game/property-transfer-form';
@@ -33,18 +32,11 @@ export default function BuyPropertyScreen({ push, params }) {
   return (
     <Container data-test-property-transfer>
       <NavBar
+        title="Purchase"
+        titleIcon="transfer"
         showBack={`/${room}/properties`}
         roomCode={room}
-      >
-        <Text
-          upper
-          icon="transfer"
-          color="lighter"
-          data-test-screen-title
-        >
-          Purchase
-        </Text>
-      </NavBar>
+      />
 
       <PropertyTransferForm
         property={property}
