@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useMemo } from 'react';
 import PropTypes from 'prop-types';
 
 import { useGame, useEmitter, useEmit } from '../api';
+import ls from '../helpers/storage';
 
 import { Container, Section } from '../ui/layout';
 import { Heading } from '../ui/typography';
@@ -27,6 +28,7 @@ export default function JoinGameScreen({
   let { disconnect } = useEmitter();
   let [ connect, connected ] = useEmit('room:connect');
   let [ join, joined ] = useEmit('game:join');
+  let persisted = useMemo(() => ls.load('player'), []);
 
   let handleJoinGame = useCallback((name, token) => {
     if (!joined.pending) join(name, token);
@@ -66,6 +68,7 @@ export default function JoinGameScreen({
           </NavBar>
 
           <JoinGameForm
+            autofill={persisted}
             loading={joined.pending}
             error={joined.error?.message}
             onSubmit={handleJoinGame}
