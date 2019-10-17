@@ -2,14 +2,10 @@ const { from: toArray } = Array;
 
 // polls run for a limited time or until all included players have voted
 export default class Poll {
-  // the current connected players and poll timeout are required
+  // included players and poll timeout are required
   constructor(players, timeout) {
-    // tracks votes for active players
-    this.votes = toArray(players.entries())
-      .reduce((votes, [player, token]) => (
-        token ? votes.set(player, 0) : votes
-      ), new Map());
-
+    // tracks votes for included players
+    this.votes = new Map(players.map(p => [p, 0]));
     // the poll timeout
     this.timeout = timeout;
   }
