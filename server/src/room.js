@@ -57,7 +57,7 @@ export default class GameRoom {
         this.join(player, name, token)
       ));
 
-      // new token, previously connected without
+    // new token, previously connected without
     } else if (token && !this.players.get(player)) {
       this.players.set(player, token);
 
@@ -192,15 +192,23 @@ export default class GameRoom {
     return { active, player: { name, token }, ...game };
   }
 
-  // send a poll to all active players
-  async poll(msg, data) {
+  // send a poll to active players
+  async poll(msg, data, ignore = []) {
     // the poll timeout needs to be loaded from the game config
     let { config: { pollTimeout } } = await this.load();
     // no need to check existing ids because multiple polls is uncommon
     let id = randomString();
 
     // store the poll for voting
-    this.polls[id] = new Poll(this.players, pollTimeout);
+    this.polls[id] = new Poll(
+      toArray(this.players.entries())
+        .reduce((players, [player, token]) => (
+          token && !ignore.includes(token) ?
+            (players.concat(player))
+            : players
+        ), []),
+      pollTimeout
+    );
 
     // tell all active players about the poll
     let message = this.format(`notice.${msg}`, data);
