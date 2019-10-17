@@ -1,6 +1,6 @@
 import { reducers } from './state';
 import { get, meta, randomString } from './helpers';
-import { recordHistory } from './history';
+import { recordHistory, getStateBefore } from './history';
 import { error } from './error';
 
 import Poll from './poll';
@@ -61,6 +61,11 @@ export default class GameRoom {
     // new token, previously connected without
     } else if (token && !this.players.get(player)) {
       this.players.set(player, token);
+
+      // allow players to veto (undo) events
+      player.on('game:veto', timestamp => (
+        this.veto(token, timestamp)
+      ));
 
       // allow players to vote in polls
       player.on('poll:vote', (pid, vote) => {
@@ -190,6 +195,35 @@ export default class GameRoom {
 
     // return new active players with game and player info
     return { active, player: { name, token }, ...game };
+  }
+
+  // polls other active players to revert to a game state before an event;
+  // the state is reverted to a point closest to the provided timestamp
+  async veto(token, timestamp) {
+    let state = await this.load();
+    let [prev, message] = getStateBefore(state, timestamp);
+
+    // state before timestamp is the same as the current state
+    if (state === prev) {
+      throw error('common.event-not-found');
+    }
+
+    // only poll players when there is one more than the vetoing player
+    if (this.active.length > 1) {
+      let result = await this.poll('player.veto', {
+        player: { name: state.players[token].name, token },
+        message
+      }, [token]);
+
+      if (!result) {
+        throw error('player.veto-denied');
+      }
+    }
+
+    // save previous state and send a revert event
+    state = await this.save(prev);
+    this.broadcast('game:revert', state);
+    return state;
   }
 
   // send a poll to active players
