@@ -341,6 +341,20 @@ describe('JoinGameScreen', () => {
     });
   });
 
+  describe('with persisted player data', () => {
+    beforeEach(async function() {
+      this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
+      await joinGame.visit();
+    });
+
+    it('should autofill the name and token', async () => {
+      await joinGame
+        .assert.nameInput.value('PLAYER 1')
+        .assert.tokens.item('top-hat').selected()
+        .assert.submitBtn.not.disabled();
+    });
+  });
+
   describe('with a non-existent room', () => {
     beforeEach(async () => {
       await joinGame.visit('/f4k3e/join');
