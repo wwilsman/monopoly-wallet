@@ -9,20 +9,25 @@ import Button from '../ui/button';
 import TokenSelect from './token-select';
 
 JoinGameForm.propTypes = {
+  autofill: PropTypes.shape({
+    name: PropTypes.string,
+    token: PropTypes.string
+  }),
   onSubmit: PropTypes.func.isRequired,
   loading: PropTypes.bool,
   error: PropTypes.string
 };
 
 export default function JoinGameForm({
+  autofill,
   onSubmit,
   loading,
   error
 }) {
   let players = usePlayers();
   let { playerTokens: tokens = [] } = useConfig();
-  let [ name, setName ] = useState('');
-  let [ token, setToken ] = useState('');
+  let [ name, setName ] = useState(autofill?.name ?? '');
+  let [ token, setToken ] = useState(autofill?.token ?? '');
 
   let existing = useMemo(() => players.find(player => (
     !player.active && player.name.toUpperCase() === name
