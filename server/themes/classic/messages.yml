@@ -7,6 +7,7 @@ notice:
     paid-other: '{{player.name}} paid {{other.name}} ${{amount}}'
     bankrupt: '{{player.name}} went bankrupt'
     other-bankrupt: '{{other.name}} bankrupt {{player.name}}'
+    veto: '{{player.name}} vetos when "{{message}}"'
 
   property:
     bought: '{{player.name}} purchased {{property.name}}'
@@ -21,6 +22,7 @@ error:
   common:
     bank-low: 'Bank funds are insufficient'
     negative-amount: 'Amount must not be negative'
+    event-not-found: 'No matching event found'
 
   player:
     playing: 'Player already joined'
@@ -31,6 +33,7 @@ error:
     denied: 'Sorry, your friends hate you'
     empty-room: 'Nobody is in the room'
     balance: 'Insufficient balance'
+    veto-denied: 'Your friends did not agree to veto'
 
   property:
     unowned: '{{property.name}} is unowned'
