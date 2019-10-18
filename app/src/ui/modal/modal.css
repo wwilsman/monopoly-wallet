@@ -9,7 +9,7 @@
   transform: translate(-50%, -50%);
   box-shadow: var(--shadow-lg);
   width: 22rem;
-  height: 14rem;
+  min-height: 14rem;
 }
 
 .modal-backdrop {
