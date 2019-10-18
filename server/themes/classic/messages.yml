@@ -34,6 +34,8 @@ error:
     denied: 'Sorry, your friends hate you'
     empty-room: 'Nobody is in the room'
     balance: 'Insufficient balance'
+    bankrupt: 'Unable to do that while bankrupt'
+    other-bankrupt: '{{other.name}} is bankrupt'
     veto-denied: 'Your friends did not agree to veto'
 
   property:

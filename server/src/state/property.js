@@ -26,13 +26,15 @@ import {
   isNotFullyImproved,
   isImprovedEvenly,
   isUnimprovedEvenly,
-  isEnoughBuildings
+  isEnoughBuildings,
+  isNotBankrupt
 } from './rules';
 
 // purchases a property from the bank
 export function buy(token, property, amount) {
   return pipe(
     isPlayerFound(token),
+    isNotBankrupt(token),
     isNotNegative(amount),
     isNotOwned(property),
     withProperty(property, ({ price }) => {
@@ -53,6 +55,7 @@ export function transfer(token, property, owner) {
   return pipe(
     isPlayerFound(token),
     isPlayerFound(owner),
+    isNotBankrupt(token, owner),
     isOwnedBy(property, token),
     isNotOwn(property, owner),
     isNotMortgaged(property),
@@ -157,6 +160,7 @@ export function unmortgage(token, property) {
 export function rent(token, property, dice = 2) {
   return pipe(
     isPlayerFound(token),
+    isNotBankrupt(token),
     isNotOwn(property, token),
     isOwnedBy(property),
     isNotMortgaged(property),

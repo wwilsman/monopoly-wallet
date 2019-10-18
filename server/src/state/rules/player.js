@@ -48,3 +48,14 @@ export function isNotSamePlayer(token, other) {
     }
   });
 }
+
+// checks if a player and optionally another is not bankrupt
+export function isNotBankrupt(token, other) {
+  return withError(({ players }) => {
+    if (token !== 'bank' && players[token].bankrupt) {
+      throw error('player.bankrupt');
+    } else if (other && other !== 'bank' && players[other].bankrupt) {
+      throw error('player.other-bankrupt', { other });
+    }
+  });
+}
