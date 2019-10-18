@@ -83,6 +83,11 @@ describe('transferring balances', () => {
       .rejects.toThrow('Bank funds are insufficient');
   });
 
+  it('responds with an error when transferring to yourself', async () => {
+    await expect(socket1.send('player:transfer', 'top-hat', 11000))
+      .rejects.toThrow("You can't play with yourself");
+  });
+
   it('responds with an error when the player has an insufficient balance', async () => {
     await expect(socket1.send('player:transfer', 'automobile', 2000))
       .rejects.toThrow('Insufficient balance');
