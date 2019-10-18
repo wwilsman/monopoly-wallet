@@ -5,15 +5,17 @@ import Link from '../link';
 import styles from './card.css';
 
 Card.propTypes = {
-  linkTo: PropTypes.string.isRequired,
+  linkTo: PropTypes.string,
+  onClick: PropTypes.func,
   children: PropTypes.node.isRequired
 };
 
 export default function Card({
   linkTo,
+  onClick,
   children
 }) {
-  return (
+  return linkTo ? (
     <Link
       to={linkTo}
       className={styles.root}
@@ -21,5 +23,13 @@ export default function Card({
     >
       {children}
     </Link>
+  ) : (
+    <button
+      onClick={onClick}
+      className={styles.root}
+      data-test-card
+    >
+      {children}
+    </button>
   );
 }
