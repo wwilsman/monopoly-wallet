@@ -84,6 +84,11 @@ describe('buying properties', () => {
     expect(game).toHaveProperty('notice.message', 'PLAYER 1 purchased Baltic Avenue');
   });
 
+  it('responds with an error with a non-integer', async () => {
+    await expect(socket1.send('property:buy', 'boardwalk', 'I.O.U.'))
+      .rejects.toThrow('Amount must be an integer');
+  });
+
   it('receives an error when specifying a negative amount', async () => {
     await expect(socket2.send('property:buy', 'baltic-avenue', -10))
       .rejects.toThrow('Amount must not be negative');

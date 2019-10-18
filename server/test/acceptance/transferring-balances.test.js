@@ -78,6 +78,11 @@ describe('transferring balances', () => {
     expect(game).toHaveProperty('notice.message', 'PLAYER 1 paid the bank $100');
   });
 
+  it('responds with an error with a non-integer', async () => {
+    await expect(socket1.send('player:transfer', 'bank', -Infinity))
+      .rejects.toThrow('Amount must be an integer');
+  });
+
   it('responds with an error when the bank is insufficient', async () => {
     await expect(socket1.send('player:transfer', 'bank', -11000))
       .rejects.toThrow('Bank funds are insufficient');
