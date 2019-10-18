@@ -88,6 +88,18 @@ describe('transferring balances', () => {
       .rejects.toThrow("You can't play with yourself");
   });
 
+  it('responds with an error when bankrupt', async () => {
+    await socket1.send('player:bankrupt', 'bank');
+    await expect(socket1.send('player:transfer', 'automobile', 100))
+      .rejects.toThrow('Unable to do that while bankrupt');
+  });
+
+  it('responds with an error when the other player is bankrupt', async () => {
+    await socket2.send('player:bankrupt', 'bank');
+    await expect(socket1.send('player:transfer', 'automobile', 100))
+      .rejects.toThrow('PLAYER 2 is bankrupt');
+  });
+
   it('responds with an error when the player has an insufficient balance', async () => {
     await expect(socket1.send('player:transfer', 'automobile', 2000))
       .rejects.toThrow('Insufficient balance');

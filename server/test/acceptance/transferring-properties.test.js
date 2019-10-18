@@ -82,6 +82,18 @@ describe('transferring properties', () => {
       .rejects.toThrow('You own Connecticut Avenue');
   });
 
+  it('responds with an error when bankrupt', async () => {
+    await socket1.send('player:bankrupt', 'bank');
+    await expect(socket1.send('property:transfer', 'connecticut-avenue', 'automobile'))
+      .rejects.toThrow('Unable to do that while bankrupt');
+  });
+
+  it('responds with an error when the other player is bankrupt', async () => {
+    await socket2.send('player:bankrupt', 'bank');
+    await expect(socket1.send('property:transfer', 'connecticut-avenue', 'automobile'))
+      .rejects.toThrow('PLAYER 2 is bankrupt');
+  });
+
   it('responds with an error when the property is mortgaged', async () => {
     await expect(socket1.send('property:transfer', 'baltic-avenue', 'automobile'))
       .rejects.toThrow('Baltic Avenue is mortgaged');

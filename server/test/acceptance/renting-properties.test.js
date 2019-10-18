@@ -161,6 +161,12 @@ describe('renting properties', () => {
       .rejects.toThrow('Boardwalk is unowned');
   });
 
+  it('responds with an error when bankrupt', async () => {
+    await socket1.send('player:bankrupt', 'bank');
+    await expect(socket1.send('property:rent', 'indiana-avenue'))
+      .rejects.toThrow('Unable to do that while bankrupt');
+  });
+
   it('receives an error when the property is mortgaged', async () => {
     await expect(socket2.send('property:rent', 'states-avenue'))
       .rejects.toThrow('States Avenue is mortgaged');
