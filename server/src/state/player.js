@@ -15,7 +15,8 @@ import {
   isNotNegative,
   isPlayerFound,
   isTokenAllowed,
-  isNotSamePlayer
+  isNotSamePlayer,
+  isNotBankrupt
 } from './rules';
 
 // adds a new player and subtracts the starting balance from the bank
@@ -45,8 +46,9 @@ export function transfer(from, to, amount) {
 
   return pipe(
     isPlayerFound(from),
-    isPlayerFound(to),
     isNotSamePlayer(from, to),
+    isPlayerFound(to),
+    isNotBankrupt(from, to),
     isBalanceSufficient(from, amount),
     (to === 'bank'
       ? isBalanceSufficient(to, -amount)
@@ -62,8 +64,9 @@ export function bankrupt(token, beneficiary) {
 
   return pipe(
     isPlayerFound(token),
-    isPlayerFound(beneficiary),
     isNotSamePlayer(token, beneficiary),
+    isPlayerFound(beneficiary),
+    isNotBankrupt(token, beneficiary),
     withOwnProperties(token, properties => pipe(
       properties.map(({ id }) => (
         transferProperty(id, beneficiary)
