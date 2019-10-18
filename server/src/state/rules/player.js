@@ -39,3 +39,12 @@ export function isTokenAllowed(token) {
     }
   });
 }
+
+// checks if a player is trying to perform an action with themselves
+export function isNotSamePlayer(token, other) {
+  return withError(() => {
+    if (token === other) {
+      throw error('player.self');
+    }
+  });
+}
