@@ -86,4 +86,9 @@ describe('claiming bankruptcy', () => {
     await expect(socket1.send('player:bankrupt', 'thimble'))
       .rejects.toThrow('Cannot find player with token "thimble"');
   });
+
+  it('responds with an error when benefiting yourself', async () => {
+    await expect(socket1.send('player:bankrupt', 'top-hat'))
+      .rejects.toThrow("You can't play with yourself");
+  });
 });
