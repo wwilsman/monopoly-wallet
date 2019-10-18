@@ -89,6 +89,12 @@ describe('buying properties', () => {
       .rejects.toThrow('Amount must not be negative');
   });
 
+  it('responds with an error when bankrupt', async () => {
+    await socket1.send('player:bankrupt', 'bank');
+    await expect(socket1.send('property:buy', 'connecticut-avenue'))
+      .rejects.toThrow('Unable to do that while bankrupt');
+  });
+
   it('receives an error when the property is already owned', async () => {
     await expect(socket2.send('property:buy', 'oriental-avenue'))
       .rejects.toThrow('Oriental Avenue is owned by PLAYER 1');

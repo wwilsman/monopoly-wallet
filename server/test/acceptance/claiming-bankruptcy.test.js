@@ -87,6 +87,18 @@ describe('claiming bankruptcy', () => {
       .rejects.toThrow('Cannot find player with token "thimble"');
   });
 
+  it('responds with an error when already bankrupt', async () => {
+    await socket1.send('player:bankrupt', 'bank');
+    await expect(socket1.send('player:bankrupt', 'automobile'))
+      .rejects.toThrow('Unable to do that while bankrupt');
+  });
+
+  it('responds with an error when the beneficiary is bankrupt', async () => {
+    await socket2.send('player:bankrupt', 'bank');
+    await expect(socket1.send('player:bankrupt', 'automobile'))
+      .rejects.toThrow('PLAYER 2 is bankrupt');
+  });
+
   it('responds with an error when benefiting yourself', async () => {
     await expect(socket1.send('player:bankrupt', 'top-hat'))
       .rejects.toThrow("You can't play with yourself");
