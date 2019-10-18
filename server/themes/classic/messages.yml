@@ -22,6 +22,7 @@ error:
   common:
     bank-low: 'Bank funds are insufficient'
     negative-amount: 'Amount must not be negative'
+    amount-type: 'Amount must be an integer'
     event-not-found: 'No matching event found'
 
   player:

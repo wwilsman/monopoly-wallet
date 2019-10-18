@@ -11,15 +11,6 @@ export function isBalanceSufficient(token, amount) {
   });
 }
 
-// checks if an amount is not negative
-export function isNotNegative(amount) {
-  return withError(() => {
-    if (amount < 0) {
-      throw error('common.negative-amount', { amount });
-    }
-  });
-}
-
 // checks if a player exists in the game
 export function isPlayerFound(token) {
   return withError(({ players }) => {
