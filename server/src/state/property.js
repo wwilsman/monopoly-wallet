@@ -11,8 +11,9 @@ import {
   notice
 } from './common';
 import {
-  isBalanceSufficient,
+  isInteger,
   isNotNegative,
+  isBalanceSufficient,
   isPlayerFound,
   isOwnedBy,
   isNotOwn,
@@ -35,6 +36,7 @@ export function buy(token, property, amount) {
   return pipe(
     isPlayerFound(token),
     isNotBankrupt(token),
+    amount && isInteger(amount),
     isNotNegative(amount),
     isNotOwned(property),
     withProperty(property, ({ price }) => {

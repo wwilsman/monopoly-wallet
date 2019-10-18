@@ -11,8 +11,9 @@ import {
   notice
 } from './common';
 import {
-  isBalanceSufficient,
+  isInteger,
   isNotNegative,
+  isBalanceSufficient,
   isPlayerFound,
   isTokenAllowed,
   isNotSamePlayer,
@@ -49,6 +50,7 @@ export function transfer(from, to, amount) {
     isNotSamePlayer(from, to),
     isPlayerFound(to),
     isNotBankrupt(from, to),
+    isInteger(amount),
     isBalanceSufficient(from, amount),
     (to === 'bank'
       ? isBalanceSufficient(to, -amount)
