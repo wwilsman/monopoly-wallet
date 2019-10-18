@@ -25,6 +25,7 @@ error:
     event-not-found: 'No matching event found'
 
   player:
+    self: "You can't play with yourself"
     playing: 'Player already joined'
     missing-token: 'Invalid token'
     used-token: 'Token already in use'
