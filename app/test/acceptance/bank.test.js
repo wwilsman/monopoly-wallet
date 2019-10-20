@@ -86,6 +86,7 @@ describe('Bank with game history', () => {
     await bank
       .assert.exists()
       .assert.gameHistory.toasts(0).message('PLAYER 1 purchased Vermont Avenue')
-      .assert.gameHistory.toasts().count(3);
+      .assert.gameHistory.toasts().count(3)
+      .percySnapshot('with history');
   });
 });
