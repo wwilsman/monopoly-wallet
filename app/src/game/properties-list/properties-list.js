@@ -16,10 +16,11 @@ PropertiesList.propTypes = {
   properties: PropTypes.arrayOf(PropTypes.shape({
     id: PropTypes.string.isRequired,
     group: PropTypes.string.isRequired
-  })).isRequired
+  })).isRequired,
+  bankrupt: PropTypes.bool
 };
 
-export default function PropertiesList({ properties }) {
+export default function PropertiesList({ properties, bankrupt }) {
   let { groupColors } = useConfig();
   let empty = properties.length === 0;
 
@@ -35,7 +36,7 @@ export default function PropertiesList({ properties }) {
     <div className={cx('root', { 'is-empty': empty })}>
       {empty ? (
         <Text upper className={styles.message}>
-          No Owned Properties
+          {bankrupt ? 'Bankrupt' : 'No Owned Properties'}
         </Text>
       ) : (
         groups.map(group => (
