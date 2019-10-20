@@ -1,5 +1,10 @@
 {
   "env": {
     "mocha": true
+  },
+  "parserOptions": {
+    "ecmaFeatures": {
+      "legacyDecorators": true
+    }
   }
 }

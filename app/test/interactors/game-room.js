@@ -8,7 +8,7 @@ import interactor, {
 
 import AppInteractor from './app';
 
-@interactor class ToastInteractor {
+@interactor export class ToastInteractor {
   static defaultScope = '[data-test-toast]';
 
   type = attribute('data-test-toast');
@@ -18,8 +18,6 @@ import AppInteractor from './app';
     secondary: scoped('button:last-child')
   });
 }
-
-export ToastInteractor;
 
 @interactor class ToasterInteractor {
   static defaultScope = '[data-test-toaster]';
