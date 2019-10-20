@@ -25,8 +25,9 @@ export default function PropertiesScreen({ push, params }) {
   let [ mortgageProperty, mortgageResponse ] = useEmit('property:mortgage');
   let [ unmortgageProperty, unmortgageResponse ] = useEmit('property:unmortgage');
   let [ showDiceForm, toggleDiceForm ] = useState(null);
+  let { room, player: { token: currentPlayer } } = useGame();
+  let { bankrupt: hideActions } = usePlayer(currentPlayer);
   let player = usePlayer(params.token);
-  let { room } = useGame();
 
   let handlePurchase = useCallback((id, amount) => {
     if (!buyResponse.pending) buyProperty(id, amount);
@@ -74,6 +75,7 @@ export default function PropertiesScreen({ push, params }) {
         onUnimprove={handleUnimprove}
         onMortgage={handleMortgage}
         onUnmortgage={handleUnmortgage}
+        hideActions={hideActions}
       />
 
       {showDiceForm && (

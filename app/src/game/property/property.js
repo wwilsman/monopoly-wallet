@@ -27,6 +27,7 @@ Property.propTypes = {
     owner: PropTypes.string.isRequired
   }).isRequired,
   showDetails: PropTypes.bool,
+  hideActions: PropTypes.bool,
   onClick: PropTypes.func,
   onPurchase: PropTypes.func,
   onRent: PropTypes.func,
@@ -51,6 +52,7 @@ export default function Property({
     owner
   },
   showDetails,
+  hideActions,
   onClick,
   onPurchase,
   onRent,
@@ -250,90 +252,92 @@ export default function Property({
         </dl>
       </div>
 
-      <div className={styles.actions}>
-        {owner === 'bank' && onPurchase && (
-          <>
+      {!hideActions && (
+        <div className={styles.actions}>
+          {owner === 'bank' && onPurchase && (
+            <>
+              <Button
+                block
+                hollow
+                style="primary"
+                onClick={() => onPurchase(id, price)}
+                data-test-property-buy-btn
+              >
+                Buy for &zwj;
+                <Currency value={price} data-test-property-price/>
+              </Button>
+
+              <Button
+                block
+                hollow
+                className={styles['buy-other']}
+                linkTo={`/${room}/${id}/buy`}
+                data-test-property-buy-other-btn
+              >
+                enter other amount
+              </Button>
+            </>
+          )}
+          {owner !== 'bank' && !isOwn && !mortgaged && onRent && (
+            <Button
+              block
+              hollow
+              style="alert"
+              onClick={() => onRent(id, isUtility)}
+              data-test-property-rent-btn
+            >
+              Pay Rent &zwj;
+              {isUtility ? (
+                <>(x{rentAmount})</>
+              ) : (
+                <>(<Currency value={rentAmount} data-test-property-rent/>)</>
+              )}
+            </Button>
+          )}
+          {isOwn && mortgaged && onUnmortgage && (
             <Button
               block
               hollow
               style="primary"
-              onClick={() => onPurchase(id, price)}
-              data-test-property-buy-btn
+              onClick={() => onUnmortgage(id)}
+              data-test-property-unmortgage-btn
             >
-              Buy for &zwj;
-              <Currency value={price} data-test-property-price/>
+              Unmortgage
+              (<Currency value={mortgageValue + (mortgageValue * interestRate)} data-test-property-unmortgage/>)
             </Button>
-
+          )}
+          {isOwn && !mortgaged && !buildings && onMortgage && (
             <Button
-              block
               hollow
-              className={styles['buy-other']}
-              linkTo={`/${room}/${id}/buy`}
-              data-test-property-buy-other-btn
+              style="alert"
+              onClick={() => onMortgage(id)}
+              data-test-property-mortgage-btn
             >
-              enter other amount
+              Mortgage
             </Button>
-          </>
-        )}
-        {owner !== 'bank' && !isOwn && !mortgaged && onRent && (
-          <Button
-            block
-            hollow
-            style="alert"
-            onClick={() => onRent(id, isUtility)}
-            data-test-property-rent-btn
-          >
-            Pay Rent &zwj;
-            {isUtility ? (
-              <>(x{rentAmount})</>
-            ) : (
-              <>(<Currency value={rentAmount} data-test-property-rent/>)</>
-            )}
-          </Button>
-        )}
-        {isOwn && mortgaged && onUnmortgage && (
-          <Button
-            block
-            hollow
-            style="primary"
-            onClick={() => onUnmortgage(id)}
-            data-test-property-unmortgage-btn
-          >
-            Unmortgage
-            (<Currency value={mortgageValue + (mortgageValue * interestRate)} data-test-property-unmortgage/>)
-          </Button>
-        )}
-        {isOwn && !mortgaged && !buildings && onMortgage && (
-          <Button
-            hollow
-            style="alert"
-            onClick={() => onMortgage(id)}
-            data-test-property-mortgage-btn
-          >
-            Mortgage
-          </Button>
-        )}
-        {isOwn && !isRailroad && !isUtility && buildings > 0 && onUnimprove && (
-          <Button
-            hollow
-            style="alert"
-            onClick={() => onUnimprove(id)}
-            data-test-property-unimprove-btn
-          >
-            Unimprove
-          </Button>
-        )}
-        {isOwn && !isRailroad && !isUtility && monopoly && !mortgaged && buildings < 5 && onImprove && (
-          <Button
-            hollow
-            style="secondary"
-            onClick={() => onImprove(id)}
-            data-test-property-improve-btn
-          >
-            Improve
-          </Button>
-        )}
-      </div>
+          )}
+          {isOwn && !isRailroad && !isUtility && buildings > 0 && onUnimprove && (
+            <Button
+              hollow
+              style="alert"
+              onClick={() => onUnimprove(id)}
+              data-test-property-unimprove-btn
+            >
+              Unimprove
+            </Button>
+          )}
+          {isOwn && !isRailroad && !isUtility && monopoly && !mortgaged && buildings < 5 && onImprove && (
+            <Button
+              hollow
+              style="secondary"
+              onClick={() => onImprove(id)}
+              data-test-property-improve-btn
+            >
+              Improve
+            </Button>
+          )}
+        </div>
+      )}
     </div>
   );
 }

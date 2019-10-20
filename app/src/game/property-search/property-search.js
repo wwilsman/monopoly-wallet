@@ -16,6 +16,7 @@ PropertySearch.propTypes = {
   player: PropTypes.shape({
     token: PropTypes.string
   }),
+  hideActions: PropTypes.bool,
   onPurchase: PropTypes.func,
   onRent: PropTypes.func,
   onImprove: PropTypes.func,
@@ -26,6 +27,7 @@ PropertySearch.propTypes = {
 
 export default function PropertySearch({
   player,
+  hideActions,
   onPurchase,
   onRent,
   onImprove,
@@ -102,6 +104,7 @@ export default function PropertySearch({
               onUnimprove={onUnimprove}
               onMortgage={onMortgage}
               onUnmortgage={onUnmortgage}
+              hideActions={hideActions}
               showDetails
             />
           ) : (
