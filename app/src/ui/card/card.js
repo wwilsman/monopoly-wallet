@@ -5,31 +5,28 @@ import Link from '../link';
 import styles from './card.css';
 
 Card.propTypes = {
-  linkTo: PropTypes.string,
+  linkTo: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
   onClick: PropTypes.func,
-  children: PropTypes.node.isRequired
+  className: PropTypes.string,
+  children: PropTypes.node.isRequired,
 };
 
 export default function Card({
   linkTo,
   onClick,
+  className,
   children
 }) {
-  return linkTo ? (
-    <Link
-      to={linkTo}
-      className={styles.root}
+  let Component = linkTo ? Link : 'button';
+  let props = linkTo ? { to: linkTo } : { onClick };
+
+  return (
+    <Component
+      className={[styles.root, className].filter(Boolean).join(' ')}
       data-test-card
+      {...props}
     >
       {children}
-    </Link>
-  ) : (
-    <button
-      onClick={onClick}
-      className={styles.root}
-      data-test-card
-    >
-      {children}
-    </button>
+    </Component>
   );
 }
