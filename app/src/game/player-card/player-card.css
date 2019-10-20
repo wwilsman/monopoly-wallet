@@ -6,3 +6,7 @@
   justify-content: space-between;
   margin-bottom: var(--pad-med);
 }
+
+.bankrupt {
+  opacity: 0.6;
+}
