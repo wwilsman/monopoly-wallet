@@ -5,7 +5,7 @@ import { useGame } from '../../api';
 import { usePlayer, useProperties } from '../../helpers/hooks';
 
 import { Section } from '../../ui/layout';
-import Currency from '../../ui/typography/currency';
+import { Text, Currency } from '../../ui/typography';
 import Link from '../../ui/link';
 import PropertiesList from '../properties-list';
 
@@ -16,26 +16,37 @@ PlayerSummary.propTypes = {
 };
 
 export default function PlayerSummary({ player }) {
-  let { room } = useGame();
-  let { balance } = usePlayer(player);
+  let { balance, bankrupt } = usePlayer(player);
   let properties = useProperties(player);
+  let { room } = useGame();
 
   return (
     <Section flex="none" collapse data-test-summary>
-      <Currency
-        value={balance}
-        color="secondary"
-        className={styles.balance}
-        data-test-player-balance
-        center
-        xl
-      />
+      {bankrupt ? (
+        <Text
+          className={styles.bankrupt}
+          center
+          upper
+          xl
+        >
+          Bankrupt
+        </Text>
+      ) : (
+        <>
+          <Currency
+            value={balance}
+            color="secondary"
+            className={styles.balance}
+            data-test-player-balance
+            center
+            xl
+          />
 
-      <Link to={`/${room}/${player}/properties`}>
-        <PropertiesList
-          properties={properties}
-        />
-      </Link>
+          <Link to={`/${room}/${player}/properties`}>
+            <PropertiesList properties={properties}/>
+          </Link>
+        </>
+      )}
     </Section>
   );
 }
