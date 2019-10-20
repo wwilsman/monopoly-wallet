@@ -10,6 +10,16 @@ import GameRoomInteractor from './game-room';
   links = collection('[data-test-card]', {
     icon: attribute('[data-test-text-icon]', 'title')
   });
+
+  bankrupt = scoped('[data-test-modal]', {
+    heading: scoped('[data-test-modal-title]', {
+      icon: attribute('[data-test-text-icon]', 'title')
+    }),
+    players: collection(token => (
+      `[data-test-player-select] [data-test-radio-item${token ? `="${token}"` : ''}]`
+    )),
+    submitBtn: scoped('button[type="submit"]')
+  });
 }
 
 export default BankInteractor;

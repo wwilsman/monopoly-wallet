@@ -1,15 +1,21 @@
 import { setupApplication } from '../helpers';
 
 import BankInteractor from '../interactors/bank';
+import DashboardInteractor from '../interactors/dashboard';
 
 describe('BankScreen', () => {
   const bank = new BankInteractor();
+  const dashboard = new DashboardInteractor();
 
   setupApplication(async function () {
     await this.grm.mock({
       room: 't35tt',
       players: [
-        { token: 'top-hat' }
+        { token: 'top-hat' },
+        { token: 'automobile' }
+      ],
+      properties: [
+        { group: 'orange', owner: 'top-hat' }
       ]
     });
 
@@ -53,5 +59,55 @@ describe('BankScreen', () => {
       .assert.text('TRANSFER')
       .assert.icon('transfer')
       .assert.attribute('href', '/t35tt/transfer');
+  });
+
+  it('shows a link to the properties screen', async () => {
+    await bank.links(1).only()
+      .assert.text('PROPERTIES')
+      .assert.icon('bank')
+      .assert.attribute('href', '/t35tt/properties');
+  });
+
+  it('shows a button for claiming bankruptcy', async () => {
+    await bank.links(2).only()
+      .assert.text('BANKRUPT')
+      .assert.icon('currency');
+  });
+
+  it('shows a bankruptcy modal after clicking the bankrupt button', async () => {
+    await bank
+      .links(2).click()
+      .assert.bankrupt.exists()
+      .assert.bankrupt.heading.text('BANKRUPT')
+      .assert.bankrupt.heading.icon('currency')
+      .assert.bankrupt.players().count(2)
+      .assert.bankrupt.players('bank').exists()
+      .assert.bankrupt.players('automobile').exists()
+      .assert.bankrupt.submitBtn.exists()
+      .percySnapshot('bankrupt modal');
+  });
+
+  it('goes to the dashboard after claiming bankruptcy', async () => {
+    await bank
+      .links(2).click()
+      .bankrupt.submitBtn.click();
+    await dashboard
+      .assert.exists()
+      .assert.toast.message('YOU went bankrupt');
+    await bank
+      .percySnapshot('after bankruptcy');
+  });
+
+  it('can choose another player as the beneficiary', async () => {
+    await bank
+      .links(2).click()
+      .bankrupt.players('automobile').click()
+      .percySnapshot('bankrupt modal beneficiary')
+      .bankrupt.submitBtn.click();
+    await dashboard
+      .assert.exists()
+      .assert.toast.message('PLAYER 2 bankrupt YOU');
+    await bank
+      .percySnapshot('after benficiary bankruptcy');
   });
 });
