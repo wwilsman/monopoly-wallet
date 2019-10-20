@@ -2,7 +2,7 @@ import React, { useCallback, useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 
 import { useGame, useEmit } from '../api';
-import { usePlayers } from '../helpers/hooks';
+import { usePlayer, usePlayers } from '../helpers/hooks';
 
 import { Container, Section } from '../ui/layout';
 import { Text } from '../ui/typography';
@@ -19,6 +19,7 @@ BankScreen.propTypes = {
 export default function BankScreen({ push }) {
   let { room, player } = useGame();
   let players = usePlayers({ exclude: [player.token] });
+  let { bankrupt: isBankrupt } = usePlayer(player.token);
   let [ showBankruptForm, toggleBankruptForm ] = useState(false);
   let [ bankrupt, bankruptResponse ] = useEmit('player:bankrupt');
 
@@ -39,25 +40,27 @@ export default function BankScreen({ push }) {
         roomCode={room}
       />
 
-      <Section>
-        <Card linkTo={`/${room}/transfer`}>
-          <Text upper icon="transfer">
-            Transfer
-          </Text>
-        </Card>
+      {!isBankrupt && (
+        <Section>
+          <Card linkTo={`/${room}/transfer`}>
+            <Text upper icon="transfer">
+              Transfer
+            </Text>
+          </Card>
 
-        <Card linkTo={`/${room}/properties`}>
-          <Text upper icon="bank">
-            Properties
-          </Text>
-        </Card>
+          <Card linkTo={`/${room}/properties`}>
+            <Text upper icon="bank">
+              Properties
+            </Text>
+          </Card>
 
-        <Card onClick={() => toggleBankruptForm(true)}>
-          <Text upper icon="currency">
-            Bankrupt
-          </Text>
-        </Card>
-      </Section>
+          <Card onClick={() => toggleBankruptForm(true)}>
+            <Text upper icon="currency">
+              Bankrupt
+            </Text>
+          </Card>
+        </Section>
+      )}
 
       {showBankruptForm && (
         <Modal
