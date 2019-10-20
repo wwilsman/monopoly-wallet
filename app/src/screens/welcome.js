@@ -18,8 +18,8 @@ export default function WelcomeScreen({ push }) {
   let [ newGame, { pending, ok, data } ] = useEmit('room:create');
   let handleNewGame = useCallback(() => !pending && newGame(), [pending]);
 
-  useEffect(() => room && disconnect(), []);
-  useEffect(() => ok && push(`/${data[0].room}/join`), [ok]);
+  useEffect(() => void(room && disconnect()), []);
+  useEffect(() => void(ok && push(`/${data[0].room}/join`)), [ok]);
 
   return (
     <Container data-test-welcome>
