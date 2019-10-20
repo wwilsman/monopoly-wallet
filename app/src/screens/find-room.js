@@ -22,8 +22,8 @@ export default function FindRoomScreen({ push }) {
     if (!pending) connect(room.toLowerCase());
   }, [pending]);
 
-  useEffect(() => room && disconnect(), []);
-  useEffect(() => { ok && push(`/${room}/join`); }, [ok]);
+  useEffect(() => void(room && disconnect()), []);
+  useEffect(() => void(ok && push(`/${room}/join`)), [ok]);
 
   return (
     <Container data-test-find-room>

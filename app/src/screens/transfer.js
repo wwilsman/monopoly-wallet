@@ -22,7 +22,7 @@ export default function TransferScreen({ push }) {
     if (!pending) transfer(token, amount);
   }, [pending]);
 
-  useEffect(() => ok && push(`/${room}`), [ok]);
+  useEffect(() => void(ok && push(`/${room}`)), [ok]);
 
   return (
     <Container data-test-transfer>
