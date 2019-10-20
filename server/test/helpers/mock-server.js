@@ -10,6 +10,8 @@ export async function mockGame({
   config = {},
   players = [],
   properties = [],
+  notice = null,
+  history = [],
   bank,
   houses,
   hotels
@@ -28,7 +30,7 @@ export async function mockGame({
     theme = theme || 'classic';
 
     state = create({
-      room, theme,
+      room, theme, notice, history,
       config: { ...this.loadTheme(theme, 'config'), ...config },
       properties: this.loadTheme(theme, 'properties')
     });
@@ -40,6 +42,8 @@ export async function mockGame({
     bank: bank ?? state.bank,
     houses: houses ?? state.houses,
     hotels: hotels ?? state.hotels,
+    notice: notice ?? state.notice,
+    history: history ?? state.history,
     timestamp: Date.now(),
 
     // automatically create players with a starting balance and name

@@ -54,4 +54,38 @@ describe('BankScreen', () => {
       .assert.icon('transfer')
       .assert.attribute('href', '/t35tt/transfer');
   });
+
+  it('does not render history without data', async () => {
+    await bank.assert.gameHistory.not.exists();
+  });
+});
+
+describe('Bank with game history', () => {
+  const bank = new BankInteractor();
+
+  setupApplication(async function () {
+    await this.grm.mock({
+      room: 't35tt',
+      players: [
+        { token: 'top-hat' }
+      ],
+      notice: { message: 'PLAYER 1 purchased Vermont Avenue', token: 'top-hat' },
+      history: [
+        { notice: { message: 'PLAYER 1 joined the game', token: 'top-hat' } },
+        { notice: { message: 'PLAYER 1 received 200', token: 'top-hat' } }
+      ]
+    });
+
+    this.ls.data.room = 't35tt';
+    this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
+
+    await bank.visit();
+  });
+
+  it('shows the game history', async () => {
+    await bank
+      .assert.exists()
+      .assert.gameHistory.toasts(0).message('PLAYER 1 purchased Vermont Avenue')
+      .assert.gameHistory.toasts().count(3);
+  });
 });

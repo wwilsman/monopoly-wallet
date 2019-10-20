@@ -1,5 +1,5 @@
-import interactor, { attribute, collection, scoped } from 'interactor.js';
-import GameRoomInteractor from './game-room';
+import interactor, { attribute, collection, scoped, text } from 'interactor.js';
+import GameRoomInteractor, { ToastInteractor } from './game-room';
 
 @interactor class BankInteractor extends GameRoomInteractor {
   static defaultScope = '[data-test-bank]';
@@ -9,6 +9,11 @@ import GameRoomInteractor from './game-room';
   backBtn = scoped('[data-test-back]');
   links = collection('[data-test-card]', {
     icon: attribute('[data-test-text-icon]', 'title')
+  });
+
+  gameHistory = scoped('[data-test-history]', {
+    heading: text('[data-test-history-heading]'),
+    toasts: collection('[data-test-toast]', ToastInteractor)
   });
 }
 

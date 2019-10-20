@@ -19,6 +19,8 @@ import AppInteractor from './app';
   });
 }
 
+export ToastInteractor;
+
 @interactor class ToasterInteractor {
   static defaultScope = '[data-test-toaster]';
 

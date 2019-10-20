@@ -6,12 +6,49 @@ import { Container, Section } from '../ui/layout';
 import { Text } from '../ui/typography';
 import NavBar from '../ui/nav-bar';
 import Card from '../ui/card';
+import Toast from '../ui/toaster/toast';
+
+function GameHistory() {
+  let { notice, history } = useGame();
+
+  if (!notice || !history.length) { return null; }
+
+  return (
+    <Section data-test-history>
+      <Text data-test-history-heading>History</Text>
+
+      <div>
+        <Section compact>
+          <Toast
+            type={'message'}
+            message={notice.message}
+          />
+        </Section>
+        {history.map(({ notice }, index) => {
+          if(!notice) { return; }
+
+          return (
+            <Section
+              compact
+              key={`${index}-${notice.message}`}
+            >
+              <Toast
+                type={'message'}
+                message={notice.message}
+              />
+            </Section>
+          );
+        })}
+      </div>
+    </Section>
+  );
+}
 
 export default function BankScreen() {
   let { room } = useGame();
 
   return (
-    <Container data-test-bank>
+    <Container data-test-bank scrollable>
       <NavBar
         title="Bank"
         titleIcon="bank"
@@ -32,6 +69,8 @@ export default function BankScreen() {
           </Text>
         </Card>
       </Section>
+
+      <GameHistory />
     </Container>
   );
 }

@@ -16,7 +16,7 @@ export default function DashboardScreen() {
   ), [player.token, players.all]);
 
   return (
-    <Container data-test-dashboard>
+    <Container data-test-dashboard scrollable>
       <NavBar
         title={player.name}
         titleIcon={player.token}

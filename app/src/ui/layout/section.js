@@ -8,6 +8,7 @@ const cx = classNames.bind(styles);
 Section.propTypes = {
   row: PropTypes.bool,
   collapse: PropTypes.bool,
+  compact: PropTypes.bool,
   flex: PropTypes.oneOfType([
     PropTypes.number,
     PropTypes.oneOf(['none'])
@@ -30,6 +31,7 @@ export default function Section({
   align,
   justify,
   collapse,
+  compact,
   ...props
 }) {
   return (
@@ -38,6 +40,7 @@ export default function Section({
         [`align-${align}`]: !!align,
         [`justify-${justify}`]: !!justify,
         'is-collapsed': collapse,
+        'pad-sm': !!compact,
         row
       })}
       style={!!flex ? { flex } : null}

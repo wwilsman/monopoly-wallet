@@ -6,6 +6,7 @@ import { useRouter } from '../../router';
 import { Section } from '../layout';
 import { Text } from '../typography';
 import Button from '../button';
+import Link from '../link';
 import Icon from '../icon';
 
 import styles from './nav-bar.css';
@@ -55,7 +56,7 @@ export default function NavBar({
           icon={titleIcon}
           data-test-nav-title
         >
-          {title}
+          <Link to={`/${roomCode}`}>{title}</Link>
         </Text>
       )}
 

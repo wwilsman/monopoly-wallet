@@ -7,6 +7,7 @@ const cx = classNames.bind(styles);
 
 Container.propTypes = {
   row: PropTypes.bool,
+  scrollable: PropTypes.bool,
   align: PropTypes.oneOf([
     'center',
     'start'
@@ -25,6 +26,7 @@ export default function Container({
   row,
   align,
   justify,
+  scrollable,
   tagName: Component = 'div',
   className,
   ...props
@@ -34,7 +36,8 @@ export default function Container({
       className={cx('container', {
         [`align-${align}`]: !!align,
         [`justify-${justify}`]: !!justify,
-        row: !!row
+        row: !!row,
+        'scroll-y': !!scrollable
       }, className)}
       {...props}
     />
