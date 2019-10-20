@@ -12,7 +12,9 @@ export default function DashboardScreen() {
   let { room, player, players } = useGame();
 
   players = useMemo(() => (
-    players.all.filter(token => token !== player.token)
+    players.all
+      .filter(token => token !== player.token)
+      .sort((_, token) => players[token].bankrupt ? -1 : 0)
   ), [player.token, players.all]);
 
   return (
