@@ -3,3 +3,8 @@
 .balance {
   margin-bottom: var(--pad-lg);
 }
+
+.bankrupt {
+  margin: var(--pad-xxl) 0;
+  opacity: 0.2;
+}
