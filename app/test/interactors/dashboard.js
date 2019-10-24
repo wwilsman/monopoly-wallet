@@ -3,6 +3,7 @@ import interactor, {
   collection,
   computed,
   count,
+  exists,
   scoped,
   text
 } from 'interactor.js';
@@ -20,7 +21,9 @@ function rgb2hex(color) {
   name = text('[data-test-player-name]');
   token = attribute('[data-test-player-name] [data-test-text-icon]', 'title');
   balance = text('[data-test-player-balance]');
-  groups = count('[data-test-property-list-group]');
+  text = text('[data-test-properties-list]');
+  bankrupt = exists('[data-test-summary-bankrupt]');
+  groups = count('[data-test-properties-list-group]');
   property = collection(id => id ? `[data-test-property="${id}"]` : '[data-test-property]', {
     group: attribute('[data-test-property-swatch]', 'data-test-property-swatch'),
     color: computed('[data-test-property-swatch]', $el => rgb2hex($el.style.backgroundColor))

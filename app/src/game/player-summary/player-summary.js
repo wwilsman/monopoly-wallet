@@ -24,6 +24,7 @@ export default function PlayerSummary({ player }) {
     <Section flex="none" collapse data-test-summary>
       {bankrupt ? (
         <Text
+          data-test-summary-bankrupt
           className={styles.bankrupt}
           center
           upper
