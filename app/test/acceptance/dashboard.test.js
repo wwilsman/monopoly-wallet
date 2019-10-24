@@ -11,7 +11,9 @@ describe('DashboardScreen', () => {
       room: 't35tt',
       players: [
         { token: 'top-hat', balance: 1290 },
-        { token: 'automobile', balance: 1300 }
+        { token: 'automobile', balance: 1300 },
+        { token: 'thimble', balance: 0, bankrupt: true },
+        { token: 'battleship' }
       ],
       properties: [
         { id: 'oriental-avenue', owner: 'top-hat' },
@@ -64,16 +66,35 @@ describe('DashboardScreen', () => {
       .assert.property('kentucky-avenue').color(colors.red);
   });
 
+  it('shows a bankrupt notice when the player is bankrupt', async function() {
+    await this.grm.mock({
+      room: 't35tt',
+      players: [
+        { token: 'top-hat', bankrupt: true }
+      ]
+    });
+
+    await dashboard
+      .assert.summary.bankrupt()
+      .percySnapshot('bankrupt player');
+  });
+
   it('shows other players\' summaries', async () => {
     let colors = await dashboard.get('state.config.groupColors');
 
     await dashboard
-      .assert.card().count(1)
+      .assert.card().count(3)
       .assert.card(0).property().count(3)
       .assert.card(0).name('PLAYER 2')
       .assert.card(0).token('automobile')
       .assert.card(0).property('ventnor-avenue').group('yellow')
-      .assert.card(0).property('ventnor-avenue').color(colors.yellow);
+      .assert.card(0).property('ventnor-avenue').color(colors.yellow)
+      .assert.card(1).name('PLAYER 4')
+      .assert.card(1).token('battleship')
+      .assert.card(1).text('NO OWNED PROPERTIES')
+      .assert.card(2).name('PLAYER 3')
+      .assert.card(2).token('thimble')
+      .assert.card(2).text('BANKRUPT');
   });
 
   it('links to other players\' properties', async () => {

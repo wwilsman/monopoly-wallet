@@ -33,14 +33,17 @@ export default function PropertiesList({ properties, bankrupt }) {
   ), [groupColors, properties]);
 
   return (
-    <div className={cx('root', { 'is-empty': empty })}>
+    <div
+      className={cx('root', { 'is-empty': empty })}
+      data-test-properties-list
+    >
       {empty ? (
         <Text upper className={styles.message}>
           {bankrupt ? 'Bankrupt' : 'No Owned Properties'}
         </Text>
       ) : (
         groups.map(group => (
-          <div key={group.name} className={styles.group} data-test-property-list-group>
+          <div key={group.name} className={styles.group} data-test-properties-list-group>
             {group.properties.map(property => (
               <div key={property.id} className={styles.property} data-test-property={property.id}>
                 {!group.color ? (
