@@ -5,7 +5,7 @@ import Link from '../link';
 import styles from './card.css';
 
 Card.propTypes = {
-  linkTo: PropTypes.oneOfType([PropTypes.string, PropTypes.bool]),
+  linkTo: PropTypes.any,
   onClick: PropTypes.func,
   className: PropTypes.string,
   children: PropTypes.node.isRequired,
