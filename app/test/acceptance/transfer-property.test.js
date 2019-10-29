@@ -72,6 +72,17 @@ describe('TransferPropertyScreen', () => {
       .percySnapshot('other player chosen');
   });
 
+  it('disables bankrupt players', async function() {
+    await this.grm.mock({
+      room: 't35tt',
+      players: [{ token: 'thimble', bankrupt: true }]
+    });
+
+    await transfer
+      .assert.recipient('thimble').disabled()
+      .percySnapshot('other player bankrupt');
+  });
+
   it('has a submit button', async () => {
     await transfer
       .assert.submit.exists();
