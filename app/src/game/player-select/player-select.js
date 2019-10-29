@@ -64,8 +64,11 @@ export default function PlayerSelect({
         onSelect={onSelect}
         selected={selectedIndex}
         disabled={disabledIndices}
-        renderItem={(player, { selected }) => (
-          <div className={cx('token', { 'is-selected': selected })}>
+        renderItem={(player, { selected, disabled }) => (
+          <div className={cx('token', {
+            'is-selected': selected,
+            'is-disabled': disabled
+          })}>
             <Icon name={player.token}/>
             <Text upper sm>{player.name}</Text>
           </div>
