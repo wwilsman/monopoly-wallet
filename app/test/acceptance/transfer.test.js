@@ -222,5 +222,16 @@ describe('TransferScreen', () => {
       await transfer
         .percySnapshot('after paying a player');
     });
+
+    it('disables bankrupt players', async function() {
+      await this.grm.mock({
+        room: 't35tt',
+        players: [{ token: 'automobile', bankrupt: true }]
+      });
+
+      await transfer
+        .assert.recipient.token('automobile').disabled()
+        .percySnapshot('with a bankrupt player');
+    });
   });
 });
