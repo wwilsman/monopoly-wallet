@@ -8,13 +8,21 @@ import NavBar from '../ui/nav-bar';
 import PlayerSummary from '../game/player-summary';
 import PlayerCard from '../game/player-card';
 
+function playerSort(players) {
+  return (a, b) => {
+    if (players[a].bankrupt) return 1;
+    if (players[b].bankrupt) return -1;
+    return players.all.indexOf(a) - players.all.indexOf(b);
+  };
+}
+
 export default function DashboardScreen() {
   let { room, player, players } = useGame();
 
   players = useMemo(() => (
     players.all
       .filter(token => token !== player.token)
-      .sort((_, token) => players[token].bankrupt ? -1 : 0)
+      .sort(playerSort(players))
   ), [player.token, players.all]);
 
   return (
