@@ -98,7 +98,7 @@ describe('BankScreen', () => {
       .percySnapshot('after bankruptcy');
   });
 
-  it('can choose another player as the beneficiary', async () => {
+  it('can choose another player as the bankrupt beneficiary', async () => {
     await bank
       .links(2).click()
       .bankrupt.players('automobile').click()
@@ -109,5 +109,17 @@ describe('BankScreen', () => {
       .assert.toast.message('PLAYER 2 bankrupt YOU');
     await bank
       .percySnapshot('after benficiary bankruptcy');
+  });
+
+  it('does not show actions for bankrupt players', async function() {
+    await this.grm.mock({
+      room: 't35tt',
+      players: [{ token: 'top-hat', bankrupt: true }]
+    });
+
+    await bank
+      .assert.exists()
+      .assert.links().count(0)
+      .percySnapshot('as bankrupt player');
   });
 });

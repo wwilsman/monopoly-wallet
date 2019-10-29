@@ -398,6 +398,18 @@ describe('PropertiesScreen', () => {
         .percySnapshot('after renting');
     });
 
+    it('does not show a rent button when bankrupt', async function() {
+      await this.grm.mock({
+        room: 't35tt',
+        players: [{ token: 'top-hat', bankrupt: true }]
+      });
+
+      await search
+        .input.type('penn')
+        .assert.property.name('PENNSYLVANIA AVENUE')
+        .assert.property.rentBtn.not.exists();
+    });
+
     describe('renting utilities', () => {
       beforeEach(async () => {
         await search
