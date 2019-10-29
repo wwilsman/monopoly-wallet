@@ -122,4 +122,16 @@ describe('BankScreen', () => {
       .assert.links().count(0)
       .percySnapshot('as bankrupt player');
   });
+
+  it('disables bankrupt players when choosing a bankrupt beneficiary', async function() {
+    await this.grm.mock({
+      room: 't35tt',
+      players: [{ token: 'automobile', bankrupt: true }]
+    });
+
+    await bank
+      .links(2).click()
+      .assert.bankrupt.players('automobile').disabled()
+      .percySnapshot('bankrupt modal with bankrupt players');
+  });
 });
