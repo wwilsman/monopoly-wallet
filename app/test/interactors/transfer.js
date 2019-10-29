@@ -3,6 +3,7 @@ import interactor, {
   count,
   collection,
   checked,
+  disabled,
   text,
   scoped
 } from 'interactor.js';
@@ -26,6 +27,7 @@ import GameRoomInteractor from './game-room';
 
     token: collection(token => `[data-test-radio-item="${token}"]`, {
       selected: checked('input[type="radio"]'),
+      disabled: disabled('input[type="radio"]'),
       name: text('[data-test-player-select-name]')
     })
   });
