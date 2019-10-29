@@ -1,4 +1,10 @@
-import interactor, { attribute, collection, scoped } from 'interactor.js';
+import interactor, {
+  attribute,
+  collection,
+  disabled,
+  scoped
+} from 'interactor.js';
+
 import GameRoomInteractor from './game-room';
 
 @interactor class BankInteractor extends GameRoomInteractor {
@@ -17,7 +23,9 @@ import GameRoomInteractor from './game-room';
     }),
     players: collection(token => (
       `[data-test-player-select] [data-test-radio-item${token ? `="${token}"` : ''}]`
-    )),
+    ), {
+      disabled: disabled('input[type="radio"]')
+    }),
     submitBtn: scoped('button[type="submit"]')
   });
 }
