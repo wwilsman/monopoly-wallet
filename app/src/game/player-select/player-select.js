@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useMemo } from 'react';
 import PropTypes from 'prop-types';
 import classNames from 'classnames/bind';
 import styles from './player-select.css';
@@ -27,6 +27,16 @@ export default function PlayerSelect({
   selected,
   onSelect,
 }) {
+  let selectedIndex = useMemo(() => (
+    selected ? players.indexOf(selected) : 0
+  ), [selected, players.length]);
+
+  let disabledIndices = useMemo(() => (
+    players.reduce((d, p, i) => (
+      p.bankrupt === true ? d.concat(i) : d
+    ), [])
+  ), [players]);
+
   return (
     <div
       className={styles.root}
@@ -52,7 +62,8 @@ export default function PlayerSelect({
         data={players}
         itemIdKey="token"
         onSelect={onSelect}
-        selected={selected ? players.indexOf(selected) : 0}
+        selected={selectedIndex}
+        disabled={disabledIndices}
         renderItem={(player, { selected }) => (
           <div className={cx('token', { 'is-selected': selected })}>
             <Icon name={player.token}/>
