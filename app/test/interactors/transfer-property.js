@@ -1,4 +1,12 @@
-import interactor, { check, checked, collection, text, scoped } from 'interactor.js';
+import interactor, {
+  check,
+  checked,
+  collection,
+  disabled,
+  text,
+  scoped
+} from 'interactor.js';
+
 import GameRoomInteractor from './game-room';
 
 @interactor class TransferPropertyInteractor extends GameRoomInteractor {
@@ -14,6 +22,7 @@ import GameRoomInteractor from './game-room';
   ), {
     select: check('input[type="radio"]'),
     selected: checked('input[type="radio"]'),
+    disabled: disabled('input[type="radio"]'),
     name: text('[data-test-player-select-name]')
   });
 
