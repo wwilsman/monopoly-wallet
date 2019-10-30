@@ -96,7 +96,7 @@ describe('JoinGameScreen', () => {
 
       describe('and join game is clicked', () => {
         it('should disable all inputs', async function () {
-          this.grm.wss.timing(50);
+          this.grm.wss.latency(50);
 
           await joinGame
             .submitBtn.click()

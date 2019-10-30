@@ -51,7 +51,7 @@ describe('FindRoomScreen', () => {
     });
 
     it('should disable inputs and show a loading indicator', async function () {
-      this.grm.wss.timing(50);
+      this.grm.wss.latency(50);
 
       await findRoom
         .submitBtn.click()

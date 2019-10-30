@@ -14,16 +14,22 @@ class Server extends EventEmitter {
     Server.list[address] = this;
     this.clients = new Map();
     this.address = address;
+    this._latency = 5;
   }
 
-  timing(ms) {
-    this.clients.forEach(c => c.timing(ms));
+  latency(ms) {
+    this._latency = ms ?? this._latency;
+    return ms ? this : this._latency;
   }
 
   connect(ws) {
-    let client = new Client(ws);
+    let client = new Client(this, ws);
     this.clients.set(ws, client);
-    this.emit('connection', client);
+
+    setTimeout(() => {
+      this.emit('connection', client);
+    }, this.latency());
+
     return client;
   }
 
@@ -43,21 +49,16 @@ class Server extends EventEmitter {
 }
 
 class Client extends EventEmitter {
-  constructor(ws) {
+  constructor(server, socket) {
     super();
-    this.socket = ws;
-    this.delay = 1;
-  }
-
-  timing(ms) {
-    this.delay = ms ?? this.delay;
-    return ms ? this : this.delay;
+    this.server = server;
+    this.socket = socket;
   }
 
   send(data) {
     setTimeout(() => {
       this.socket.emit('message', { data });
-    }, this.delay);
+    }, this.server.latency());
   }
 
   terminate() {
