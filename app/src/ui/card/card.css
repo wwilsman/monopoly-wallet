@@ -6,8 +6,13 @@
   margin-bottom: var(--pad-med);
   padding: var(--pad-med);
   background-color: var(--color-bg-dark);
+  line-height: 1;
 
   &:last-child {
     margin-bottom: 0;
+  }
+
+  &.is-clickable {
+    cursor: pointer;
   }
 }
