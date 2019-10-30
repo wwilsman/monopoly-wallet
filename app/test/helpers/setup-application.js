@@ -19,7 +19,7 @@ import MESSAGES_FIXTURE from 'server/themes/classic/messages.yml';
 function createAppContext() {
   let ctx = {
     state: null,
-    setState(s) { ctx.state = s; },
+    setState: s => void(ctx.state = s),
     history: createMemoryHistory()
   };
 
