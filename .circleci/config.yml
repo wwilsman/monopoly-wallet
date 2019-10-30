@@ -75,7 +75,11 @@ jobs:
           at: ~/
       - run:
           name: Run app tests
-          command: yarn app test:percy
+          command: yarn app test:ci:percy
+          environment:
+            JUNIT_FILE: ./junit/test-results.xml
+      - store_test_results:
+          path: ./app/junit
 
   test-server:
     executor: default
@@ -84,7 +88,11 @@ jobs:
           at: ~/
       - run:
           name: Run server tests
-          command: yarn server test
+          command: yarn server test:ci
+          environment:
+            JUNIT_FILE: ./junit/test-results.xml
+      - store_test_results:
+          path: ./server/junit
 
 workflows:
   version: 2

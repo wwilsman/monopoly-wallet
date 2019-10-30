@@ -6,7 +6,8 @@
   "scripts": {
     "build": "NODE_ENV=production webpack",
     "test": "NODE_ENV=test karma start",
-    "test:percy": "percy exec -- yarn test --single-run",
+    "test:ci": "yarn test --single-run --junit",
+    "test:ci:percy": "percy exec -- yarn test:ci",
     "lint": "eslint ./"
   },
   "dependencies": {
@@ -36,6 +37,7 @@
     "json-loader": "^0.5.7",
     "karma": "^4.4.1",
     "karma-chrome-launcher": "^3.1.0",
+    "karma-junit-reporter": "^2.0.1",
     "karma-mocha": "^1.3.0",
     "karma-mocha-reporter": "^2.2.5",
     "karma-webpack": "^4.0.2",
