@@ -3,9 +3,12 @@ const path = require('path');
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha'],
-    reporters: ['mocha'],
-
     browsers: ['Chrome'],
+
+    reporters: [
+      'mocha',
+      config.junit && 'junit'
+    ].filter(Boolean),
 
     files: [
       { pattern: 'test/index.js', watched: false },
@@ -24,6 +27,12 @@ module.exports = function(config) {
       'test/index.js': ['webpack']
     },
 
+    junitReporter: {
+      outputDir: process.env.JUNIT_FILE || '',
+      outputFile: 'test-results.xml',
+      useBrowserName: false
+    },
+
     webpack: require('./webpack.config'),
 
     webpackMiddleware: {
@@ -34,6 +43,7 @@ module.exports = function(config) {
       'karma-chrome-launcher',
       'karma-mocha',
       'karma-mocha-reporter',
+      'karma-junit-reporter',
       'karma-webpack'
     ]
   });
