@@ -1,4 +1,4 @@
-module.exports = {
+module.exports = ({ env }) => ({
   presets: [
     ["@babel/env", {
       targets: { node: true }
@@ -7,6 +7,7 @@ module.exports = {
   plugins: [
     "@babel/proposal-class-properties",
     "@babel/proposal-optional-chaining",
-    "@babel/proposal-nullish-coalescing-operator"
-  ]
-};
+    "@babel/proposal-nullish-coalescing-operator",
+    env('test') && 'istanbul'
+  ].filter(Boolean)
+});

@@ -1,5 +1,8 @@
 version: 2.1
 
+orbs:
+  codecov: codecov/codecov@1.0.5
+
 executors:
   default:
     working_directory: ~/monopoly-wallet
@@ -80,6 +83,8 @@ jobs:
             JUNIT_FILE: ./junit/test-results.xml
       - store_test_results:
           path: ./app/junit
+      - codecov/upload:
+          file: ./app/coverage/**/*.json
 
   test-server:
     executor: default
@@ -93,6 +98,8 @@ jobs:
             JUNIT_FILE: ./junit/test-results.xml
       - store_test_results:
           path: ./server/junit
+      - codecov/upload:
+          file: ./server/coverage/**/*.json
 
 workflows:
   version: 2
