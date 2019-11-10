@@ -3,10 +3,11 @@ const path = require('path');
 module.exports = function(config) {
   config.set({
     frameworks: ['mocha'],
-    browsers: ['Chrome'],
+    browsers: [config.headless ? 'ChromeHeadless' : 'Chrome'],
 
     reporters: [
       'mocha',
+      'coverage',
       config.junit && 'junit'
     ].filter(Boolean),
 
@@ -27,6 +28,11 @@ module.exports = function(config) {
       'test/index.js': ['webpack']
     },
 
+    coverageReporter: {
+      type: config.coverage === false
+        ? 'none' : (config.coverage || 'text-summary')
+    },
+
     junitReporter: {
       outputDir: process.env.JUNIT_FILE || '',
       outputFile: 'test-results.xml',
@@ -41,6 +47,7 @@ module.exports = function(config) {
 
     plugins: [
       'karma-chrome-launcher',
+      'karma-coverage',
       'karma-mocha',
       'karma-mocha-reporter',
       'karma-junit-reporter',

@@ -99,7 +99,8 @@ module.exports = {
               '@babel/proposal-optional-chaining',
               '@babel/proposal-nullish-coalescing-operator'
             ],
-            development: ['react-hot-loader/babel']
+            development: ['react-hot-loader/babel'],
+            test: ['istanbul']
           })
         }
       }, {
