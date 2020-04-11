@@ -70,7 +70,14 @@ export default class Player {
 
         // respond to the event with the error name and message
         let { id, name, message } = error;
-        this.send('response:error', event, { id, name, message });
+        let payload = { id, name, message };
+
+        // useful for debugging
+        if (process.env.NODE_ENV !== 'production' && !(error instanceof MonopolyError)) {
+          payload.stack = error.stack;
+        }
+
+        this.send('response:error', event, payload);
       }
     }
   }
