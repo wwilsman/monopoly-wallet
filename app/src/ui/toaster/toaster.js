@@ -1,7 +1,8 @@
-import React, { useCallback, useEffect, useMemo, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import styles from './toaster.css';
 
 import { useEmit, useGame, useEmitter } from '../../api';
+import { useOwnNameFormatter } from '../../helpers/hooks';
 import Toast from './toast';
 
 function toastReducer(state, action) {
@@ -21,18 +22,11 @@ function toastReducer(state, action) {
 }
 
 export default function Toaster() {
+  let game = useGame();
+  let emitter = useEmitter();
   let [ toasts, updateToasts ] = useReducer(toastReducer, []);
   let [ vote, voted ] = useEmit('poll:vote');
-  let emitter = useEmitter();
-  let game = useGame();
-
-  let nameReg = useMemo(() => (
-    new RegExp(`(^|\\s+)${game.player.name}(\\s+|$)`)
-  ), [game.player.name]);
-
-  let formatMessage = useCallback(message => (
-    message.replace(nameReg, '$1YOU$2')
-  ), [nameReg]);
+  let format = useOwnNameFormatter();
 
   useEffect(() => {
     let last = 0;
@@ -105,7 +99,7 @@ export default function Toaster() {
             <Toast
               key={id}
               type={type}
-              message={formatMessage(message)}
+              message={format(message)}
               actions={[
                 { label: 'Yes', action: () => vote(id, true) },
                 { label: 'No', action: () => vote(id, false) }
@@ -117,7 +111,7 @@ export default function Toaster() {
             <Toast
               key={id}
               type={type}
-              message={formatMessage(message)}
+              message={format(message)}
               dismiss={() => updateToasts({ remove: id })}
               timeout={5 * 1000}
             />
