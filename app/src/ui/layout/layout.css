@@ -9,6 +9,10 @@
   &.row {
     flex-direction: row;
   }
+
+  &.is-scrollable {
+    overflow-y: auto;
+  }
 }
 
 .section {
