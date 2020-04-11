@@ -439,7 +439,8 @@ describe('PropertiesScreen', () => {
           .assert.value('2')
           .rollBtn.click()
           .assert.not.value('2');
-      });
+      // sometimes it rolls a 2, what are the chances it'll happen twice?
+      }).retries(2);
 
       it('disables the submit button when the roll is outside of the range', async () => {
         await search.utilForm.only()
