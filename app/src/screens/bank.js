@@ -32,7 +32,10 @@ export default function BankScreen({ push }) {
   }, [bankruptResponse.ok]);
 
   return (
-    <Container data-test-bank>
+    <Container
+      scrollable
+      data-test-bank
+    >
       <NavBar
         title="Bank"
         titleIcon="bank"
@@ -41,7 +44,7 @@ export default function BankScreen({ push }) {
       />
 
       {!isBankrupt && (
-        <Section>
+        <Section flex="none">
           <Card linkTo={`/${room}/transfer`}>
             <Text upper icon="transfer">
               Transfer

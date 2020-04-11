@@ -17,6 +17,7 @@ Container.propTypes = {
     'between',
     'stretch'
   ]),
+  scrollable: PropTypes.bool,
   tagName: PropTypes.string,
   className: PropTypes.string
 };
@@ -25,6 +26,7 @@ export default function Container({
   row,
   align,
   justify,
+  scrollable,
   tagName: Component = 'div',
   className,
   ...props
@@ -34,6 +36,7 @@ export default function Container({
       className={cx('container', {
         [`align-${align}`]: !!align,
         [`justify-${justify}`]: !!justify,
+        'is-scrollable': !!scrollable,
         row: !!row
       }, className)}
       {...props}
