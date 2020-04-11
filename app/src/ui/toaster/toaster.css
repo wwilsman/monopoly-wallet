@@ -6,10 +6,6 @@
   top: auto;
   bottom: 0;
   width: 100%;
-
-  .toast {
-    margin-bottom: var(--pad-med);
-  }
 }
 
 .toast {
@@ -21,6 +17,7 @@
   line-height: var(--pad-med);
   padding: calc(var(--pad-lg) / 2);
   color: var(--color-primary);
+  margin-bottom: var(--pad-med);
 
   &.is-alert {
     color: var(--color-alert);
