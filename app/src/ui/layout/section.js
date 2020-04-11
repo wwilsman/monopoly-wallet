@@ -21,7 +21,8 @@ Section.propTypes = {
     'start',
     'between',
     'stretch'
-  ])
+  ]),
+  className: PropTypes.string
 };
 
 export default function Section({
@@ -30,6 +31,7 @@ export default function Section({
   align,
   justify,
   collapse,
+  className,
   ...props
 }) {
   return (
@@ -39,7 +41,7 @@ export default function Section({
         [`justify-${justify}`]: !!justify,
         'is-collapsed': collapse,
         row
-      })}
+      }, className)}
       style={!!flex ? { flex } : null}
       {...props}
     />
