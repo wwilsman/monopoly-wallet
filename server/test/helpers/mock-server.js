@@ -12,7 +12,9 @@ export async function mockGame({
   properties = [],
   bank,
   houses,
-  hotels
+  hotels,
+  notice,
+  history = []
 } = {}) {
   let state;
 
@@ -40,6 +42,8 @@ export async function mockGame({
     bank: bank ?? state.bank,
     houses: houses ?? state.houses,
     hotels: hotels ?? state.hotels,
+    notice: notice ?? state.notice,
+    history: state.history.concat(history),
     timestamp: Date.now(),
 
     // automatically create players with a starting balance and name
