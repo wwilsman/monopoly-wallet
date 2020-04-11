@@ -74,6 +74,27 @@ describe('BankScreen', () => {
       .assert.icon('currency');
   });
 
+  it('shows game history', async function() {
+    await this.grm.mock({
+      room: 't35tt',
+      notice: { message: 'PLAYER 1 purchased Vermont Avenue', token: 'top-hat' },
+      history: [
+        { notice: { message: 'PLAYER 2 joined the game', token: 'top-hat' } },
+        { notice: { message: 'PLAYER 1 received 200', token: 'top-hat' } }
+      ]
+    });
+
+    await bank
+      .assert.exists()
+      .assert.gameHistory.toasts(0).message('YOU purchased Vermont Avenue')
+      .assert.gameHistory.toasts().count(3)
+      .percySnapshot('with history');
+  });
+
+  it('does not show game history when there is none', async () => {
+    await bank.assert.gameHistory.not.exists();
+  });
+
   it('shows a bankruptcy modal after clicking the bankrupt button', async () => {
     await bank
       .links(2).click()
