@@ -75,3 +75,10 @@ function useFilteredProperties(filterFn, deps) {
     ), []) ?? []
   ), [filter, properties]);
 }
+
+export function useOwnNameFormatter() {
+  let { player: { name } } = useGame();
+  let reg = useMemo(() => new RegExp(`(^|\\s+)${name}(\\s+|$)`), [name]);
+  let formatter = useCallback(m => m.replace(reg, '$1YOU$2'));
+  return formatter;
+}
