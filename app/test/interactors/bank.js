@@ -5,7 +5,9 @@ import interactor, {
   scoped
 } from 'interactor.js';
 
-import GameRoomInteractor from './game-room';
+import GameRoomInteractor, {
+  ToastInteractor
+} from './game-room';
 
 @interactor class BankInteractor extends GameRoomInteractor {
   static defaultScope = '[data-test-bank]';
@@ -15,6 +17,10 @@ import GameRoomInteractor from './game-room';
   backBtn = scoped('[data-test-back]');
   links = collection('[data-test-card]', {
     icon: attribute('[data-test-text-icon]', 'title')
+  });
+
+  gameHistory = scoped('[data-test-game-history]', {
+    toasts: collection('[data-test-toast]', ToastInteractor)
   });
 
   bankrupt = scoped('[data-test-modal]', {

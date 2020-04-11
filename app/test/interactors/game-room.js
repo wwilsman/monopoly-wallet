@@ -48,3 +48,4 @@ import AppInteractor from './app';
 }
 
 export default GameRoomInteractor;
+export { ToastInteractor };
