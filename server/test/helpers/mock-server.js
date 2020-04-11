@@ -107,8 +107,10 @@ async function createTestSocket(socket, initevents = []) {
 
   let send = emitter.send;
   emitter.send = (...args) => {
-    return send(...args).catch(({ message }) => {
-      throw new Error(message);
+    return send(...args).catch((err) => {
+      let e = new Error(err.message);
+      e.stack = err.stack;
+      throw e;
     });
   };
 
