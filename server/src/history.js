@@ -41,7 +41,12 @@ function merge(a, b) {
 // adds a new diff to the history of the next state
 export function recordHistory(prev, next) {
   let state = { ...next, timestamp: Date.now() };
-  state.history = [diff(prev, state), ...(state.history || [])];
+  let change = diff(prev, state);
+
+  if (change) {
+    state.history = [change, ...(state.history || [])];
+  }
+
   return state;
 }
 
