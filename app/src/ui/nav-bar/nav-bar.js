@@ -35,8 +35,8 @@ export default function NavBar({
   let { location, goBack } = useRouter();
 
   return (
-    <Section flex="none" row>
-      <div className={styles['left']}>
+    <Section row flex="none" className={styles.root}>
+      <div className={styles.left}>
         {renderLeft ? renderLeft() : (showBack && location.state?.internal ? (
           <Button style="icon" onClick={goBack} data-test-back>
             <Icon name="larr"/>
@@ -59,7 +59,7 @@ export default function NavBar({
         </Text>
       )}
 
-      <div className={styles['right']}>
+      <div className={styles.right}>
         {renderRight ? renderRight() : (!!roomCode && (
           <Text sm upper color="secondary" data-test-room-code>
             {roomCode}

@@ -1,6 +1,16 @@
 @import '../../styles/variables';
 
 .root {
+  z-index: 999;
+  position: sticky;
+  background: linear-gradient(
+    to bottom,
+    var(--color-bg) 20%,
+    color-mod(var(--color-bg) a(0))
+  );
+}
+
+.section {
   height: var(--pad-xl);
   display: flex;
   flex-direction: row;
@@ -9,13 +19,13 @@
 }
 
 .left {
-  @extend .root;
+  @extend .section;
   align-self: flex-start;
   justify-content: flex-start;
 }
 
 .right {
-  @extend .root;
+  @extend .section;
   align-self: flex-end;
   justify-content: flex-end;
 }
