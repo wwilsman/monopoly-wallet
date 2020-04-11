@@ -18,6 +18,7 @@ export default function create({
     players: { all: [] },
     timestamp: Date.now(),
     notice: null,
+    history: [],
 
     properties: properties.reduce((map, property) => {
       let id = slug(property.name, { lower: true });
