@@ -7,7 +7,7 @@ executors:
   default:
     working_directory: ~/monopoly-wallet
     docker:
-      - image: circleci/node:11-browsers
+      - image: circleci/node:lts-browsers
 
 jobs:
   install:
