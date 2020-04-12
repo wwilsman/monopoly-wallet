@@ -83,19 +83,27 @@ export default function Router({
   children
 }) {
   let [location, setLocation] = useState(history.location);
+  let [ready, setReady] = useState(false);
 
-  let methods = useMemo(() => ({
+  let router = useMemo(() => ({
     push: internalize(history.push),
     replace: internalize(history.replace),
-    goBack: history.goBack
-  }), [history]);
+    goBack: history.goBack,
+    location
+  }), [history, location]);
 
-  let router = useMemo(() => ({ ...methods, location }), [methods, location]);
-  useEffect(() => history.listen(location => setLocation(location), [history]));
+  useEffect(() => {
+    // wait until listening so route effects happen after this
+    setReady(true);
+
+    return history.listen((location) => {
+      setLocation(location);
+    });
+  }, [history]);
 
   return (
     <Context.Provider value={router}>
-      {children}
+      {ready && children}
     </Context.Provider>
   );
 }
