@@ -6,7 +6,7 @@ import React, {
   useState
 } from 'react';
 import PropTypes from 'prop-types';
-import pathToRegexp from 'path-to-regexp';
+import { pathToRegexp } from 'path-to-regexp';
 
 const Context = React.createContext();
 
