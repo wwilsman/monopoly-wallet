@@ -6,16 +6,12 @@ const WebSocket = require('ws');
 const YAML = require('yamljs');
 
 // env vars and defaults
-const ENV = {
-  env: process.env.NODE_ENV || 'development',
-  port: process.env.PORT || 3000,
-  host: process.env.HOST || 'localhost',
-
-  mongodb: {
-    uri: process.env.MONGODB_URI || 'mongodb://localhost:27017/monopoly-wallet',
-    options: { useNewUrlParser: true }
-  }
-};
+const {
+  NODE_ENV: ENV = 'development',
+  PORT = 3000,
+  HOST = 'localhost',
+  MONGODB_URI = 'mongodb://localhost:27017/monopoly-wallet'
+} = process.env;
 
 // setup express app
 const app = express();
@@ -27,7 +23,7 @@ app.use('/icons/:theme.svg', (req, res) => {
 });
 
 // setup webpack dev middleware
-if (ENV.env === 'development') {
+if (ENV === 'development') {
   const webpack = require('webpack');
   const webpackDevMiddleware = require('webpack-dev-middleware');
   const webpackHotMiddleware = require('webpack-hot-middleware');
@@ -52,12 +48,12 @@ if (ENV.env === 'development') {
 }
 
 // start the server
-const server = app.listen(ENV.port, () => {
-  console.log(`Now listening at http://${ENV.host}:${ENV.port}`);
+const server = app.listen(PORT, () => {
+  console.log(`Now listening at http://${HOST}:${PORT}`);
 });
 
 // setup the game room
-const GameRoom = require(ENV.env === 'development' ? './src' : './dist').default;
+const GameRoom = require(ENV === 'development' ? './src' : './dist').default;
 const wss = new WebSocket.Server({ server });
 const grm = new GameRoom.Manager({ wss });
 
@@ -70,7 +66,10 @@ grm.use({
 
 // connect mongo
 MongoClient
-  .connect(ENV.mongodb.uri, ENV.mongodb.options)
+  .connect(MONGODB_URI, {
+    useNewUrlParser: true,
+    useUnifiedTopology: true
+  })
   .then(client => {
     let db = client.db().collection('games');
     let resolveGame = ({ _id, ...game } = {}) => !_id
