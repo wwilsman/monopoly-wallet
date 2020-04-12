@@ -53,11 +53,10 @@ export function Route({
     }) || null
   ), [children, router.location.pathname]);
 
-  if (!child && redirect) {
-    router.replace(redirect);
-  }
+  redirect = !child && redirect;
+  useEffect(() => void(redirect && router.replace(redirect)), [redirect]);
 
-  return match ? (
+  return !redirect && match ? (
     <Component params={params} {...router}>
       {child}
     </Component>
