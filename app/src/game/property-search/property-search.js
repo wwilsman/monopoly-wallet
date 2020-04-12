@@ -45,10 +45,9 @@ export default function PropertySearch({
     })
   ), [properties]);
 
-  let result = useMemo(() => {
-    let res = search && fuse.search(search);
-    return !!res && !!res.length && res[0];
-  }, [fuse, search]);
+  let result = useMemo(() => (
+    !!search && fuse.search(search)?.[0]?.item
+  ), [fuse, search]);
 
   if (properties.length === 1) {
     [result] = properties;
