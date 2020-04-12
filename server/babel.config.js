@@ -6,8 +6,6 @@ module.exports = ({ env }) => ({
   ],
   plugins: [
     "@babel/proposal-class-properties",
-    "@babel/proposal-optional-chaining",
-    "@babel/proposal-nullish-coalescing-operator",
     env('test') && 'istanbul'
   ].filter(Boolean)
 });
