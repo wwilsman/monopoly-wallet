@@ -66,7 +66,7 @@ module.exports = {
         'process.env.NODE_ENV': JSON.stringify(
           process.env.NODE_ENV || 'development'
         )
-      }),
+      })
     ],
     production: [
       new MiniCssExtractPlugin({ filename: 'styles.css' }),
@@ -95,9 +95,7 @@ module.exports = {
           plugins: env({
             base: [
               ['@babel/proposal-decorators', { legacy: true }],
-              ['@babel/proposal-class-properties', { loose: true }],
-              '@babel/proposal-optional-chaining',
-              '@babel/proposal-nullish-coalescing-operator'
+              ['@babel/proposal-class-properties', { loose: true }]
             ],
             development: ['react-hot-loader/babel'],
             test: ['istanbul']
