@@ -1,7 +1,7 @@
 @import '../../styles/variables';
 
 .button {
-  border-radius: var(--radius-med);
+  border-radius: var(--radius-xl);
   display: inline-flex;
   justify-content: center;
   align-items: center;
@@ -9,7 +9,7 @@
   height: var(--pad-xl);
   padding: 0 var(--pad-med);
   text-align: center;
-  width: calc(50% - (var(--pad-sm) / 2));
+  min-width: calc(50% - (var(--pad-sm) / 2));
   cursor: pointer;
   color: var(--color-text-lighter);
   box-shadow: var(--shadow-sm);
@@ -81,7 +81,7 @@
   color: var(--color-text);
   font-size: var(--size-lg);
   padding: 0;
-  width: auto;
+  min-width: unset;
 
   & > span {
     display: inline-block;
@@ -110,11 +110,12 @@
 
 .is-inline {
   margin: 0 0 0 var(--pad-sm);
+  margin-bottom: 0 !important;
   vertical-align: middle;
-  width: auto;
+  min-width: auto;
 
   &:not(.icon) {
-    padding: 0 var(--pad-sm);
+    padding: 0 var(--pad-med);
   }
 
   &:first-child {

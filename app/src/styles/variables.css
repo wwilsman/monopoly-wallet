@@ -31,6 +31,7 @@
   --size-xl: 2.25rem;
 
   /* spacing */
+  --pad-xxs: 0.1875rem;
   --pad-xs: 0.4375rem;
   --pad-sm: 0.625rem;
   --pad-med: 1.25rem;
@@ -39,9 +40,9 @@
   --pad-xxl: 3.75rem;
 
   /* radius */
-  --radius-med: 0.25rem;
-  --radius-lg: 0.375rem;
-  --radius-xl: 1rem;
+  --radius-med: 0.5rem;
+  --radius-lg: 1rem;
+  --radius-xl: 2rem;
 
   /* shadows */
   --shadow-xs: 0 0.0625rem 0.125rem color-mod(black a(20%));
