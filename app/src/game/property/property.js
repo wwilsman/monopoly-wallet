@@ -257,7 +257,6 @@ export default function Property({
           {owner === 'bank' && onPurchase && (
             <>
               <Button
-                block
                 hollow
                 style="primary"
                 onClick={() => onPurchase(id, price)}
@@ -280,7 +279,6 @@ export default function Property({
           )}
           {owner !== 'bank' && !isOwn && !mortgaged && onRent && (
             <Button
-              block
               hollow
               style="alert"
               onClick={() => onRent(id, isUtility)}
@@ -296,7 +294,7 @@ export default function Property({
           )}
           {isOwn && mortgaged && onUnmortgage && (
             <Button
-              block
+              inline
               hollow
               style="primary"
               onClick={() => onUnmortgage(id)}
@@ -308,6 +306,7 @@ export default function Property({
           )}
           {isOwn && !mortgaged && !buildings && onMortgage && (
             <Button
+              inline
               hollow
               style="alert"
               onClick={() => onMortgage(id)}
@@ -318,6 +317,7 @@ export default function Property({
           )}
           {isOwn && !isRailroad && !isUtility && buildings > 0 && onUnimprove && (
             <Button
+              inline
               hollow
               style="alert"
               onClick={() => onUnimprove(id)}
@@ -328,6 +328,7 @@ export default function Property({
           )}
           {isOwn && !isRailroad && !isUtility && monopoly && !mortgaged && buildings < 5 && onImprove && (
             <Button
+              inline
               hollow
               style="secondary"
               onClick={() => onImprove(id)}

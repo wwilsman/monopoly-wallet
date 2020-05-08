@@ -77,7 +77,13 @@
 }
 
 .actions {
+  bottom: var(--pad-sm);
   margin-top: var(--pad-sm);
+  position: sticky;
+
+  button {
+    background: var(--color-bg) !important;
+  }
 
   button > span:first-child {
     margin-right: 0.25em;
