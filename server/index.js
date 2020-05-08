@@ -86,3 +86,50 @@ MongoClient
   .catch(err => {
     console.log('Unable to connect to mongodb: %s', err.name);
   });
+
+// create a game with a specific scenario for development
+if (ENV === 'development') {
+  require('./test/index'); // sets up env for mock helper
+  const { mockGame } = require('./test/helpers/mock-server');
+
+  mockGame.call(grm, {
+    room: 't35tt',
+    players: [{
+      token: 'top-hat',
+      name: 'PLAYER 1'
+    }, {
+      token: 'automobile',
+      name: 'PLAYER 2'
+    }, {
+      token: 'scottish-terrier',
+      name: 'PLAYER 3'
+    }, {
+      token: 'battleship',
+      name: 'PLAYER 4'
+    }],
+    properties: [
+      { id: 'baltic-avenue', owner: 'top-hat', mortgaged: true },
+      { id: 'oriental-avenue', owner: 'automobile' },
+      { id: 'vermont-avenue', owner: 'automobile' },
+      { group: 'orange', owner: 'top-hat', monopoly: true, buildings: 4 },
+      { id: 'new-york-avenue', buildings: 5 },
+      { id: 'indiana-avenue', owner: 'automobile' },
+      { id: 'atlantic-avenue', owner: 'scottish-terrier' },
+      { id: 'ventnor-avenue', owner: 'scottish-terrier' },
+      { id: 'boardwalk', owner: 'top-hat' },
+      { id: 'reading-railroad', owner: 'top-hat' },
+      { id: 'pennsylvania-railroad', owner: 'top-hat' },
+      { id: 'electric-company', owner: 'top-hat' },
+      { id: 'water-works', owner: 'scottish-terrier' }
+    ],
+    notice: { message: 'PLAYER 1 did something', meta: { player: 'top-hat' } },
+    history: [
+      { notice: { message: 'PLAYER 2 did something', meta: { player: 'automobile' } } },
+      { notice: { message: 'PLAYER 1 did something', meta: { player: 'top-hat' } } },
+      { notice: { message: 'PLAYER 3 did something', meta: { player: 'scottish-terrier' } } },
+      { notice: { message: 'PLAYER 4 did something', meta: { player: 'battleship' } } },
+      { notice: { message: 'PLAYER 2 did something', meta: { player: 'automobile' } } },
+      { notice: { message: 'PLAYER 1 did something', meta: { player: 'top-hat' } } }
+    ]
+  });
+}
