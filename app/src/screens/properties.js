@@ -59,7 +59,10 @@ export default function PropertiesScreen({ push, params }) {
   }, [buyResponse.ok, rentResponse.ok]);
 
   return (
-    <Container data-test-properties-search>
+    <Container
+      scrollable
+      data-test-properties-search
+    >
       <NavBar
         title={player.name ?? 'Properties'}
         titleIcon={player.token ?? 'bank'}

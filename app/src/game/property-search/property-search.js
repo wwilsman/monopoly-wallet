@@ -1,16 +1,19 @@
 import React, { useState, useMemo } from 'react';
 import PropTypes from 'prop-types';
+import classNames from 'classnames/bind';
 import Fuse from 'fuse.js';
 
 import { useProperties } from '../../helpers/hooks';
 
-import { Container, Section } from '../../ui/layout';
+import { Section } from '../../ui/layout';
 import { Text } from '../../ui/typography';
 import { Input } from '../../ui/forms';
 import Button from '../../ui/button';
 import Icon from '../../ui/icon';
 import Property from '../property';
 import styles from './property-search.css';
+
+const cx = classNames.bind(styles);
 
 PropertySearch.propTypes = {
   player: PropTypes.shape({
@@ -66,7 +69,7 @@ export default function PropertySearch({
       </Text>
     </Section>
   ) : (
-    <Container className={styles.root}>
+    <Section className={cx('root', { 'list-view': !result })}>
       <Section flex="none" row collapse>
         <Input
           value={search}
@@ -125,6 +128,6 @@ export default function PropertySearch({
           />
         ))}
       </Section>
-    </Container>
+    </Section>
   );
 }
