@@ -10,8 +10,8 @@
 
 .toast {
   background: white;
-  border-radius: var(--radius-med);
-  border-right: var(--pad-xs) solid;
+  border-radius: var(--radius-xl);
+  border: var(--pad-xxs) solid;
   box-shadow: var(--shadow-med);
   font-size: var(--size-sm);
   line-height: var(--pad-med);

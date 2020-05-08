@@ -24,6 +24,7 @@
   font-size: var(--size-sm);
   line-height: 1;
   margin-bottom: var(--pad-xs);
+  margin-left: var(--pad-xs);
   text-transform: capitalize;
 
   span {
@@ -48,11 +49,11 @@
 .input {
   background: var(--color-bg-light);
   border: 1px solid var(--color-text);
-  border-radius: var(--radius-med);
+  border-radius: var(--radius-xl);
   color: var(--color-text-lighter);
   height: var(--pad-xl);
   line-height: var(--pad-xl);
-  padding: var(--pad-xs) var(--pad-sm);
+  padding: var(--pad-xs) var(--pad-med);
 
   .alt & {
     background: var(--color-bg);
