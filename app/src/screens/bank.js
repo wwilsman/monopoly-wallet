@@ -52,19 +52,19 @@ export default function BankScreen({ push }) {
         <Section flex="none">
           <Card linkTo={`/${room}/transfer`}>
             <Text upper icon="transfer">
-              Transfer
+              Make A Transfer
             </Text>
           </Card>
 
           <Card linkTo={`/${room}/properties`}>
             <Text upper icon="bank">
-              Properties
+              Purchase Properties
             </Text>
           </Card>
 
           <Card onClick={() => toggleBankruptForm(true)}>
             <Text upper icon="currency">
-              Bankrupt
+              Claim Bankruptcy
             </Text>
           </Card>
         </Section>
@@ -77,7 +77,7 @@ export default function BankScreen({ push }) {
 
       {showBankruptForm && (
         <Modal
-          title="Bankrupt"
+          title="Bankruptcy"
           titleIcon="currency"
           onClose={() => toggleBankruptForm(false)}
         >
