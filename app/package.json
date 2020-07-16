@@ -58,6 +58,6 @@
     "style-loader": "^1.2.1",
     "testing-hooks": "^0.2.0",
     "webpack": "^4.42.1",
-    "webpack-cli": "^3.3.11"
+    "webpack-cli": "^3.3.12"
   }
 }
