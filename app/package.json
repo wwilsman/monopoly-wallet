@@ -29,7 +29,7 @@
     "css-loader": "^4.0.0",
     "eslint-plugin-react": "^7.20.3",
     "expect": "^26.1.0",
-    "fuse.js": "^6.4.0",
+    "fuse.js": "^6.4.1",
     "history": "^5.0.0",
     "html-webpack-plugin": "^4.3.0",
     "html-webpack-template": "^6.2.0",
