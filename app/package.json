@@ -27,7 +27,7 @@
     "classnames": "^2.2.6",
     "favicons-webpack-plugin": "^4.2.0",
     "css-loader": "^4.0.0",
-    "eslint-plugin-react": "^7.20.3",
+    "eslint-plugin-react": "^7.20.4",
     "expect": "^26.1.0",
     "fuse.js": "^6.4.0",
     "history": "^5.0.0",
