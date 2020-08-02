@@ -67,7 +67,7 @@ describe('PropertiesScreen', () => {
 
   it('shows a property after typing part of the property name', async () => {
     await search
-      .input.type('vnto')
+      .input.type('ven')
       .assert.property.name('VENTNOR AVENUE')
       .assert.property.group('yellow');
   });
@@ -248,7 +248,7 @@ describe('PropertiesScreen', () => {
         .percySnapshot('own fully improved');
 
       await search
-        .input.type('bal', { range: [0, -1] })
+        .input.type('bal', { range: [0, 4] })
         .assert.property.name('BALTIC AVENUE')
         .assert.property.mortgaged()
         .assert.property.improveBtn.not.exists()
