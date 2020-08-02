@@ -56,21 +56,21 @@ describe('BankScreen', () => {
 
   it('shows a link to the transfer screen', async () => {
     await bank.links(0).only()
-      .assert.text('TRANSFER')
+      .assert.text('MAKE A TRANSFER')
       .assert.icon('transfer')
       .assert.attribute('href', '/t35tt/transfer');
   });
 
   it('shows a link to the properties screen', async () => {
     await bank.links(1).only()
-      .assert.text('PROPERTIES')
+      .assert.text('PURCHASE PROPERTIES')
       .assert.icon('bank')
       .assert.attribute('href', '/t35tt/properties');
   });
 
   it('shows a button for claiming bankruptcy', async () => {
     await bank.links(2).only()
-      .assert.text('BANKRUPT')
+      .assert.text('CLAIM BANKRUPTCY')
       .assert.icon('currency');
   });
 
@@ -99,7 +99,7 @@ describe('BankScreen', () => {
     await bank
       .links(2).click()
       .assert.bankrupt.exists()
-      .assert.bankrupt.heading.text('BANKRUPT')
+      .assert.bankrupt.heading.text('BANKRUPTCY')
       .assert.bankrupt.heading.icon('currency')
       .assert.bankrupt.players().count(2)
       .assert.bankrupt.players('bank').exists()
