@@ -25,7 +25,7 @@
     "babel-loader": "^8.1.0",
     "babel-plugin-istanbul": "^6.0.0",
     "classnames": "^2.2.6",
-    "css-loader": "^4.0.0",
+    "css-loader": "^4.2.0",
     "eslint-plugin-react": "^7.20.4",
     "expect": "^26.1.0",
     "favicons-webpack-plugin": "^2",
