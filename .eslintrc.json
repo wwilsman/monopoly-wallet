@@ -7,7 +7,7 @@
     "es6": true
   },
   "rules": {
-    "indent": ["error", 2, { "SwitchCase": 1 }],
+    "indent": ["error", 2, { "SwitchCase": 1, "ignoredNodes": ["TemplateLiteral"] }],
     "prefer-arrow-callback": ["error", { "allowNamedFunctions": true }],
     "no-console": "warn",
     "no-extra-boolean-cast": "off",
