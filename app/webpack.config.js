@@ -139,7 +139,14 @@ module.exports = {
         'react-dom': '@hot-loader/react-dom'
       }
     })
-  }
+  },
+
+  externals: env({
+    test: {
+      'graceful-fs': '{}',
+      'module': '{}'
+    }
+  })
 };
 
 /**
