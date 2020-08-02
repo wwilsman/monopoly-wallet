@@ -17,9 +17,9 @@ jobs:
       - restore_cache:
           name: Restore cache
           keys:
-            - monopoly-wallet-{{ .Branch }}-{{ checksum "yarn.lock" }}
-            - monopoly-wallet-{{ .Branch }}-
-            - monopoly-wallet-
+            - monopoly-wallet-cache@1-{{ .Branch }}-{{ checksum "yarn.lock" }}
+            - monopoly-wallet-cache@1-{{ .Branch }}-
+            - monopoly-wallet-cache@1-
       - run:
           name: Install dependencies
           command: yarn
