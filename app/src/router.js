@@ -65,11 +65,7 @@ export function Route({
 
 function internalize(fn) {
   return (to, state = {}) => {
-    if (typeof to === 'string') {
-      fn({ pathname: to, state: { internal: true, ...state } });
-    } else {
-      fn({ ...to, state: { internal: true, ...to.state } });
-    }
+    fn(to, { internal: true, ...state });
   };
 }
 
@@ -88,7 +84,7 @@ export default function Router({
   let router = useMemo(() => ({
     push: internalize(history.push),
     replace: internalize(history.replace),
-    goBack: history.goBack,
+    back: history.back,
     location
   }), [history, location]);
 
@@ -96,7 +92,7 @@ export default function Router({
     // wait until listening so route effects happen after this
     setReady(true);
 
-    return history.listen((location) => {
+    return history.listen(({ location }) => {
       setLocation(location);
     });
   }, [history]);

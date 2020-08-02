@@ -40,7 +40,7 @@ class ReactInteractor extends Interactor {
   }
 
   goBack() {
-    return this.do(() => this.history.goBack());
+    return this.do(() => this.history.back());
   }
 
   async get(path) {

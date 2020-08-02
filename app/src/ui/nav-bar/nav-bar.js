@@ -32,13 +32,13 @@ export default function NavBar({
   titleIcon,
   children
 }) {
-  let { location, goBack } = useRouter();
+  let { location, back } = useRouter();
 
   return (
     <Section row flex="none" className={styles.root}>
       <div className={styles.left}>
         {renderLeft ? renderLeft() : (showBack && location.state?.internal ? (
-          <Button style="icon" onClick={goBack} data-test-back>
+          <Button style="icon" onClick={back} data-test-back>
             <Icon name="larr"/>
           </Button>
         ) : typeof showBack === 'string' ? (
