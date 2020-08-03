@@ -31,7 +31,7 @@
     "favicons-webpack-plugin": "^2",
     "fuse.js": "^6.4.1",
     "history": "^5.0.0",
-    "html-webpack-plugin": "^3",
+    "html-webpack-plugin": "^4",
     "html-webpack-template": "^6.2.0",
     "interactor.js": "^1.6.1",
     "js-yaml-loader": "^1.2.2",
