@@ -1,5 +1,4 @@
 import React from 'react';
-import expect from 'expect';
 import { act } from 'react-dom/test-utils';
 import { mount } from 'testing-hooks/react-dom';
 import { createMemoryHistory } from 'history';
@@ -8,7 +7,7 @@ import mockSocket from './mock-socket';
 import mockLocalStorage from './mock-storage';
 import mockServer from 'server/test/helpers/mock-server';
 
-import AppInteractor from '../interactors/app';
+import { Root as RootInteractor } from '../interactors/common';
 import AppRoot from '../../src/root';
 
 // fixtures
@@ -29,7 +28,7 @@ function createAppContext() {
 export default function setupApplication(callback = () => {}) {
   beforeEach(async function () {
     let ctx = createAppContext();
-    AppInteractor.defineContext(() => ctx);
+    RootInteractor.context = ctx;
 
     await mockSocket();
     await mockLocalStorage(this);
@@ -55,10 +54,8 @@ export default function setupApplication(callback = () => {}) {
       );
     });
 
-    await new AppInteractor()
-      .assert.state(state => {
-        expect(state).toHaveProperty('connected', true);
-      });
+    await new RootInteractor()
+      .assert.state('connected');
 
     await callback.call(this);
   });

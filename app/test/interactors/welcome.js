@@ -1,14 +1,11 @@
-import interactor, { scoped, text } from 'interactor.js';
-import AppInteractor from './app';
+import { click } from 'interactor.js';
+import { Root } from './common';
 
-@interactor
-class WelcomeInteractor extends AppInteractor {
-  static defaultScope = '[data-test-welcome]';
-  static snapshotTitle = 'Welcome';
+const WelcomeScreen = Root.extend({
+  screen: 'welcome',
+}, {
+  clickNewGame: () => click('[data-test-welcome-new-game-btn]'),
+  clickJoinGame: () => click('[data-test-welcome-join-game-btn]')
+});
 
-  title = text('[data-test-welcome-title]');
-  newGameBtn = scoped('[data-test-welcome-new-game-btn]');
-  joinGameBtn = scoped('[data-test-welcome-join-game-btn]');
-}
-
-export default WelcomeInteractor;
+export default WelcomeScreen;

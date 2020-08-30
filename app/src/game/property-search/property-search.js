@@ -80,6 +80,7 @@ export default function PropertySearch({
           disabled={properties.length <= 1}
           placeholder="property or group name"
           label="Search properties"
+          data-test-property-search-input
         />
 
         {(focused || search) && properties.length > 1 && (

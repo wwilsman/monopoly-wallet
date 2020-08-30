@@ -1,51 +1,22 @@
-import interactor, {
-  attribute,
-  collection,
-  exists,
-  scoped,
-  text
-} from 'interactor.js';
+import Interactor, { attribute, by, click, text } from 'interactor.js';
+import { Root } from './common';
 
-import AppInteractor from './app';
+const Toast = Interactor.extend({
+  selector: n => by.nth(n, '[data-test-toast]')
+}, {
+  type: attribute('data-test-toast'),
+  message: text('[data-test-toast-message]'),
+  actions: Interactor('[data-test-actions]', {
+    clickPrimary: () => click('[data-test-actions] button:first-child'),
+    clickSecondary: () => click('[data-test-actions] button:last-child')
+  }),
+});
 
-@interactor class ToastInteractor {
-  static defaultScope = '[data-test-toast]';
+const GameRoomScreen = Root.extend({
+  screen: 'game-room'
+}, {
+  toast: Toast(-1)
+});
 
-  type = attribute('data-test-toast');
-  message = text('[data-test-toast-message]');
-  actions = scoped('[data-test-actions]', {
-    primary: scoped('button:first-child'),
-    secondary: scoped('button:last-child')
-  });
-}
-
-@interactor class ToasterInteractor {
-  static defaultScope = '[data-test-toaster]';
-
-  get type() { return this.last.type; }
-  get message() { return this.last.message; }
-  get actions() { return this.last.actions; }
-
-  last = scoped('[data-test-toast]:last-of-type', ToastInteractor);
-  all = collection('[data-test-toast]', ToastInteractor);
-}
-
-@interactor class GameRoomInteractor extends AppInteractor {
-  static defaultScope = '[data-test-game-room]';
-  static snapshotTitle = 'Game Room';
-  static defaultPath = '';
-
-  roomCode = text('[data-test-room-code]');
-  loading = exists('[data-test-spinner]');
-
-  heading = scoped('[data-test-nav-title]', {
-    icon: attribute('[data-test-text-icon]', 'title')
-  });
-
-  toast = new ToasterInteractor({
-    detached: true
-  });
-}
-
-export default GameRoomInteractor;
-export { ToastInteractor };
+export default GameRoomScreen;
+export { Toast };

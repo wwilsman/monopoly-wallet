@@ -1,11 +1,9 @@
 import { setupApplication } from '../helpers';
 
-import DashboardInteractor from '../interactors/dashboard';
-import BankInteractor from '../interactors/bank';
+import DashboardScreen from '../interactors/dashboard';
+import BankScreen from '../interactors/bank';
 
-describe('DashboardScreen', () => {
-  const dashboard = new DashboardInteractor();
-
+describe('Dashboard Screen', () => {
   setupApplication(async function () {
     await this.grm.mock({
       room: 't35tt',
@@ -25,45 +23,38 @@ describe('DashboardScreen', () => {
     this.ls.data.room = 't35tt';
     this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
 
-    await dashboard.visit();
+    await DashboardScreen().visit();
   });
 
   it('shows the player dashboard', async () => {
-    await dashboard
-      .assert.exists()
-      .percySnapshot();
+    await DashboardScreen()
+      .assert.exists();
   });
 
   it('shows the room code', async () => {
-    await dashboard
+    await DashboardScreen()
       .assert.roomCode('T35TT');
   });
 
-  it('shows the player name and token', async () => {
-    await dashboard
-      .assert.heading.text('PLAYER 1')
-      .assert.heading.icon('top-hat');
-  });
-
   it('shows the player balance', async () => {
-    await dashboard
+    await DashboardScreen()
       .assert.summary.balance('1,290');
   });
 
   it('shows the player properties', async () => {
-    await dashboard.summary.only()
-      .assert.groups(10)
-      .assert.property('oriental-avenue').exists();
+    await DashboardScreen()
+      .assert.summary.groups(10)
+      .assert.summary.property('oriental-avenue').exists();
   });
 
   it('shows the correct property group color', async () => {
-    let colors = await dashboard.get('state.config.groupColors');
+    let colors = await DashboardScreen().get('config.groupColors');
 
-    await dashboard.summary.only()
-      .assert.property('oriental-avenue').group('lightblue')
-      .assert.property('oriental-avenue').color(colors.lightblue)
-      .assert.property('kentucky-avenue').group('red')
-      .assert.property('kentucky-avenue').color(colors.red);
+    await DashboardScreen()
+      .assert.summary.property('oriental-avenue').group('lightblue')
+      .assert.summary.property('oriental-avenue').color(colors.lightblue)
+      .assert.summary.property('kentucky-avenue').group('red')
+      .assert.summary.property('kentucky-avenue').color(colors.red);
   });
 
   it('shows a bankrupt notice when the player is bankrupt', async function() {
@@ -74,60 +65,57 @@ describe('DashboardScreen', () => {
       ]
     });
 
-    await dashboard
-      .assert.summary.bankrupt()
-      .percySnapshot('bankrupt player');
+    await DashboardScreen()
+      .assert.summary.bankrupt();
   });
 
   it('shows other players\' summaries', async () => {
-    let colors = await dashboard.get('state.config.groupColors');
+    let colors = await DashboardScreen().get('config.groupColors');
 
-    await dashboard
+    await DashboardScreen()
       .assert.card().count(3)
-      .assert.card(0).property().count(3)
-      .assert.card(0).name('PLAYER 2')
-      .assert.card(0).token('automobile')
-      .assert.card(0).property('ventnor-avenue').group('yellow')
-      .assert.card(0).property('ventnor-avenue').color(colors.yellow)
-      .assert.card(1).name('PLAYER 4')
-      .assert.card(1).token('battleship')
-      .assert.card(1).text('NO OWNED PROPERTIES')
-      .assert.card(2).name('PLAYER 3')
-      .assert.card(2).token('thimble')
-      .assert.card(2).text('BANKRUPT');
+      .assert.card(1).property().count(3)
+      .assert.card(1).name('PLAYER 2')
+      .assert.card(1).token('automobile')
+      .assert.card(1).property('ventnor-avenue').group('yellow')
+      .assert.card(1).property('ventnor-avenue').color(colors.yellow)
+      .assert.card(2).name('PLAYER 4')
+      .assert.card(2).token('battleship')
+      .assert.card(2).text('NO OWNED PROPERTIES')
+      .assert.card(3).name('PLAYER 3')
+      .assert.card(3).token('thimble')
+      .assert.card(3).text('BANKRUPT');
   });
 
   it('links to other players\' properties', async () => {
-    await dashboard
-      .assert.card(0).name('PLAYER 2')
-      .assert.card(0).token('automobile')
-      .assert.card(0).linkTo('/t35tt/automobile/properties');
+    await DashboardScreen()
+      .assert.card(1).name('PLAYER 2')
+      .assert.card(1).token('automobile')
+      .assert.card(1).linkTo('/t35tt/automobile/properties');
   });
 
   it('shows a bank button', async () => {
-    await dashboard
-      .assert.bankBtn.exists();
+    await DashboardScreen()
+      .assert.bankButton.exists();
   });
 
   describe('clicking the bank button', async () => {
-    const bank = new BankInteractor();
-
     beforeEach(async () => {
-      await dashboard
-        .bankBtn.click();
+      await DashboardScreen()
+        .bankButton.click();
     });
 
     it('goes to the bank screen', async () => {
-      await bank
+      await BankScreen()
         .assert.exists()
         .assert.location('/t35tt/bank');
     });
 
-    it('goes back to the dashboard after clicking back', async () => {
-      await bank
+    it('goes back to the DashboardScreen() after clicking back', async () => {
+      await BankScreen()
         .assert.exists()
-        .backBtn.click();
-      await dashboard
+        .backButton.click();
+      await DashboardScreen()
         .assert.exists()
         .assert.location('/t35tt');
     });

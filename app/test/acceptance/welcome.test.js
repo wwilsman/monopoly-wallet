@@ -1,47 +1,24 @@
-import expect from 'expect';
 import { setupApplication } from '../helpers';
+import WelcomeScreen from '../interactors/welcome';
+import FindRoomScreen from '../interactors/find-room';
+import JoinGameScreen from '../interactors/join-game';
 
-import WelcomeInteractor from '../interactors/welcome';
-import FindRoomInteractor from '../interactors/find-room';
-import JoinGameInteractor from '../interactors/join-game';
-
-describe('WelcomeScreen', () => {
-  const welcome = new WelcomeInteractor();
-
+describe('Welcome Screen', () => {
   setupApplication(async () => {
-    await welcome.visit();
+    await WelcomeScreen().visit();
   });
 
   it('shows the welcome screen', async () => {
-    await welcome
-      .assert.exists()
-      .percySnapshot();
-  });
-
-  it('shows the app name', async () => {
-    await welcome
-      .assert.title('MONOPOLY\nWALLET');
-  });
-
-  it('has a new game button', async () => {
-    await welcome
-      .assert.newGameBtn.exists()
-      .assert.newGameBtn.text('New Game');
-  });
-
-  it('has a join game button', async () => {
-    await welcome
-      .assert.joinGameBtn.exists()
-      .assert.joinGameBtn.text('Join Game');
+    await WelcomeScreen().assert.exists();
   });
 
   describe('visiting a non-existent route', () => {
     beforeEach(async () => {
-      await welcome.visit('/404');
+      await WelcomeScreen().visit('/404');
     });
 
-    it('should redirect back to welcome', async () => {
-      await welcome
+    it('should redirect back to the welcome screen', async () => {
+      await WelcomeScreen()
         .assert.exists()
         .assert.location('/')
         .assert.remains();
@@ -49,66 +26,57 @@ describe('WelcomeScreen', () => {
   });
 
   describe('clicking the new game button', () => {
-    const joinGame = new JoinGameInteractor();
-
     beforeEach(async () => {
-      await welcome.newGameBtn.click();
+      await WelcomeScreen().clickNewGame();
     });
 
     it('should create and connect to a new game', async () => {
-      let room = await welcome.get('state.room');
+      let room = await JoinGameScreen().get('room');
 
-      await joinGame
+      await JoinGameScreen()
         .assert.exists()
         .assert.location(`/${room}/join`)
         .assert.roomCode(room.toUpperCase())
-        .assert.state(state => {
-          expect(state).toHaveProperty('connected', true);
-        });
+        .assert.state('connected');
     });
 
     describe('then navigating back', () => {
       beforeEach(async () => {
-        await joinGame.backBtn.click();
+        await JoinGameScreen().backButton.click();
       });
 
-      it('should go back', async () => {
-        await welcome
+      it('should go back and disconnect from the game', async () => {
+        await WelcomeScreen()
           .assert.exists()
-          .assert.location('/');
-      });
-
-      it('should disconnect from the game', async () => {
-        await welcome
-          .assert.state(state => {
-            expect(state).not.toHaveProperty('room');
-          });
+          .assert.location('/')
+          .assert.not.state('room')
+          .assert.remains();
       });
     });
   });
 
   describe('clicking the join game button', () => {
-    const findRoom = new FindRoomInteractor();
-
     beforeEach(async () => {
-      await welcome.joinGameBtn.click();
+      await WelcomeScreen().clickJoinGame();
     });
 
     it('should go to the find room screen', async () => {
-      await findRoom
+      await FindRoomScreen()
         .assert.exists()
-        .assert.location('/join');
+        .assert.location('/join')
+        .assert.remains();
     });
 
     describe('then navigating back', () => {
       beforeEach(async () => {
-        await findRoom.goBack();
+        await FindRoomScreen().backButton.click();
       });
 
       it('should go back', async () => {
-        await welcome
+        await WelcomeScreen()
           .assert.exists()
-          .assert.location('/');
+          .assert.location('/')
+          .assert.remains();
       });
     });
   });

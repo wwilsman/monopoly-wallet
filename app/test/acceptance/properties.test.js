@@ -1,12 +1,9 @@
 import { setupApplication } from '../helpers';
 
-import PropertySearchInteractor from '../interactors/property-search';
-import DashboardInteractor from '../interactors/dashboard';
+import PropertiesScreen from '../interactors/properties-screen';
+import DashboardScreen from '../interactors/dashboard';
 
-describe('PropertiesScreen', () => {
-  const search = new PropertySearchInteractor();
-  const dashboard = new DashboardInteractor();
-
+describe('Properties Screen', () => {
   setupApplication(async function () {
     await this.grm.mock({
       room: 't35tt',
@@ -28,207 +25,185 @@ describe('PropertiesScreen', () => {
 
     this.ls.data.room = 't35tt',
     this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
-    await search.visit();
+    await PropertiesScreen().visit();
   });
 
   it('shows the room code', async () => {
-    await search
+    await PropertiesScreen()
       .assert.roomCode('T35TT');
   });
 
   it('shows a property search box', async () => {
-    await search
-      .assert.input.exists();
+    await PropertiesScreen()
+      .assert.searchInput.exists();
   });
 
   it('shows a clear button when focusing the search box', async () => {
-    await search
-      .assert.clearBtn.not.exists()
-      .input.focus()
-      .assert.clearBtn.exists();
+    await PropertiesScreen()
+      .assert.clearSearch.not.exists()
+      .searchInput.focus()
+      .assert.clearSearch.exists();
   });
 
   it('hides the clear button when not focusing with an empty search', async () => {
-    await search
-      .input.focus()
-      .assert.clearBtn.exists()
-      .input.blur()
-      .assert.clearBtn.not.exists();
+    await PropertiesScreen()
+      .searchInput.focus()
+      .assert.clearSearch.exists()
+      .searchInput.blur()
+      .assert.clearSearch.not.exists();
   });
 
   it('shows the clear button when not focusing with a search', async () => {
-    await search
-      .input.focus()
-      .input.type('ori')
-      .input.blur()
-      .assert.clearBtn.exists()
+    await PropertiesScreen()
+      .searchInput.type('ori')
+      .assert.clearSearch.exists()
       .assert.remains();
   });
 
   it('shows a property after typing part of the property name', async () => {
-    await search
-      .input.type('ven')
+    await PropertiesScreen()
+      .searchInput.type('ven')
       .assert.property.name('VENTNOR AVENUE')
       .assert.property.group('yellow');
   });
 
   it('shows a property after typing part of the property group', async () => {
-    await search
-      .input.type('magnta')
+    await PropertiesScreen()
+      .searchInput.type('magnta')
       .assert.property.name('ST. CHARLES PLACE')
       .assert.property.group('magenta');
   });
 
   it('shows a property\'s rent information', async () => {
-    await search
-      .input.type('red')
+    await PropertiesScreen()
+      .searchInput.type('red')
       .assert.property.name('KENTUCKY AVENUE')
       .assert.property.group('red')
-      .assert.property.rentLabels(0).text('Rent')
-      .assert.property.rentAmounts(0).text('18')
-      .assert.property.rentLabels(1).text('Rent with Monopoly')
-      .assert.property.rentAmounts(1).text('36')
-      .assert.property.rentLabels(2).text('Rent with ')
-      .assert.property.rentAmounts(2).text('90')
-      .assert.property.rentLabels(3).text('Rent with ')
-      .assert.property.rentAmounts(3).text('250')
-      .assert.property.rentLabels(4).text('Rent with ')
-      .assert.property.rentAmounts(4).text('700')
-      .assert.property.rentLabels(5).text('Rent with ')
-      .assert.property.rentAmounts(5).text('875');
+      .assert.property.rent(1, 'Rent', '18')
+      .assert.property.rent(2, 'Rent with Monopoly', '36')
+      .assert.property.rent(3, 'Rent with ', '90')
+      .assert.property.rent(4, 'Rent with ', '250')
+      .assert.property.rent(5, 'Rent with ', '700')
+      .assert.property.rent(6, 'Rent with ', '875');
   });
 
-  it('shows a property\'s mortgage value, and build costs', async () => {
-    await search
-      .input.type('park')
-      .assert.property.name('PARK PLACE')
-      .assert.property.group('blue')
-      .assert.property.mortgage('100')
-      .assert.property.cost('100');
+  it('shows a property\'s mortgage value and build costs', async () => {
+    await PropertiesScreen()
+      .searchInput.type('marv')
+      .assert.property.name('MARVIN GARDENS')
+      .assert.property.group('yellow')
+      .assert.property.mortgage('140')
+      .assert.property.cost('150');
   });
 
   it('shows a not-found message when there is no matching property', async () => {
-    await search
-      .input.type('old kent rd')
+    await PropertiesScreen()
+      .searchInput.type('old kent rd')
       .assert.property.not.exists()
       .assert.notFound.exists()
-      .assert.notFound.text('NO MATCHING\nPROPERTIES')
-      .percySnapshot('not found');
+      .assert.notFound.text('NO MATCHING\nPROPERTIES');
   });
 
   describe('bank properties', () => {
     it('shows the bank properties screen', async () => {
-      await search
-        .assert.exists()
-        .assert.heading.text('PROPERTIES')
-        .assert.heading.icon('bank')
-        .percySnapshot();
+      await PropertiesScreen()
+        .assert.exists();
     });
 
     it('shows a back button linked to the bank', async () => {
-      await search
-        .assert.backBtn.exists()
-        .assert.backBtn.attribute('href', '/t35tt/bank');
+      await PropertiesScreen()
+        .assert.backButton.exists()
+        .assert.backButton.attribute('href', '/t35tt/bank');
     });
 
     it('goes to the bank when clicking the back button', async () => {
-      await search
-        .backBtn.click()
+      await PropertiesScreen()
+        .backButton.click()
         .assert.location('/t35tt/bank')
         .assert.not.exists();
     });
 
     it('shows a buy button', async () => {
-      await search
-        .input.type('read')
+      await PropertiesScreen()
+        .searchInput.type('read')
         .assert.property.name('READING RAILROAD')
-        .assert.property.buyBtn.exists()
-        .assert.property.buyBtn.text(/Buy for ..200/s)
-        .percySnapshot('with a buy button');
+        .assert.property.buyButton.exists()
+        .assert.property.buyButton.text(/Buy for ..200/s);
     });
 
     it('shows an "enter other amount" button', async () => {
-      await search
-        .input.type('ill')
+      await PropertiesScreen()
+        .searchInput.type('ill')
         .assert.property.name('ILLINOIS AVENUE')
-        .assert.property.otherBtn.exists()
-        .assert.property.otherBtn.text('enter other amount')
-        .assert.property.otherBtn.attribute('href', '/t35tt/illinois-avenue/buy');
+        .assert.property.otherButton.exists()
+        .assert.property.otherButton.text('enter other amount')
+        .assert.property.otherButton.attribute('href', '/t35tt/illinois-avenue/buy');
     });
 
     it('navigates to the dashboard after buying a property', async () => {
-      await search
-        .input.type('ill')
+      await PropertiesScreen()
+        .searchInput.type('ill')
         .assert.property.name('ILLINOIS AVENUE')
-        .assert.property.buyBtn.text(/Buy for ..240/s)
-        .property.buyBtn.click();
-      await dashboard
+        .assert.property.buyButton.text(/Buy for ..240/s)
+        .property.buyButton.click();
+      await DashboardScreen()
         .assert.exists()
         .assert.toast.message('YOU purchased Illinois Avenue')
         .assert.summary.balance('1,260');
-      await search
-        .percySnapshot('after buying');
     });
   });
 
   describe('own properties', () => {
     beforeEach(async () => {
-      await search.visit('/t35tt/top-hat/properties');
+      await PropertiesScreen().visit('/t35tt/top-hat/properties');
     });
 
     it('shows your own properties screen', async () => {
-      await search
-        .assert.exists()
-        .assert.heading.text('PLAYER 1')
-        .assert.heading.icon('top-hat')
-        .percySnapshot('own');
+      await PropertiesScreen()
+        .assert.exists();
     });
 
     it('shows a back button linked to the dashboard', async () => {
-      await search
-        .assert.backBtn.exists()
-        .assert.backBtn.attribute('href', '/t35tt');
+      await PropertiesScreen()
+        .assert.backButton.exists()
+        .assert.backButton.attribute('href', '/t35tt');
     });
 
     it('goes to the dashboard when clicking the back button', async () => {
-      await search
-        .backBtn.click()
+      await PropertiesScreen()
+        .backButton.click()
         .assert.location('/t35tt')
         .assert.not.exists();
     });
 
     it('shows a mortgage button that mortgages a property', async () => {
-      await search
-        .input.type('med')
+      await PropertiesScreen()
+        .searchInput.type('med')
         .assert.property.name('MEDITERRANEAN AVENUE')
         .assert.property.not.mortgaged()
-        .assert.property.mortgageBtn.exists()
-        .assert.property.mortgageBtn.text('Mortgage')
-        .percySnapshot('own with a mortgage button')
-        .property.mortgageBtn.click()
-        .assert.property.mortgaged()
-        .percySnapshot('own after mortgaging');
+        .assert.property.mortgageButton.exists()
+        .assert.property.mortgageButton.text('Mortgage')
+        .property.mortgageButton.click()
+        .assert.property.mortgaged();
     });
 
     it('does not show an improve or unimprove button', async () => {
-      await search
-        .input.type('med')
+      await PropertiesScreen()
+        .searchInput.type('med')
         .assert.property.name('MEDITERRANEAN AVENUE')
-        .assert.property.improveBtn.not.exists()
-        .assert.property.unimproveBtn.not.exists();
+        .assert.property.improveButton.not.exists()
+        .assert.property.unimproveButton.not.exists();
     });
 
     it('shows an improve button that unimproves a property of a monopoly', async () => {
-      await search
-        .input.type('blue')
+      await PropertiesScreen()
+        .searchInput.type('blue')
         .assert.property.name('PARK PLACE')
         .assert.property.not.improved()
-        .assert.property.improveBtn.exists()
-        .assert.property.improveBtn.text('Improve')
-        .percySnapshot('own with an improve button')
-        .property.improveBtn.click()
-        .assert.property.improved()
-        .percySnapshot('own after improving');
+        .assert.property.improveButton.exists()
+        .assert.property.improveButton.text('Improve')
+        .property.improveButton.click()
+        .assert.property.improved();
     });
 
     it('does not show an improve button when fully improved or mortgaged', async function() {
@@ -240,40 +215,36 @@ describe('PropertiesScreen', () => {
         ]
       });
 
-      await search
-        .input.type('blue')
+      await PropertiesScreen()
+        .searchInput.type('blue')
         .assert.property.name('PARK PLACE')
         .assert.property.hotels(1)
-        .assert.property.improveBtn.not.exists()
-        .percySnapshot('own fully improved');
-
-      await search
-        .input.type('bal', { range: [0, 4] })
+        .assert.property.improveButton.not.exists();
+      await PropertiesScreen()
+        .clearSearch.click()
+        .searchInput.type('balt')
         .assert.property.name('BALTIC AVENUE')
         .assert.property.mortgaged()
-        .assert.property.improveBtn.not.exists()
-        .percySnapshot('own mortgaged');
+        .assert.property.improveButton.not.exists();
     });
 
     it('shows an unimprove button that unimproves an improved property', async () => {
-      await search
-        .input.type('board')
+      await PropertiesScreen()
+        .searchInput.type('board')
         .assert.property.name('BOARDWALK')
         .assert.property.improved()
-        .assert.property.unimproveBtn.exists()
-        .assert.property.unimproveBtn.text('Unimprove')
-        .percySnapshot('own with an unimprove button')
-        .property.unimproveBtn.click()
-        .assert.property.not.improved()
-        .percySnapshot('own after unimproving');
+        .assert.property.unimproveButton.exists()
+        .assert.property.unimproveButton.text('Unimprove')
+        .property.unimproveButton.click()
+        .assert.property.not.improved();
     });
 
     it('does not show a mortgage button with improvements', async () => {
-      await search
-        .input.type('board')
+      await PropertiesScreen()
+        .searchInput.type('board')
         .assert.property.name('BOARDWALK')
         .assert.property.improved()
-        .assert.property.mortgageBtn.not.exists();
+        .assert.property.mortgageButton.not.exists();
     });
 
     it('shows an unmortgage button that unmortgages a mortgaged property', async function() {
@@ -284,118 +255,106 @@ describe('PropertiesScreen', () => {
         ]
       });
 
-      await search
-        .input.type('med')
+      await PropertiesScreen()
+        .searchInput.type('med')
         .assert.property.name('MEDITERRANEAN AVENUE')
         .assert.property.mortgaged()
-        .assert.property.unmortgageBtn.exists()
-        .assert.property.unmortgageBtn.text(/Unmortgage ..33/s)
-        .percySnapshot('own with an unmortgage button')
-        .property.unmortgageBtn.click()
-        .assert.property.not.mortgaged()
-        .percySnapshot('own after unmortgaging');
+        .assert.property.unmortgageButton.exists()
+        .assert.property.unmortgageButton.text(/Unmortgage ..33/s)
+        .property.unmortgageButton.click()
+        .assert.property.not.mortgaged();
     });
 
     it('shows a transfer button when not mortgaged nor a monopoly', async () => {
-      await search
-        .input.type('med')
+      await PropertiesScreen()
+        .searchInput.type('med')
         .assert.property.name('MEDITERRANEAN AVENUE')
         .assert.property.not.mortgaged()
-        .assert.property.improveBtn.not.exists()
-        .assert.property.transferBtn.exists()
-        .assert.property.transferBtn.attribute('href', '/t35tt/mediterranean-avenue/transfer');
+        .assert.property.improveButton.not.exists()
+        .assert.property.transferButton.exists()
+        .assert.property.transferButton.attribute('href', '/t35tt/mediterranean-avenue/transfer');
     });
   });
 
   describe('other player properties', () => {
     beforeEach(async () => {
-      await search.visit('/t35tt/automobile/properties');
+      await PropertiesScreen().visit('/t35tt/automobile/properties');
     });
 
     it('shows the player properties screen', async () => {
-      await search
-        .assert.exists()
-        .assert.heading.text('PLAYER 2')
-        .assert.heading.icon('automobile')
-        .percySnapshot('other player');
+      await PropertiesScreen()
+        .assert.exists();
     });
 
     it('shows a back button linked to the dashboard', async () => {
-      await search
-        .assert.backBtn.exists()
-        .assert.backBtn.attribute('href', '/t35tt');
+      await PropertiesScreen()
+        .assert.backButton.exists()
+        .assert.backButton.attribute('href', '/t35tt');
     });
 
     it('goes to the dashboard when clicking the back button', async () => {
-      await search
-        .backBtn.click()
+      await PropertiesScreen()
+        .backButton.click()
         .assert.location('/t35tt')
         .assert.not.exists();
     });
 
     it('shows a message when there are no properties', async () => {
-      await search
+      await PropertiesScreen()
         .visit('/t35tt/thimble/properties')
-        .assert.input.not.exists()
+        .assert.searchInput.not.exists()
         .assert.property.not.exists()
         .assert.empty.exists()
-        .assert.empty.text('NO OWNED PROPERTIES')
-        .percySnapshot('empty');
+        .assert.empty.text('NO OWNED PROPERTIES');
     });
 
     it('shows when a property has houses', async () => {
-      await search
-        .input.type('paf')
+      await PropertiesScreen()
+        .searchInput.type('paf')
         .assert.property.name('PACIFIC AVENUE')
-        .assert.property.houses(4)
-        .percySnapshot('with houses');
+        .assert.property.houses(4);
     });
 
     it('shows when a property has a hotel', async () => {
-      await search
-        .input.type('pev')
+      await PropertiesScreen()
+        .searchInput.type('pev')
         .assert.property.name('PENNSYLVANIA AVENUE')
         .assert.property.houses(0)
-        .assert.property.hotels(1)
-        .percySnapshot('with hotel');
+        .assert.property.hotels(1);
     });
 
     it('shows when a property is mortgaged', async () => {
-      await search
-        .input.type('bal')
+      await PropertiesScreen()
+        .searchInput.type('bal')
         .assert.property.name('BALTIC AVENUE')
-        .assert.property.mortgaged()
-        .percySnapshot('mortgaged');
+        .assert.property.mortgaged();
     });
 
     it('shows a rent button', async () => {
-      await search
-        .input.type('penn')
+      await PropertiesScreen()
+        .searchInput.type('penn')
         .assert.property.name('PENNSYLVANIA AVENUE')
-        .assert.property.rentBtn.exists()
-        .assert.property.rentBtn.text(/Pay Rent .\(.1,400.\)/s)
-        .percySnapshot('with a rent button');
+        .assert.property.rentButton.exists()
+        .assert.property.rentButton.text(/Pay Rent .\(.1,400.\)/s);
     });
 
     it('does not show a rent button when mortgaged', async () => {
-      await search
-        .input.type('bal')
+      await PropertiesScreen()
+        .searchInput.type('bal')
         .assert.property.name('BALTIC AVENUE')
-        .assert.property.rentBtn.not.exists();
+        .assert.property.rentButton.not.exists();
     });
 
     it('navigates to the dashboard after renting a property', async () => {
-      await search
-        .input.type('pac')
+      await PropertiesScreen()
+        .searchInput.type('pac')
         .assert.property.name('PACIFIC AVENUE')
-        .assert.property.rentBtn.text(/Pay Rent .\(.1,100.\)/s)
-        .property.rentBtn.click();
-      await dashboard
+        .assert.property.rentButton.text(/Pay Rent .\(.1,100.\)/s)
+        .property.rentButton.click();
+      await DashboardScreen()
         .assert.exists()
         .assert.toast.message('YOU paid PLAYER 2 rent for Pacific Avenue')
         .assert.summary.balance('400');
-      await search
-        .percySnapshot('after renting');
     });
 
     it('does not show a rent button when bankrupt', async function() {
@@ -404,80 +363,77 @@ describe('PropertiesScreen', () => {
         players: [{ token: 'top-hat', bankrupt: true }]
       });
 
-      await search
-        .input.type('penn')
+      await PropertiesScreen()
+        .searchInput.type('penn')
         .assert.property.name('PENNSYLVANIA AVENUE')
-        .assert.property.rentBtn.not.exists();
+        .assert.property.rentButton.not.exists();
     });
 
     describe('renting utilities', () => {
       beforeEach(async () => {
-        await search
-          .input.type('wat')
+        await PropertiesScreen()
+          .searchInput.type('wat')
           .assert.property.name('WATER WORKS')
-          .assert.property.rentBtn.text(/Pay Rent .\(x4\)/s)
-          .property.rentBtn.click();
+          .assert.property.rentButton.text(/Pay Rent .\(x4\)/s)
+          .property.rentButton.click();
       });
 
       it('shows a utility rent form', async () => {
-        await search
-          .assert.utilForm.exists()
-          .assert.utilForm.value('2')
-          .percySnapshot('utility rent');
+        await PropertiesScreen()
+          .assert.utilityForm.exists()
+          .assert.utilityForm.value('2');
       });
 
       it('can enter a custom dice roll', async () => {
-        await search.utilForm.only()
-          .assert.value('2')
-          .input.press('Backspace')
-          .input.type('10')
-          .assert.value('10');
+        await PropertiesScreen()
+          .assert.utilityForm.value('2')
+          .utilityForm.input.press('Backspace')
+          .assert.utilityForm.value('')
+          .utilityForm.input.type('10')
+          .assert.utilityForm.value('10');
       });
 
       it('can click for a random dice roll', async () => {
-        await search.utilForm.only()
-          .assert.value('2')
-          .rollBtn.click()
-          .assert.not.value('2');
+        await PropertiesScreen()
+          .assert.utilityForm.value('2')
+          .utilityForm.rollButton.click()
+          .assert.utilityForm.not.value('2');
       // sometimes it rolls a 2, what are the chances it'll happen twice?
       }).retries(2);
 
       it('disables the submit button when the roll is outside of the range', async () => {
-        await search.utilForm.only()
-          .assert.value('2')
-          .assert.submitBtn.not.disabled()
-          .input.press('Backspace')
-          .input.type('15')
-          .assert.value('15')
-          .assert.submitBtn.disabled();
+        await PropertiesScreen()
+          .assert.utilityForm.value('2')
+          .assert.utilityForm.submitButton.not.disabled()
+          .utilityForm.input.press(['Backspace', '1', '5'])
+          .assert.utilityForm.value('15')
+          .assert.utilityForm.submitButton.disabled();
       });
 
       it('clamps the roll amount after blurring when outside of the range', async () => {
-        await search.utilForm.only()
-          .input.focus()
-          .input.press('Backspace')
-          .input.type('0')
-          .assert.value('0')
-          .assert.submitBtn.disabled()
-          .input.blur()
-          .assert.value('2')
-          .assert.submitBtn.not.disabled();
+        await PropertiesScreen()
+          .utilityForm.input.focus()
+          .utilityForm.input.press(['Backspace', '0'])
+          .assert.utilityForm.value('0')
+          .assert.utilityForm.submitButton.disabled()
+          .utilityForm.input.blur()
+          .assert.utilityForm.value('2')
+          .assert.utilityForm.submitButton.not.disabled();
 
-        await search.utilForm.only()
-          .input.focus()
-          .input.press('Backspace')
-          .input.type('20')
-          .assert.value('20')
-          .assert.submitBtn.disabled()
-          .input.blur()
-          .assert.value('12')
-          .assert.submitBtn.not.disabled();
+        await PropertiesScreen()
+          .utilityForm.input.focus()
+          .utilityForm.input.press(['Backspace', '2', '0'])
+          .assert.utilityForm.value('20')
+          .assert.utilityForm.submitButton.disabled()
+          .utilityForm.input.blur()
+          .assert.utilityForm.value('12')
+          .assert.utilityForm.submitButton.not.disabled();
       });
 
       it('navigates to the dashboard after renting', async () => {
-        await search.utilForm.only()
-          .submitBtn.click();
-        await dashboard
+        await PropertiesScreen()
+          .utilityForm.submitButton.click();
+        await DashboardScreen()
           .assert.exists()
           .assert.toast.message('YOU paid PLAYER 2 rent for Water Works')
           .assert.summary.balance('1,492');

@@ -1,118 +1,94 @@
-import expect from 'expect';
 import { setupApplication } from '../helpers';
 
-import FindRoomInteractor from '../interactors/find-room';
-import JoinGameInteractor from '../interactors/join-game';
+import FindRoomScreen from '../interactors/find-room';
+import JoinGameScreen from '../interactors/join-game';
 
-describe('FindRoomScreen', () => {
-  const findRoom = new FindRoomInteractor();
-
+describe('Find Room Screen', () => {
   setupApplication(async () => {
-    await findRoom.visit();
+    await FindRoomScreen().visit();
   });
 
   it('shows the find room screen', async () => {
-    await findRoom
-      .assert.exists()
-      .percySnapshot();
-  });
-
-  it('should display a join game heading', async () => {
-    await findRoom
-      .assert.exists()
-      .assert.heading('JOIN GAME');
-  });
-
-  it('should display a room code input', async () => {
-    await findRoom
-      .assert.roomInput.exists()
-      .assert.roomInput.label('Room Code');
+    await FindRoomScreen().assert.exists();
   });
 
   it('should not show a back button', async () => {
-    await findRoom
+    await FindRoomScreen()
       .assert.exists()
-      .assert.backBtn.not.exists()
+      .assert.backButton.not.exists()
       .assert.remains();
   });
 
   it('should allow typing into the room input', async () => {
-    await findRoom
+    await FindRoomScreen()
       .roomInput.type('g4m33')
-      .percySnapshot('with a room');
+      .assert.roomInput.value('G4M33');
   });
 
-  describe('and searching for an existing room', () => {
-    const joinGame = new JoinGameInteractor();
-
+  describe('searching for an existing room', () => {
     beforeEach(async function () {
       await this.grm.mock({ room: 't35tt' });
-      await findRoom.roomInput.type('t35tt');
+      await FindRoomScreen().roomInput.type('t35tt');
     });
 
     it('should disable inputs and show a loading indicator', async function () {
       this.grm.wss.latency(50);
 
-      await findRoom
-        .submitBtn.click()
+      await FindRoomScreen()
+        .submitButton.click()
         .assert.roomInput.disabled()
-        .assert.submitBtn.disabled()
-        .assert.loading()
-        .percySnapshot('loading');
+        .assert.submitButton.disabled()
+        .assert.loading();
     });
 
     it('should go to the join game route for a game', async () => {
-      await findRoom
-        .submitBtn.click();
-      await joinGame
+      await FindRoomScreen()
+        .submitButton.click();
+
+      await JoinGameScreen()
         .assert.exists()
         .assert.location('/t35tt/join')
+        .assert.state('room', 't35tt')
         .assert.roomCode('T35TT')
-        .assert.state(state => {
-          expect(state).toHaveProperty('connected', true);
-        });
+        .assert.remains();
     });
 
     describe('then navigating back', () => {
       beforeEach(async () => {
-        await findRoom
-          .submitBtn.click();
-        await joinGame
-          .backBtn.click();
+        await FindRoomScreen()
+          .submitButton.click();
+
+        await JoinGameScreen()
+          .backButton.click();
       });
 
-      it('should go back', async () => {
-        await findRoom
+      it('should go back and disconnect from the room', async () => {
+        await FindRoomScreen()
           .assert.exists()
-          .assert.location('/join');
-      });
-
-      it('should disconnect from the game', async () => {
-        await findRoom.assert.state(state => {
-          expect(state).not.toHaveProperty('connected');
-        });
+          .assert.location('/join')
+          .assert.not.state('room')
+          .assert.remains();
       });
     });
   });
 
   describe('and searching for a non-existent room', () => {
     beforeEach(async () => {
-      await findRoom
+      await FindRoomScreen()
         .roomInput.type('f4k33')
-        .submitBtn.click();
+        .submitButton.click();
     });
 
     it('should not change routes', async () => {
-      await findRoom
+      await FindRoomScreen()
         .assert.exists()
         .assert.location('/join')
         .assert.remains();
     });
 
     it('should show an error message', async () => {
-      await findRoom
-        .assert.roomInput.error('Game Not Found')
-        .percySnapshot('game not found');
+      await FindRoomScreen()
+        .assert.roomInput.error('Game Not Found');
     });
   });
 });

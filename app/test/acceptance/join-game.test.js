@@ -1,183 +1,169 @@
 import expect from 'expect';
 import { setupApplication } from '../helpers';
 
-import JoinGameInteractor from '../interactors/join-game';
-import GameRoomInteractor from '../interactors/game-room';
+import JoinGameScreen from '../interactors/join-game';
+import GameRoomScreen from '../interactors/game-room';
 
-describe('JoinGameScreen', () => {
-  const joinGame = new JoinGameInteractor();
-
+describe('Join Game Screen', () => {
   setupApplication(async function () {
     await this.grm.mock({ room: 't35tt' });
   });
 
   describe('with a specific room', () => {
     beforeEach(async () => {
-      await joinGame.visit();
+      await JoinGameScreen().visit();
     });
 
     it('should display the join game screen', async () => {
-      await joinGame
+      await JoinGameScreen()
         .assert.exists()
-        .assert.not.loading()
-        .percySnapshot();
-    });
-
-    it('should display a join game heading', async () => {
-      await joinGame
-        .assert.heading('JOIN GAME');
+        .assert.not.loading();
     });
 
     it('should display the room code', async () => {
-      await joinGame
+      await JoinGameScreen()
         .assert.roomCode('T35TT');
     });
 
     it('should display a name input field', async () => {
-      await joinGame
+      await JoinGameScreen()
         .assert.nameInput.exists()
         .assert.nameInput.label('Your Name');
     });
 
     it('should display a token select field', async () => {
-      let { playerTokens } = await joinGame.get('state.config');
-
-      await joinGame
-        .assert.tokens.label('Select A Token')
-        .assert.tokens.count(playerTokens.length);
+      let { length } = await JoinGameScreen().get('config.playerTokens');
+      await JoinGameScreen().assert.tokenSelect.item().count(length);
     });
 
     it('should not show a back button', async () => {
-      await joinGame
+      await JoinGameScreen()
         .assert.exists()
-        .assert.backBtn.not.exists()
+        .assert.backButton.not.exists()
         .assert.remains();
     });
 
     describe('when only a name is provided', () => {
       beforeEach(async () => {
-        await joinGame.nameInput.type('Player 1');
+        await JoinGameScreen()
+          .nameInput.type('Player 1');
       });
 
       it('should not allow joining yet', async () => {
-        await joinGame
+        await JoinGameScreen()
           .assert.nameInput.value('PLAYER 1')
-          .assert.submitBtn.disabled()
+          .assert.submitButton.disabled()
           .assert.remains();
       });
     });
 
     describe('when only a token is selected', () => {
       beforeEach(async () => {
-        await joinGame.tokens.item('top-hat').click();
+        await JoinGameScreen()
+          .tokenSelect.item('top-hat').click();
       });
 
       it('should not allow joining yet', async () => {
-        await joinGame
-          .assert.tokens.item('top-hat').selected()
-          .assert.submitBtn.disabled()
+        await JoinGameScreen()
+          .assert.tokenSelect.item('top-hat').selected()
+          .assert.submitButton.disabled()
           .assert.remains();
       });
     });
 
     describe('when both a name and token is selected', () => {
       beforeEach(async () => {
-        await joinGame
+        await JoinGameScreen()
           .nameInput.type('Player 1')
-          .tokens.item('top-hat').click();
+          .tokenSelect.item('top-hat').click();
       });
 
       it('should allow joining', async () => {
-        await joinGame
-          .assert.submitBtn.text('Join Game')
-          .assert.submitBtn.not.disabled()
-          .percySnapshot('with name and token');
+        await JoinGameScreen()
+          .assert.submitButton.text('Join Game')
+          .assert.submitButton.not.disabled();
       });
 
       describe('and join game is clicked', () => {
         it('should disable all inputs', async function () {
-          this.grm.wss.latency(50);
+          this.grm.wss.latency(5000);
 
-          await joinGame
-            .submitBtn.click()
+          await JoinGameScreen()
+            .submitButton.click()
             .assert.nameInput.disabled()
-            .assert.tokens.disabled()
-            .assert.submitBtn.disabled()
-            .assert.loading()
-            .percySnapshot('loading');
+            .assert.tokenSelect.disabled()
+            .assert.submitButton.disabled()
+            .assert.loading();
         });
 
         it('should join the game', async () => {
-          await joinGame
-            .submitBtn.click()
-            .assert.state(state => {
-              expect(state).toHaveProperty('player', { name: 'PLAYER 1', token: 'top-hat' });
-              expect(state).toHaveProperty('players.top-hat', (
-                expect.objectContaining({ name: 'PLAYER 1' })
-              ));
-            });
+          await JoinGameScreen()
+            .submitButton.click()
+            .assert.state('player.name', 'PLAYER 1')
+            .assert.state('players.top-hat.name', 'PLAYER 1');
         });
 
         it('should go to the game\'s home screen', async () => {
-          await joinGame
-            .submitBtn.click()
-            .assert.location('/t35tt');
+          await JoinGameScreen()
+            .submitButton.click()
+            .assert.location('/t35tt')
+            .assert.remains();
         });
       });
     });
 
     describe('after joining a game', () => {
-      let gameRoom = new GameRoomInteractor();
-
       beforeEach(async () => {
-        await joinGame
+        await JoinGameScreen()
           .nameInput.type('Player 1')
-          .tokens.item('top-hat').click()
-          .submitBtn.click();
+          .tokenSelect.item('top-hat').click()
+          .submitButton.click();
       });
 
       it('should go to the game room screen', async () => {
-        await gameRoom
+        await GameRoomScreen()
           .assert.exists()
-          .assert.roomCode('T35TT')
-          .assert.heading.text('PLAYER 1');
+          .assert.roomCode('T35TT');
       });
 
       it('should persist app data to local storage', async function () {
-        await gameRoom.assert(() => {
+        await GameRoomScreen().assert(() => {
           expect(this.ls.data).toHaveProperty('room', 't35tt');
           expect(this.ls.data).toHaveProperty('player', { name: 'PLAYER 1', token: 'top-hat' });
         });
       });
 
       it('should persist player data to the location state', async () => {
-        await gameRoom.assert.history(({ location: { state } }) => {
-          expect(state).toHaveProperty('player', { name: 'PLAYER 1', token: 'top-hat' });
+        await GameRoomScreen().assert.context(({ history }) => {
+          expect(history.location.state)
+            .toHaveProperty('player', {
+              name: 'PLAYER 1',
+              token: 'top-hat'
+            });
         });
       });
 
       describe('then navigating back', () => {
         beforeEach(async () => {
-          await gameRoom
+          await GameRoomScreen()
             .assert.exists()
             .assert.location('/t35tt')
             .goBack();
         });
 
         it('should go back to the join game screen', async () => {
-          await joinGame
+          await JoinGameScreen()
             .assert.location('/t35tt/join');
         });
 
         it('should disconnect the player, but remain connected to the game', async () => {
-          await joinGame.assert.state(state => {
-            expect(state).toHaveProperty('room', 't35tt');
-            expect(state).not.toHaveProperty('player');
-          });
+          await JoinGameScreen()
+            .assert.state('room', 't35tt')
+            .assert.not.state('player');
         });
 
         it('should clear the persisted player from local storage', async function () {
-          await joinGame.assert(() => {
+          await JoinGameScreen().assert(() => {
             expect(this.ls.data).toHaveProperty('room', '');
             expect(this.ls.data).toHaveProperty('player', null);
           });
@@ -197,31 +183,31 @@ describe('JoinGameScreen', () => {
       });
 
       it('should prevent selecting used tokens', async () => {
-        await joinGame
-          .assert.tokens.item('top-hat').disabled()
-          .assert.tokens.item('automobile').disabled()
-          .percySnapshot('used tokens');
+        await JoinGameScreen()
+          .assert.tokenSelect.item('top-hat').disabled()
+          .assert.tokenSelect.item('automobile').disabled();
       });
 
       it('should show an "ask to join" message', async () => {
-        await joinGame
-          .assert.submitBtn.text('Ask to Join');
+        await JoinGameScreen()
+          .assert.submitButton.text('Ask to Join');
       });
 
       describe('when one of their names are filled in', () => {
         beforeEach(async () => {
-          await joinGame.nameInput.type('Player 1');
+          await JoinGameScreen()
+            .nameInput.type('Player 1');
         });
 
         it('should enable a used token with the token player\'s name', async () => {
-          await joinGame
-            .assert.tokens.item('top-hat').not.disabled()
-            .assert.tokens.item('automobile').disabled();
+          await JoinGameScreen()
+            .assert.tokenSelect.item('top-hat').not.disabled()
+            .assert.tokenSelect.item('automobile').disabled();
         });
 
         it('still shows an "ask to join" message', async () => {
-          await joinGame
-            .assert.submitBtn.text('Ask to Join')
+          await JoinGameScreen()
+            .assert.submitButton.text('Ask to Join')
             .assert.remains();
         });
 
@@ -234,23 +220,23 @@ describe('JoinGameScreen', () => {
           });
 
           it('should not enable their token with their name', async () => {
-            await joinGame
-              .assert.tokens.item('top-hat').disabled()
-              .assert.tokens.item('automobile').disabled()
+            await JoinGameScreen()
+              .assert.tokenSelect.item('top-hat').disabled()
+              .assert.tokenSelect.item('automobile').disabled()
               .assert.remains();
           });
         });
 
         describe('and selecting their token', () => {
           beforeEach(async () => {
-            await joinGame
-              .tokens.item('top-hat').click();
+            await JoinGameScreen()
+              .tokenSelect.item('top-hat').click();
           });
 
           it('does not show an "ask to join" message', async () => {
-            await joinGame
-              .assert.submitBtn.not.text('Ask to Join')
-              .assert.submitBtn.text('Join Game');
+            await JoinGameScreen()
+              .assert.submitButton.not.text('Ask to Join')
+              .assert.submitButton.text('Join Game');
           });
         });
       });
@@ -264,25 +250,24 @@ describe('JoinGameScreen', () => {
             ['game:join', 'PLAYER 1', 'top-hat']
           ]);
 
-          await joinGame
+          await JoinGameScreen()
             .nameInput.type('Player 3')
-            .tokens.item('thimble').click()
-            .submitBtn.click();
+            .tokenSelect.item('thimble').click()
+            .submitButton.click();
 
           [pollId] = await socket.expect('poll:new');
         });
 
         it('should indicate the other players are being asked', async () => {
-          await joinGame
-            .assert.submitBtn.text('Asking...')
-            .percySnapshot('asking to join');
+          await JoinGameScreen()
+            .assert.submitButton.text('Asking...');
         });
 
         it('should disable inputs', async () => {
-          await joinGame
+          await JoinGameScreen()
             .assert.nameInput.disabled()
-            .assert.tokens.disabled()
-            .assert.submitBtn.disabled();
+            .assert.tokenSelect.disabled()
+            .assert.submitButton.disabled();
         });
 
         describe('and the other player votes yes', () => {
@@ -291,14 +276,14 @@ describe('JoinGameScreen', () => {
           });
 
           it('should join the game', async () => {
-            await joinGame.assert.state(state => {
-              expect(state).toHaveProperty('players.thimble');
-              expect(state).toHaveProperty('player', { name: 'PLAYER 3', token: 'thimble' });
-            });
+            await JoinGameScreen()
+              .assert.state('players.thimble')
+              .assert.state('player.name', 'PLAYER 3')
+              .assert.state('player.token', 'thimble');
           });
 
           it('should go to the game\'s home screen', async () => {
-            await joinGame
+            await JoinGameScreen()
               .assert.location('/t35tt');
           });
         });
@@ -309,33 +294,31 @@ describe('JoinGameScreen', () => {
           });
 
           it('should leave inputs disabled', async () => {
-            await joinGame
+            await JoinGameScreen()
               .assert.nameInput.disabled()
-              .assert.tokens.disabled()
-              .assert.submitBtn.disabled()
+              .assert.tokenSelect.disabled()
+              .assert.submitButton.disabled()
               .assert.remains();
           });
 
           it('should show an error', async () => {
-            await joinGame
-              .assert.submitBtn.text('Sorry, your friends hate you')
-              .percySnapshot('not allowed to join');
+            await JoinGameScreen()
+              .assert.submitButton.text('Sorry, your friends hate you');
           });
         });
       });
 
       describe('when asking to join and nobody is connected', () => {
         beforeEach(async () => {
-          await joinGame
+          await JoinGameScreen()
             .nameInput.type('Player 3')
-            .tokens.item('thimble').click()
-            .submitBtn.click();
+            .tokenSelect.item('thimble').click()
+            .submitButton.click();
         });
 
         it('should show an error', async () => {
-          await joinGame
-            .assert.submitBtn.text('Nobody is in the room')
-            .percySnapshot('empty room');
+          await JoinGameScreen()
+            .assert.submitButton.text('Nobody is in the room');
         });
       });
     });
@@ -344,24 +327,24 @@ describe('JoinGameScreen', () => {
   describe('with persisted player data', () => {
     beforeEach(async function() {
       this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
-      await joinGame.visit();
+      await JoinGameScreen().visit();
     });
 
     it('should autofill the name and token', async () => {
-      await joinGame
+      await JoinGameScreen()
         .assert.nameInput.value('PLAYER 1')
-        .assert.tokens.item('top-hat').selected()
-        .assert.submitBtn.not.disabled();
+        .assert.tokenSelect.item('top-hat').selected()
+        .assert.submitButton.not.disabled();
     });
   });
 
   describe('with a non-existent room', () => {
     beforeEach(async () => {
-      await joinGame.visit('/f4k3e/join');
+      await JoinGameScreen().visit('/f4k3e/join');
     });
 
     it('should redirect to no room', async () => {
-      await joinGame.assert.location('/join');
+      await JoinGameScreen().assert.location('/join');
     });
   });
 });

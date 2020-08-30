@@ -1,14 +1,5 @@
-import interactor, {
-  attribute,
-  collection,
-  computed,
-  count,
-  exists,
-  scoped,
-  text
-} from 'interactor.js';
-
-import GameRoomInteractor from './game-room';
+import Interactor, { attribute, by, count, exists, text } from 'interactor.js';
+import GameRoomScreen from './game-room';
 
 function rgb2hex(color) {
   let rgb = color.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
@@ -16,28 +7,41 @@ function rgb2hex(color) {
   return '#' + hex(rgb[1]) + hex(rgb[2]) + hex(rgb[3]);
 }
 
-@interactor class SummaryInteractor {
-  linkTo = attribute('href');
-  name = text('[data-test-player-name]');
-  token = attribute('[data-test-player-name] [data-test-text-icon]', 'title');
-  balance = text('[data-test-player-balance]');
-  text = text('[data-test-properties-list]');
-  bankrupt = exists('[data-test-summary-bankrupt]');
-  groups = count('[data-test-properties-list-group]');
-  property = collection(id => id ? `[data-test-property="${id}"]` : '[data-test-property]', {
+const PlayerSummary = Interactor.extend({
+  linkTo: attribute('href'),
+  name: text('[data-test-player-name]'),
+  token: attribute('[data-test-player-name] [data-test-text-icon]', 'title'),
+  balance: text('[data-test-player-balance]'),
+  text: text('[data-test-properties-list]'),
+  bankrupt: exists('[data-test-summary-bankrupt]'),
+  groups: count('[data-test-properties-list-group]'),
+
+  property: Interactor.extend({
+    selector: id => id
+      ? `[data-test-property="${id}"]`
+      : '[data-test-property]'
+  }, {
     group: attribute('[data-test-property-swatch]', 'data-test-property-swatch'),
-    color: computed('[data-test-property-swatch]', $el => rgb2hex($el.style.backgroundColor))
-  });
-}
 
-@interactor class DashboardInteractor extends GameRoomInteractor {
-  static defaultScope = '[data-test-dashboard]';
-  static snapshotTitle = 'Dashboard';
-  static defaultPath = '/t35tt';
+    get color() {
+      return rgb2hex(
+        this.$('[data-test-property-swatch]')
+          .style.backgroundColor
+      );
+    }
+  })
+});
 
-  bankBtn = scoped('[data-test-bank-btn]');
-  summary = scoped('[data-test-summary]', SummaryInteractor);
-  card = collection('[data-test-card]', SummaryInteractor);
-}
+const DashboardScreen = GameRoomScreen.extend({
+  screen: 'dashboard',
+  path: '/t35tt'
+}, {
+  bankButton: Interactor('[data-test-bank-btn]'),
+  summary: PlayerSummary('[data-test-summary]'),
 
-export default DashboardInteractor;
+  card: PlayerSummary.extend({
+    selector: n => by.nth(n, '[data-test-card]')
+  }, {})
+});
+
+export default DashboardScreen;
