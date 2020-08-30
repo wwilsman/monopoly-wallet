@@ -12,7 +12,7 @@ export default function setupForTesting(callback = () => {}) {
   let cleanup;
 
   beforeEach(async function () {
-    cleanup = await mockServer(this,{
+    cleanup = await mockServer(this, {
       wss: () => new WebSocket.Server({ port: 8080 }),
       ws: () => new WebSocket('ws://localhost:8080'),
 
