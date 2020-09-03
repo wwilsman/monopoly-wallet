@@ -21,7 +21,6 @@ export default createTestingHook(context => {
   defineProperty(window, 'localStorage', { value: context.ls });
 
   return () => {
-    delete context.ls;
     defineProperty(window, 'localStorage', og);
   };
 });

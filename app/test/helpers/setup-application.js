@@ -25,14 +25,14 @@ function createAppContext() {
   return ctx;
 }
 
-export default function setupApplication(callback = () => {}) {
-  beforeEach(async function () {
+export default function setupApplication(callback) {
+  beforeEach(async () => {
     let ctx = createAppContext();
     RootInteractor.context = ctx;
 
     await mockSocket();
-    await mockLocalStorage(this);
-    await mockServer(this, {
+    await mockLocalStorage(ctx);
+    await mockServer(ctx, {
       wss: () => new WebSocket.Server(`ws://${window.location.host}`),
       ws: () => new WebSocket(`ws://${window.location.host}`),
 
@@ -57,6 +57,6 @@ export default function setupApplication(callback = () => {}) {
     await new RootInteractor()
       .assert.state('connected');
 
-    await callback.call(this);
+    await callback?.();
   });
 }

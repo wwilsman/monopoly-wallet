@@ -14,11 +14,23 @@ import Interactor, {
 
 import FormStyles from '../../src/ui/forms/forms.css';
 
+function get(obj, path) {
+  return path ? path.split('.').reduce((s, k) => s[k], obj) : obj;
+}
+
 export const Root = Interactor.extend({
   pathname: '/'
 }, {
   get context() {
     return Root.context;
+  },
+
+  get grm() {
+    return this.context.grm;
+  },
+
+  get socket() {
+    return this.context.socket;
   },
 
   get location() {
@@ -35,10 +47,13 @@ export const Root = Interactor.extend({
 
   state: {
     value(path) {
-      return path ? path.split('.').reduce(
-        (state, key) => state[key],
-        this.context.state
-      ) : this.context.state;
+      return get(this.context.state, path);
+    }
+  },
+
+  localstorage: {
+    value(path) {
+      return get(this.context.ls.data, path);
     }
   },
 
@@ -51,6 +66,18 @@ export const Root = Interactor.extend({
       }
 
       return value;
+    });
+  },
+
+  mock({ localstorage, ...game }) {
+    return this.exec(async () => {
+      if (localstorage) {
+        Object.assign(this.localstorage(), localstorage);
+      }
+
+      if (Object.keys(game).length) {
+        await this.grm.mock(game);
+      }
     });
   },
 

@@ -1,12 +1,10 @@
-import expect from 'expect';
 import { setupApplication } from '../helpers';
-
 import GameRoomScreen from '../interactors/game-room';
 import JoinGameScreen from '../interactors/join-game';
 
 describe('Game Room Screen', () => {
-  setupApplication(async function () {
-    await this.grm.mock({ room: 't35tt' });
+  setupApplication(async () => {
+    await GameRoomScreen().mock({ room: 't35tt' });
   });
 
   describe('without joining', () => {
@@ -40,10 +38,10 @@ describe('Game Room Screen', () => {
     describe('when another player asks to join', () => {
       let join;
 
-      beforeEach(async function () {
+      beforeEach(async () => {
         await GameRoomScreen().assert.exists();
 
-        join = this.socket([
+        join = GameRoomScreen().socket([
           ['room:connect', 't35tt'],
           ['game:join', 'PLAYER 2', 'automobile']
         ]);
@@ -62,7 +60,7 @@ describe('Game Room Screen', () => {
         });
 
         it('should let the other player join', async () => {
-          await expect(join).resolves.toBeDefined();
+          await join; // should not reject
         });
 
         it('should tell the player that the other player has joined', async () => {
@@ -78,22 +76,29 @@ describe('Game Room Screen', () => {
         });
 
         it('should not let the other player join', async () => {
-          await expect(join).rejects.toThrow('Sorry, your friends hate you');
+          await join
+            .then(() => {
+              throw Error('expected promise to reject but it resolved');
+            })
+            .catch(err => {
+              if (err.message !== 'Sorry, your friends hate you') throw Error(err);
+            });
         });
       });
     });
   });
 
   describe('automatically connecting and joining', () => {
-    beforeEach(async function () {
-      this.ls.data.room = 't35tt';
-      this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
-
-      await this.grm.mock({
+    beforeEach(async () => {
+      await GameRoomScreen().mock({
         room: 't35tt',
         players: [
           { token: 'top-hat' }
-        ]
+        ],
+        localstorage: {
+          room: 't35tt',
+          player: { name: 'PLAYER 1', token: 'top-hat' }
+        }
       });
     });
 
@@ -116,8 +121,8 @@ describe('Game Room Screen', () => {
     });
 
     describe('when the player has already joined', () => {
-      beforeEach(async function () {
-        await this.socket([
+      beforeEach(async () => {
+        await GameRoomScreen().socket([
           ['room:connect', 't35tt'],
           ['game:join', 'PLAYER 1', 'top-hat']
         ]);
@@ -134,9 +139,10 @@ describe('Game Room Screen', () => {
     });
 
     describe('when the player name is incorrect', () => {
-      beforeEach(async function () {
-        this.ls.data.player.name = 'PLAYER 2';
-        await GameRoomScreen().visit('/t35tt');
+      beforeEach(async () => {
+        await GameRoomScreen()
+          .mock({ localstorage: { player: { name: 'PLAYER 2', token: 'top-hat' } } })
+          .visit('/t35tt');
       });
 
       it('should redirect to the join game screen', async () => {
@@ -148,9 +154,10 @@ describe('Game Room Screen', () => {
     });
 
     describe('when the room code is incorrect', () => {
-      beforeEach(async function () {
-        this.ls.data.room = 'wr0n6';
-        await GameRoomScreen().visit('/t35tt');
+      beforeEach(async () => {
+        await GameRoomScreen()
+          .mock({ localstorage: { room: 'wr0n6' } })
+          .visit('/t35tt');
       });
 
       it('should redirect to the join game screen', async () => {

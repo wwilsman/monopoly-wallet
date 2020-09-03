@@ -1,12 +1,11 @@
-import expect from 'expect';
 import { setupApplication } from '../helpers';
 
 import JoinGameScreen from '../interactors/join-game';
 import GameRoomScreen from '../interactors/game-room';
 
 describe('Join Game Screen', () => {
-  setupApplication(async function () {
-    await this.grm.mock({ room: 't35tt' });
+  setupApplication(async () => {
+    await JoinGameScreen().mock({ room: 't35tt' });
   });
 
   describe('with a specific room', () => {
@@ -85,8 +84,8 @@ describe('Join Game Screen', () => {
       });
 
       describe('and join game is clicked', () => {
-        it('should disable all inputs', async function () {
-          this.grm.wss.latency(5000);
+        it('should disable all inputs', async () => {
+          JoinGameScreen().grm.wss.latency(5000);
 
           await JoinGameScreen()
             .submitButton.click()
@@ -126,20 +125,20 @@ describe('Join Game Screen', () => {
           .assert.roomCode('T35TT');
       });
 
-      it('should persist app data to local storage', async function () {
-        await GameRoomScreen().assert(() => {
-          expect(this.ls.data).toHaveProperty('room', 't35tt');
-          expect(this.ls.data).toHaveProperty('player', { name: 'PLAYER 1', token: 'top-hat' });
-        });
+      it('should persist app data to local storage', async () => {
+        await GameRoomScreen()
+          .assert.localstorage('room', 't35tt')
+          .assert.localstorage('player.name', 'PLAYER 1')
+          .assert.localstorage('player.token', 'top-hat');
       });
 
       it('should persist player data to the location state', async () => {
         await GameRoomScreen().assert.context(({ history }) => {
-          expect(history.location.state)
-            .toHaveProperty('player', {
-              name: 'PLAYER 1',
-              token: 'top-hat'
-            });
+          let { name, token } = history.location.state.player;
+
+          if (name !== 'PLAYER 1' || token !== 'top-hat') {
+            throw new Error('correct player data was not persisted');
+          }
         });
       });
 
@@ -162,18 +161,17 @@ describe('Join Game Screen', () => {
             .assert.not.state('player');
         });
 
-        it('should clear the persisted player from local storage', async function () {
-          await JoinGameScreen().assert(() => {
-            expect(this.ls.data).toHaveProperty('room', '');
-            expect(this.ls.data).toHaveProperty('player', null);
-          });
+        it('should clear the persisted player from local storage', async () => {
+          await JoinGameScreen()
+            .assert.not.localstorage('room')
+            .assert.not.localstorage('player');
         });
       });
     });
 
     describe('with other players', () => {
-      beforeEach(async function () {
-        await this.grm.mock({
+      beforeEach(async () => {
+        await JoinGameScreen().mock({
           room: 't35tt',
           players: [
             { token: 'top-hat' },
@@ -212,8 +210,8 @@ describe('Join Game Screen', () => {
         });
 
         describe('and they are playing', () => {
-          beforeEach(async function () {
-            await this.socket([
+          beforeEach(async () => {
+            await JoinGameScreen().socket([
               ['room:connect', 't35tt'],
               ['game:join', 'PLAYER 1', 'top-hat']
             ]);
@@ -244,8 +242,8 @@ describe('Join Game Screen', () => {
       describe('when asking to join', () => {
         let socket, pollId;
 
-        beforeEach(async function () {
-          socket = await this.socket([
+        beforeEach(async () => {
+          socket = await JoinGameScreen().socket([
             ['room:connect', 't35tt'],
             ['game:join', 'PLAYER 1', 'top-hat']
           ]);
@@ -325,8 +323,9 @@ describe('Join Game Screen', () => {
   });
 
   describe('with persisted player data', () => {
-    beforeEach(async function() {
-      this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
+    beforeEach(async () => {
+      JoinGameScreen().localstorage()
+        .player = { name: 'PLAYER 1', token: 'top-hat' };
       await JoinGameScreen().visit();
     });
 

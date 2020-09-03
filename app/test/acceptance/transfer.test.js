@@ -1,22 +1,23 @@
 import { setupApplication } from '../helpers';
-
 import TransferScreen from '../interactors/transfer';
 import DashboardScreen from '../interactors/dashboard';
 
 describe('Transfer Screen', () => {
   let config;
 
-  setupApplication(async function () {
-    ({ config } = await this.grm.mock({
-      room: 't35tt',
-      players: [
-        { token: 'top-hat' }
-      ]
-    }));
+  setupApplication(async () => {
+    ({ config } = await TransferScreen().grm.mock({ room: 't35tt' }));
 
-    this.ls.data.room = 't35tt',
-    this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
-    await TransferScreen().visit();
+    await TransferScreen()
+      .mock({
+        room: 't35tt',
+        players: [{ token: 'top-hat' }],
+        localstorage: {
+          room: 't35tt',
+          player: { name: 'PLAYER 1', token: 'top-hat' }
+        }
+      })
+      .visit();
   });
 
   it('shows the transfer screen', async () => {
@@ -141,8 +142,8 @@ describe('Transfer Screen', () => {
   });
 
   describe('with other players', () => {
-    beforeEach(async function () {
-      await this.grm.mock({
+    beforeEach(async () => {
+      await TransferScreen().mock({
         room: 't35tt',
         players: [
           { token: 'automobile' },
@@ -197,13 +198,9 @@ describe('Transfer Screen', () => {
         .assert.card(1).balance('1,600');
     });
 
-    it('disables bankrupt players', async function() {
-      await this.grm.mock({
-        room: 't35tt',
-        players: [{ token: 'automobile', bankrupt: true }]
-      });
-
+    it('disables bankrupt players', async () => {
       await TransferScreen()
+        .mock({ room: 't35tt', players: [{ token: 'automobile', bankrupt: true }] })
         .assert.recipient.token('automobile').disabled();
     });
   });

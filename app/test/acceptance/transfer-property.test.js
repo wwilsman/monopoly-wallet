@@ -1,26 +1,25 @@
 import { setupApplication } from '../helpers';
-
 import TransferPropertyScreen from '../interactors/transfer-property';
 import DashboardScreen from '../interactors/dashboard';
 
 describe('Transfer Property Screen', () => {
-  setupApplication(async function () {
-    await this.grm.mock({
-      room: 't35tt',
-      players: [
-        { token: 'top-hat' },
-        { token: 'automobile' },
-        { token: 'thimble' }
-      ],
-      properties: [
-        { id: 'baltic-avenue', owner: 'top-hat' }
-      ]
-    });
-
-    this.ls.data.room = 't35tt',
-    this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
-
+  setupApplication(async () => {
     await TransferPropertyScreen()
+      .mock({
+        room: 't35tt',
+        players: [
+          { token: 'top-hat' },
+          { token: 'automobile' },
+          { token: 'thimble' }
+        ],
+        properties: [
+          { id: 'baltic-avenue', owner: 'top-hat' }
+        ],
+        localstorage: {
+          room: 't35tt',
+          player: { name: 'PLAYER 1', token: 'top-hat' }
+        }
+      })
       .visit('/t35tt/baltic-avenue/transfer');
   });
 
@@ -58,13 +57,9 @@ describe('Transfer Property Screen', () => {
       .assert.recipient('thimble').selected();
   });
 
-  it('disables bankrupt players', async function() {
-    await this.grm.mock({
-      room: 't35tt',
-      players: [{ token: 'thimble', bankrupt: true }]
-    });
-
+  it('disables bankrupt players', async () => {
     await TransferPropertyScreen()
+      .mock({ room: 't35tt', players: [{ token: 'thimble', bankrupt: true }] })
       .assert.recipient('thimble').disabled();
   });
 

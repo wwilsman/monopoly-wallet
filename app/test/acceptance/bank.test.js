@@ -1,24 +1,25 @@
 import { setupApplication } from '../helpers';
-
 import BankScreen from '../interactors/bank';
 import DashboardScreen from '../interactors/dashboard';
 
 describe('BankScreen', () => {
-  setupApplication(async function () {
-    await this.grm.mock({
-      room: 't35tt',
-      players: [
-        { token: 'top-hat' },
-        { token: 'automobile' }
-      ],
-      properties: [
-        { group: 'orange', owner: 'top-hat' }
-      ]
-    });
-
-    this.ls.data.room = 't35tt',
-    this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
-    await BankScreen().visit();
+  setupApplication(async () => {
+    await BankScreen()
+      .mock({
+        room: 't35tt',
+        players: [
+          { token: 'top-hat' },
+          { token: 'automobile' }
+        ],
+        properties: [
+          { group: 'orange', owner: 'top-hat' }
+        ],
+        localstorage: {
+          room: 't35tt',
+          player: { name: 'PLAYER 1', token: 'top-hat' }
+        }
+      })
+      .visit();
   });
 
   it('shows the bank screen', async () => {
@@ -65,18 +66,16 @@ describe('BankScreen', () => {
       .assert.link(3).not.attribute('href');
   });
 
-  it('shows game history', async function() {
-    await this.grm.mock({
-      room: 't35tt',
-      notice: { message: 'PLAYER 1 purchased Vermont Avenue', token: 'top-hat' },
-      history: [
-        { notice: { message: 'PLAYER 2 joined the game', token: 'top-hat' } },
-        { notice: { message: 'PLAYER 1 received 200', token: 'top-hat' } }
-      ]
-    });
-
+  it('shows game history', async () => {
     await BankScreen()
-      .assert.exists()
+      .mock({
+        room: 't35tt',
+        notice: { message: 'PLAYER 1 purchased Vermont Avenue', token: 'top-hat' },
+        history: [
+          { notice: { message: 'PLAYER 2 joined the game', token: 'top-hat' } },
+          { notice: { message: 'PLAYER 1 received 200', token: 'top-hat' } }
+        ]
+      })
       .assert.gameHistory.item(1).message('YOU purchased Vermont Avenue')
       .assert.gameHistory.item().count(3);
   });
@@ -115,24 +114,15 @@ describe('BankScreen', () => {
       .assert.toast.message('PLAYER 2 bankrupt YOU');
   });
 
-  it('does not show actions for bankrupt players', async function() {
-    await this.grm.mock({
-      room: 't35tt',
-      players: [{ token: 'top-hat', bankrupt: true }]
-    });
-
+  it('does not show actions for bankrupt players', async () => {
     await BankScreen()
-      .assert.exists()
+      .mock({ room: 't35tt', players: [{ token: 'top-hat', bankrupt: true }] })
       .assert.link().count(0);
   });
 
-  it('disables bankrupt players when choosing a bankrupt beneficiary', async function() {
-    await this.grm.mock({
-      room: 't35tt',
-      players: [{ token: 'automobile', bankrupt: true }]
-    });
-
+  it('disables bankrupt players when choosing a bankrupt beneficiary', async () => {
     await BankScreen()
+      .mock({ room: 't35tt', players: [{ token: 'automobile', bankrupt: true }] })
       .link(3).click()
       .assert.bankrupt.players.item('automobile').disabled();
   });

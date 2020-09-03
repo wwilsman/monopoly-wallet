@@ -1,29 +1,29 @@
 import { setupApplication } from '../helpers';
-
 import DashboardScreen from '../interactors/dashboard';
 import BankScreen from '../interactors/bank';
 
 describe('Dashboard Screen', () => {
-  setupApplication(async function () {
-    await this.grm.mock({
-      room: 't35tt',
-      players: [
-        { token: 'top-hat', balance: 1290 },
-        { token: 'automobile', balance: 1300 },
-        { token: 'thimble', balance: 0, bankrupt: true },
-        { token: 'battleship' }
-      ],
-      properties: [
-        { id: 'oriental-avenue', owner: 'top-hat' },
-        { id: 'kentucky-avenue', owner: 'top-hat' },
-        { group: 'yellow', owner: 'automobile' }
-      ]
-    });
-
-    this.ls.data.room = 't35tt';
-    this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
-
-    await DashboardScreen().visit();
+  setupApplication(async () => {
+    await DashboardScreen()
+      .mock({
+        room: 't35tt',
+        players: [
+          { token: 'top-hat', balance: 1290 },
+          { token: 'automobile', balance: 1300 },
+          { token: 'thimble', balance: 0, bankrupt: true },
+          { token: 'battleship' }
+        ],
+        properties: [
+          { id: 'oriental-avenue', owner: 'top-hat' },
+          { id: 'kentucky-avenue', owner: 'top-hat' },
+          { group: 'yellow', owner: 'automobile' }
+        ],
+        localstorage: {
+          room: 't35tt',
+          player: { name: 'PLAYER 1', token: 'top-hat' }
+        }
+      })
+      .visit();
   });
 
   it('shows the player dashboard', async () => {
@@ -57,15 +57,9 @@ describe('Dashboard Screen', () => {
       .assert.summary.property('kentucky-avenue').color(colors.red);
   });
 
-  it('shows a bankrupt notice when the player is bankrupt', async function() {
-    await this.grm.mock({
-      room: 't35tt',
-      players: [
-        { token: 'top-hat', bankrupt: true }
-      ]
-    });
-
+  it('shows a bankrupt notice when the player is bankrupt', async () => {
     await DashboardScreen()
+      .mock({ room: 't35tt', players: [{ token: 'top-hat', bankrupt: true }] })
       .assert.summary.bankrupt();
   });
 

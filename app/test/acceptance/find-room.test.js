@@ -1,5 +1,4 @@
 import { setupApplication } from '../helpers';
-
 import FindRoomScreen from '../interactors/find-room';
 import JoinGameScreen from '../interactors/join-game';
 
@@ -26,13 +25,14 @@ describe('Find Room Screen', () => {
   });
 
   describe('searching for an existing room', () => {
-    beforeEach(async function () {
-      await this.grm.mock({ room: 't35tt' });
-      await FindRoomScreen().roomInput.type('t35tt');
+    beforeEach(async () => {
+      await FindRoomScreen()
+        .mock({ room: 't35tt' })
+        .roomInput.type('t35tt');
     });
 
-    it('should disable inputs and show a loading indicator', async function () {
-      this.grm.wss.latency(50);
+    it('should disable inputs and show a loading indicator', async () => {
+      FindRoomScreen().grm.wss.latency(50);
 
       await FindRoomScreen()
         .submitButton.click()

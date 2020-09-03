@@ -1,31 +1,32 @@
 import { setupApplication } from '../helpers';
-
 import PropertiesScreen from '../interactors/properties-screen';
 import DashboardScreen from '../interactors/dashboard';
 
 describe('Properties Screen', () => {
-  setupApplication(async function () {
-    await this.grm.mock({
-      room: 't35tt',
-      players: [
-        { token: 'top-hat' },
-        { token: 'automobile' },
-        { token: 'thimble' }
-      ],
-      properties: [
-        { id: 'mediterranean-avenue', owner: 'top-hat' },
-        { group: 'blue', owner: 'top-hat', monopoly: true },
-        { id: 'boardwalk', buildings: 1 },
-        { id: 'baltic-avenue', owner: 'automobile', mortgaged: true },
-        { group: 'green', owner: 'automobile', monopoly: true, buildings: 4 },
-        { id: 'pennsylvania-avenue', buildings: 5 },
-        { id: 'water-works', owner: 'automobile' }
-      ]
-    });
-
-    this.ls.data.room = 't35tt',
-    this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
-    await PropertiesScreen().visit();
+  setupApplication(async () => {
+    await PropertiesScreen()
+      .mock({
+        room: 't35tt',
+        players: [
+          { token: 'top-hat' },
+          { token: 'automobile' },
+          { token: 'thimble' }
+        ],
+        properties: [
+          { id: 'mediterranean-avenue', owner: 'top-hat' },
+          { group: 'blue', owner: 'top-hat', monopoly: true },
+          { id: 'boardwalk', buildings: 1 },
+          { id: 'baltic-avenue', owner: 'automobile', mortgaged: true },
+          { group: 'green', owner: 'automobile', monopoly: true, buildings: 4 },
+          { id: 'pennsylvania-avenue', buildings: 5 },
+          { id: 'water-works', owner: 'automobile' }
+        ],
+        localstorage: {
+          room: 't35tt',
+          player: { name: 'PLAYER 1', token: 'top-hat' }
+        }
+      })
+      .visit();
   });
 
   it('shows the room code', async () => {
@@ -206,21 +207,19 @@ describe('Properties Screen', () => {
         .assert.property.improved();
     });
 
-    it('does not show an improve button when fully improved or mortgaged', async function() {
-      await this.grm.mock({
-        room: 't35tt',
-        properties: [
-          { id: 'baltic-avenue', owner: 'top-hat' },
-          { group: 'blue', buildings: 5 }
-        ]
-      });
-
+    it('does not show an improve button when fully improved or mortgaged', async () => {
       await PropertiesScreen()
+        .mock({
+          room: 't35tt',
+          properties: [
+            { id: 'baltic-avenue', owner: 'top-hat' },
+            { group: 'blue', buildings: 5 }
+          ]
+        })
         .searchInput.type('blue')
         .assert.property.name('PARK PLACE')
         .assert.property.hotels(1)
-        .assert.property.improveButton.not.exists();
-      await PropertiesScreen()
+        .assert.property.improveButton.not.exists()
         .clearSearch.click()
         .searchInput.type('balt')
         .assert.property.name('BALTIC AVENUE')
@@ -247,15 +246,14 @@ describe('Properties Screen', () => {
         .assert.property.mortgageButton.not.exists();
     });
 
-    it('shows an unmortgage button that unmortgages a mortgaged property', async function() {
-      await this.grm.mock({
-        room: 't35tt',
-        properties: [
-          { id: 'mediterranean-avenue', mortgaged: true }
-        ]
-      });
-
+    it('shows an unmortgage button that unmortgages a mortgaged property', async () => {
       await PropertiesScreen()
+        .mock({
+          room: 't35tt',
+          properties: [
+            { id: 'mediterranean-avenue', mortgaged: true }
+          ]
+        })
         .searchInput.type('med')
         .assert.property.name('MEDITERRANEAN AVENUE')
         .assert.property.mortgaged()
@@ -357,13 +355,12 @@ describe('Properties Screen', () => {
         .assert.summary.balance('400');
     });
 
-    it('does not show a rent button when bankrupt', async function() {
-      await this.grm.mock({
-        room: 't35tt',
-        players: [{ token: 'top-hat', bankrupt: true }]
-      });
-
+    it('does not show a rent button when bankrupt', async () => {
       await PropertiesScreen()
+        .mock({
+          room: 't35tt',
+          players: [{ token: 'top-hat', bankrupt: true }]
+        })
         .searchInput.type('penn')
         .assert.property.name('PENNSYLVANIA AVENUE')
         .assert.property.rentButton.not.exists();
@@ -398,7 +395,7 @@ describe('Properties Screen', () => {
           .assert.utilityForm.value('2')
           .utilityForm.rollButton.click()
           .assert.utilityForm.not.value('2');
-      // sometimes it rolls a 2, what are the chances it'll happen twice?
+        // sometimes it rolls a 2, what are the chances it'll happen twice?
       }).retries(2);
 
       it('disables the submit button when the roll is outside of the range', async () => {

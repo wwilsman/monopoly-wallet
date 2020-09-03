@@ -1,21 +1,18 @@
 import { setupApplication } from '../helpers';
-
 import TransferPropertyScreen from '../interactors/transfer-property';
 import DashboardScreen from '../interactors/dashboard';
 
 describe('BuyPropertyScreen', () => {
-  setupApplication(async function () {
-    await this.grm.mock({
-      room: 't35tt',
-      players: [
-        { token: 'top-hat' }
-      ]
-    });
-
-    this.ls.data.room = 't35tt',
-    this.ls.data.player = { name: 'PLAYER 1', token: 'top-hat' };
-
+  setupApplication(async () => {
     await TransferPropertyScreen()
+      .mock({
+        room: 't35tt',
+        players: [{ token: 'top-hat' }],
+        localstorage: {
+          room: 't35tt',
+          player: { name: 'PLAYER 1', token: 'top-hat' }
+        }
+      })
       .visit('/t35tt/oriental-avenue/buy');
   });
 
