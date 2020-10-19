@@ -51,7 +51,7 @@
     "precss": "^4.0.0",
     "prop-types": "^15.7.2",
     "react": "^16.13.1",
-    "react-dom": "^16.13.1",
+    "react-dom": "^16.14.0",
     "react-hot-loader": "^4.13.0",
     "regenerator-runtime": "^0.13.7",
     "style-loader": "^1.2.1",
