@@ -26,7 +26,7 @@
   "dependencies": {
     "app": "*",
     "express": "^4.17.1",
-    "mongodb": "^3.6.2",
+    "mongodb": "^3.6.3",
     "slug": "^3.5.0",
     "ws": "^7.3.1",
     "yamljs": "^0.3.0"
