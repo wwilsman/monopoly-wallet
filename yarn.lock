@@ -5296,10 +5296,10 @@ ini@^1.3.4, ini@^1.3.5, ini@~1.3.0:
   resolved "https://registry.yarnpkg.com/ini/-/ini-1.3.7.tgz#a09363e1911972ea16d7a8851005d84cf09a9a84"
   integrity sha512-iKpRpXP+CrP2jyrxvg1kMUpXDyRUFDWurxbnVT1vQPx+Wz9uCYsMIqYuSBLV+PAaZG/d7kRLKRFc9oDMsH+mFQ==
 
-interactor.js@^2.0.0-beta.8:
-  version "2.0.0-beta.8"
-  resolved "https://registry.yarnpkg.com/interactor.js/-/interactor.js-2.0.0-beta.8.tgz#369508c5b321e4bfe5b078b8a5bd2fc989fa72f7"
-  integrity sha512-MT0CXGG58T2HWbztYELK0RlNCVsNrgHJhOASKouAyIuua/9zXl1fDuSOH31Aj5MaehKaS1e64f2jJrkR1/SUaQ==
+interactor.js@^2.0.0-beta.9:
+  version "2.0.0-beta.9"
+  resolved "https://registry.yarnpkg.com/interactor.js/-/interactor.js-2.0.0-beta.9.tgz#d66a14ad1979b57fe221847ff79121bca14b38fb"
+  integrity sha512-v6X8UA9c0suiHVPvFOTlgl6k4Z/qJvtd3kBu/2V0P4ArjpxDi85t3VD07SbFNrxUU3KS761OEJB+Z+CDmaCExw==
 
 internal-slot@^1.0.2:
   version "1.0.2"
