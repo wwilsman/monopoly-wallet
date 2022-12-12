@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "app": "*",
-    "express": "^4.17.1",
+    "express": "^4.18.2",
     "mongodb": "^3.6.3",
     "slug": "^3.5.0",
     "ws": "^7.3.1",
